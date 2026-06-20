@@ -77,7 +77,7 @@ services:
     environment:
       DATABASE_URL: "postgresql+psycopg2://octorig:${POSTGRES_PASSWORD:-octorig}@postgres:5432/octorig"
       SECRET_KEY: "${SECRET_KEY:-change-me-in-production}"
-      ADMIN_PASSWORD: "${ADMIN_PASSWORD:-changeme}"
+      ADMIN_PASSWORD: "${ADMIN_PASSWORD}"
     networks:
       - platform-internal
     restart: "no"
@@ -102,7 +102,7 @@ services:
       LABS_ROOT: /octorig/labs
       ADMIN_USERNAME: "${ADMIN_USERNAME:-admin}"
       ADMIN_EMAIL: "${ADMIN_EMAIL:-admin@octorig.local}"
-      ADMIN_PASSWORD: "${ADMIN_PASSWORD:-changeme}"
+      ADMIN_PASSWORD: "${ADMIN_PASSWORD}"
       CORS_ORIGINS: "${CORS_ORIGINS:-http://localhost:3000}"
       CELERY_BROKER_URL: "redis://redis:6379/0"
       CELERY_RESULT_BACKEND: "redis://redis:6379/1"
@@ -134,6 +134,7 @@ services:
       DATABASE_URL: "postgresql+psycopg2://octorig:${POSTGRES_PASSWORD:-octorig}@postgres:5432/octorig"
       SECRET_KEY: "${SECRET_KEY:-change-me-in-production}"
       LABS_ROOT: /octorig/labs
+      ADMIN_PASSWORD: "${ADMIN_PASSWORD}"
       CELERY_BROKER_URL: "redis://redis:6379/0"
       CELERY_RESULT_BACKEND: "redis://redis:6379/1"
       REDIS_URL: "redis://redis:6379/0"
@@ -159,6 +160,7 @@ services:
     environment:
       DATABASE_URL: "postgresql+psycopg2://octorig:${POSTGRES_PASSWORD:-octorig}@postgres:5432/octorig"
       SECRET_KEY: "${SECRET_KEY:-change-me-in-production}"
+      ADMIN_PASSWORD: "${ADMIN_PASSWORD}"
       CELERY_BROKER_URL: "redis://redis:6379/0"
       CELERY_RESULT_BACKEND: "redis://redis:6379/1"
       REDIS_URL: "redis://redis:6379/0"
