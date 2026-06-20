@@ -165,7 +165,6 @@ def test_team_visible_deployment_requires_membership(client):
     denied = client.get(f"/api/v1/deployments/{body['id']}", headers=_auth(outsider_token))
     assert denied.status_code == 404
 
-    # Invite bob onto the team, then he should be able to see it
     invite = client.post(
         f"/api/v1/teams/{team['id']}/invite",
         json={"username": "bob", "role": "member"},

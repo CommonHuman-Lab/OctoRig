@@ -17,7 +17,6 @@ export function LogViewer({ deploymentId, containerNames }: Props) {
   const bottomRef = useRef<HTMLDivElement>(null);
   const userScrolledUp = useRef(false);
 
-  // Derive role names from container names (last segment after the final dash)
   const roles = containerNames.map((name) => {
     const parts = name.split("-");
     return parts[parts.length - 1] ?? name;
@@ -41,7 +40,6 @@ export function LogViewer({ deploymentId, containerNames }: Props) {
     }
   }, [lines, filterText]);
 
-  // Reset auto-scroll when filter is cleared
   useEffect(() => {
     if (!filterText) {
       userScrolledUp.current = false;

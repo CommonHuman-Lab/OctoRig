@@ -78,7 +78,6 @@ def list_deployments(
     q = db.query(Deployment)
 
     if not is_privileged(current_user, db):
-        # Collect all team IDs the user belongs to
         member_team_ids = [
             m.team_id
             for m in db.query(TeamMember).filter(TeamMember.user_id == current_user.id).all()
@@ -159,8 +158,7 @@ def create_deployment(
         instance_for_user_id = current_user.id
         auto_destroy_at = datetime.now(timezone.utc) + timedelta(hours=max(1, min(8, payload.ttl_hours)))
 
-    # Lock the template row for the duration of this transaction so that concurrent
-    # deployment requests serialize here rather than racing past the conflict check.
+    # Locked for the transaction so concurrent deployment requests serialize past the conflict check
     template = (
         db.query(LabTemplate)
         .filter(LabTemplate.id == lab_template_id)
@@ -170,7 +168,6 @@ def create_deployment(
     if template is None:
         raise not_found("Lab template")
 
-    # Verify team membership when deploying to a team
     if payload.team_id is not None:
         team = db.get(Team, payload.team_id)
         if team is None:
@@ -348,8 +345,7 @@ async def stream_logs(
     # Accept the connection first so we can send close codes back to the client.
     await websocket.accept()
 
-    # Auth via first message — avoids placing JWT in the URL where it is logged
-    # by every proxy, load balancer, and web server in the chain.
+    # Auth via first message avoids placing JWT in the URL, where every proxy/LB logs it
     import asyncio
     import json as _json
     from jose import JWTError

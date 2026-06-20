@@ -70,7 +70,6 @@ def sync_registry(db: Session) -> None:
             existing.env_vars = lab_def["env_vars"]
             existing.requires_privileged = lab_def["requires_privileged"]
 
-        # Sync inline challenges if present
         for ch_def in lab_def.get("challenges", []):
             ch = db.query(Challenge).filter(Challenge.slug == ch_def["slug"]).first()
             if ch is None:
@@ -110,7 +109,6 @@ def sync_registry(db: Session) -> None:
                         cost=h.get("cost", 0),
                     ))
             else:
-                # Keep title/description/points in sync if the registry changes
                 lab_name_tag = lab_def["name"]
                 raw_tags = [t for t in ch_def.get("tags", ch.tags) if t != lab_name_tag]
                 ch.title = ch_def["title"]
@@ -341,7 +339,6 @@ def stop_lab(deployment_id: int, user_id: int, remove_volumes: bool = False) -> 
         if deployment is None:
             return
 
-        # Idempotent — already stopped means nothing to do.
         if deployment.status == DeploymentStatus.STOPPED:
             return
 
@@ -349,12 +346,10 @@ def stop_lab(deployment_id: int, user_id: int, remove_volumes: bool = False) -> 
         if template is None:
             return
 
-        # Stop containers
         for name in deployment.container_names:
             docker_service.stop_container(name)
 
-        # Remove network — per-deployment name, so other concurrent
-        # deployments of the same lab are untouched.
+        # Network name is per-deployment, so concurrent deployments of the same lab are untouched
         if deployment.network_name:
             docker_service.remove_network(deployment.network_name)
         if remove_volumes:
@@ -452,10 +447,8 @@ def reset_lab(deployment_id: int, user_id: int) -> None:
         if template is None or lab_def is None:
             return
 
-        # Stop and remove volumes
         stop_lab(deployment_id, user_id, remove_volumes=True)
 
-        # Create a new deployment (fresh subnet/IP/container names) and start it
         new_deployment = prepare_deployment(
             db,
             template,

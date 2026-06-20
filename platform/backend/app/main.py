@@ -34,13 +34,12 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 async def lifespan(app: FastAPI):
     from app.ws.manager import manager
     manager.set_loop(asyncio.get_running_loop())
-    # Migrations are run by the 'migrate' init container before this process starts.
-    # Do NOT call alembic here — it races in multi-replica deployments.
+    # Migrations run in the 'migrate' init container; calling alembic here races in multi-replica deployments
     _seed_admin()
     _seed_roles()
     _seed_badges()
     _seed_ranks()
-    _sync_labs()      # upserts lab templates + any inline challenges
+    _sync_labs()
     _load_plugins(app)
     yield
 
@@ -137,7 +136,6 @@ def create_app() -> FastAPI:
     app.state.limiter = limiter
     app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-    # Security headers on every response
     app.add_middleware(SecurityHeadersMiddleware)
 
     app.add_middleware(

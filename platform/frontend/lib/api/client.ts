@@ -12,7 +12,6 @@ export const apiClient = axios.create({
   withCredentials: true, // send the HttpOnly refresh-token cookie on every request
 });
 
-// Attach the in-memory access token on every request
 apiClient.interceptors.request.use((config) => {
   const token = useUserStore.getState().accessToken;
   if (token) config.headers.Authorization = `Bearer ${token}`;
@@ -27,7 +26,6 @@ apiClient.interceptors.response.use(
   async (err) => {
     const original = err.config;
 
-    // Only intercept 401s that haven't already been retried and aren't the refresh call itself
     if (
       err.response?.status !== 401 ||
       original._retried ||

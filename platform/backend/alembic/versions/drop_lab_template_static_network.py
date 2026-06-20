@@ -1,10 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
-"""Drop LabTemplate.network_name/subnet/app_ip — vestigial since networking
-moved to per-deployment allocation. Nothing reads these columns anymore:
-the registry no longer defines them, sync_registry() no longer writes them,
-and the API stopped serving them once the UI started reading subnet/app_ip
-off the Deployment instead.
+"""Drop LabTemplate.network_name/subnet/app_ip — vestigial since networking moved to per-deployment allocation.
 
 Revision ID: drop_lab_template_static_network
 Revises: add_hide_lab_ports

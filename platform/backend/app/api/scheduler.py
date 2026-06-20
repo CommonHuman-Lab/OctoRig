@@ -42,7 +42,6 @@ def create_scheduled(
     if payload.scheduled_at.replace(tzinfo=timezone.utc) <= datetime.now(timezone.utc):
         raise bad_request("scheduled_at must be in the future")
 
-    # Validate destroy target exists and is accessible
     if payload.action == ScheduledActionType.DESTROY and payload.deployment_id:
         from app.models.deployment import Deployment
         from app.core.permissions import can_destroy_deployment
@@ -55,7 +54,6 @@ def create_scheduled(
         if not can_destroy_deployment(current_user, db, d, membership):
             raise forbidden_exception
 
-    # Validate team membership when scheduling for a team
     if payload.team_id is not None:
         from app.models.team import TeamMember
         member = (

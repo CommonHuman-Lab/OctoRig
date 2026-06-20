@@ -20,8 +20,7 @@ router = APIRouter(tags=["websocket"])
 async def events_ws(websocket: WebSocket, db: Session = Depends(get_db)) -> None:
     await websocket.accept()
 
-    # Auth via first message — avoids placing JWT in the URL where it is logged
-    # by every proxy, load balancer, and web server in the chain.
+    # Auth via first message avoids placing JWT in the URL, where every proxy/LB logs it
     try:
         raw = await asyncio.wait_for(websocket.receive_text(), timeout=10.0)
         token = _json.loads(raw).get("token", "")

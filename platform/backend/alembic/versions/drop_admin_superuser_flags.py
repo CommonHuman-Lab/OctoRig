@@ -18,8 +18,7 @@ depends_on = None
 
 
 def upgrade() -> None:
-    # Backfill: any user who held is_admin or is_superuser gets the "admin"
-    # role slug appended to platform_roles before the flags are dropped.
+    # Backfill: is_admin/is_superuser users get "admin" appended to platform_roles before the flags drop
     op.execute(
         """
         UPDATE users

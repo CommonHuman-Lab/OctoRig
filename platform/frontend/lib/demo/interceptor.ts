@@ -121,7 +121,6 @@ function onRequest(config: InternalAxiosRequestConfig): InternalAxiosRequestConf
     if (/\/challenges\/[^/]+\/submit$/.test(u))
       config.adapter = () => mockResponse({ correct: false, already_solved: false, first_blood: false, points_awarded: 0, message: "Demo mode — flag submission disabled." }, config);
 
-    // Content creator / review queue mutations — echo back a plausible updated shape.
     const contentMatch = RE.contentMutation.exec(u);
     if (contentMatch && m !== "get") {
       const id = parseInt(contentMatch[1], 10);
@@ -157,7 +156,6 @@ function onRequest(config: InternalAxiosRequestConfig): InternalAxiosRequestConf
       return config;
     }
 
-    // Admin assessments — create/update/delete invites and the assessment itself.
     if (RE.assessmentDetail.test(u) || RE.assessmentList.test(u) || RE.assessmentInvites.test(u)) {
       const detailMatch = RE.assessmentDetail.exec(u);
       const existing = detailMatch ? DEMO_ASSESSMENTS.find((a) => a.id === parseInt(detailMatch[1], 10)) : undefined;
@@ -183,16 +181,13 @@ function onRequest(config: InternalAxiosRequestConfig): InternalAxiosRequestConf
     return config;
   }
 
-  // Auth
   if (u === "/auth/me") { withMock(DEMO_ME, config); return config; }
 
-  // Scoreboards
   if (/^\/scoreboards\/global/.test(u)) { withMock(DEMO_SCOREBOARD, config); return config; }
   if (RE.eventScoreboard.test(u)) { withMock(DEMO_EVENT_SCOREBOARD, config); return config; }
   if (/^\/scoreboards\/events\/\d+/.test(u)) { withMock(DEMO_EVENT_SCOREBOARD, config); return config; }
 
-  // Events — full replacement. Challenge metadata bundled into events is
-  // real (see DEMO_EVENT_CHALLENGES in data.ts), not derived from the slug.
+  // Bundled challenge metadata is real (see DEMO_EVENT_CHALLENGES), not derived from the slug
   if (RE.eventChallenges.test(u)) {
     withMock(DEMO_EVENT_CHALLENGES.map((c, i) => ({
       ...c,
@@ -216,12 +211,10 @@ function onRequest(config: InternalAxiosRequestConfig): InternalAxiosRequestConf
     return config;
   }
 
-  // Deployments
   if (/^\/deployments\/instance/.test(u)) { withMock(null, config, 404); return config; }
   if (/^\/deployments\/?(\?.*)?$/.test(u)) { withMock(DEMO_DEPLOYMENTS, config); return config; }
   if (/^\/deployments\/\d+$/.test(u)) { withMock(DEMO_DEPLOYMENTS[0], config); return config; }
 
-  // Notifications
   if (/^\/notifications\/unread-count/.test(u)) {
     withMock({ count: DEMO_NOTIFICATIONS.filter(n => !n.read_at).length }, config);
     return config;
@@ -232,18 +225,16 @@ function onRequest(config: InternalAxiosRequestConfig): InternalAxiosRequestConf
     return config;
   }
 
-  // Profiles
   if (RE.profileMe.test(u)) { withMock(DEMO_PROFILE_ME, config); return config; }
   if (RE.profileUser.test(u)) {
     const username = RE.profileUser.exec(u)?.[1] ?? "user";
-    if (username === "search") { withMock([], config); return config; } // /profiles/search
+    if (username === "search") { withMock([], config); return config; }
     withMock(demoUserProfile(username), config);
     return config;
   }
   if (/^\/profiles\/search/.test(u)) { withMock([], config); return config; }
 
-  // Teams — detail/members are looked up by id so each team in DEMO_TEAMS
-  // shows its own roster instead of a single shared fixture.
+  // Looked up by id so each team in DEMO_TEAMS shows its own roster, not a shared fixture
   if (RE.teamMembers.test(u)) {
     const id = parseInt(RE.teamMembers.exec(u)?.[1] ?? "1", 10);
     withMock(demoTeamMembers(id), config);
@@ -256,10 +247,8 @@ function onRequest(config: InternalAxiosRequestConfig): InternalAxiosRequestConf
   }
   if (RE.teamList.test(u)) { withMock(DEMO_TEAMS, config); return config; }
 
-  // API Keys
   if (/^\/api-keys\/?(\?.*)?$/.test(u)) { withMock(DEMO_API_KEYS, config); return config; }
 
-  // System
   if (/^\/system\/health/.test(u)) { withMock(DEMO_HEALTH, config); return config; }
   if (/^\/system\/containers/.test(u)) { withMock(DEMO_CONTAINERS, config); return config; }
   if (/^\/system\/plugins/.test(u)) { withMock([], config); return config; }
@@ -267,12 +256,10 @@ function onRequest(config: InternalAxiosRequestConfig): InternalAxiosRequestConf
   // Schedule — per-deployment auto-stop list; no dedicated admin view exists.
   if (/^\/schedule\//.test(u) || /^\/schedule\/?(\?.*)?$/.test(u)) { withMock([], config); return config; }
 
-  // Content creator / review queue
   if (RE.contentMine.test(u)) { withMock(DEMO_CONTENT_MINE, config); return config; }
   if (RE.contentPending.test(u)) { withMock(DEMO_CONTENT_PENDING, config); return config; }
   if (RE.contentApproved.test(u)) { withMock(DEMO_CONTENT_APPROVED, config); return config; }
 
-  // Admin
   if (/^\/admin\/stats/.test(u)) { withMock(DEMO_ADMIN_STATS, config); return config; }
   if (RE.adminUsers.test(u)) { withMock(DEMO_ADMIN_USERS, config); return config; }
   if (RE.adminTeams.test(u)) { withMock(DEMO_ADMIN_TEAMS, config); return config; }
@@ -280,10 +267,8 @@ function onRequest(config: InternalAxiosRequestConfig): InternalAxiosRequestConf
   if (RE.adminAuditLogs.test(u)) { withMock(DEMO_AUDIT_LOGS, config); return config; }
   if (RE.adminApiKeys.test(u)) { withMock(DEMO_ADMIN_API_KEYS, config); return config; }
   if (/^\/admin\/settings/.test(u)) { withMock(DEMO_ADMIN_SETTINGS, config); return config; }
-  // /admin/roles/ intentionally passes through — it's the real seeded
-  // ROLE_SEED catalog (admin/creator/player/viewer), not usage data.
+  // /admin/roles/ passes through — it's the real seeded ROLE_SEED catalog, not usage data
 
-  // Admin assessments + invites
   if (RE.assessmentInviteProgress.test(u)) {
     const [, aId, iId] = RE.assessmentInviteProgress.exec(u) ?? [];
     const invite = (DEMO_ASSESSMENT_INVITES[parseInt(aId ?? "0", 10)] ?? []).find(

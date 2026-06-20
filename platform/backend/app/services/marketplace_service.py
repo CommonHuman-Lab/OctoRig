@@ -106,7 +106,6 @@ def install_package(
     db.add(pkg)
     db.flush()
 
-    # Import embedded challenges if present
     if pkg_type == PackageType.CHALLENGE_PACK and "challenges" in manifest:
         _import_challenges(db, manifest["challenges"], pkg)
 

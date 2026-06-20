@@ -16,19 +16,15 @@ down_revision: Union[str, None] = "add_python_editor_toggle"
 branch_labels = None
 depends_on = None
 
-
 def upgrade() -> None:
-    # --- users ---
     op.add_column(
         "users",
         sa.Column("is_candidate", sa.Boolean(), nullable=False, server_default="false"),
     )
 
-    # --- site_settings ---
     op.add_column("site_settings", sa.Column("company_name", sa.String(255), nullable=True))
     op.add_column("site_settings", sa.Column("company_logo_url", sa.Text(), nullable=True))
 
-    # --- assessments ---
     op.create_table(
         "assessments",
         sa.Column("id", sa.Integer(), primary_key=True),
@@ -52,7 +48,6 @@ def upgrade() -> None:
     )
     op.create_index("ix_assessments_slug", "assessments", ["slug"])
 
-    # --- assessment_invites ---
     op.create_table(
         "assessment_invites",
         sa.Column("id", sa.Integer(), primary_key=True),
@@ -71,7 +66,6 @@ def upgrade() -> None:
     op.create_index("ix_assessment_invites_assessment_id", "assessment_invites", ["assessment_id"])
     op.create_index("ix_assessment_invites_token", "assessment_invites", ["token"])
 
-    # --- assessment_reports ---
     op.create_table(
         "assessment_reports",
         sa.Column("id", sa.Integer(), primary_key=True),
@@ -90,7 +84,6 @@ def upgrade() -> None:
             server_default=sa.text("now()"),
         ),
     )
-
 
 def downgrade() -> None:
     op.drop_table("assessment_reports")

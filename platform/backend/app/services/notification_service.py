@@ -17,7 +17,6 @@ def create_notification(
     data: Optional[dict[str, Any]] = None,
 ) -> Notification:
     prefs = _get_prefs(db, user_id)
-    # Respect event_filter suppression
     if prefs.event_filter.get(type) is False:
         return None  # type: ignore[return-value]
     if not prefs.in_app:

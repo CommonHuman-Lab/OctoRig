@@ -91,7 +91,6 @@ def upgrade() -> None:
         name="packagetype",
     )
 
-    # ── users ─────────────────────────────────────────────────────────────────
     op.create_table(
         "users",
         sa.Column("id", sa.Integer(), primary_key=True),
@@ -108,7 +107,6 @@ def upgrade() -> None:
     op.create_index("ix_users_username", "users", ["username"])
     op.create_index("ix_users_email", "users", ["email"])
 
-    # ── lab_templates ─────────────────────────────────────────────────────────
     op.create_table(
         "lab_templates",
         sa.Column("id", sa.Integer(), primary_key=True),
@@ -134,7 +132,6 @@ def upgrade() -> None:
     )
     op.create_index("ix_lab_templates_slug", "lab_templates", ["slug"])
 
-    # ── challenges ────────────────────────────────────────────────────────────
     op.create_table(
         "challenges",
         sa.Column("id", sa.Integer(), primary_key=True),
@@ -160,7 +157,6 @@ def upgrade() -> None:
     op.create_index("ix_challenges_category", "challenges", ["category"])
     op.create_index("ix_challenges_difficulty", "challenges", ["difficulty"])
 
-    # ── teams ─────────────────────────────────────────────────────────────────
     op.create_table(
         "teams",
         sa.Column("id", sa.Integer(), primary_key=True),
@@ -174,7 +170,6 @@ def upgrade() -> None:
     )
     op.create_index("ix_teams_slug", "teams", ["slug"])
 
-    # ── team_members ──────────────────────────────────────────────────────────
     op.create_table(
         "team_members",
         sa.Column("id", sa.Integer(), primary_key=True),
@@ -188,7 +183,6 @@ def upgrade() -> None:
     op.create_index("ix_team_members_team_id", "team_members", ["team_id"])
     op.create_index("ix_team_members_user_id", "team_members", ["user_id"])
 
-    # ── team_invitations ──────────────────────────────────────────────────────
     op.create_table(
         "team_invitations",
         sa.Column("id", sa.Integer(), primary_key=True),
@@ -204,7 +198,6 @@ def upgrade() -> None:
     op.create_index("ix_team_invitations_team_id", "team_invitations", ["team_id"])
     op.create_index("ix_team_invitations_token", "team_invitations", ["token"])
 
-    # ── ctf_events ────────────────────────────────────────────────────────────
     # Created before deployments and challenge_submissions because both FK to it.
     op.create_table(
         "ctf_events",
@@ -225,7 +218,6 @@ def upgrade() -> None:
     op.create_index("ix_ctf_events_slug", "ctf_events", ["slug"])
     op.create_index("ix_ctf_events_status", "ctf_events", ["status"])
 
-    # ── deployments ───────────────────────────────────────────────────────────
     op.create_table(
         "deployments",
         sa.Column("id", sa.Integer(), primary_key=True),
@@ -250,7 +242,6 @@ def upgrade() -> None:
     op.create_index("ix_deployments_challenge_id", "deployments", ["challenge_id"])
     op.create_index("ix_deployments_auto_destroy_at", "deployments", ["auto_destroy_at"])
 
-    # ── audit_logs ────────────────────────────────────────────────────────────
     op.create_table(
         "audit_logs",
         sa.Column("id", sa.Integer(), primary_key=True),
@@ -267,7 +258,6 @@ def upgrade() -> None:
     op.create_index("ix_audit_logs_action", "audit_logs", ["action"])
     op.create_index("ix_audit_logs_created_at", "audit_logs", ["created_at"])
 
-    # ── api_keys ──────────────────────────────────────────────────────────────
     op.create_table(
         "api_keys",
         sa.Column("id", sa.Integer(), primary_key=True),
@@ -283,7 +273,6 @@ def upgrade() -> None:
     )
     op.create_index("ix_api_keys_user_id", "api_keys", ["user_id"])
 
-    # ── scheduled_actions ─────────────────────────────────────────────────────
     op.create_table(
         "scheduled_actions",
         sa.Column("id", sa.Integer(), primary_key=True),
@@ -302,7 +291,6 @@ def upgrade() -> None:
     op.create_index("ix_scheduled_actions_team_id", "scheduled_actions", ["team_id"])
     op.create_index("ix_scheduled_actions_scheduled_at", "scheduled_actions", ["scheduled_at"])
 
-    # ── challenge_flags ───────────────────────────────────────────────────────
     op.create_table(
         "challenge_flags",
         sa.Column("id", sa.Integer(), primary_key=True),
@@ -316,7 +304,6 @@ def upgrade() -> None:
     )
     op.create_index("ix_challenge_flags_challenge_id", "challenge_flags", ["challenge_id"])
 
-    # ── challenge_hints ───────────────────────────────────────────────────────
     op.create_table(
         "challenge_hints",
         sa.Column("id", sa.Integer(), primary_key=True),
@@ -328,7 +315,6 @@ def upgrade() -> None:
     )
     op.create_index("ix_challenge_hints_challenge_id", "challenge_hints", ["challenge_id"])
 
-    # ── challenge_files ───────────────────────────────────────────────────────
     op.create_table(
         "challenge_files",
         sa.Column("id", sa.Integer(), primary_key=True),
@@ -340,7 +326,6 @@ def upgrade() -> None:
     )
     op.create_index("ix_challenge_files_challenge_id", "challenge_files", ["challenge_id"])
 
-    # ── challenge_submissions ─────────────────────────────────────────────────
     op.create_table(
         "challenge_submissions",
         sa.Column("id", sa.Integer(), primary_key=True),
@@ -359,7 +344,6 @@ def upgrade() -> None:
     op.create_index("ix_challenge_submissions_user_id", "challenge_submissions", ["user_id"])
     op.create_index("ix_challenge_submissions_event_id_team_id", "challenge_submissions", ["event_id", "team_id"])
     op.create_index("ix_challenge_submissions_submitted_at", "challenge_submissions", ["challenge_id", "submitted_at"])
-    # Unique winning submission per (challenge, user) — partial index on correct submissions
     op.create_index(
         "uq_challenge_submissions_correct",
         "challenge_submissions",
@@ -368,7 +352,6 @@ def upgrade() -> None:
         postgresql_where=sa.text("is_correct = true"),
     )
 
-    # ── hint_unlocks ──────────────────────────────────────────────────────────
     op.create_table(
         "hint_unlocks",
         sa.Column("id", sa.Integer(), primary_key=True),
@@ -379,7 +362,6 @@ def upgrade() -> None:
     )
     op.create_index("ix_hint_unlocks_user_id", "hint_unlocks", ["user_id"])
 
-    # ── score_transactions ────────────────────────────────────────────────────
     op.create_table(
         "score_transactions",
         sa.Column("id", sa.Integer(), primary_key=True),
@@ -395,7 +377,6 @@ def upgrade() -> None:
     op.create_index("ix_score_transactions_team_id_event", "score_transactions", ["team_id", "event_id"])
     op.create_index("ix_score_transactions_created_at", "score_transactions", ["created_at"])
 
-    # ── event_challenge_map ───────────────────────────────────────────────────
     op.create_table(
         "event_challenge_map",
         sa.Column("id", sa.Integer(), primary_key=True),
@@ -407,7 +388,6 @@ def upgrade() -> None:
     )
     op.create_index("ix_event_challenge_map_event_id", "event_challenge_map", ["event_id"])
 
-    # ── event_registrations ───────────────────────────────────────────────────
     op.create_table(
         "event_registrations",
         sa.Column("id", sa.Integer(), primary_key=True),
@@ -418,7 +398,6 @@ def upgrade() -> None:
     )
     op.create_index("ix_event_registrations_event_id", "event_registrations", ["event_id"])
 
-    # ── badge_definitions ─────────────────────────────────────────────────────
     op.create_table(
         "badge_definitions",
         sa.Column("id", sa.Integer(), primary_key=True),
@@ -432,7 +411,6 @@ def upgrade() -> None:
         sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.func.now()),
     )
 
-    # ── achievement_rules ─────────────────────────────────────────────────────
     op.create_table(
         "achievement_rules",
         sa.Column("id", sa.Integer(), primary_key=True),
@@ -444,7 +422,6 @@ def upgrade() -> None:
     )
     op.create_index("ix_achievement_rules_badge_id", "achievement_rules", ["badge_id"])
 
-    # ── user_badges ───────────────────────────────────────────────────────────
     op.create_table(
         "user_badges",
         sa.Column("id", sa.Integer(), primary_key=True),
@@ -457,7 +434,6 @@ def upgrade() -> None:
     )
     op.create_index("ix_user_badges_user_id", "user_badges", ["user_id"])
 
-    # ── user_profiles ─────────────────────────────────────────────────────────
     op.create_table(
         "user_profiles",
         sa.Column("user_id", sa.Integer(), sa.ForeignKey("users.id"), primary_key=True),
@@ -473,7 +449,6 @@ def upgrade() -> None:
         sa.Column("updated_at", sa.DateTime(timezone=True), server_default=sa.func.now()),
     )
 
-    # ── notifications ─────────────────────────────────────────────────────────
     op.create_table(
         "notifications",
         sa.Column("id", sa.Integer(), primary_key=True),
@@ -488,7 +463,6 @@ def upgrade() -> None:
     op.create_index("ix_notifications_user_id", "notifications", ["user_id"])
     op.create_index("ix_notifications_user_read", "notifications", ["user_id", "read_at"])
 
-    # ── notification_preferences ──────────────────────────────────────────────
     op.create_table(
         "notification_preferences",
         sa.Column("id", sa.Integer(), primary_key=True),
@@ -500,7 +474,6 @@ def upgrade() -> None:
         sa.Column("event_filter", sa.JSON(), nullable=False, server_default="{}"),
     )
 
-    # ── content_submissions ───────────────────────────────────────────────────
     op.create_table(
         "content_submissions",
         sa.Column("id", sa.Integer(), primary_key=True),
@@ -516,7 +489,6 @@ def upgrade() -> None:
     op.create_index("ix_content_submissions_author_id", "content_submissions", ["author_id"])
     op.create_index("ix_content_submissions_status", "content_submissions", ["status"])
 
-    # ── content_reviews ───────────────────────────────────────────────────────
     op.create_table(
         "content_reviews",
         sa.Column("id", sa.Integer(), primary_key=True),
@@ -528,7 +500,6 @@ def upgrade() -> None:
     )
     op.create_index("ix_content_reviews_submission_id", "content_reviews", ["submission_id"])
 
-    # ── marketplace_packages ──────────────────────────────────────────────────
     op.create_table(
         "marketplace_packages",
         sa.Column("id", sa.Integer(), primary_key=True),
@@ -545,7 +516,6 @@ def upgrade() -> None:
         sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.func.now()),
     )
 
-    # ── package_installations ─────────────────────────────────────────────────
     op.create_table(
         "package_installations",
         sa.Column("id", sa.Integer(), primary_key=True),

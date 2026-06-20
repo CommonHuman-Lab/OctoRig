@@ -56,8 +56,7 @@ class Deployment(Base):
     auto_destroy_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
     error_message: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
-    # Per-deployment network allocation — distinct from LabTemplate's static
-    # defaults so the same lab can run concurrently for different users/teams.
+    # Per-deployment allocation, distinct from LabTemplate's static defaults, allows concurrent runs
     subnet: Mapped[Optional[str]] = mapped_column(String(32), nullable=True)
     app_ip: Mapped[Optional[str]] = mapped_column(String(32), nullable=True)
     network_name: Mapped[Optional[str]] = mapped_column(String(128), nullable=True)

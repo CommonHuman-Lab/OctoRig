@@ -158,7 +158,6 @@ def create_assessment(
     current_user: User = Depends(require_admin),
     db: Session = Depends(get_db),
 ) -> AssessmentResponse:
-    # Validate lab slugs
     invalid = [s for s in payload.lab_slugs if s not in REGISTRY_BY_SLUG]
     if invalid:
         raise bad_request(f"Unknown lab slugs: {invalid}")
@@ -467,7 +466,6 @@ def accept_invite(
     if invite is None or invite.is_revoked:
         raise not_found("Invite")
 
-    # Already accepted — idempotent if same user tries to accept again
     if invite.user_id is not None:
         raise conflict("This invite has already been accepted")
 
@@ -526,7 +524,6 @@ def start_assessment(
     if invite.accepted_at is None:
         raise bad_request("Invite has not been accepted")
 
-    # Idempotent — if already started, return current state
     if invite.started_at is not None:
         return _build_candidate_status(invite, db)
 
@@ -601,7 +598,6 @@ def _build_candidate_status(invite: AssessmentInvite, db: Session) -> CandidateA
         delta = (expires_aware - now).total_seconds()
         time_remaining = max(0, int(delta))
 
-    # Build lab cards
     display_names: dict = assessment.lab_display_names or {}
     labs: list[CandidateLabInfo] = []
     for i, slug in enumerate(assessment.lab_slugs or []):
@@ -706,7 +702,6 @@ def complete_assessment(
     if invite.started_at is None:
         raise bad_request("Assessment has not been started")
 
-    # Idempotent — completing twice just returns the already-locked state.
     if invite.completed_at is None:
         now = datetime.now(timezone.utc)
         invite.completed_at = now

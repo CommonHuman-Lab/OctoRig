@@ -18,8 +18,7 @@ export function AppearanceSection({
   onSave: () => void;
   isPending: boolean;
 }) {
-  // Previewing the site default shouldn't permanently change the admin's own theme —
-  // snap their view back to their real theme when they leave this section.
+  // Snap back to the admin's real theme on unmount so previewing the default doesn't stick
   useEffect(() => {
     return () => {
       document.documentElement.setAttribute("data-theme", useThemeStore.getState().theme);

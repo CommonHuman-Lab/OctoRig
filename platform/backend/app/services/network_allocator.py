@@ -19,8 +19,7 @@ from app.models.deployment import Deployment, DeploymentStatus, NetworkAllocatio
 def allocate_subnet(db: Session) -> str:
     lock_row = db.query(NetworkAllocationLock).with_for_update().first()
     if lock_row is None:
-        # Self-heals if the seed row from the migration is missing (e.g. test DBs
-        # built via Base.metadata.create_all() rather than alembic upgrade).
+        # Self-heals if the migration's seed row is missing, e.g. test DBs using create_all()
         db.add(NetworkAllocationLock(id=1))
         db.flush()
 

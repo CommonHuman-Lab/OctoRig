@@ -20,14 +20,12 @@ celery_app.conf.update(
     accept_content=["json"],
     timezone="UTC",
     enable_utc=True,
-    # Fetch one task at a time so lab_ops workers don't hoard jobs they can't
-    # start while another worker is free.
+    # Fetch one task at a time so lab_ops workers don't hoard jobs they can't start
     worker_prefetch_multiplier=1,
-    # Ack only after the task completes so a worker crash re-queues the task.
+    # Ack only after the task completes so a worker crash re-queues the task
     task_acks_late=True,
     task_reject_on_worker_lost=True,
-    # Route tasks to dedicated queues so slow Docker operations (lab_ops) cannot
-    # starve the scheduler queue.
+    # Dedicated queues so slow Docker ops (lab_ops) can't starve the scheduler queue
     task_routes={
         "app.worker.tasks.execute_deploy": {"queue": "lab_ops"},
         "app.worker.tasks.execute_destroy": {"queue": "lab_ops"},

@@ -22,8 +22,7 @@ def upgrade() -> None:
         "users",
         sa.Column("is_owner", sa.Boolean(), nullable=False, server_default=sa.false()),
     )
-    # Promote the earliest-created admin account to owner so existing
-    # deployments get a protected owner without manual intervention.
+    # Promote the earliest-created admin so existing deployments get a protected owner automatically
     op.execute(
         """
         UPDATE users SET is_owner = true
