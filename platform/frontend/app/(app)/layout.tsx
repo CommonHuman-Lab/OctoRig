@@ -64,7 +64,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const isAdmin = user?.permissions?.includes("admin.panel") ?? false;
   const inMaintenance = publicSettings?.maintenance_mode ?? false;
 
-  // Non-admins see a full maintenance screen
   if (inMaintenance && !isAdmin) {
     return (
       <div style={{

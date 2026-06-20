@@ -38,7 +38,6 @@ export default function InviteLandingPage() {
   const acceptMutation = useMutation({
     mutationFn: () => acceptInvite(token, { username, password }),
     onSuccess: async (data) => {
-      // Store session and fetch user profile
       const { getMe } = await import("@/lib/api/auth");
       const me = await getMe();
       setSession(me, data.access_token);

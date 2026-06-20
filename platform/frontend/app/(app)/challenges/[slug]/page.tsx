@@ -98,8 +98,7 @@ export default function ChallengeDetailPage() {
     },
   });
 
-  // Prefer the caller's own running instance's access_info (per-deployment,
-  // dynamically allocated) over the lab template's static defaults.
+  // Prefer the caller's own dynamically-allocated instance over the lab template's static defaults
   const labUrl =
     instance?.access_info.find((a) => a.key === "URL")?.value ??
     labTemplate?.access_info.find((a) => a.key === "URL")?.value ??
