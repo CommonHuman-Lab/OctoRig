@@ -24,7 +24,7 @@ function applyToDoc(t: ThemeId) {
 export const useThemeStore = create<ThemeState>()(
   persist(
     (set, get) => ({
-      theme: "nord",
+      theme: "dracula",
       _explicit: false,
 
       setTheme: (theme) => {

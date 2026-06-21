@@ -2,11 +2,11 @@
 /* Copyright (c) 2026 CommonHuman-Lab */
 
 /* Topbar — rose → gold → iris, slow elegant drift */
-[data-theme="rose-pine"] header {
+[data-theme="rose"] header {
   position: relative;
   border-bottom: none;
 }
-[data-theme="rose-pine"] header::after {
+[data-theme="rose"] header::after {
   content: '';
   position: absolute;
   bottom: 0; left: 0; right: 0;
@@ -18,11 +18,11 @@
 }
 
 /* Sidebar footer — muted rose centre fade */
-[data-theme="rose-pine"] .sidebar-footer {
+[data-theme="rose"] .sidebar-footer {
   position: relative;
   border-top: none;
 }
-[data-theme="rose-pine"] .sidebar-footer::before {
+[data-theme="rose"] .sidebar-footer::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0;
@@ -33,8 +33,8 @@
 }
 
 /* Page/challenge titles — static muted gradient text */
-[data-theme="rose-pine"] .page-title,
-[data-theme="rose-pine"] .ch-title {
+[data-theme="rose"] .page-title,
+[data-theme="rose"] .ch-title {
   background: linear-gradient(90deg, var(--g-flourish-1), var(--g-flourish-2), var(--g-flourish-3));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

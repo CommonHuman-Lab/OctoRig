@@ -2,11 +2,11 @@
 /* Copyright (c) 2026 CommonHuman-Lab */
 
 /* Topbar — blue → violet → cyan, slow clean sweep */
-[data-theme="tokyo-night"] header {
+[data-theme="tokyo"] header {
   position: relative;
   border-bottom: none;
 }
-[data-theme="tokyo-night"] header::after {
+[data-theme="tokyo"] header::after {
   content: '';
   position: absolute;
   bottom: 0; left: 0; right: 0;
@@ -18,11 +18,11 @@
 }
 
 /* Sidebar footer — blue centre fade */
-[data-theme="tokyo-night"] .sidebar-footer {
+[data-theme="tokyo"] .sidebar-footer {
   position: relative;
   border-top: none;
 }
-[data-theme="tokyo-night"] .sidebar-footer::before {
+[data-theme="tokyo"] .sidebar-footer::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0;
@@ -33,8 +33,8 @@
 }
 
 /* Page/challenge titles — static gradient text */
-[data-theme="tokyo-night"] .page-title,
-[data-theme="tokyo-night"] .ch-title {
+[data-theme="tokyo"] .page-title,
+[data-theme="tokyo"] .ch-title {
   background: linear-gradient(90deg, var(--g-flourish-1), var(--g-flourish-2), var(--g-flourish-3));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

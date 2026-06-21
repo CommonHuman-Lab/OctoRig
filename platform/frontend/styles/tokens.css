@@ -332,10 +332,10 @@
   --g-flourish-1: #d65d0e; --g-flourish-2: #fe8019; --g-flourish-3: #fabd2f; --g-texture-opacity: 0.05;
 }
 
-/* ── Parchment ──────────────────────────────────────────────────────────────
+/* ── Folio ──────────────────────────────────────────────────────────────────
    Warm cream · Deep forest emerald · Paper & ink
    ──────────────────────────────────────────────────────────────────────────── */
-:root[data-theme="parchment"] {
+:root[data-theme="folio"] {
   --g-bg:             #f4ecdc;
   --g-chrome:         rgba(238, 227, 206, 0.97);
   --g-raised:         rgba(247, 240, 227, 0.92);
@@ -369,10 +369,10 @@
   --g-flourish-1: #0f7a5c; --g-flourish-2: #0f7a5c; --g-flourish-3: #0f7a5c; --g-texture-opacity: 0;
 }
 
-/* ── Tokyo Night ────────────────────────────────────────────────────────────
+/* ── Tokyo ──────────────────────────────────────────────────────────────────
    Deep navy · Electric blue · Pro editor
    ──────────────────────────────────────────────────────────────────────────── */
-:root[data-theme="tokyo-night"] {
+:root[data-theme="tokyo"] {
   --g-bg:             #1a1b26;
   --g-chrome:         rgba(22, 22, 30, 0.97);
   --g-raised:         rgba(26, 27, 38, 0.93);
@@ -406,7 +406,7 @@
   --g-flourish-1: #7aa2f7; --g-flourish-2: #bb9af7; --g-flourish-3: #7dcfff; --g-texture-opacity: 0;
 }
 
-/* ── Catppuccin Mocha ───────────────────────────────────────────────────────
+/* ── Catppuccin ─────────────────────────────────────────────────────────────
    Warm dark base · Pastel mauve · Soft & calm
    ──────────────────────────────────────────────────────────────────────────── */
 :root[data-theme="catppuccin"] {
@@ -480,10 +480,10 @@
   --g-flourish-1: #f92aad; --g-flourish-2: #b967ff; --g-flourish-3: #36f9f6; --g-texture-opacity: 0.07;
 }
 
-/* ── Rosé Pine ──────────────────────────────────────────────────────────────
+/* ── Rosé ───────────────────────────────────────────────────────────────────
    Muted charcoal · Dusty rose · Elegant calm
    ──────────────────────────────────────────────────────────────────────────── */
-:root[data-theme="rose-pine"] {
+:root[data-theme="rose"] {
   --g-bg:             #191724;
   --g-chrome:         rgba(21, 19, 32, 0.97);
   --g-raised:         rgba(31, 29, 46, 0.93);

@@ -40,11 +40,11 @@ const THEMES = [
   { id: "unicorn", name: "Unicorn" },
   { id: "dracula", name: "Dracula" },
   { id: "gruvbox", name: "Gruvbox" },
-  { id: "parchment", name: "Parchment" },
-  { id: "tokyo-night", name: "Tokyo Night" },
-  { id: "catppuccin", name: "Catppuccin Mocha" },
+  { id: "folio", name: "Folio" },
+  { id: "tokyo", name: "Tokyo" },
+  { id: "catppuccin", name: "Catppuccin" },
   { id: "synthwave", name: "Synthwave" },
-  { id: "rose-pine", name: "Rosé Pine" },
+  { id: "rose", name: "Rosé" },
   { id: "frost", name: "Frost" },
 ];
 

@@ -2,11 +2,11 @@
 /* Copyright (c) 2026 CommonHuman-Lab */
 
 /* Topbar — faint ink-green underline, no glow (light bg can't take it) */
-[data-theme="parchment"] header {
+[data-theme="folio"] header {
   position: relative;
   border-bottom: none;
 }
-[data-theme="parchment"] header::after {
+[data-theme="folio"] header::after {
   content: '';
   position: absolute;
   bottom: 0; left: 0; right: 0;
@@ -20,11 +20,11 @@
 }
 
 /* Sidebar footer — faint ink centre fade */
-[data-theme="parchment"] .sidebar-footer {
+[data-theme="folio"] .sidebar-footer {
   position: relative;
   border-top: none;
 }
-[data-theme="parchment"] .sidebar-footer::before {
+[data-theme="folio"] .sidebar-footer::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0;
@@ -34,7 +34,7 @@
 }
 
 /* Page/challenge titles — solid ink colour, no gradient clip (keeps contrast on cream) */
-[data-theme="parchment"] .page-title,
-[data-theme="parchment"] .ch-title {
+[data-theme="folio"] .page-title,
+[data-theme="folio"] .ch-title {
   color: #0f7a5c;
 }
