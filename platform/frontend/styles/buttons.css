@@ -20,6 +20,10 @@
   user-select: none;
 }
 
+.g-btn:active {
+  transform: scale(0.96);
+}
+
 /* Primary — filled accent */
 .g-btn-primary {
   background-color: var(--g-accent);

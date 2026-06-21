@@ -28,7 +28,7 @@ export function DeploymentStatusBadge({ status }: { status: string }) {
       style={{ color: VAR[s] ?? "var(--g-text-muted)", borderColor: VAR[s] ?? "var(--g-border)" }}
     >
       {s === "starting" || s === "stopping" ? (
-        <span className="g-dot" style={{ background: VAR[s] }} />
+        <span className="g-dot animate-pulse" style={{ background: VAR[s] }} />
       ) : null}
       {LABEL[s] ?? status}
     </span>

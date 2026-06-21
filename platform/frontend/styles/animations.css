@@ -66,3 +66,14 @@
 .animate-ping     { animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite; }
 .animate-fade-in  { animation: fade-in 0.2s ease forwards; }
 .animate-slide-up { animation: slide-up 0.2s ease forwards; }
+
+/* ── Reduced motion ───────────────────────────────────────────────────────── */
+/* Honour the OS-level motion preference for every animation/transition in the app. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

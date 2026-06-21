@@ -23,13 +23,14 @@ export function WidgetGrid() {
 
   return (
     <div className="dash-grid">
-      {visible.map((w) => {
+      {visible.map((w, i) => {
         const entry = WIDGET_REGISTRY[w.type];
         const Component = entry.component;
         return (
           <div
             key={w.id}
-            className={`dash-cell dash-span-${w.span}`}
+            className={`dash-cell dash-span-${w.span} widget-enter`}
+            style={{ animationDelay: `${Math.min(i, 8) * 40}ms` }}
             draggable={isCustomizing}
             onDragStart={() => setDragId(w.id)}
             onDragOver={(e) => {
