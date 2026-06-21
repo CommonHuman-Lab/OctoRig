@@ -70,6 +70,12 @@
 
 .sb-row--me td {
   background: color-mix(in srgb, var(--g-accent) 8%, transparent) !important;
+  animation: row-settle-glow 1.4s ease-out both;
+}
+
+@keyframes row-settle-glow {
+  0%   { background: color-mix(in srgb, var(--g-accent) 28%, transparent); }
+  100% { background: color-mix(in srgb, var(--g-accent) 8%, transparent); }
 }
 
 .sb-rank-num {

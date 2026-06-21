@@ -32,11 +32,15 @@ export function RecentBadgesWidget({ widget }: WidgetComponentProps) {
         >
           {(rows) => (
             <>
-              {rows.map((b) => (
+              {rows.map((b, i) => (
                 <div
                   key={b.id}
-                  className="flex items-center gap-2 px-3 py-2"
-                  style={{ borderBottom: "1px solid var(--g-border)" }}
+                  className="flex items-center gap-2 px-3 py-2 animate-slide-up"
+                  style={{
+                    borderBottom: "1px solid var(--g-border)",
+                    animationDelay: `${Math.min(i, 6) * 30}ms`,
+                    animationFillMode: "both",
+                  }}
                 >
                   <span style={{ fontSize: "1.1rem" }}>{ICON_MAP[b.icon] ?? "🏅"}</span>
                   <div className="flex-1">

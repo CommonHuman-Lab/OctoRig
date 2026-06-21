@@ -10,11 +10,13 @@
         .settings-content { padding: 1.25rem; }
         .settings-section-title { font-size: 0.875rem; margin-bottom: 0.75rem; color: var(--g-text); }
         .theme-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
-        .theme-card { position: relative; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 0.75rem; border-radius: 6px; border: 1px solid var(--g-border); background: var(--g-raised); cursor: pointer; transition: border-color 0.15s; }
-        .theme-card:hover { border-color: var(--g-border-hover); }
+        .theme-card { position: relative; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 0.75rem; border-radius: 6px; border: 1px solid var(--g-border); background: var(--g-raised); cursor: pointer; transition: border-color 0.15s, transform 0.15s ease; }
+        .theme-card:hover { border-color: var(--g-border-hover); transform: translateY(-1px) scale(1.02); }
+        .theme-card:active { transform: scale(0.98); }
         .theme-card.active { border-color: var(--g-accent); }
         .theme-swatches { display: flex; gap: 3px; }
-        .theme-swatch { width: 18px; height: 18px; border-radius: 50%; }
+        .theme-swatch { width: 18px; height: 18px; border-radius: 50%; transition: transform 0.15s ease; }
+        .theme-card:hover .theme-swatch { transform: scale(1.08); }
         .theme-name { color: var(--g-text-secondary); }
         .theme-active-dot { position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; border-radius: 50%; background: var(--g-accent); }
         .meta-rows { display: flex; flex-direction: column; gap: 0.5rem; }

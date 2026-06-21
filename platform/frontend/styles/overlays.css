@@ -90,10 +90,12 @@
   background: var(--g-chrome); border: 1px solid var(--g-border);
   border-radius: 0.5rem; padding: 0.5rem;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  transform-origin: top left;
+  animation: modal-pop 0.15s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 .emoji-picker-grid {
   display: grid; grid-template-columns: repeat(8, 1fr); gap: 0.125rem;
-  width: 224px;
+  width: 238px; max-height: 208px; overflow-y: auto; overflow-x: hidden;
 }
 .emoji-picker-cell {
   display: flex; align-items: center; justify-content: center;
