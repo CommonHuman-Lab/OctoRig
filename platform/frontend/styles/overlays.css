@@ -36,6 +36,12 @@
   border-bottom: 1px solid var(--g-border);
 }
 
+.g-modal-body {
+  padding: 1rem 1.5rem;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
 .g-modal-footer {
   display: flex;
   align-items: center;
