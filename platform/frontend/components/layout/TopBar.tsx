@@ -55,7 +55,7 @@ export function TopBar() {
           <Bell size={14} />
           {unreadCount > 0 && (
             <span
-              className="absolute font-mono font-bold flex items-center justify-center"
+              className="absolute font-mono font-bold flex items-center justify-center animate-pulse"
               style={{
                 top: "-5px", right: "-6px",
                 minWidth: "14px", height: "14px",

@@ -13,6 +13,7 @@
   justify-content: center;
   padding: 1rem;
   z-index: 50;
+  animation: fade-in 0.15s ease both;
 }
 
 /* ── Modal panel ──────────────────────────────────────────────────────────── */
@@ -24,6 +25,7 @@
   background-color: var(--g-overlay);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
   overflow: hidden;
+  animation: modal-pop 0.18s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .g-modal-header {
@@ -49,6 +51,7 @@
   position: fixed; top: 0; right: 0; bottom: 0; width: 440px;
   background: var(--g-chrome); border-left: 1px solid var(--g-border);
   display: flex; flex-direction: column; z-index: 200;
+  animation: slide-in-right 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 .ev-sheet-header {
   display: flex; justify-content: space-between; align-items: center;

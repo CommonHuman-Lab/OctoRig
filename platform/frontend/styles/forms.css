@@ -14,7 +14,7 @@
   color: var(--g-text-secondary);
   outline: none;
   width: 100%;
-  transition: border-color 0.15s ease;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .g-input::placeholder,
@@ -22,7 +22,10 @@
 
 .g-input:focus,
 .g-select:focus,
-.g-textarea:focus { border-color: var(--g-accent); }
+.g-textarea:focus {
+  border-color: var(--g-accent);
+  box-shadow: 0 0 0 3px var(--g-accent-dim);
+}
 
 .g-input-icon {
   position: relative;

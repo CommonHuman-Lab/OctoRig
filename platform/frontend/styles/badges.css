@@ -44,7 +44,12 @@
 .g-diff-badge--easy   { color: var(--g-success); background: var(--g-success-bg); box-shadow: 0 0 8px color-mix(in srgb, var(--g-success) 40%, transparent); }
 .g-diff-badge--medium { color: var(--g-warning); background: var(--g-warning-bg); box-shadow: 0 0 8px color-mix(in srgb, var(--g-warning) 40%, transparent); }
 .g-diff-badge--hard   { color: var(--g-orange);  background: rgba(251,146,60,0.1); box-shadow: 0 0 8px color-mix(in srgb, var(--g-orange) 40%, transparent); }
-.g-diff-badge--insane { color: var(--g-danger);  background: var(--g-danger-bg); box-shadow: 0 0 8px color-mix(in srgb, var(--g-danger) 45%, transparent); }
+.g-diff-badge--insane { color: var(--g-danger);  background: var(--g-danger-bg); animation: insane-glow 2.4s ease-in-out infinite; }
+
+@keyframes insane-glow {
+  0%, 100% { box-shadow: 0 0 8px color-mix(in srgb, var(--g-danger) 45%, transparent); }
+  50%      { box-shadow: 0 0 14px color-mix(in srgb, var(--g-danger) 65%, transparent); }
+}
 
 /* ── Status dot ───────────────────────────────────────────────────────────── */
 

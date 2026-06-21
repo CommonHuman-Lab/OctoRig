@@ -4,6 +4,7 @@
 /* ── Nav item ─────────────────────────────────────────────────────────────── */
 
 .g-nav-item {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 0.625rem;
@@ -27,6 +28,23 @@
   border-color: var(--g-border-hover);
   color: var(--g-text);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.g-nav-item::before {
+  content: '';
+  position: absolute;
+  left: -2px;
+  top: 50%;
+  width: 3px;
+  height: 60%;
+  border-radius: 2px;
+  background: var(--g-accent);
+  transform: translateY(-50%) scaleY(0);
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.g-nav-item.active::before {
+  transform: translateY(-50%) scaleY(1);
 }
 
 /* ── Accordion / section header ───────────────────────────────────────────── */
