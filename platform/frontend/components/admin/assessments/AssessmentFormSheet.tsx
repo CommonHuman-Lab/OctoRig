@@ -2,10 +2,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
 import { useEffect, useState } from "react";
-import { Save, X } from "lucide-react";
+import { Save } from "lucide-react";
 import { type LabTemplate } from "@/lib/api/labs";
 import { type Assessment, type CreateAssessmentPayload } from "@/lib/api/assessments";
 import { useEscapeKey } from "@/hooks/useEscapeKey";
+import { SheetShell } from "@/components/ui/SheetShell";
 
 const BLANK_FORM = {
   name: "",
@@ -100,17 +101,25 @@ export function AssessmentFormSheet({
   }
 
   return (
-    <>
-      <div className="g-backdrop" onClick={onClose} />
-      <div className="ev-sheet">
-        <div className="ev-sheet-header">
-          <h2 style={{ margin: 0, fontSize: "1rem", fontWeight: 700 }}>{isEdit ? "Edit Assessment" : "New Assessment"}</h2>
-          <button className="g-btn g-btn-ghost g-btn-sm" onClick={onClose}>
-            <X size={14} />
+    <SheetShell
+      title={isEdit ? "Edit Assessment" : "New Assessment"}
+      onClose={onClose}
+      footer={
+        <>
+          <button className="g-btn g-btn-ghost" onClick={onClose}>
+            Cancel
           </button>
-        </div>
-
-        <div className="ev-sheet-body">
+          <button
+            className="g-btn g-btn-primary"
+            disabled={!form.name || form.selectedSlugs.length === 0 || saveMutation.isPending}
+            onClick={handleSubmit}
+          >
+            <Save size={13} />
+            {saveMutation.isPending ? (isEdit ? "Saving…" : "Creating…") : (isEdit ? "Save Changes" : "Create Assessment")}
+          </button>
+        </>
+      }
+    >
           <label className="ev-field">
             <span className="ev-label">Name *</span>
             <input
@@ -274,22 +283,6 @@ export function AssessmentFormSheet({
               </span>
             )}
           </div>
-        </div>
-
-        <div className="ev-sheet-footer">
-          <button className="g-btn g-btn-ghost" onClick={onClose}>
-            Cancel
-          </button>
-          <button
-            className="g-btn g-btn-primary"
-            disabled={!form.name || form.selectedSlugs.length === 0 || saveMutation.isPending}
-            onClick={handleSubmit}
-          >
-            <Save size={13} />
-            {saveMutation.isPending ? (isEdit ? "Saving…" : "Creating…") : (isEdit ? "Save Changes" : "Create Assessment")}
-          </button>
-        </div>
-      </div>
-    </>
+    </SheetShell>
   );
 }

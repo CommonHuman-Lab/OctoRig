@@ -2,7 +2,8 @@
 // Copyright (c) 2026 CommonHuman-Lab
 "use client";
 import { useRef, useState, useCallback } from "react";
-import { Play, Loader2, RotateCcw } from "lucide-react";
+import { Play, RotateCcw } from "lucide-react";
+import { IconSpinner } from "@/components/ui/IconSpinner";
 
 const PYODIDE_CDN = "https://cdn.jsdelivr.net/pyodide/v0.27.5/full/pyodide.js";
 
@@ -96,7 +97,7 @@ export function PyodideEditor({ starterCode }: { starterCode?: string }) {
             onClick={handleRun}
             disabled={isbusy}
           >
-            {isbusy ? <Loader2 size={12} className="spin" /> : <Play size={12} />}
+            {isbusy ? <IconSpinner size={12} /> : <Play size={12} />}
             {status === "loading" ? "Loading…" : "Run"}
           </button>
         </div>
@@ -163,8 +164,6 @@ export function PyodideEditor({ starterCode }: { starterCode?: string }) {
           ? <span style={{ color: "var(--g-text-muted)" }}>Loading Python runtime…</span>
           : output || " "}
       </pre>
-
-      <style>{`.spin { animation: spin 1s linear infinite; } @keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   );
 }

@@ -3,7 +3,7 @@
 // Copyright (c) 2026 CommonHuman-Lab
 
 import { useState, useEffect } from "react";
-import { X, Loader2 } from "lucide-react";
+import { X } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import type { LabTemplate } from "@/lib/api/labs";
 import { startDeployment } from "@/lib/api/deployments";
@@ -11,6 +11,7 @@ import { getTeams } from "@/lib/api/teams";
 import { useNotificationsStore } from "@/stores/notifications.store";
 import { usePendingLabsStore } from "@/stores/pending-labs.store";
 import { useEscapeKey } from "@/hooks/useEscapeKey";
+import { IconSpinner } from "@/components/ui/IconSpinner";
 
 interface Props {
   lab: LabTemplate;
@@ -77,7 +78,7 @@ export function StartLabDialog({ lab, open, onClose }: Props) {
         <div className="g-modal-body">
           {phase === "starting" && (
             <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-              <Loader2 size={18} style={{ animation: "spin 1s linear infinite", color: "var(--g-accent)" }} />
+              <IconSpinner size={18} color="var(--g-accent)" />
               <span className="text-sm text-muted">Submitting…</span>
             </div>
           )}
@@ -152,7 +153,6 @@ export function StartLabDialog({ lab, open, onClose }: Props) {
 
       <style>{`
         .start-dialog { max-width: 480px; width: 100%; }
-        @keyframes spin { to { transform: rotate(360deg); } }
         .access-info-table { display: flex; flex-direction: column; gap: 0; }
         .access-row { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 0.6rem 0; border-bottom: 1px solid var(--g-border); }
         .access-row:last-child { border-bottom: none; }

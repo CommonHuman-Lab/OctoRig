@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Edit3, FileText } from "lucide-react";
 import type { ContentSubmission } from "@/lib/api/content";
 import { formatDate } from "@/lib/utils/date";
-import { StatusBadge } from "./StatusBadge";
+import { StatusPill } from "@/components/ui/StatusPill";
 import { ChallengeBodyEditor } from "./ChallengeBodyEditor";
 
 export function SubmissionRow({ sub }: { sub: ContentSubmission }) {
@@ -23,7 +23,7 @@ export function SubmissionRow({ sub }: { sub: ContentSubmission }) {
             {sub.content_type}
           </span>
         </td>
-        <td><StatusBadge status={sub.status} /></td>
+        <td><StatusPill status={sub.status} /></td>
         <td style={{ color: "var(--g-text-muted)", fontFamily: "var(--font-mono, monospace)", fontSize: "0.75rem" }}>
           {formatDate(sub.updated_at)}
         </td>

@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user, get_db, require_admin
 from app.core.exceptions import forbidden_exception
+from app.core.pagination import WideLimit
 from app.core.permissions import is_privileged, role_gte
 from app.models.ctf_event import EventScoringMode, EventStatus, EventVisibility
 from app.models.team import TeamMember, TeamRole
@@ -142,7 +143,7 @@ def get_event_challenges_endpoint(
 @router.get("/{slug}/scoreboard", response_model=list[ScoreboardEntry])
 def event_scoreboard_endpoint(
     slug: str,
-    limit: int = Query(100, ge=1, le=500),
+    limit: WideLimit = 100,
     db: Session = Depends(get_db),
     _: User = Depends(get_current_user),
 ) -> list[ScoreboardEntry]:

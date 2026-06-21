@@ -5,6 +5,8 @@ from typing import Optional
 
 from pydantic import BaseModel
 
+from app.schemas.base import ORMModel
+
 
 class LoginRequest(BaseModel):
     username: str
@@ -17,7 +19,7 @@ class TokenResponse(BaseModel):
     expires_in: int  # seconds
 
 
-class UserResponse(BaseModel):
+class UserResponse(ORMModel):
     id: int
     username: str
     email: str
@@ -27,5 +29,3 @@ class UserResponse(BaseModel):
     permissions: list[str] = []
     created_at: datetime
     last_login_at: Optional[datetime]
-
-    model_config = {"from_attributes": True}

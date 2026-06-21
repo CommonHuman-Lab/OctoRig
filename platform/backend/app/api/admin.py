@@ -3,12 +3,13 @@
 from datetime import datetime
 from typing import Optional
 
-from fastapi import APIRouter, BackgroundTasks, Depends, Query, Request
+from fastapi import APIRouter, BackgroundTasks, Depends, Query
 from pydantic import BaseModel
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_db, require_admin
+from app.api.deps import get_client_ip, get_db, get_user_or_404, require_admin
+from app.core.db_helpers import raise_if_exists
 from app.core.exceptions import bad_request, conflict, not_found
 from app.core.security import hash_password
 from app.models.api_key import ApiKey
@@ -106,14 +107,12 @@ def list_users(
 @router.post("/users/", response_model=AdminUserResponse, status_code=201)
 def create_user(
     payload: AdminUserCreate,
-    request: Request,
     actor: User = Depends(require_admin),
     db: Session = Depends(get_db),
+    ip: Optional[str] = Depends(get_client_ip),
 ) -> AdminUserResponse:
-    if db.query(User).filter(User.username == payload.username).first():
-        raise conflict(f"Username '{payload.username}' is already taken")
-    if db.query(User).filter(User.email == payload.email).first():
-        raise conflict(f"Email '{payload.email}' is already registered")
+    raise_if_exists(db, User, f"Username '{payload.username}' is already taken", username=payload.username)
+    raise_if_exists(db, User, f"Email '{payload.email}' is already registered", email=payload.email)
 
     from app.models.role import PlatformRole
 
@@ -139,34 +138,28 @@ def create_user(
     audit_service.write_audit(
         db, action=audit_service.ADMIN_USER_CREATED, user_id=actor.id,
         detail={"created_username": payload.username},
-        ip=request.client.host if request.client else None,
+        ip=ip,
     )
     return _enrich_user(user, db)
 
 
 @router.get("/users/{user_id}", response_model=AdminUserResponse)
 def get_user(
-    user_id: int,
+    user: User = Depends(get_user_or_404),
     _: User = Depends(require_admin),
     db: Session = Depends(get_db),
 ) -> AdminUserResponse:
-    user = db.get(User, user_id)
-    if user is None:
-        raise not_found("User")
     return _enrich_user(user, db)
 
 
 @router.patch("/users/{user_id}", response_model=AdminUserResponse)
 def update_user(
-    user_id: int,
     payload: AdminUserUpdate,
-    request: Request,
+    user: User = Depends(get_user_or_404),
     actor: User = Depends(require_admin),
     db: Session = Depends(get_db),
+    ip: Optional[str] = Depends(get_client_ip),
 ) -> AdminUserResponse:
-    user = db.get(User, user_id)
-    if user is None:
-        raise not_found("User")
     if user.id == actor.id and payload.is_active is False:
         raise bad_request("Cannot deactivate your own account")
     if user.id == actor.id and payload.platform_roles is not None:
@@ -206,58 +199,52 @@ def update_user(
     db.commit()
     audit_service.write_audit(
         db, action=audit_service.ADMIN_ROLE_CHANGED, user_id=actor.id,
-        detail={"target_user_id": user_id, "changes": changes},
-        ip=request.client.host if request.client else None,
+        detail={"target_user_id": user.id, "changes": changes},
+        ip=ip,
     )
     return _enrich_user(user, db)
 
 
 @router.post("/users/{user_id}/reset-password", status_code=204)
 def reset_password(
-    user_id: int,
     payload: AdminResetPassword,
-    request: Request,
+    user: User = Depends(get_user_or_404),
     actor: User = Depends(require_admin),
     db: Session = Depends(get_db),
+    ip: Optional[str] = Depends(get_client_ip),
 ) -> None:
-    user = db.get(User, user_id)
-    if user is None:
-        raise not_found("User")
     user.hashed_password = hash_password(payload.new_password)
     db.commit()
     audit_service.write_audit(
         db, action="admin.password_reset", user_id=actor.id,
-        detail={"target_user_id": user_id},
-        ip=request.client.host if request.client else None,
+        detail={"target_user_id": user.id},
+        ip=ip,
     )
 
 
 @router.post("/users/{user_id}/reset-points", status_code=204)
 def reset_user_points(
-    user_id: int,
-    request: Request,
+    user: User = Depends(get_user_or_404),
     actor: User = Depends(require_admin),
     db: Session = Depends(get_db),
+    ip: Optional[str] = Depends(get_client_ip),
 ) -> None:
-    user = db.get(User, user_id)
-    if user is None:
-        raise not_found("User")
-    db.query(ScoreTransaction).filter(ScoreTransaction.user_id == user_id).delete()
-    db.query(ChallengeSubmission).filter(ChallengeSubmission.user_id == user_id).delete()
-    db.query(HintUnlock).filter(HintUnlock.user_id == user_id).delete()
+    db.query(ScoreTransaction).filter(ScoreTransaction.user_id == user.id).delete()
+    db.query(ChallengeSubmission).filter(ChallengeSubmission.user_id == user.id).delete()
+    db.query(HintUnlock).filter(HintUnlock.user_id == user.id).delete()
     db.commit()
     audit_service.write_audit(
         db, action="admin.reset_points", user_id=actor.id,
-        detail={"target_user_id": user_id},
-        ip=request.client.host if request.client else None,
+        detail={"target_user_id": user.id},
+        ip=ip,
     )
 
 
 @router.post("/reset-db", status_code=204)
 def reset_database(
-    request: Request,
     actor: User = Depends(require_admin),
     db: Session = Depends(get_db),
+    ip: Optional[str] = Depends(get_client_ip),
 ) -> None:
     """Wipe all user-generated activity, keeping accounts, teams, labs, challenges and assessment config."""
     # Child tables first (FK constraints)
@@ -277,7 +264,7 @@ def reset_database(
     audit_service.write_audit(
         db, action="admin.reset_db", user_id=actor.id,
         detail={"triggered_by": actor.username},
-        ip=request.client.host if request.client else None,
+        ip=ip,
     )
 
 
@@ -381,9 +368,9 @@ def list_admin_labs(
 def update_admin_lab(
     lab_id: int,
     body: AdminLabUpdate,
-    request: Request,
     actor: User = Depends(require_admin),
     db: Session = Depends(get_db),
+    ip: Optional[str] = Depends(get_client_ip),
 ) -> AdminLabResponse:
     template = db.get(LabTemplate, lab_id)
     if template is None:
@@ -395,7 +382,7 @@ def update_admin_lab(
         audit_service.write_audit(
             db, action=audit_service.ADMIN_LAB_TOGGLED, user_id=actor.id,
             detail={"lab_id": lab_id, "lab_slug": template.slug, "is_active": body.is_active},
-            ip=request.client.host if request.client else None,
+            ip=ip,
         )
     return _enrich_admin_lab(template, db)
 
@@ -426,10 +413,10 @@ def list_all_deployments(
 
 @router.post("/deployments/stop-all", status_code=204)
 def stop_all_deployments(
-    request: Request,
     background_tasks: BackgroundTasks,
     actor: User = Depends(require_admin),
     db: Session = Depends(get_db),
+    ip: Optional[str] = Depends(get_client_ip),
 ) -> None:
     """Stop every running or starting deployment across all users."""
     active = db.query(Deployment).filter(
@@ -446,7 +433,7 @@ def stop_all_deployments(
     audit_service.write_audit(
         db, action="admin.stop_all_deployments", user_id=actor.id,
         detail={"count": len(active), "triggered_by": actor.username},
-        ip=request.client.host if request.client else None,
+        ip=ip,
     )
 
 
@@ -466,10 +453,10 @@ def _restart_platform_containers() -> None:
 
 @router.post("/platform/restart", status_code=202)
 def restart_platform(
-    request: Request,
     background_tasks: BackgroundTasks,
     actor: User = Depends(require_admin),
     db: Session = Depends(get_db),
+    ip: Optional[str] = Depends(get_client_ip),
 ) -> None:
     """Stop every active lab deployment, then restart the platform's own
     service containers (api/worker/beat/ui). The response is sent before
@@ -488,7 +475,7 @@ def restart_platform(
     audit_service.write_audit(
         db, action="admin.restart_platform", user_id=actor.id,
         detail={"stopped_deployments": len(active), "triggered_by": actor.username},
-        ip=request.client.host if request.client else None,
+        ip=ip,
     )
 
     background_tasks.add_task(_restart_platform_containers)
@@ -700,9 +687,9 @@ def get_site_settings(
 @router.patch("/settings", response_model=SiteSettingsResponse)
 def update_site_settings(
     body: SiteSettingsUpdate,
-    request: Request,
     actor: User = Depends(require_admin),
     db: Session = Depends(get_db),
+    ip: Optional[str] = Depends(get_client_ip),
 ) -> SiteSettingsResponse:
     row = get_settings(db)
     changed: dict = {}
@@ -716,7 +703,7 @@ def update_site_settings(
         audit_service.write_audit(
             db, action="admin.settings_updated", user_id=actor.id,
             detail=changed,
-            ip=request.client.host if request.client else None,
+            ip=ip,
         )
     return SiteSettingsResponse.model_validate(row)
 
@@ -726,13 +713,13 @@ def update_site_settings(
 @router.delete("/api-keys/{key_id}", status_code=204)
 def admin_revoke_api_key(
     key_id: int,
-    request: Request,
     actor: User = Depends(require_admin),
     db: Session = Depends(get_db),
+    ip: Optional[str] = Depends(get_client_ip),
 ) -> None:
     api_key_service.revoke_api_key(db, actor, key_id)
     audit_service.write_audit(
         db, action="admin.api_key_revoked", user_id=actor.id,
         detail={"key_id": key_id},
-        ip=request.client.host if request.client else None,
+        ip=ip,
     )

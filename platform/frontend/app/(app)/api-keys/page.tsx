@@ -4,17 +4,15 @@
 import "./api-keys.css";
 
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import { useApiMutation } from "@/hooks/useApiMutation";
 import { Plus, KeyRound } from "lucide-react";
 import { getApiKeys, createApiKey, revokeApiKey, type ApiKeyCreated } from "@/lib/api/apiKeys";
-import { useNotificationsStore } from "@/stores/notifications.store";
 import { KeyReveal } from "@/components/api-keys/KeyReveal";
 import { CreateKeyForm } from "@/components/api-keys/CreateKeyForm";
 import { KeysTable } from "@/components/api-keys/KeysTable";
 
 export default function ApiKeysPage() {
-  const qc = useQueryClient();
-  const { push } = useNotificationsStore();
   const [showCreate, setShowCreate] = useState(false);
   const [createdKey, setCreatedKey] = useState<ApiKeyCreated | null>(null);
 
@@ -23,24 +21,22 @@ export default function ApiKeysPage() {
     queryFn: getApiKeys,
   });
 
-  const createMutation = useMutation({
+  const createMutation = useApiMutation({
     mutationFn: (payload: { name: string; expires_at: string | null }) =>
       createApiKey(payload),
+    invalidateKeys: [["api-keys"]],
+    errorMessage: (err: any) => err?.response?.data?.detail ?? "Failed to create key",
     onSuccess: (key) => {
-      qc.invalidateQueries({ queryKey: ["api-keys"] });
       setCreatedKey(key);
       setShowCreate(false);
     },
-    onError: (err: any) => push("error", err?.response?.data?.detail ?? "Failed to create key"),
   });
 
-  const revokeMutation = useMutation({
+  const revokeMutation = useApiMutation({
     mutationFn: revokeApiKey,
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["api-keys"] });
-      push("success", "API key revoked");
-    },
-    onError: () => push("error", "Failed to revoke key"),
+    invalidateKeys: [["api-keys"]],
+    successMessage: "API key revoked",
+    errorMessage: "Failed to revoke key",
   });
 
   return (

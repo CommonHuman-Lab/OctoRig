@@ -3,7 +3,7 @@
 from collections.abc import Generator
 from typing import Optional
 
-from fastapi import Depends, Query, Security
+from fastapi import Depends, Query, Request, Security
 from fastapi.security import APIKeyHeader, HTTPAuthorizationCredentials, HTTPBearer
 from jose import JWTError
 from sqlalchemy.orm import Session
@@ -11,6 +11,8 @@ from sqlalchemy.orm import Session
 from app.core.exceptions import credentials_exception, forbidden_exception, not_found
 from app.core.security import decode_access_token
 from app.database import get_db
+from app.models.deployment import Deployment
+from app.models.role import PlatformRole
 from app.models.team import Team, TeamMember, TeamRole
 from app.models.user import User
 
@@ -112,6 +114,31 @@ def get_team_or_404(team_id: int, db: Session = Depends(get_db)) -> Team:
     if team is None:
         raise not_found("Team")
     return team
+
+
+def get_user_or_404(user_id: int, db: Session = Depends(get_db)) -> User:
+    user = db.get(User, user_id)
+    if user is None:
+        raise not_found("User")
+    return user
+
+
+def get_deployment_or_404(deployment_id: int, db: Session = Depends(get_db)) -> Deployment:
+    deployment = db.get(Deployment, deployment_id)
+    if deployment is None:
+        raise not_found("Deployment")
+    return deployment
+
+
+def get_role_or_404(slug: str, db: Session = Depends(get_db)) -> PlatformRole:
+    role = db.query(PlatformRole).filter(PlatformRole.slug == slug).first()
+    if role is None:
+        raise not_found("Role")
+    return role
+
+
+def get_client_ip(request: Request) -> Optional[str]:
+    return request.client.host if request.client else None
 
 
 def get_team_membership(

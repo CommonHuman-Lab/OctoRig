@@ -4,6 +4,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useApiMutation } from "@/hooks/useApiMutation";
 import { Shield, Clock, AlertTriangle, Play, Lock, CheckCircle2 } from "lucide-react";
 import {
   getAssessmentStatus,
@@ -48,14 +49,11 @@ export default function AssessmentWorkspacePage() {
     }
   }, [status, reportContent]);
 
-  const startMutation = useMutation({
+  const startMutation = useApiMutation<CandidateAssessmentStatus, void>({
     mutationFn: startAssessment,
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["assessment-status"] });
-      push("success", "Assessment started! Labs are booting…");
-    },
-    onError: (err: any) =>
-      push("error", err?.response?.data?.detail ?? "Failed to start assessment"),
+    invalidateKeys: [["assessment-status"]],
+    successMessage: "Assessment started! Labs are booting…",
+    errorMessage: (err: any) => err?.response?.data?.detail ?? "Failed to start assessment",
   });
 
   const completeMutation = useMutation({

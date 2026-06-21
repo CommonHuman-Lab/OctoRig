@@ -7,6 +7,7 @@ from pydantic import BaseModel, HttpUrl
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user, get_db
+from app.core.pagination import NarrowLimit
 from app.models.user import User
 from app.services.profile_service import get_profile, update_profile
 
@@ -61,7 +62,7 @@ class UserSearchResult(BaseModel):
 @router.get("/search", response_model=list[UserSearchResult])
 def search_users(
     q: str = Query("", min_length=1),
-    limit: int = Query(10, ge=1, le=30),
+    limit: NarrowLimit = 10,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> list[UserSearchResult]:

@@ -6,6 +6,7 @@ import "../deployment-detail.css";
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useApiMutation } from "@/hooks/useApiMutation";
 import {
   ArrowLeft, CheckCircle2, Clock, ExternalLink,
   Play, RotateCcw, Square, Target, Trash2,
@@ -22,7 +23,7 @@ import {
 } from "@/lib/api/deployments";
 import { getLabs, type LabTemplate } from "@/lib/api/labs";
 import { getChallenges, type ChallengeDifficulty } from "@/lib/api/challenges";
-import { createScheduledAction } from "@/lib/api/scheduler";
+import { createScheduledAction, type ScheduledAction } from "@/lib/api/scheduler";
 import { DeploymentStatusBadge } from "@/components/deployments/DeploymentStatusBadge";
 import { DeploymentSidebar } from "@/components/deployments/DeploymentSidebar";
 import { ScheduleDestroyModal } from "@/components/deployments/ScheduleDestroyModal";
@@ -74,45 +75,33 @@ export default function DeploymentDetailPage() {
     enabled: !!deployment?.lab_slug,
   });
 
-  const stopMutation = useMutation({
+  const stopMutation = useApiMutation<Deployment, void>({
     mutationFn: () => stopDeployment(deploymentId),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["deployment", deploymentId] });
-      qc.invalidateQueries({ queryKey: ["deployments"] });
-      qc.invalidateQueries({ queryKey: ["labs"] });
-      push("success", "Lab stop requested");
-    },
-    onError: () => push("error", "Failed to stop lab"),
+    invalidateKeys: [["deployment", deploymentId], ["deployments"], ["labs"]],
+    successMessage: "Lab stop requested",
+    errorMessage: "Failed to stop lab",
   });
 
-  const resetMutation = useMutation({
+  const resetMutation = useApiMutation<Deployment, void>({
     mutationFn: () => resetDeployment(deploymentId),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["deployment", deploymentId] });
-      push("success", "Lab reset requested");
-    },
-    onError: () => push("error", "Failed to reset lab"),
+    invalidateKeys: [["deployment", deploymentId]],
+    successMessage: "Lab reset requested",
+    errorMessage: "Failed to reset lab",
   });
 
-  const startMutation = useMutation({
+  const startMutation = useApiMutation<Deployment, void>({
     mutationFn: () => restartDeployment(deploymentId),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["deployment", deploymentId] });
-      qc.invalidateQueries({ queryKey: ["deployments"] });
-      qc.invalidateQueries({ queryKey: ["labs"] });
-      push("success", "Lab start requested");
-    },
-    onError: () => push("error", "Failed to start lab"),
+    invalidateKeys: [["deployment", deploymentId], ["deployments"], ["labs"]],
+    successMessage: "Lab start requested",
+    errorMessage: "Failed to start lab",
   });
 
-  const removeMutation = useMutation({
+  const removeMutation = useApiMutation<void, void>({
     mutationFn: () => removeDeployment(deploymentId),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["deployments"] });
-      push("success", "Deployment removed");
-      router.push("/deployments");
-    },
-    onError: () => push("error", "Failed to remove deployment"),
+    invalidateKeys: [["deployments"]],
+    successMessage: "Deployment removed",
+    errorMessage: "Failed to remove deployment",
+    onSuccess: () => router.push("/deployments"),
   });
 
   function handleRemove() {
@@ -135,19 +124,17 @@ export default function DeploymentDetailPage() {
     onError: () => push("error", "Failed to update visibility"),
   });
 
-  const scheduleMutation = useMutation({
+  const scheduleMutation = useApiMutation<ScheduledAction, void>({
     mutationFn: () =>
       createScheduledAction({
         action: "destroy",
         deployment_id: deploymentId,
         scheduled_at: new Date(scheduledAt).toISOString(),
       }),
-    onSuccess: () => {
-      setShowSchedule(false);
-      push("success", "Destroy scheduled");
-    },
-    onError: (err: any) =>
-      push("error", err?.response?.data?.detail ?? "Failed to schedule destroy"),
+    invalidateKeys: [],
+    successMessage: "Destroy scheduled",
+    errorMessage: (err: any) => err?.response?.data?.detail ?? "Failed to schedule destroy",
+    onSuccess: () => setShowSchedule(false),
   });
 
   const { label: countdown, remainingMs: countdownMs } = useCountdown(deployment?.auto_destroy_at ?? null);

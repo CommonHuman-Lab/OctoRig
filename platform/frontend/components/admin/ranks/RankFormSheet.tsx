@@ -2,11 +2,12 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
 import { useEffect, useState } from "react";
-import { Save, X } from "lucide-react";
+import { Save } from "lucide-react";
 import type { Rank } from "@/lib/api/ranks";
 import { RankChip } from "@/components/ui/RankChip";
 import { EmojiPicker } from "@/components/ui/EmojiPicker";
 import { useEscapeKey } from "@/hooks/useEscapeKey";
+import { SheetShell } from "@/components/ui/SheetShell";
 
 const BLANK_FORM = { name: "", min_points: 0, icon: "", color: "#6b7280" };
 export type RankFormState = typeof BLANK_FORM;
@@ -53,19 +54,23 @@ export function RankFormSheet({ open, initialValues, saveMutation, onToggleActiv
   }
 
   return (
-    <>
-      <div className="g-backdrop" onClick={onClose} />
-      <div className="ev-sheet">
-        <div className="ev-sheet-header">
-          <h2 style={{ margin: 0, fontSize: "1rem", fontWeight: 700 }}>
-            {isEdit ? `Edit — ${initialValues!.name}` : "New Rank"}
-          </h2>
-          <button className="g-btn g-btn-ghost g-btn-sm" onClick={onClose}>
-            <X size={14} />
+    <SheetShell
+      title={isEdit ? `Edit — ${initialValues!.name}` : "New Rank"}
+      onClose={onClose}
+      footer={
+        <>
+          <button className="g-btn g-btn-ghost" onClick={onClose}>Cancel</button>
+          <button
+            className="g-btn g-btn-primary"
+            disabled={!form.name || saveMutation.isPending}
+            onClick={handleSubmit}
+          >
+            <Save size={13} />
+            {saveMutation.isPending ? "Saving…" : isEdit ? "Save Changes" : "Create Rank"}
           </button>
-        </div>
-
-        <div className="ev-sheet-body">
+        </>
+      }
+    >
           <RankChip rank={previewRank} />
 
           <label className="ev-field">
@@ -130,20 +135,6 @@ export function RankFormSheet({ open, initialValues, saveMutation, onToggleActiv
               </label>
             </div>
           )}
-        </div>
-
-        <div className="ev-sheet-footer">
-          <button className="g-btn g-btn-ghost" onClick={onClose}>Cancel</button>
-          <button
-            className="g-btn g-btn-primary"
-            disabled={!form.name || saveMutation.isPending}
-            onClick={handleSubmit}
-          >
-            <Save size={13} />
-            {saveMutation.isPending ? "Saving…" : isEdit ? "Save Changes" : "Create Rank"}
-          </button>
-        </div>
-      </div>
-    </>
+    </SheetShell>
   );
 }

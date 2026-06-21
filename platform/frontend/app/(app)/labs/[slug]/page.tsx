@@ -7,7 +7,8 @@ import "../../challenges/challenges.css";
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import { useApiMutation } from "@/hooks/useApiMutation";
 import {
   ArrowLeft, Play, Square, RotateCcw, ExternalLink,
   Network, Globe, Terminal, Server, CheckCircle2, Clock, Target,
@@ -18,7 +19,6 @@ import { stopDeployment, resetDeployment } from "@/lib/api/deployments";
 import { LabCategoryBadge } from "@/components/labs/LabCategoryBadge";
 import { DeploymentStatusBadge } from "@/components/deployments/DeploymentStatusBadge";
 import { StartLabDialog } from "@/components/deployments/StartLabDialog";
-import { useNotificationsStore } from "@/stores/notifications.store";
 import { PageSpinner } from "@/components/ui/Spinner";
 import { CopyButton } from "@/components/ui/CopyButton";
 import { DIFF_CLASS } from "@/lib/utils/difficulty";
@@ -61,8 +61,6 @@ function ChallengeRow({ ch }: { ch: ChallengeListItem }) {
 export default function LabDetailPage() {
   const { slug } = useParams<{ slug: string }>();
   const [startOpen, setStartOpen] = useState(false);
-  const qc = useQueryClient();
-  const { push } = useNotificationsStore();
 
   const { data: labs = [], isLoading: labsLoading } = useQuery<LabTemplate[]>({
     queryKey: ["labs"],
@@ -78,16 +76,18 @@ export default function LabDetailPage() {
     enabled: !!lab,
   });
 
-  const stopMutation = useMutation({
+  const stopMutation = useApiMutation({
     mutationFn: stopDeployment,
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["labs"] }); push("success", "Stop requested"); },
-    onError: () => push("error", "Failed to stop lab"),
+    invalidateKeys: [["labs"]],
+    successMessage: "Stop requested",
+    errorMessage: "Failed to stop lab",
   });
 
-  const resetMutation = useMutation({
+  const resetMutation = useApiMutation({
     mutationFn: resetDeployment,
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["labs"] }); push("success", "Reset requested"); },
-    onError: () => push("error", "Failed to reset lab"),
+    invalidateKeys: [["labs"]],
+    successMessage: "Reset requested",
+    errorMessage: "Failed to reset lab",
   });
 
   if (labsLoading) {

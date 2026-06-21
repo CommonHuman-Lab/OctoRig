@@ -3,28 +3,23 @@
 // Copyright (c) 2026 CommonHuman-Lab
 
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Printer } from "lucide-react";
 import {
   publishSubmission,
   type ContentSubmission,
 } from "@/lib/api/content";
-import { useNotificationsStore } from "@/stores/notifications.store";
+import { useApiMutation } from "@/hooks/useApiMutation";
 import { BodyPreview } from "./BodyPreview";
-import { StatusBadge } from "./StatusBadge";
+import { StatusPill } from "@/components/ui/StatusPill";
 
 export function ApprovedRow({ sub }: { sub: ContentSubmission }) {
-  const qc = useQueryClient();
-  const { push } = useNotificationsStore();
   const [showBody, setShowBody] = useState(false);
 
-  const { mutate: publish, isPending } = useMutation({
+  const { mutate: publish, isPending } = useApiMutation<ContentSubmission, void>({
     mutationFn: () => publishSubmission(sub.id),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["content", "queue", "approved"] });
-      push("success", "Submission published.");
-    },
-    onError: (err: any) => push("error", err?.response?.data?.detail ?? "Failed to publish."),
+    invalidateKeys: [["content", "queue", "approved"]],
+    successMessage: "Submission published.",
+    errorMessage: (err: any) => err?.response?.data?.detail ?? "Failed to publish.",
   });
 
   return (
@@ -46,7 +41,7 @@ export function ApprovedRow({ sub }: { sub: ContentSubmission }) {
         <td style={{ color: "var(--g-text-muted)", fontSize: "0.75rem" }}>
           {sub.author_username ?? `#${sub.author_id}`}
         </td>
-        <td><StatusBadge status={sub.status} /></td>
+        <td><StatusPill status={sub.status} /></td>
         <td>
           <button className="g-btn g-btn-primary g-btn-sm" disabled={isPending} onClick={() => publish()}>
             <Printer size={12} />

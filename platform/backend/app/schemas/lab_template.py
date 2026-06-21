@@ -1,12 +1,12 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
 from datetime import datetime
-from typing import Any, Optional
+from typing import Optional
 
-from pydantic import BaseModel
+from app.schemas.base import ORMModel
 
 
-class DeploymentSummary(BaseModel):
+class DeploymentSummary(ORMModel):
     id: int
     status: str
     started_at: Optional[datetime]
@@ -15,10 +15,8 @@ class DeploymentSummary(BaseModel):
     container_names: list[str] = []
     access_info: list[dict[str, str]] = []
 
-    model_config = {"from_attributes": True}
 
-
-class LabTemplateResponse(BaseModel):
+class LabTemplateResponse(ORMModel):
     id: int
     slug: str
     name: str
@@ -34,5 +32,3 @@ class LabTemplateResponse(BaseModel):
     requires_privileged: bool
     is_active: bool
     current_deployment: Optional[DeploymentSummary] = None
-
-    model_config = {"from_attributes": True}

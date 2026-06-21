@@ -4,7 +4,8 @@
 import "../admin.css";
 
 import { useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import { useApiMutation } from "@/hooks/useApiMutation";
 import { Plus } from "lucide-react";
 import {
   getEvents, createEvent, updateEvent, transitionEvent,
@@ -13,7 +14,6 @@ import {
   type CreateEventPayload, type UpdateEventPayload,
 } from "@/lib/api/events";
 import { getChallenges } from "@/lib/api/challenges";
-import { useNotificationsStore } from "@/stores/notifications.store";
 import { useConfirmStore } from "@/stores/confirm.store";
 import { useUserStore } from "@/stores/user.store";
 import { useAdminGuard } from "@/hooks/useAdminGuard";
@@ -25,10 +25,8 @@ import { EventsTable } from "@/components/admin/events/EventsTable";
 import { ChallengeMappingPanel } from "@/components/admin/events/ChallengeMappingPanel";
 
 export default function AdminEventsPage() {
-  const { push } = useNotificationsStore();
   const { confirm } = useConfirmStore();
   const { user } = useUserStore();
-  const qc = useQueryClient();
 
   useAdminGuard();
 
@@ -77,7 +75,7 @@ export default function AdminEventsPage() {
     setSheet({ open: true, editing: ev });
   }
 
-  const saveMutation = useMutation({
+  const saveMutation = useApiMutation<CtfEvent, void>({
     mutationFn: async () => {
       const payload = {
         title: form.title,
@@ -95,34 +93,30 @@ export default function AdminEventsPage() {
         return createEvent({ slug: form.slug, ...payload } as CreateEventPayload);
       }
     },
-    onSuccess: () => {
-      push("success", sheet.editing ? "Event updated" : "Event created");
-      setSheet({ open: false, editing: null });
-      qc.invalidateQueries({ queryKey: ["admin-events"] });
-    },
-    onError: () => push("error", "Failed to save event"),
+    invalidateKeys: [["admin-events"]],
+    successMessage: () => (sheet.editing ? "Event updated" : "Event created"),
+    errorMessage: "Failed to save event",
+    onSuccess: () => setSheet({ open: false, editing: null }),
   });
 
-  const transitionMutation = useMutation({
+  const transitionMutation = useApiMutation({
     mutationFn: ({ slug, status }: { slug: string; status: EventStatus }) =>
       transitionEvent(slug, status),
-    onSuccess: () => {
-      push("success", "Status updated");
-      qc.invalidateQueries({ queryKey: ["admin-events"] });
-    },
-    onError: () => push("error", "Failed to update status"),
+    invalidateKeys: [["admin-events"]],
+    successMessage: "Status updated",
+    errorMessage: "Failed to update status",
   });
 
-  const addChallMutation = useMutation({
+  const addChallMutation = useApiMutation({
     mutationFn: (challengeId: number) => addEventChallenge(mapSlug!, challengeId),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["event-challenges", mapSlug] }),
-    onError: () => push("error", "Failed to add challenge"),
+    invalidateKeys: [["event-challenges", mapSlug]],
+    errorMessage: "Failed to add challenge",
   });
 
-  const removeChallMutation = useMutation({
+  const removeChallMutation = useApiMutation({
     mutationFn: (challengeId: number) => removeEventChallenge(mapSlug!, challengeId),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["event-challenges", mapSlug] }),
-    onError: () => push("error", "Failed to remove challenge"),
+    invalidateKeys: [["event-challenges", mapSlug]],
+    errorMessage: "Failed to remove challenge",
   });
 
   const mappedIds = new Set(eventChallenges.map((c) => c.id));

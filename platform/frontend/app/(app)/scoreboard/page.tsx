@@ -12,6 +12,7 @@ import { getRanks } from "@/lib/api/ranks";
 import { useUserStore } from "@/stores/user.store";
 import { ScoreRow } from "@/components/scoreboard/ScoreRow";
 import { ScoreboardFilters, SCOREBOARD_LIMITS } from "@/components/scoreboard/ScoreboardFilters";
+import { AsyncContent } from "@/components/ui/AsyncContent";
 
 export default function ScoreboardPage() {
   const { user } = useUserStore();
@@ -85,40 +86,42 @@ export default function ScoreboardPage() {
         />
       </div>
 
-      {isLoading ? (
-        <div className="text-muted text-sm">Loading…</div>
-      ) : entries.length === 0 ? (
-        <div className="sb-empty">No scores yet.</div>
-      ) : (
-        <div className="sb-table-wrap g-card" style={{ padding: 0, overflow: "hidden" }}>
-          <table className="sb-table">
-            <thead>
-              <tr>
-                <th style={{ textAlign: "right" }}>#</th>
-                <th>Player</th>
-                <th>Rank</th>
-                <th>Points</th>
-                <th>Solves</th>
-                <th>Badges</th>
-              </tr>
-            </thead>
-            <tbody>
-              {entries.map((entry) => {
-                const isMe = !!user && entry.username === user.username;
-                return (
-                  <ScoreRow
-                    key={entry.user_id ?? entry.team_id}
-                    entry={entry}
-                    ranks={ranks}
-                    isMe={isMe}
-                    rowRef={isMe ? myRowRef : undefined}
-                  />
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      )}
+      <AsyncContent
+        isLoading={isLoading}
+        data={entries}
+        empty={<div className="sb-empty">No scores yet.</div>}
+      >
+        {(entries) => (
+          <div className="sb-table-wrap g-card" style={{ padding: 0, overflow: "hidden" }}>
+            <table className="sb-table">
+              <thead>
+                <tr>
+                  <th style={{ textAlign: "right" }}>#</th>
+                  <th>Player</th>
+                  <th>Rank</th>
+                  <th>Points</th>
+                  <th>Solves</th>
+                  <th>Badges</th>
+                </tr>
+              </thead>
+              <tbody>
+                {entries.map((entry) => {
+                  const isMe = !!user && entry.username === user.username;
+                  return (
+                    <ScoreRow
+                      key={entry.user_id ?? entry.team_id}
+                      entry={entry}
+                      ranks={ranks}
+                      isMe={isMe}
+                      rowRef={isMe ? myRowRef : undefined}
+                    />
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </AsyncContent>
     </div>
   );
 }

@@ -5,8 +5,7 @@ from typing import Any, Optional
 
 from pydantic import BaseModel, Field
 
-from app.models.deployment import DeploymentStatus, DeploymentVisibility
-from app.models.scheduled_action import ScheduledActionStatus, ScheduledActionType
+from app.schemas.base import ORMModel
 
 
 class SystemStats(BaseModel):
@@ -18,7 +17,7 @@ class SystemStats(BaseModel):
     pending_scheduled_actions: int
 
 
-class AdminUserResponse(BaseModel):
+class AdminUserResponse(ORMModel):
     id: int
     username: str
     email: str
@@ -31,8 +30,6 @@ class AdminUserResponse(BaseModel):
     team_count: int
     deployment_count: int
     api_key_count: int
-
-    model_config = {"from_attributes": True}
 
 
 class AdminUserCreate(BaseModel):
@@ -52,7 +49,7 @@ class AdminResetPassword(BaseModel):
     new_password: str
 
 
-class PlatformRoleResponse(BaseModel):
+class PlatformRoleResponse(ORMModel):
     id: int
     slug: str
     display_name: str
@@ -61,8 +58,6 @@ class PlatformRoleResponse(BaseModel):
     is_system: bool
     is_default: bool
     created_at: datetime
-
-    model_config = {"from_attributes": True}
 
 
 class PlatformRoleCreate(BaseModel):
@@ -80,7 +75,7 @@ class PlatformRoleUpdate(BaseModel):
     is_default: Optional[bool] = None
 
 
-class AdminTeamResponse(BaseModel):
+class AdminTeamResponse(ORMModel):
     id: int
     name: str
     slug: str
@@ -91,10 +86,8 @@ class AdminTeamResponse(BaseModel):
     deployment_count: int
     created_at: datetime
 
-    model_config = {"from_attributes": True}
 
-
-class AdminAuditLogResponse(BaseModel):
+class AdminAuditLogResponse(ORMModel):
     id: int
     user_id: Optional[int]
     username: Optional[str]
@@ -105,8 +98,6 @@ class AdminAuditLogResponse(BaseModel):
     detail: dict[str, Any]
     ip_address: Optional[str]
     created_at: datetime
-
-    model_config = {"from_attributes": True}
 
 
 class AdminApiKeyResponse(BaseModel):
@@ -121,7 +112,7 @@ class AdminApiKeyResponse(BaseModel):
     created_at: datetime
 
 
-class SiteSettingsResponse(BaseModel):
+class SiteSettingsResponse(ORMModel):
     registration_open: bool
     maintenance_mode: bool
     maintenance_message: Optional[str]
@@ -137,8 +128,6 @@ class SiteSettingsResponse(BaseModel):
     company_logo_url: Optional[str]
     default_theme: Optional[str]
     updated_at: datetime
-
-    model_config = {"from_attributes": True}
 
 
 class SiteSettingsUpdate(BaseModel):

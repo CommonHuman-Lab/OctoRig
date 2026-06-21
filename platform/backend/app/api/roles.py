@@ -4,8 +4,9 @@ from sqlalchemy.orm import Session
 
 from fastapi import APIRouter, Depends
 
-from app.api.deps import get_db, require_admin
-from app.core.exceptions import bad_request, conflict, not_found
+from app.api.deps import get_db, get_role_or_404, require_admin
+from app.core.db_helpers import raise_if_exists
+from app.core.exceptions import bad_request
 from app.models.role import PlatformRole
 from app.models.user import User
 from app.schemas.admin import PlatformRoleCreate, PlatformRoleResponse, PlatformRoleUpdate
@@ -28,8 +29,7 @@ def create_role(
     _: User = Depends(require_admin),
     db: Session = Depends(get_db),
 ) -> PlatformRoleResponse:
-    if db.query(PlatformRole).filter(PlatformRole.slug == payload.slug).first():
-        raise conflict(f"Role slug '{payload.slug}' already exists")
+    raise_if_exists(db, PlatformRole, f"Role slug '{payload.slug}' already exists", slug=payload.slug)
     role = PlatformRole(
         slug=payload.slug,
         display_name=payload.display_name,
@@ -46,26 +46,19 @@ def create_role(
 
 @router.get("/{slug}", response_model=PlatformRoleResponse)
 def get_role(
-    slug: str,
+    role: PlatformRole = Depends(get_role_or_404),
     _: User = Depends(require_admin),
-    db: Session = Depends(get_db),
 ) -> PlatformRoleResponse:
-    role = db.query(PlatformRole).filter(PlatformRole.slug == slug).first()
-    if role is None:
-        raise not_found("Role")
     return PlatformRoleResponse.model_validate(role)
 
 
 @router.patch("/{slug}", response_model=PlatformRoleResponse)
 def update_role(
-    slug: str,
     payload: PlatformRoleUpdate,
+    role: PlatformRole = Depends(get_role_or_404),
     _: User = Depends(require_admin),
     db: Session = Depends(get_db),
 ) -> PlatformRoleResponse:
-    role = db.query(PlatformRole).filter(PlatformRole.slug == slug).first()
-    if role is None:
-        raise not_found("Role")
     if role.slug == "admin":
         raise bad_request("The admin role cannot be edited")
 
@@ -85,13 +78,10 @@ def update_role(
 
 @router.delete("/{slug}", status_code=204)
 def delete_role(
-    slug: str,
+    role: PlatformRole = Depends(get_role_or_404),
     _: User = Depends(require_admin),
     db: Session = Depends(get_db),
 ) -> None:
-    role = db.query(PlatformRole).filter(PlatformRole.slug == slug).first()
-    if role is None:
-        raise not_found("Role")
     if role.is_system:
         raise bad_request("System roles cannot be deleted")
     db.delete(role)

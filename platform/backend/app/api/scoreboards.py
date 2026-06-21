@@ -7,6 +7,7 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user, get_db
+from app.core.pagination import WideLimit
 from app.models.user import User
 from app.services.scoring_service import (
     get_event_scoreboard, get_global_scoreboard, get_user_score,
@@ -34,7 +35,7 @@ class UserScoreResponse(BaseModel):
 
 @router.get("/global", response_model=list[ScoreboardEntry])
 def global_scoreboard(
-    limit: int = Query(100, ge=1, le=500),
+    limit: WideLimit = 100,
     db: Session = Depends(get_db),
     _: User = Depends(get_current_user),
 ) -> list[ScoreboardEntry]:
@@ -45,7 +46,7 @@ def global_scoreboard(
 @router.get("/events/{event_id}", response_model=list[ScoreboardEntry])
 def event_scoreboard(
     event_id: int,
-    limit: int = Query(100, ge=1, le=500),
+    limit: WideLimit = 100,
     db: Session = Depends(get_db),
     _: User = Depends(get_current_user),
 ) -> list[ScoreboardEntry]:

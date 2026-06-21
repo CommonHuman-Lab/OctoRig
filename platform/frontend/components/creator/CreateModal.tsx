@@ -2,28 +2,24 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useApiMutation } from "@/hooks/useApiMutation";
 import {
   createSubmission,
+  type ContentSubmission,
   type ContentType,
 } from "@/lib/api/content";
-import { useNotificationsStore } from "@/stores/notifications.store";
 
 export function CreateModal({ onClose }: { onClose: () => void }) {
-  const qc = useQueryClient();
-  const { push } = useNotificationsStore();
   const [title, setTitle] = useState("");
   const [contentType, setContentType] = useState<ContentType>("challenge");
 
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending } = useApiMutation<ContentSubmission, void>({
     mutationFn: () =>
       createSubmission({ content_type: contentType, title, body: {} }),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["content", "mine"] });
-      push("success", "Draft created.");
-      onClose();
-    },
-    onError: () => push("error", "Failed to create draft."),
+    invalidateKeys: [["content", "mine"]],
+    successMessage: "Draft created.",
+    errorMessage: "Failed to create draft.",
+    onSuccess: onClose,
   });
 
   return (

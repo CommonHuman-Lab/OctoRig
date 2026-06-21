@@ -4,6 +4,7 @@
 import "./notifications.css";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useApiMutation } from "@/hooks/useApiMutation";
 import { Bell, CheckCheck, Check, X, Trash2 } from "lucide-react";
 import {
   getNotifications, markAllRead, markRead, deleteNotification,
@@ -11,6 +12,7 @@ import {
 } from "@/lib/api/notifications";
 import { acceptInvitation, declineInvitation } from "@/lib/api/teams";
 import { useNotificationsStore } from "@/stores/notifications.store";
+import { AsyncContent } from "@/components/ui/AsyncContent";
 
 function timeAgo(created_at: string) {
   const ms = Date.now() - new Date(created_at).getTime();
@@ -123,31 +125,22 @@ export default function NotificationsPage() {
     queryFn: () => getNotifications(false, 100),
   });
 
-  const readMutation = useMutation({
+  const readMutation = useApiMutation({
     mutationFn: markRead,
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["notifications"] });
-      qc.invalidateQueries({ queryKey: ["notifications-unread"] });
-    },
+    invalidateKeys: [["notifications"], ["notifications-unread"]],
   });
 
-  const deleteMutation = useMutation({
+  const deleteMutation = useApiMutation({
     mutationFn: deleteNotification,
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["notifications"] });
-      qc.invalidateQueries({ queryKey: ["notifications-unread"] });
-    },
-    onError: () => push("error", "Failed to delete notification"),
+    invalidateKeys: [["notifications"], ["notifications-unread"]],
+    errorMessage: "Failed to delete notification",
   });
 
-  const readAllMutation = useMutation({
+  const readAllMutation = useApiMutation<number, void>({
     mutationFn: markAllRead,
-    onSuccess: (count) => {
-      qc.invalidateQueries({ queryKey: ["notifications"] });
-      qc.invalidateQueries({ queryKey: ["notifications-unread"] });
-      push("success", `Marked ${count} notification${count !== 1 ? "s" : ""} as read`);
-    },
-    onError: () => push("error", "Failed to mark all as read"),
+    invalidateKeys: [["notifications"], ["notifications-unread"]],
+    successMessage: (count) => `Marked ${count} notification${count !== 1 ? "s" : ""} as read`,
+    errorMessage: "Failed to mark all as read",
   });
 
   const unread = notifications.filter((n) => !n.read_at).length;
@@ -176,29 +169,33 @@ export default function NotificationsPage() {
         )}
       </div>
 
-      {isLoading ? (
-        <div className="text-muted text-sm">Loading…</div>
-      ) : notifications.length === 0 ? (
-        <div className="empty-state g-card">
-          <Bell size={24} style={{ color: "var(--g-text-muted)" }} />
-          <p className="text-muted text-sm">No notifications yet.</p>
-        </div>
-      ) : (
-        <div className="notif-list g-panel">
-          {notifications.map((n) => (
-            <NotificationRow
-              key={n.id}
-              n={n}
-              onRead={(id) => readMutation.mutate(id)}
-              onDelete={(id) => deleteMutation.mutate(id)}
-              onInviteResolved={() => {
-                qc.invalidateQueries({ queryKey: ["notifications"] });
-                qc.invalidateQueries({ queryKey: ["notifications-unread"] });
-              }}
-            />
-          ))}
-        </div>
-      )}
+      <AsyncContent
+        isLoading={isLoading}
+        data={notifications}
+        empty={
+          <div className="empty-state g-card">
+            <Bell size={24} style={{ color: "var(--g-text-muted)" }} />
+            <p className="text-muted text-sm">No notifications yet.</p>
+          </div>
+        }
+      >
+        {(notifications) => (
+          <div className="notif-list g-panel">
+            {notifications.map((n) => (
+              <NotificationRow
+                key={n.id}
+                n={n}
+                onRead={(id) => readMutation.mutate(id)}
+                onDelete={(id) => deleteMutation.mutate(id)}
+                onInviteResolved={() => {
+                  qc.invalidateQueries({ queryKey: ["notifications"] });
+                  qc.invalidateQueries({ queryKey: ["notifications-unread"] });
+                }}
+              />
+            ))}
+          </div>
+        )}
+      </AsyncContent>
     </div>
   );
 }

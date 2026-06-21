@@ -2,10 +2,12 @@
 # Copyright (c) 2026 CommonHuman-Lab
 from datetime import datetime, timezone
 
-from fastapi import APIRouter, Depends, Query, Request
+from typing import Optional
+
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_current_user_or_api_key
+from app.api.deps import get_client_ip, get_current_user_or_api_key
 from app.core.exceptions import bad_request, forbidden_exception, not_found
 from app.core.permissions import is_privileged
 from app.database import get_db
@@ -35,9 +37,9 @@ def list_scheduled(
 @router.post("/", response_model=ScheduledActionResponse, status_code=201)
 def create_scheduled(
     payload: ScheduledActionCreate,
-    request: Request,
     current_user: User = Depends(get_current_user_or_api_key),
     db: Session = Depends(get_db),
+    ip: Optional[str] = Depends(get_client_ip),
 ) -> ScheduledActionResponse:
     if payload.scheduled_at.replace(tzinfo=timezone.utc) <= datetime.now(timezone.utc):
         raise bad_request("scheduled_at must be in the future")
@@ -86,7 +88,7 @@ def create_scheduled(
             "action": payload.action.value,
             "scheduled_at": payload.scheduled_at.isoformat(),
         },
-        ip=request.client.host if request.client else None,
+        ip=ip,
     )
     return ScheduledActionResponse.model_validate(action)
 
@@ -94,9 +96,9 @@ def create_scheduled(
 @router.delete("/{action_id}", status_code=204)
 def cancel_scheduled(
     action_id: int,
-    request: Request,
     current_user: User = Depends(get_current_user_or_api_key),
     db: Session = Depends(get_db),
+    ip: Optional[str] = Depends(get_client_ip),
 ) -> None:
     action = db.get(ScheduledAction, action_id)
     if action is None:
@@ -114,5 +116,5 @@ def cancel_scheduled(
         action=audit_service.SCHEDULE_CANCELLED,
         user_id=current_user.id,
         detail={"scheduled_action_id": action_id},
-        ip=request.client.host if request.client else None,
+        ip=ip,
     )

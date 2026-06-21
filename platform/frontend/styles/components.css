@@ -808,3 +808,16 @@ code.g-inline {
 }
 .toggle input:checked ~ .toggle-track { background: var(--g-accent); }
 .toggle input:checked ~ .toggle-track::after { transform: translateX(14px); }
+
+/* Shared status pill — used for content/submission status across creator and admin */
+.g-status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.45rem;
+  border-radius: 3px;
+  font-size: 0.5625rem;
+  font-weight: 700;
+  font-family: var(--font-mono, monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}

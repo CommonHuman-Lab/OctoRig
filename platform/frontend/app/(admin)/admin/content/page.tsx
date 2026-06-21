@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getPendingQueue, getApprovedQueue } from "@/lib/api/content";
 import { PendingRow } from "@/components/admin/content/PendingRow";
 import { ApprovedRow } from "@/components/admin/content/ApprovedRow";
+import { AsyncContent } from "@/components/ui/AsyncContent";
 
 type Tab = "pending" | "approved";
 
@@ -50,29 +51,31 @@ export default function AdminContentPage() {
         </button>
       </div>
 
-      {isLoading ? (
-        <div className="text-muted text-sm">Loading…</div>
-      ) : rows.length === 0 ? (
-        <div className="text-muted text-sm mt-4">No submissions in this queue.</div>
-      ) : (
-        <table className="g-table">
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Type</th>
-              <th>Author</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tab === "pending"
-              ? pending.map((sub) => <PendingRow key={sub.id} sub={sub} />)
-              : approved.map((sub) => <ApprovedRow key={sub.id} sub={sub} />)
-            }
-          </tbody>
-        </table>
-      )}
+      <AsyncContent
+        isLoading={isLoading}
+        data={rows}
+        empty={<div className="text-muted text-sm mt-4">No submissions in this queue.</div>}
+      >
+        {() => (
+          <table className="g-table">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Type</th>
+                <th>Author</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tab === "pending"
+                ? pending.map((sub) => <PendingRow key={sub.id} sub={sub} />)
+                : approved.map((sub) => <ApprovedRow key={sub.id} sub={sub} />)
+              }
+            </tbody>
+          </table>
+        )}
+      </AsyncContent>
     </div>
   );
 }

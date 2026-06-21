@@ -4,9 +4,10 @@
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Save, X } from "lucide-react";
+import { Save } from "lucide-react";
 import { listRoles } from "@/lib/api/admin";
 import { useEscapeKey } from "@/hooks/useEscapeKey";
+import { SheetShell } from "@/components/ui/SheetShell";
 
 export function CreateUserForm({
   open,
@@ -46,17 +47,23 @@ export function CreateUserForm({
   }
 
   return (
-    <>
-      <div className="g-backdrop" onClick={onClose} />
-      <div className="ev-sheet">
-        <div className="ev-sheet-header">
-          <h2 style={{ margin: 0, fontSize: "1rem", fontWeight: 700 }}>New User</h2>
-          <button className="g-btn g-btn-ghost g-btn-sm" onClick={onClose}>
-            <X size={14} />
+    <SheetShell
+      title="New User"
+      onClose={onClose}
+      footer={
+        <>
+          <button className="g-btn g-btn-ghost" onClick={onClose}>Cancel</button>
+          <button
+            className="g-btn g-btn-primary"
+            onClick={handleSubmit}
+            disabled={!username || !email || !password || isPending}
+          >
+            <Save size={13} />
+            {isPending ? "Creating…" : "Create User"}
           </button>
-        </div>
-
-        <div className="ev-sheet-body">
+        </>
+      }
+    >
           <label className="ev-field">
             <span className="ev-label">Username</span>
             <input
@@ -102,20 +109,6 @@ export function CreateUserForm({
               </label>
             ))}
           </div>
-        </div>
-
-        <div className="ev-sheet-footer">
-          <button className="g-btn g-btn-ghost" onClick={onClose}>Cancel</button>
-          <button
-            className="g-btn g-btn-primary"
-            onClick={handleSubmit}
-            disabled={!username || !email || !password || isPending}
-          >
-            <Save size={13} />
-            {isPending ? "Creating…" : "Create User"}
-          </button>
-        </div>
-      </div>
-    </>
+    </SheetShell>
   );
 }

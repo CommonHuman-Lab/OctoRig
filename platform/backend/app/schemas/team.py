@@ -6,6 +6,7 @@ from typing import Optional
 from pydantic import BaseModel, field_validator
 
 from app.models.team import TeamRole
+from app.schemas.base import ORMModel
 
 
 class TeamCreate(BaseModel):
@@ -25,7 +26,7 @@ class TeamUpdate(BaseModel):
     description: Optional[str] = None
 
 
-class TeamResponse(BaseModel):
+class TeamResponse(ORMModel):
     id: int
     name: str
     slug: str
@@ -35,8 +36,6 @@ class TeamResponse(BaseModel):
     created_at: datetime
     updated_at: datetime
 
-    model_config = {"from_attributes": True}
-
 
 class TeamWithRole(TeamResponse):
     """Team enriched with the caller's membership role."""
@@ -44,7 +43,7 @@ class TeamWithRole(TeamResponse):
     member_count: int
 
 
-class MemberResponse(BaseModel):
+class MemberResponse(ORMModel):
     id: int
     team_id: int
     user_id: int
@@ -53,15 +52,13 @@ class MemberResponse(BaseModel):
     role: TeamRole
     joined_at: datetime
 
-    model_config = {"from_attributes": True}
-
 
 class InviteRequest(BaseModel):
     username: str
     role: TeamRole = TeamRole.MEMBER
 
 
-class InvitationResponse(BaseModel):
+class InvitationResponse(ORMModel):
     id: int
     team_id: int
     email: str
@@ -70,8 +67,6 @@ class InvitationResponse(BaseModel):
     expires_at: datetime
     accepted_at: Optional[datetime]
     created_at: datetime
-
-    model_config = {"from_attributes": True}
 
 
 class InvitationDetail(BaseModel):

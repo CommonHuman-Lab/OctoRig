@@ -3,7 +3,7 @@
 // Copyright (c) 2026 CommonHuman-Lab
 import "./dashboard.css";
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ExternalLink, LayoutDashboard } from "lucide-react";
@@ -12,8 +12,8 @@ import { getHealth, getContainers } from "@/lib/api/system";
 import { getLabs, type LabTemplate } from "@/lib/api/labs";
 import { getMyProfile } from "@/lib/api/profiles";
 import { DeploymentStatusBadge } from "@/components/deployments/DeploymentStatusBadge";
-import { useNotificationsStore } from "@/stores/notifications.store";
-import { PageSpinner } from "@/components/ui/Spinner";
+import { useApiMutation } from "@/hooks/useApiMutation";
+import { AsyncContent } from "@/components/ui/AsyncContent";
 
 function formatRelative(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime();
@@ -26,8 +26,6 @@ function formatRelative(iso: string): string {
 }
 
 export default function Dashboard() {
-  const qc = useQueryClient();
-  const { push } = useNotificationsStore();
   const router = useRouter();
 
   const { data: deployments = [], isLoading } = useQuery({
@@ -54,14 +52,11 @@ export default function Dashboard() {
     staleTime: 60_000,
   });
 
-  const stopMutation = useMutation({
+  const stopMutation = useApiMutation({
     mutationFn: stopDeployment,
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["deployments"] });
-      qc.invalidateQueries({ queryKey: ["labs"] });
-      push("success", "Lab stop requested");
-    },
-    onError: () => push("error", "Failed to stop lab"),
+    invalidateKeys: [["deployments"], ["labs"]],
+    successMessage: "Lab stop requested",
+    errorMessage: "Failed to stop lab",
   });
 
   const activeDeployments = deployments.filter((d) => d.status !== "stopped");
@@ -132,56 +127,60 @@ export default function Dashboard() {
       {/* Active deployments */}
       <section className="mt-4">
         <h2 className="section-title font-mono">Active Deployments</h2>
-        {isLoading ? (
-          <PageSpinner />
-        ) : activeDeployments.length === 0 ? (
-          <div className="g-panel empty-state">
-            <p className="text-muted text-sm">No active labs.</p>
-            <Link href="/labs" className="g-btn g-btn-primary mt-2">Browse Lab Catalog</Link>
-          </div>
-        ) : (
-          <div className="g-panel">
-            <table className="g-table">
-              <thead>
-                <tr>
-                  <th>Lab</th>
-                  <th>Status</th>
-                  <th>Started By</th>
-                  <th>Started</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {activeDeployments.map((d) => (
-                  <tr
-                    key={d.id}
-                    onClick={() => router.push(`/deployments/${d.id}`)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <td>
-                      <span className="text-accent">{d.lab_name}</span>
-                    </td>
-                    <td><DeploymentStatusBadge status={d.status} /></td>
-                    <td className="text-secondary">{d.started_by_username}</td>
-                    <td className="text-muted font-mono" style={{ fontSize: "0.6875rem" }}>
-                      {d.started_at ? formatRelative(d.started_at) : "—"}
-                    </td>
-                    <td>
-                      <button
-                        className="g-btn g-btn-danger g-btn-icon"
-                        onClick={(e) => { e.stopPropagation(); stopMutation.mutate(d.id); }}
-                        disabled={d.status === "stopping" || stopMutation.isPending}
-                        title="Stop lab"
-                      >
-                        ■
-                      </button>
-                    </td>
+        <AsyncContent
+          isLoading={isLoading}
+          data={activeDeployments}
+          empty={
+            <div className="g-panel empty-state">
+              <p className="text-muted text-sm">No active labs.</p>
+              <Link href="/labs" className="g-btn g-btn-primary mt-2">Browse Lab Catalog</Link>
+            </div>
+          }
+        >
+          {(activeDeployments) => (
+            <div className="g-panel">
+              <table className="g-table">
+                <thead>
+                  <tr>
+                    <th>Lab</th>
+                    <th>Status</th>
+                    <th>Started By</th>
+                    <th>Started</th>
+                    <th>Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+                </thead>
+                <tbody>
+                  {activeDeployments.map((d) => (
+                    <tr
+                      key={d.id}
+                      onClick={() => router.push(`/deployments/${d.id}`)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <td>
+                        <span className="text-accent">{d.lab_name}</span>
+                      </td>
+                      <td><DeploymentStatusBadge status={d.status} /></td>
+                      <td className="text-secondary">{d.started_by_username}</td>
+                      <td className="text-muted font-mono" style={{ fontSize: "0.6875rem" }}>
+                        {d.started_at ? formatRelative(d.started_at) : "—"}
+                      </td>
+                      <td>
+                        <button
+                          className="g-btn g-btn-danger g-btn-icon"
+                          onClick={(e) => { e.stopPropagation(); stopMutation.mutate(d.id); }}
+                          disabled={d.status === "stopping" || stopMutation.isPending}
+                          title="Stop lab"
+                        >
+                          ■
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </AsyncContent>
       </section>
 
       {/* Externally managed (CLI-started) */}

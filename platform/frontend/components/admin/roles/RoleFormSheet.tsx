@@ -2,9 +2,10 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
 import { useEffect, useState } from "react";
-import { Save, X } from "lucide-react";
+import { Save } from "lucide-react";
 import { type PlatformRole, type PlatformRoleCreate, type PlatformRoleUpdate } from "@/lib/api/admin";
 import { useEscapeKey } from "@/hooks/useEscapeKey";
+import { SheetShell } from "@/components/ui/SheetShell";
 
 const PERMISSION_GROUPS = [
   {
@@ -112,19 +113,25 @@ export function RoleFormSheet({ open, initialValues, saveMutation, onClose }: Ro
   }
 
   return (
-    <>
-      <div className="g-backdrop" onClick={onClose} />
-      <div className="ev-sheet">
-        <div className="ev-sheet-header">
-          <h2 style={{ margin: 0, fontSize: "1rem", fontWeight: 700 }}>
-            {isEdit ? `Edit — ${initialValues!.slug}` : "New Role"}
-          </h2>
-          <button className="g-btn g-btn-ghost g-btn-sm" onClick={onClose}>
-            <X size={14} />
+    <SheetShell
+      title={isEdit ? `Edit — ${initialValues!.slug}` : "New Role"}
+      onClose={onClose}
+      footer={
+        <>
+          <button className="g-btn g-btn-ghost" onClick={onClose}>
+            Cancel
           </button>
-        </div>
-
-        <div className="ev-sheet-body">
+          <button
+            className="g-btn g-btn-primary"
+            disabled={!form.display_name || (!isEdit && !form.slug) || saveMutation.isPending}
+            onClick={handleSubmit}
+          >
+            <Save size={13} />
+            {saveMutation.isPending ? "Saving…" : isEdit ? "Save Changes" : "Create Role"}
+          </button>
+        </>
+      }
+    >
           {!isEdit && (
             <label className="ev-field">
               <span className="ev-label">Slug</span>
@@ -184,22 +191,6 @@ export function RoleFormSheet({ open, initialValues, saveMutation, onClose }: Ro
               ))}
             </div>
           ))}
-        </div>
-
-        <div className="ev-sheet-footer">
-          <button className="g-btn g-btn-ghost" onClick={onClose}>
-            Cancel
-          </button>
-          <button
-            className="g-btn g-btn-primary"
-            disabled={!form.display_name || (!isEdit && !form.slug) || saveMutation.isPending}
-            onClick={handleSubmit}
-          >
-            <Save size={13} />
-            {saveMutation.isPending ? "Saving…" : isEdit ? "Save Changes" : "Create Role"}
-          </button>
-        </div>
-      </div>
-    </>
+    </SheetShell>
   );
 }

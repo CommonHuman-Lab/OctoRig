@@ -7,8 +7,9 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Search, Filter } from "lucide-react";
 import { getAdminAuditLogs, type AdminAuditLog } from "@/lib/api/admin";
-import { LoadingCell, EmptyCell } from "@/components/ui/TableStates";
+import { EmptyCell } from "@/components/ui/TableStates";
 import { formatDateTime } from "@/lib/utils/date";
+import { AsyncContent } from "@/components/ui/AsyncContent";
 
 const ACTION_GROUPS = [
   { label: "All", value: "" },
@@ -110,69 +111,71 @@ export default function AdminAuditPage() {
 
       {/* Log table */}
       <div className="g-panel log-panel">
-        {isLoading ? (
-          <LoadingCell />
-        ) : data.length === 0 ? (
-          <EmptyCell label="No entries match your filters." />
-        ) : (
-          <>
-            <table className="g-table">
-              <thead>
-                <tr>
-                  <th>Time</th>
-                  <th>Action</th>
-                  <th>User</th>
-                  <th>Team</th>
-                  <th>Detail</th>
-                  <th>IP</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.map((entry) => (
-                  <tr key={entry.id}>
-                    <td className="font-mono text-11 text-muted nowrap">
-                      {formatDateTime(entry.created_at)}
-                    </td>
-                    <td>
-                      <ActionBadge action={entry.action} />
-                    </td>
-                    <td className="text-11 text-secondary">{entry.username ?? "—"}</td>
-                    <td className="text-11 text-muted">{entry.team_name ?? "—"}</td>
-                    <td className="text-11 text-muted detail-cell">
-                      {entry.detail
-                        ? typeof entry.detail === "object"
-                          ? JSON.stringify(entry.detail)
-                          : String(entry.detail)
-                        : "—"}
-                    </td>
-                    <td className="font-mono text-11 text-muted">{entry.ip_address ?? "—"}</td>
+        <AsyncContent
+          isLoading={isLoading}
+          data={data}
+          empty={<EmptyCell label="No entries match your filters." />}
+        >
+          {(data) => (
+            <>
+              <table className="g-table">
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Action</th>
+                    <th>User</th>
+                    <th>Team</th>
+                    <th>Detail</th>
+                    <th>IP</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {data.map((entry) => (
+                    <tr key={entry.id}>
+                      <td className="font-mono text-11 text-muted nowrap">
+                        {formatDateTime(entry.created_at)}
+                      </td>
+                      <td>
+                        <ActionBadge action={entry.action} />
+                      </td>
+                      <td className="text-11 text-secondary">{entry.username ?? "—"}</td>
+                      <td className="text-11 text-muted">{entry.team_name ?? "—"}</td>
+                      <td className="text-11 text-muted detail-cell">
+                        {entry.detail
+                          ? typeof entry.detail === "object"
+                            ? JSON.stringify(entry.detail)
+                            : String(entry.detail)
+                          : "—"}
+                      </td>
+                      <td className="font-mono text-11 text-muted">{entry.ip_address ?? "—"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
 
-            {/* Pagination */}
-            <div className="pagination">
-              <button
-                className="g-btn g-btn-ghost g-btn-sm"
-                disabled={offset === 0}
-                onClick={() => setOffset(Math.max(0, offset - LIMIT))}
-              >
-                ← Prev
-              </button>
-              <span className="text-muted text-11">
-                Showing {offset + 1}–{offset + data.length}
-              </span>
-              <button
-                className="g-btn g-btn-ghost g-btn-sm"
-                disabled={data.length < LIMIT}
-                onClick={() => setOffset(offset + LIMIT)}
-              >
-                Next →
-              </button>
-            </div>
-          </>
-        )}
+              {/* Pagination */}
+              <div className="pagination">
+                <button
+                  className="g-btn g-btn-ghost g-btn-sm"
+                  disabled={offset === 0}
+                  onClick={() => setOffset(Math.max(0, offset - LIMIT))}
+                >
+                  ← Prev
+                </button>
+                <span className="text-muted text-11">
+                  Showing {offset + 1}–{offset + data.length}
+                </span>
+                <button
+                  className="g-btn g-btn-ghost g-btn-sm"
+                  disabled={data.length < LIMIT}
+                  onClick={() => setOffset(offset + LIMIT)}
+                >
+                  Next →
+                </button>
+              </div>
+            </>
+          )}
+        </AsyncContent>
       </div>
     </div>
   );

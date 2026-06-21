@@ -4,7 +4,7 @@
 import "../admin.css";
 
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { ToggleLeft, ToggleRight, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import {
@@ -13,20 +13,16 @@ import {
   type ChallengeListItem,
   type ChallengeDifficulty,
 } from "@/lib/api/challenges";
-import { useNotificationsStore } from "@/stores/notifications.store";
+import { useApiMutation } from "@/hooks/useApiMutation";
 import { DIFF_COLOR } from "@/lib/utils/difficulty";
+import { AsyncContent } from "@/components/ui/AsyncContent";
 
 function ChallengeRow({ ch }: { ch: ChallengeListItem }) {
-  const qc = useQueryClient();
-  const { push } = useNotificationsStore();
-
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending } = useApiMutation<{ slug: string; is_active: boolean }, void>({
     mutationFn: () => setChallengeActive(ch.slug, !ch.is_active),
-    onSuccess: (res) => {
-      qc.invalidateQueries({ queryKey: ["admin", "challenges"] });
-      push("success", `${ch.title} ${res.is_active ? "enabled" : "disabled"}.`);
-    },
-    onError: () => push("error", "Failed to update challenge."),
+    invalidateKeys: [["admin", "challenges"]],
+    successMessage: (res) => `${ch.title} ${res.is_active ? "enabled" : "disabled"}.`,
+    errorMessage: "Failed to update challenge.",
   });
 
   return (
@@ -142,30 +138,32 @@ export default function AdminChallengesPage() {
         />
       </div>
 
-      {isLoading ? (
-        <div className="text-muted text-sm">Loading…</div>
-      ) : filtered.length === 0 ? (
-        <div className="text-muted text-sm mt-4">No challenges found.</div>
-      ) : (
-        <table className="g-table">
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Category</th>
-              <th>Difficulty</th>
-              <th>Type</th>
-              <th style={{ textAlign: "right" }}>Points</th>
-              <th style={{ textAlign: "right" }}>Solves</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((ch) => (
-              <ChallengeRow key={ch.slug} ch={ch} />
-            ))}
-          </tbody>
-        </table>
-      )}
+      <AsyncContent
+        isLoading={isLoading}
+        data={filtered}
+        empty={<div className="text-muted text-sm mt-4">No challenges found.</div>}
+      >
+        {(filtered) => (
+          <table className="g-table">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Difficulty</th>
+                <th>Type</th>
+                <th style={{ textAlign: "right" }}>Points</th>
+                <th style={{ textAlign: "right" }}>Solves</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((ch) => (
+                <ChallengeRow key={ch.slug} ch={ch} />
+              ))}
+            </tbody>
+          </table>
+        )}
+      </AsyncContent>
     </div>
   );
 }

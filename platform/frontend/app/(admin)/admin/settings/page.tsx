@@ -4,13 +4,13 @@
 import "../admin.css";
 import "./settings.css";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { resetDatabase, restartPlatform } from "@/lib/api/admin";
 import { getSiteSettings, updateSiteSettings, type SiteSettings } from "@/lib/api/settings";
-import { useNotificationsStore } from "@/stores/notifications.store";
 import { useConfirmStore } from "@/stores/confirm.store";
+import { useApiMutation } from "@/hooks/useApiMutation";
 import { useUserStore } from "@/stores/user.store";
 import { PlatformSection } from "@/components/admin/settings/PlatformSection";
 import { ScoringSection } from "@/components/admin/settings/ScoringSection";
@@ -20,11 +20,9 @@ import { AppearanceSection } from "@/components/admin/settings/AppearanceSection
 import { DangerZone } from "@/components/admin/settings/DangerZone";
 
 export default function AdminSettingsPage() {
-  const { push } = useNotificationsStore();
   const { confirm } = useConfirmStore();
   const { user } = useUserStore();
   const router = useRouter();
-  const qc = useQueryClient();
 
   useEffect(() => {
     if (user && !user.permissions?.includes("admin.panel")) router.replace("/");
@@ -69,19 +67,18 @@ export default function AdminSettingsPage() {
     });
   }, [settings]);
 
-  const saveMutation = useMutation({
+  const saveMutation = useApiMutation({
     mutationFn: updateSiteSettings,
-    onSuccess: () => {
-      push("success", "Settings saved");
-      qc.invalidateQueries({ queryKey: ["site-settings"] });
-    },
-    onError: () => push("error", "Failed to save settings"),
+    invalidateKeys: [["site-settings"]],
+    successMessage: "Settings saved",
+    errorMessage: "Failed to save settings",
   });
 
-  const resetDbMutation = useMutation({
+  const resetDbMutation = useApiMutation<void, void>({
     mutationFn: resetDatabase,
-    onSuccess: () => push("success", "Database reset — all activity data cleared"),
-    onError: () => push("error", "Failed to reset database"),
+    invalidateKeys: [],
+    successMessage: "Database reset — all activity data cleared",
+    errorMessage: "Failed to reset database",
   });
 
   function handleResetDb() {
@@ -94,10 +91,11 @@ export default function AdminSettingsPage() {
     });
   }
 
-  const restartPlatformMutation = useMutation({
+  const restartPlatformMutation = useApiMutation<void, void>({
     mutationFn: restartPlatform,
-    onSuccess: () => push("success", "Platform restarting — this may take a minute"),
-    onError: () => push("error", "Failed to restart platform"),
+    invalidateKeys: [],
+    successMessage: "Platform restarting — this may take a minute",
+    errorMessage: "Failed to restart platform",
   });
 
   function handleRestartPlatform() {

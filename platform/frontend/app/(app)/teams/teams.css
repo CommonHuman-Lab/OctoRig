@@ -2,7 +2,6 @@
 /* Copyright (c) 2026 CommonHuman-Lab */
 /* page.tsx */
 
-.page { padding: 1.5rem; }
         .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
         .page-title { font-size: 1.125rem; }
         .empty-state { padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
@@ -22,7 +21,6 @@
         .personal-badge { color: var(--g-text-muted); font-style: italic; }
 
 
-.page { padding: 1.5rem; }
         .page-header { margin-bottom: 1.25rem; }
         .back-link { display: inline-flex; align-items: center; gap: 0.375rem; text-decoration: none; }
         .back-link:hover { color: var(--g-text); }
@@ -32,7 +30,6 @@
         .field-label { }
         .form-actions { display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 0.5rem; }
 
-.page { padding: 1.5rem; }
         .page-header { margin-bottom: 1rem; }
         .back-link { display: inline-flex; align-items: center; gap: 0.375rem; text-decoration: none; }
         .back-link:hover { color: var(--g-text); }

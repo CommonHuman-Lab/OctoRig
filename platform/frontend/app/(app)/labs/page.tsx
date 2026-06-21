@@ -4,12 +4,12 @@
 import "./labs.css";
 
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import { useApiMutation } from "@/hooks/useApiMutation";
 import { Search, FlaskConical } from "lucide-react";
 import { getLabs } from "@/lib/api/labs";
 import { stopDeployment, resetDeployment } from "@/lib/api/deployments";
 import { LabCard } from "@/components/labs/LabCard";
-import { useNotificationsStore } from "@/stores/notifications.store";
 import { PageSpinner } from "@/components/ui/Spinner";
 
 const CATEGORIES = [
@@ -23,24 +23,23 @@ export default function LabsPage() {
   const [category, setCategory] = useState<string | undefined>(undefined);
   const [search, setSearch] = useState("");
   const [onlyRunning, setOnlyRunning] = useState(false);
-  const qc = useQueryClient();
-  const { push } = useNotificationsStore();
-
   const { data: labs = [], isLoading } = useQuery({
     queryKey: ["labs", category],
     queryFn: () => getLabs(category),
   });
 
-  const stopMutation = useMutation({
+  const stopMutation = useApiMutation({
     mutationFn: stopDeployment,
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["labs"] }); push("success", "Lab stop requested"); },
-    onError: () => push("error", "Failed to stop lab"),
+    invalidateKeys: [["labs"]],
+    successMessage: "Lab stop requested",
+    errorMessage: "Failed to stop lab",
   });
 
-  const resetMutation = useMutation({
+  const resetMutation = useApiMutation({
     mutationFn: resetDeployment,
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["labs"] }); push("success", "Lab reset requested"); },
-    onError: () => push("error", "Failed to reset lab"),
+    invalidateKeys: [["labs"]],
+    successMessage: "Lab reset requested",
+    errorMessage: "Failed to reset lab",
   });
 
   const CATEGORY_ORDER: Record<string, number> = { world: 0, firerange: 1, thirdparty: 2 };

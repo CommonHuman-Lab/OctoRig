@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useApiMutation } from "@/hooks/useApiMutation";
 import { Plus, Send, X } from "lucide-react";
 import {
   updateSubmission,
@@ -11,7 +11,6 @@ import {
   type FlagInput,
   type HintInput,
 } from "@/lib/api/content";
-import { useNotificationsStore } from "@/stores/notifications.store";
 import { MarkdownEditor } from "@/components/ui/MarkdownEditor";
 
 const fieldStyle = { display: "flex", flexDirection: "column" as const, gap: "0.25rem" };
@@ -19,8 +18,6 @@ const labelStyle = { fontSize: "0.6875rem", textTransform: "uppercase" as const,
 const sectionStyle = { borderTop: "1px solid var(--g-border)", paddingTop: "0.75rem", marginTop: "0.25rem" };
 
 export function ChallengeBodyEditor({ sub }: { sub: ContentSubmission }) {
-  const qc = useQueryClient();
-  const { push } = useNotificationsStore();
   const body = sub.body as any;
 
   const [description, setDescription] = useState<string>(body.description ?? "");
@@ -58,25 +55,21 @@ export function ChallengeBodyEditor({ sub }: { sub: ContentSubmission }) {
 
   const canSubmit = flags.some((f) => f.value.trim() !== "");
 
-  const saveMutation = useMutation({
+  const saveMutation = useApiMutation<ContentSubmission, void>({
     mutationFn: () => updateSubmission(sub.id, { body: buildBody() }),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["content", "mine"] });
-      push("success", "Draft saved.");
-    },
-    onError: (err: any) => push("error", err?.response?.data?.detail ?? "Save failed."),
+    invalidateKeys: [["content", "mine"]],
+    successMessage: "Draft saved.",
+    errorMessage: (err: any) => err?.response?.data?.detail ?? "Save failed.",
   });
 
-  const submitMutation = useMutation({
+  const submitMutation = useApiMutation<ContentSubmission, void>({
     mutationFn: async () => {
       await updateSubmission(sub.id, { body: buildBody() });
       return submitForReview(sub.id);
     },
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["content", "mine"] });
-      push("success", "Submitted for review.");
-    },
-    onError: (err: any) => push("error", err?.response?.data?.detail ?? "Submission failed."),
+    invalidateKeys: [["content", "mine"]],
+    successMessage: "Submitted for review.",
+    errorMessage: (err: any) => err?.response?.data?.detail ?? "Submission failed.",
   });
 
   return (

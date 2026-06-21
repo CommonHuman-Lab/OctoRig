@@ -7,9 +7,10 @@ from sqlalchemy.orm import Session
 
 from pydantic import BaseModel
 
-from app.api.deps import get_current_user, get_current_user_or_api_key
+from app.api.deps import get_client_ip, get_current_user, get_current_user_or_api_key
+from app.core.db_helpers import raise_if_exists
 from app.config import settings
-from app.core.exceptions import bad_request, conflict, credentials_exception, forbidden_exception, too_many_requests
+from app.core.exceptions import bad_request, credentials_exception, forbidden_exception, too_many_requests
 from app.core.limiter import limiter
 from app.core.security import (
     create_access_token,
@@ -76,7 +77,7 @@ def login(
     db: Session = Depends(get_db),
 ) -> TokenResponse:
     user = db.query(User).filter(User.username == payload.username).first()
-    ip = request.client.host if request.client else None
+    ip = get_client_ip(request)
 
     if user is not None and login_lockout_service.is_locked(user):
         write_audit(db, action=audit_service.AUTH_LOGIN_FAILED,
@@ -229,16 +230,15 @@ def register(
     response: Response,
     db: Session = Depends(get_db),
 ) -> TokenResponse:
+    ip = get_client_ip(request)
     site = get_settings(db)
     if not site.registration_open:
         raise forbidden_exception
 
     if len(payload.password) < 8:
         raise bad_request("Password must be at least 8 characters")
-    if db.query(User).filter(User.username == payload.username).first():
-        raise conflict(f"Username '{payload.username}' is already taken")
-    if db.query(User).filter(User.email == payload.email).first():
-        raise conflict(f"Email '{payload.email}' is already registered")
+    raise_if_exists(db, User, f"Username '{payload.username}' is already taken", username=payload.username)
+    raise_if_exists(db, User, f"Email '{payload.email}' is already registered", email=payload.email)
 
     from app.models.role import PlatformRole
 
@@ -258,7 +258,6 @@ def register(
     from app.services.team_service import ensure_personal_team
     ensure_personal_team(db, user)
 
-    ip = request.client.host if request.client else None
     write_audit(db, action="auth.registered", user_id=user.id, ip=ip)
 
     _purge_expired(db, user.id)

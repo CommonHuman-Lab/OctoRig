@@ -12,10 +12,10 @@ const STATUS_STYLE: Record<ContentStatus, { bg: string; color: string }> = {
   rejected:       { bg: "color-mix(in srgb, var(--g-danger) 15%, transparent)",     color: "var(--g-danger)" },
 };
 
-export function StatusBadge({ status }: { status: ContentStatus }) {
+export function StatusPill({ status }: { status: ContentStatus }) {
   const s = STATUS_STYLE[status];
   return (
-    <span className="status-badge" style={{ background: s.bg, color: s.color }}>
+    <span className="g-status-pill" style={{ background: s.bg, color: s.color }}>
       {status.replace("_", " ")}
     </span>
   );

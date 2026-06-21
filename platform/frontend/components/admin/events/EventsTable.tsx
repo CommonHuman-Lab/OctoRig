@@ -7,6 +7,7 @@ import {
 } from "@/lib/api/events";
 import { EVENT_STATUS_COLORS } from "@/lib/utils/status";
 import { formatDateTime } from "@/lib/utils/date";
+import { AsyncContent } from "@/components/ui/AsyncContent";
 
 const STATUS_ORDER: EventStatus[] = ["draft", "published", "running", "ended", "archived"];
 
@@ -41,101 +42,102 @@ interface EventsTableProps {
 export function EventsTable({
   events, isLoading, mapSlug, onToggleMap, onEdit, transitionMutation, confirm,
 }: EventsTableProps) {
-  if (isLoading) {
-    return <p style={{ color: "var(--g-text-muted)", fontSize: "0.875rem" }}>Loading…</p>;
-  }
-  if (events.length === 0) {
-    return (
-      <div className="g-card" style={{ textAlign: "center", padding: "2rem", color: "var(--g-text-muted)" }}>
-        No events yet. Create one to get started.
-      </div>
-    );
-  }
-
   return (
-    <div className="g-card" style={{ padding: 0, overflow: "hidden" }}>
-      <table className="g-table">
-        <thead>
-          <tr>
-            <th>Event</th>
-            <th>Status</th>
-            <th>Visibility</th>
-            <th>Scoring</th>
-            <th>Start / End</th>
-            <th>Challenges</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {events.map((ev) => {
-            const next = nextStatus(ev.status);
-            return (
-              <tr key={ev.id}>
-                <td>
-                  <div style={{ fontWeight: 600, fontSize: "0.8125rem" }}>{ev.title}</div>
-                  <div style={{ fontSize: "0.6875rem", color: "var(--g-text-muted)", fontFamily: "monospace" }}>{ev.slug}</div>
-                </td>
-                <td>
-                  <span style={{
-                    fontSize: "0.6875rem", fontWeight: 700, fontFamily: "monospace",
-                    textTransform: "uppercase", color: EVENT_STATUS_COLORS[ev.status],
-                  }}>
-                    {ev.status}
-                  </span>
-                </td>
-                <td>
-                  <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: "0.75rem", color: "var(--g-text-muted)" }}>
-                    {visIcon(ev.visibility)}
-                    {ev.visibility}
-                  </span>
-                </td>
-                <td style={{ fontSize: "0.75rem", color: "var(--g-text-muted)" }}>{ev.scoring_mode}</td>
-                <td style={{ fontSize: "0.6875rem", color: "var(--g-text-muted)" }}>
-                  {formatDateTime(ev.start_at)}
-                  {" / "}
-                  {formatDateTime(ev.end_at)}
-                </td>
-                <td>
-                  <button
-                    className="g-btn g-btn-ghost g-btn-sm"
-                    onClick={() => onToggleMap(ev.slug)}
-                  >
-                    Challenges
-                    <ChevronRight
-                      size={12}
-                      style={{
-                        transform: mapSlug === ev.slug ? "rotate(90deg)" : "none",
-                        transition: "transform 0.15s",
-                      }}
-                    />
-                  </button>
-                </td>
-                <td>
-                  <div style={{ display: "flex", gap: 6 }}>
-                    {next && (
+    <AsyncContent
+      isLoading={isLoading}
+      data={events}
+      empty={
+        <div className="g-card" style={{ textAlign: "center", padding: "2rem", color: "var(--g-text-muted)" }}>
+          No events yet. Create one to get started.
+        </div>
+      }
+    >
+      {(events) => (
+        <div className="g-card" style={{ padding: 0, overflow: "hidden" }}>
+          <table className="g-table">
+            <thead>
+              <tr>
+                <th>Event</th>
+                <th>Status</th>
+                <th>Visibility</th>
+                <th>Scoring</th>
+                <th>Start / End</th>
+                <th>Challenges</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {events.map((ev) => {
+                const next = nextStatus(ev.status);
+                return (
+                  <tr key={ev.id}>
+                    <td>
+                      <div style={{ fontWeight: 600, fontSize: "0.8125rem" }}>{ev.title}</div>
+                      <div style={{ fontSize: "0.6875rem", color: "var(--g-text-muted)", fontFamily: "monospace" }}>{ev.slug}</div>
+                    </td>
+                    <td>
+                      <span style={{
+                        fontSize: "0.6875rem", fontWeight: 700, fontFamily: "monospace",
+                        textTransform: "uppercase", color: EVENT_STATUS_COLORS[ev.status],
+                      }}>
+                        {ev.status}
+                      </span>
+                    </td>
+                    <td>
+                      <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: "0.75rem", color: "var(--g-text-muted)" }}>
+                        {visIcon(ev.visibility)}
+                        {ev.visibility}
+                      </span>
+                    </td>
+                    <td style={{ fontSize: "0.75rem", color: "var(--g-text-muted)" }}>{ev.scoring_mode}</td>
+                    <td style={{ fontSize: "0.6875rem", color: "var(--g-text-muted)" }}>
+                      {formatDateTime(ev.start_at)}
+                      {" / "}
+                      {formatDateTime(ev.end_at)}
+                    </td>
+                    <td>
                       <button
                         className="g-btn g-btn-ghost g-btn-sm"
-                        disabled={transitionMutation.isPending}
-                        onClick={() => confirm({
-                          title: `Set status to "${next}"?`,
-                          body: `This will move "${ev.title}" from ${ev.status} to ${next}.`,
-                          confirmLabel: "Confirm",
-                          onConfirm: () => transitionMutation.mutate({ slug: ev.slug, status: next }),
-                        })}
+                        onClick={() => onToggleMap(ev.slug)}
                       >
-                        → {next}
+                        Challenges
+                        <ChevronRight
+                          size={12}
+                          style={{
+                            transform: mapSlug === ev.slug ? "rotate(90deg)" : "none",
+                            transition: "transform 0.15s",
+                          }}
+                        />
                       </button>
-                    )}
-                    <button className="g-btn g-btn-ghost g-btn-sm" onClick={() => onEdit(ev)}>
-                      Edit
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
+                    </td>
+                    <td>
+                      <div style={{ display: "flex", gap: 6 }}>
+                        {next && (
+                          <button
+                            className="g-btn g-btn-ghost g-btn-sm"
+                            disabled={transitionMutation.isPending}
+                            onClick={() => confirm({
+                              title: `Set status to "${next}"?`,
+                              body: `This will move "${ev.title}" from ${ev.status} to ${next}.`,
+                              confirmLabel: "Confirm",
+                              onConfirm: () => transitionMutation.mutate({ slug: ev.slug, status: next }),
+                            })}
+                          >
+                            → {next}
+                          </button>
+                        )}
+                        <button className="g-btn g-btn-ghost g-btn-sm" onClick={() => onEdit(ev)}>
+                          Edit
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </AsyncContent>
   );
 }

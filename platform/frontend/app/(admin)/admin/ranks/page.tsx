@@ -4,7 +4,7 @@
 import "./ranks-admin.css";
 
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 import {
   getAdminRanks,
@@ -13,14 +13,12 @@ import {
   deleteAdminRank,
   type Rank,
 } from "@/lib/api/ranks";
-import { useNotificationsStore } from "@/stores/notifications.store";
 import { useConfirmStore } from "@/stores/confirm.store";
 import { RankTable } from "@/components/admin/ranks/RankTable";
 import { RankFormSheet } from "@/components/admin/ranks/RankFormSheet";
+import { useApiMutation } from "@/hooks/useApiMutation";
 
 export default function AdminRanksPage() {
-  const qc = useQueryClient();
-  const { push } = useNotificationsStore();
   const { confirm } = useConfirmStore();
 
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -46,36 +44,27 @@ export default function AdminRanksPage() {
     setSelected(null);
   }
 
-  const saveMutation = useMutation({
+  const saveMutation = useApiMutation({
     mutationFn: (payload: { name: string; min_points: number; icon?: string; color?: string }) =>
       selected ? updateAdminRank(selected.id, payload) : createAdminRank(payload),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["admin-ranks"] });
-      qc.invalidateQueries({ queryKey: ["ranks"] });
-      push("success", selected ? "Rank updated." : "Rank created.");
-      closeSheet();
-    },
-    onError: () => push("error", "Failed to save rank."),
+    invalidateKeys: [["admin-ranks"], ["ranks"]],
+    successMessage: () => (selected ? "Rank updated." : "Rank created."),
+    errorMessage: "Failed to save rank.",
+    onSuccess: closeSheet,
   });
 
-  const toggleMutation = useMutation({
+  const toggleMutation = useApiMutation({
     mutationFn: (rank: Rank) => updateAdminRank(rank.id, { is_active: !rank.is_active }),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["admin-ranks"] });
-      qc.invalidateQueries({ queryKey: ["ranks"] });
-    },
-    onError: () => push("error", "Failed to update rank."),
+    invalidateKeys: [["admin-ranks"], ["ranks"]],
+    errorMessage: "Failed to update rank.",
   });
 
-  const deleteMutation = useMutation({
+  const deleteMutation = useApiMutation({
     mutationFn: (id: number) => deleteAdminRank(id),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["admin-ranks"] });
-      qc.invalidateQueries({ queryKey: ["ranks"] });
-      push("success", "Rank deleted.");
-      closeSheet();
-    },
-    onError: () => push("error", "Failed to delete rank."),
+    invalidateKeys: [["admin-ranks"], ["ranks"]],
+    successMessage: "Rank deleted.",
+    errorMessage: "Failed to delete rank.",
+    onSuccess: closeSheet,
   });
 
   function handleDelete(rank: Rank) {

@@ -6,6 +6,7 @@ from typing import Any, Literal, Optional
 from pydantic import BaseModel, Field
 
 from app.models.deployment import DeploymentStatus
+from app.schemas.base import ORMModel
 
 
 # --- Assessment ---
@@ -34,7 +35,7 @@ class AssessmentUpdate(BaseModel):
     is_active: Optional[bool] = None
 
 
-class AssessmentResponse(BaseModel):
+class AssessmentResponse(ORMModel):
     id: int
     name: str
     slug: str
@@ -51,8 +52,6 @@ class AssessmentResponse(BaseModel):
     invite_count: int = 0
     active_invite_count: int = 0
 
-    model_config = {"from_attributes": True}
-
 
 # --- AssessmentInvite ---
 
@@ -64,7 +63,7 @@ class AssessmentInviteCreate(BaseModel):
     candidate_name: Optional[str] = Field(None, max_length=255)
 
 
-class AssessmentInviteResponse(BaseModel):
+class AssessmentInviteResponse(ORMModel):
     id: int
     assessment_id: int
     email: str
@@ -78,8 +77,6 @@ class AssessmentInviteResponse(BaseModel):
     deployment_ids: list[Any]
     is_revoked: bool
     status: InviteStatus
-
-    model_config = {"from_attributes": True}
 
 
 class FlagSolve(BaseModel):
@@ -138,12 +135,10 @@ class ReportSubmit(BaseModel):
     content: str = Field(..., min_length=1)
 
 
-class ReportResponse(BaseModel):
+class ReportResponse(ORMModel):
     invite_id: int
     content: str
     submitted_at: datetime
-
-    model_config = {"from_attributes": True}
 
 
 # --- Invite accept (registration flow) ---

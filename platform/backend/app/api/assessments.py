@@ -5,10 +5,9 @@ from datetime import datetime, timedelta, timezone
 from typing import Optional
 
 from fastapi import APIRouter, BackgroundTasks, Depends, Response
-from fastapi.requests import Request
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_current_user, get_db, require_admin
+from app.api.deps import get_client_ip, get_current_user, get_db, require_admin
 from app.config import settings
 from app.core.exceptions import bad_request, conflict, credentials_exception, forbidden_exception, not_found
 from app.core.security import create_access_token, generate_opaque_token, hash_password, hash_token
@@ -453,9 +452,9 @@ def get_invite_landing(
 def accept_invite(
     token: str,
     payload: InviteAcceptRegister,
-    request: Request,
     response: Response,
     db: Session = Depends(get_db),
+    ip: Optional[str] = Depends(get_client_ip),
 ) -> TokenResponse:
     """
     Register a new candidate account and link it to this invite.
@@ -491,7 +490,6 @@ def accept_invite(
     db.commit()
     db.refresh(user)
 
-    ip = request.client.host if request.client else None
     write_audit(db, action="assessment.candidate_registered", user_id=user.id, ip=ip,
                 detail={"assessment_id": invite.assessment_id, "invite_id": invite.id})
 

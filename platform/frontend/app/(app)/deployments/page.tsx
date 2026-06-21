@@ -3,7 +3,8 @@
 // Copyright (c) 2026 CommonHuman-Lab
 import "./deployments.css";
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import { useApiMutation } from "@/hooks/useApiMutation";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Square, RotateCcw, Play, Trash2, Rocket } from "lucide-react";
@@ -11,14 +12,12 @@ import {
   getDeployments, stopDeployment, resetDeployment, restartDeployment, removeDeployment,
 } from "@/lib/api/deployments";
 import { DeploymentStatusBadge } from "@/components/deployments/DeploymentStatusBadge";
-import { useNotificationsStore } from "@/stores/notifications.store";
 import { useConfirmStore } from "@/stores/confirm.store";
 import { formatDateTime } from "@/lib/utils/date";
+import { AsyncContent } from "@/components/ui/AsyncContent";
 
 export default function DeploymentsPage() {
-  const qc = useQueryClient();
   const router = useRouter();
-  const { push } = useNotificationsStore();
   const { confirm } = useConfirmStore();
 
   const { data: deployments = [], isLoading } = useQuery({
@@ -26,43 +25,32 @@ export default function DeploymentsPage() {
     queryFn: () => getDeployments(),
   });
 
-  const stopMutation = useMutation({
+  const stopMutation = useApiMutation({
     mutationFn: stopDeployment,
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["deployments"] });
-      qc.invalidateQueries({ queryKey: ["labs"] });
-      push("success", "Lab stop requested");
-    },
-    onError: () => push("error", "Failed to stop lab"),
+    invalidateKeys: [["deployments"], ["labs"]],
+    successMessage: "Lab stop requested",
+    errorMessage: "Failed to stop lab",
   });
 
-  const resetMutation = useMutation({
+  const resetMutation = useApiMutation({
     mutationFn: resetDeployment,
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["deployments"] });
-      qc.invalidateQueries({ queryKey: ["labs"] });
-      push("success", "Lab reset requested");
-    },
-    onError: () => push("error", "Failed to reset lab"),
+    invalidateKeys: [["deployments"], ["labs"]],
+    successMessage: "Lab reset requested",
+    errorMessage: "Failed to reset lab",
   });
 
-  const startMutation = useMutation({
+  const startMutation = useApiMutation({
     mutationFn: restartDeployment,
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["deployments"] });
-      qc.invalidateQueries({ queryKey: ["labs"] });
-      push("success", "Lab start requested");
-    },
-    onError: () => push("error", "Failed to start lab"),
+    invalidateKeys: [["deployments"], ["labs"]],
+    successMessage: "Lab start requested",
+    errorMessage: "Failed to start lab",
   });
 
-  const removeMutation = useMutation({
+  const removeMutation = useApiMutation({
     mutationFn: removeDeployment,
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["deployments"] });
-      push("success", "Deployment removed");
-    },
-    onError: () => push("error", "Failed to remove deployment"),
+    invalidateKeys: [["deployments"]],
+    successMessage: "Deployment removed",
+    errorMessage: "Failed to remove deployment",
   });
 
   function handleRemove(id: number, labName: string) {
@@ -82,98 +70,102 @@ export default function DeploymentsPage() {
         Deployments
       </h1>
 
-      {isLoading ? (
-        <div className="text-muted text-sm">Loading…</div>
-      ) : deployments.length === 0 ? (
-        <div className="g-panel empty-state">
-          <p className="text-muted text-sm">No deployments yet.</p>
-          <Link href="/labs" className="g-btn g-btn-primary mt-2">Start a Lab</Link>
-        </div>
-      ) : (
-        <table className="g-table">
-          <thead>
-            <tr>
-              <th>Lab</th>
-              <th>Category</th>
-              <th>Status</th>
-              <th>Started By</th>
-              <th>Started At</th>
-              <th>Stopped At</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {deployments.map((d) => {
-              const canStop = d.status === "running" || d.status === "starting";
-              const canReset = d.status === "running" && d.lab_category === "firerange";
-              const canStart = d.status === "stopped" || d.status === "error";
-              const canRemove = d.status === "stopped" || d.status === "error";
-              return (
-                <tr
-                  key={d.id}
-                  className="g-table-row-link"
-                  onClick={() => router.push(`/deployments/${d.id}`)}
-                >
-                  <td className="text-secondary">{d.lab_name}</td>
-                  <td className="text-secondary text-11">{d.lab_category}</td>
-                  <td><DeploymentStatusBadge status={d.status} /></td>
-                  <td className="text-secondary">{d.started_by_username}</td>
-                  <td className="font-mono text-11 text-secondary">
-                    {formatDateTime(d.started_at)}
-                  </td>
-                  <td className="font-mono text-11 text-muted">
-                    {formatDateTime(d.stopped_at)}
-                  </td>
-                  <td onClick={(e) => e.stopPropagation()}>
-                    <div className="flex gap-1">
-                      {canStop && (
-                        <button
-                          className="g-btn g-btn-danger g-btn-icon"
-                          onClick={() => stopMutation.mutate(d.id)}
-                          disabled={stopMutation.isPending || d.status === "stopping"}
-                          title="Stop lab"
-                        >
-                          <Square size={13} />
-                        </button>
-                      )}
-                      {canReset && (
-                        <button
-                          className="g-btn g-btn-ghost g-btn-icon"
-                          onClick={() => resetMutation.mutate(d.id)}
-                          disabled={resetMutation.isPending}
-                          title="Reset scoreboard"
-                        >
-                          <RotateCcw size={13} />
-                        </button>
-                      )}
-                      {canStart && (
-                        <button
-                          className="g-btn g-btn-primary g-btn-icon"
-                          onClick={() => startMutation.mutate(d.id)}
-                          disabled={startMutation.isPending}
-                          title="Start lab"
-                        >
-                          <Play size={13} />
-                        </button>
-                      )}
-                      {canRemove && (
-                        <button
-                          className="g-btn g-btn-danger g-btn-icon"
-                          onClick={() => handleRemove(d.id, d.lab_name)}
-                          disabled={removeMutation.isPending}
-                          title="Remove deployment"
-                        >
-                          <Trash2 size={13} />
-                        </button>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      )}
+      <AsyncContent
+        isLoading={isLoading}
+        data={deployments}
+        empty={
+          <div className="g-panel empty-state">
+            <p className="text-muted text-sm">No deployments yet.</p>
+            <Link href="/labs" className="g-btn g-btn-primary mt-2">Start a Lab</Link>
+          </div>
+        }
+      >
+        {(deployments) => (
+          <table className="g-table">
+            <thead>
+              <tr>
+                <th>Lab</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Started By</th>
+                <th>Started At</th>
+                <th>Stopped At</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {deployments.map((d) => {
+                const canStop = d.status === "running" || d.status === "starting";
+                const canReset = d.status === "running" && d.lab_category === "firerange";
+                const canStart = d.status === "stopped" || d.status === "error";
+                const canRemove = d.status === "stopped" || d.status === "error";
+                return (
+                  <tr
+                    key={d.id}
+                    className="g-table-row-link"
+                    onClick={() => router.push(`/deployments/${d.id}`)}
+                  >
+                    <td className="text-secondary">{d.lab_name}</td>
+                    <td className="text-secondary text-11">{d.lab_category}</td>
+                    <td><DeploymentStatusBadge status={d.status} /></td>
+                    <td className="text-secondary">{d.started_by_username}</td>
+                    <td className="font-mono text-11 text-secondary">
+                      {formatDateTime(d.started_at)}
+                    </td>
+                    <td className="font-mono text-11 text-muted">
+                      {formatDateTime(d.stopped_at)}
+                    </td>
+                    <td onClick={(e) => e.stopPropagation()}>
+                      <div className="flex gap-1">
+                        {canStop && (
+                          <button
+                            className="g-btn g-btn-danger g-btn-icon"
+                            onClick={() => stopMutation.mutate(d.id)}
+                            disabled={stopMutation.isPending || d.status === "stopping"}
+                            title="Stop lab"
+                          >
+                            <Square size={13} />
+                          </button>
+                        )}
+                        {canReset && (
+                          <button
+                            className="g-btn g-btn-ghost g-btn-icon"
+                            onClick={() => resetMutation.mutate(d.id)}
+                            disabled={resetMutation.isPending}
+                            title="Reset scoreboard"
+                          >
+                            <RotateCcw size={13} />
+                          </button>
+                        )}
+                        {canStart && (
+                          <button
+                            className="g-btn g-btn-primary g-btn-icon"
+                            onClick={() => startMutation.mutate(d.id)}
+                            disabled={startMutation.isPending}
+                            title="Start lab"
+                          >
+                            <Play size={13} />
+                          </button>
+                        )}
+                        {canRemove && (
+                          <button
+                            className="g-btn g-btn-danger g-btn-icon"
+                            onClick={() => handleRemove(d.id, d.lab_name)}
+                            disabled={removeMutation.isPending}
+                            title="Remove deployment"
+                          >
+                            <Trash2 size={13} />
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        )}
+      </AsyncContent>
     </div>
   );
 }

@@ -6,6 +6,7 @@ import "../challenges.css";
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useApiMutation } from "@/hooks/useApiMutation";
 import { CheckCircle2, Container } from "lucide-react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
@@ -18,7 +19,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { getPublicSettings } from "@/lib/api/settings";
 import { PyodideEditor } from "@/components/challenges/PyodideEditor";
-import { deployInstance, getMyInstance, stopDeployment } from "@/lib/api/deployments";
+import { deployInstance, getMyInstance, stopDeployment, type Deployment } from "@/lib/api/deployments";
 import { getLabs } from "@/lib/api/labs";
 import { useNotificationsStore } from "@/stores/notifications.store";
 import { PageSpinner } from "@/components/ui/Spinner";
@@ -104,17 +105,13 @@ export default function ChallengeDetailPage() {
     labTemplate?.access_info.find((a) => a.key === "URL")?.value ??
     null;
 
-  const deployMutation = useMutation({
+  const deployMutation = useApiMutation<Deployment, void>({
     mutationFn: () => deployInstance(ch!.id, 2),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["challenge-instance", ch?.id] });
-      push("success", "Instance starting…");
-    },
-    onError: (err: unknown) => {
-      const detail = (err as { response?: { data?: { detail?: string } } })
-        ?.response?.data?.detail;
-      push("error", detail ?? "Failed to deploy instance");
-    },
+    invalidateKeys: [["challenge-instance", ch?.id]],
+    successMessage: "Instance starting…",
+    errorMessage: (err: unknown) =>
+      (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail ??
+      "Failed to deploy instance",
   });
 
   const stopMutation = useMutation({

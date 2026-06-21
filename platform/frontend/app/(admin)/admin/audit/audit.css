@@ -2,7 +2,6 @@
 /* Copyright (c) 2026 CommonHuman-Lab */
 /* page.tsx */
 
-.page { padding: 1.5rem; }
         .page-header { margin-bottom: 1rem; }
         .page-title { font-size: 1.125rem; }
         .audit-filter-bar { padding: 0.875rem; margin-bottom: 0.875rem; display: flex; flex-direction: column; gap: 0.75rem; }

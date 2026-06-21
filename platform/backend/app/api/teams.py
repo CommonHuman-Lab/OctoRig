@@ -1,11 +1,15 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
-from fastapi import APIRouter, Depends, Request
+from typing import Optional
+
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.api.deps import (
+    get_client_ip,
     get_current_user,
     get_current_user_or_api_key,
+    get_team_membership,
     get_team_or_404,
     require_team_role,
 )
@@ -61,14 +65,14 @@ def list_teams(
 @router.post("/", response_model=TeamWithRole, status_code=201)
 def create_team(
     payload: TeamCreate,
-    request: Request,
     current_user: User = Depends(get_current_user_or_api_key),
     db: Session = Depends(get_db),
+    ip: Optional[str] = Depends(get_client_ip),
 ) -> TeamWithRole:
     team = team_service.create_team(db, current_user, payload.name, payload.description)
     audit_service.write_audit(
         db, action="team.created", user_id=current_user.id, team_id=team.id,
-        detail={"name": team.name}, ip=request.client.host if request.client else None,
+        detail={"name": team.name}, ip=ip,
     )
     membership = db.query(TeamMember).filter(
         TeamMember.team_id == team.id, TeamMember.user_id == current_user.id
@@ -85,10 +89,8 @@ def get_team(
     team: Team = Depends(get_team_or_404),
     current_user: User = Depends(get_current_user_or_api_key),
     db: Session = Depends(get_db),
+    membership: Optional[TeamMember] = Depends(get_team_membership),
 ) -> TeamWithRole:
-    membership = db.query(TeamMember).filter(
-        TeamMember.team_id == team.id, TeamMember.user_id == current_user.id
-    ).first()
     if membership is None and not is_privileged(current_user, db):
         raise forbidden_exception
     member_count = db.query(TeamMember).filter(TeamMember.team_id == team.id).count()
@@ -103,34 +105,30 @@ def get_team(
 @router.patch("/{team_id}", response_model=TeamResponse)
 def update_team(
     payload: TeamUpdate,
-    request: Request,
     team: Team = Depends(get_team_or_404),
     current_user: User = Depends(get_current_user_or_api_key),
     db: Session = Depends(get_db),
+    membership: Optional[TeamMember] = Depends(get_team_membership),
+    ip: Optional[str] = Depends(get_client_ip),
 ) -> TeamResponse:
-    membership = db.query(TeamMember).filter(
-        TeamMember.team_id == team.id, TeamMember.user_id == current_user.id
-    ).first()
     if not can_manage_team(current_user, db, membership):
         raise forbidden_exception
     team = team_service.update_team(db, team, payload.name, payload.description)
     audit_service.write_audit(
         db, action="team.updated", user_id=current_user.id, team_id=team.id,
-        ip=request.client.host if request.client else None,
+        ip=ip,
     )
     return TeamResponse.model_validate(team)
 
 
 @router.delete("/{team_id}", status_code=204)
 def delete_team(
-    request: Request,
     team: Team = Depends(get_team_or_404),
     current_user: User = Depends(get_current_user_or_api_key),
     db: Session = Depends(get_db),
+    membership: Optional[TeamMember] = Depends(get_team_membership),
+    ip: Optional[str] = Depends(get_client_ip),
 ) -> None:
-    membership = db.query(TeamMember).filter(
-        TeamMember.team_id == team.id, TeamMember.user_id == current_user.id
-    ).first()
     if not can_delete_team(current_user, db, membership):
         raise forbidden_exception
     if team.is_personal:
@@ -138,7 +136,7 @@ def delete_team(
         raise bad_request("Personal teams cannot be deleted")
     audit_service.write_audit(
         db, action="team.deleted", user_id=current_user.id, team_id=team.id,
-        detail={"name": team.name}, ip=request.client.host if request.client else None,
+        detail={"name": team.name}, ip=ip,
     )
     team_service.delete_team(db, team, db)
 
@@ -148,10 +146,8 @@ def list_members(
     team: Team = Depends(get_team_or_404),
     current_user: User = Depends(get_current_user_or_api_key),
     db: Session = Depends(get_db),
+    membership: Optional[TeamMember] = Depends(get_team_membership),
 ) -> list[MemberResponse]:
-    membership = db.query(TeamMember).filter(
-        TeamMember.team_id == team.id, TeamMember.user_id == current_user.id
-    ).first()
     if membership is None and not is_privileged(current_user, db):
         raise forbidden_exception
     rows = team_service.get_team_members(db, team.id)
@@ -161,21 +157,19 @@ def list_members(
 @router.post("/{team_id}/invite", response_model=InvitationResponse, status_code=201)
 def invite_member(
     payload: InviteRequest,
-    request: Request,
     team: Team = Depends(get_team_or_404),
     current_user: User = Depends(get_current_user_or_api_key),
     db: Session = Depends(get_db),
+    membership: Optional[TeamMember] = Depends(get_team_membership),
+    ip: Optional[str] = Depends(get_client_ip),
 ) -> InvitationResponse:
-    membership = db.query(TeamMember).filter(
-        TeamMember.team_id == team.id, TeamMember.user_id == current_user.id
-    ).first()
     if not can_invite_members(current_user, db, membership):
         raise forbidden_exception
     inv = team_service.invite_member(db, current_user, team, payload.username, payload.role)
     audit_service.write_audit(
         db, action="team.member_invited", user_id=current_user.id, team_id=team.id,
         detail={"username": payload.username, "role": payload.role.value},
-        ip=request.client.host if request.client else None,
+        ip=ip,
     )
     return InvitationResponse.model_validate(inv)
 
@@ -183,14 +177,12 @@ def invite_member(
 @router.delete("/{team_id}/members/{user_id}", status_code=204)
 def remove_member(
     user_id: int,
-    request: Request,
     team: Team = Depends(get_team_or_404),
     current_user: User = Depends(get_current_user_or_api_key),
     db: Session = Depends(get_db),
+    membership: Optional[TeamMember] = Depends(get_team_membership),
+    ip: Optional[str] = Depends(get_client_ip),
 ) -> None:
-    membership = db.query(TeamMember).filter(
-        TeamMember.team_id == team.id, TeamMember.user_id == current_user.id
-    ).first()
     # A user can remove themselves regardless of role
     if user_id != current_user.id and not can_remove_member(current_user, db, membership):
         raise forbidden_exception
@@ -198,7 +190,7 @@ def remove_member(
     audit_service.write_audit(
         db, action="team.member_removed", user_id=current_user.id, team_id=team.id,
         detail={"removed_user_id": user_id},
-        ip=request.client.host if request.client else None,
+        ip=ip,
     )
 
 
@@ -206,21 +198,19 @@ def remove_member(
 def change_member_role(
     user_id: int,
     payload: ChangeMemberRoleRequest,
-    request: Request,
     team: Team = Depends(get_team_or_404),
     current_user: User = Depends(get_current_user_or_api_key),
     db: Session = Depends(get_db),
+    membership: Optional[TeamMember] = Depends(get_team_membership),
+    ip: Optional[str] = Depends(get_client_ip),
 ) -> MemberResponse:
-    membership = db.query(TeamMember).filter(
-        TeamMember.team_id == team.id, TeamMember.user_id == current_user.id
-    ).first()
     if not can_change_member_role(current_user, db, membership):
         raise forbidden_exception
     updated = team_service.change_member_role(db, team, user_id, payload.role)
     audit_service.write_audit(
         db, action="team.member_role_changed", user_id=current_user.id, team_id=team.id,
         detail={"target_user_id": user_id, "new_role": payload.role.value},
-        ip=request.client.host if request.client else None,
+        ip=ip,
     )
     target_user = db.get(User, user_id)
     return MemberResponse(
@@ -233,21 +223,19 @@ def change_member_role(
 @router.post("/{team_id}/transfer", status_code=204)
 def transfer_ownership(
     payload: TransferOwnershipRequest,
-    request: Request,
     team: Team = Depends(get_team_or_404),
     current_user: User = Depends(get_current_user_or_api_key),
     db: Session = Depends(get_db),
+    membership: Optional[TeamMember] = Depends(get_team_membership),
+    ip: Optional[str] = Depends(get_client_ip),
 ) -> None:
-    membership = db.query(TeamMember).filter(
-        TeamMember.team_id == team.id, TeamMember.user_id == current_user.id
-    ).first()
     if not can_transfer_ownership(current_user, db, membership):
         raise forbidden_exception
     team_service.transfer_ownership(db, team, current_user, payload.new_owner_id)
     audit_service.write_audit(
         db, action="team.ownership_transferred", user_id=current_user.id, team_id=team.id,
         detail={"new_owner_id": payload.new_owner_id},
-        ip=request.client.host if request.client else None,
+        ip=ip,
     )
 
 
@@ -287,15 +275,15 @@ def decline_invitation(
 @invitations_router.post("/{token}/accept", response_model=MemberResponse, status_code=201)
 def accept_invitation(
     token: str,
-    request: Request,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
+    ip: Optional[str] = Depends(get_client_ip),
 ) -> MemberResponse:
     membership = team_service.accept_invitation(db, token, current_user)
     audit_service.write_audit(
         db, action="team.member_joined", user_id=current_user.id, team_id=membership.team_id,
         detail={"role": membership.role.value},
-        ip=request.client.host if request.client else None,
+        ip=ip,
     )
     return MemberResponse(
         id=membership.id, team_id=membership.team_id, user_id=membership.user_id,

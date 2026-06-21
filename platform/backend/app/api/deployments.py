@@ -6,7 +6,7 @@ from typing import Optional
 from fastapi import APIRouter, BackgroundTasks, Depends, Query, WebSocket, WebSocketDisconnect
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_current_user_or_api_key, get_db
+from app.api.deps import get_current_user_or_api_key, get_db, get_deployment_or_404
 from app.core.exceptions import bad_request, conflict, forbidden_exception, not_found
 from app.core.permissions import can_destroy_deployment, can_view_logs, is_privileged
 from app.labs.registry import REGISTRY_BY_ID
@@ -123,13 +123,10 @@ def get_my_instance(
 
 @router.get("/{deployment_id}", response_model=DeploymentWithTemplate)
 def get_deployment(
-    deployment_id: int,
+    d: Deployment = Depends(get_deployment_or_404),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user_or_api_key),
 ) -> DeploymentWithTemplate:
-    d = db.get(Deployment, deployment_id)
-    if d is None:
-        raise not_found("Deployment")
     if not _visible_to_user(d, current_user, db):
         raise not_found("Deployment")  # don't leak existence
     return _to_response(d, db)
@@ -223,15 +220,11 @@ def create_deployment(
 
 @router.delete("/{deployment_id}", response_model=DeploymentWithTemplate, status_code=202)
 def destroy_deployment(
-    deployment_id: int,
     background_tasks: BackgroundTasks,
+    d: Deployment = Depends(get_deployment_or_404),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user_or_api_key),
 ) -> DeploymentWithTemplate:
-    d = db.get(Deployment, deployment_id)
-    if d is None:
-        raise not_found("Deployment")
-
     membership = _get_membership(db, current_user, d.team_id)
     if not can_destroy_deployment(current_user, db, d, membership):
         raise forbidden_exception
@@ -242,21 +235,17 @@ def destroy_deployment(
     d.status = DeploymentStatus.STOPPING
     db.commit()
 
-    background_tasks.add_task(lab_service.stop_lab, deployment_id, current_user.id)
+    background_tasks.add_task(lab_service.stop_lab, d.id, current_user.id)
     return _to_response(d, db)
 
 
 @router.post("/{deployment_id}/start", response_model=DeploymentWithTemplate, status_code=202)
 def start_deployment(
-    deployment_id: int,
     background_tasks: BackgroundTasks,
+    d: Deployment = Depends(get_deployment_or_404),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user_or_api_key),
 ) -> DeploymentWithTemplate:
-    d = db.get(Deployment, deployment_id)
-    if d is None:
-        raise not_found("Deployment")
-
     membership = _get_membership(db, current_user, d.team_id)
     if not can_destroy_deployment(current_user, db, d, membership):
         raise forbidden_exception
@@ -268,20 +257,16 @@ def start_deployment(
     d.error_message = None
     db.commit()
 
-    background_tasks.add_task(lab_service.start_lab, deployment_id, current_user.id)
+    background_tasks.add_task(lab_service.start_lab, d.id, current_user.id)
     return _to_response(d, db)
 
 
 @router.delete("/{deployment_id}/purge", status_code=204)
 def purge_deployment(
-    deployment_id: int,
+    d: Deployment = Depends(get_deployment_or_404),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user_or_api_key),
 ) -> None:
-    d = db.get(Deployment, deployment_id)
-    if d is None:
-        raise not_found("Deployment")
-
     membership = _get_membership(db, current_user, d.team_id)
     if not can_destroy_deployment(current_user, db, d, membership):
         raise forbidden_exception
@@ -289,20 +274,17 @@ def purge_deployment(
     if d.status not in (DeploymentStatus.STOPPED, DeploymentStatus.ERROR):
         raise bad_request(f"Deployment is {d.status.value} — can only remove stopped or errored deployments")
 
-    lab_service.purge_deployment(db, deployment_id, current_user.id)
+    lab_service.purge_deployment(db, d.id, current_user.id)
 
 
 @router.patch("/{deployment_id}/visibility", response_model=DeploymentWithTemplate)
 def set_visibility(
-    deployment_id: int,
     visibility: str = Query(..., pattern="^(private|team|public)$"),
+    d: Deployment = Depends(get_deployment_or_404),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user_or_api_key),
 ) -> DeploymentWithTemplate:
     from app.models.deployment import DeploymentVisibility
-    d = db.get(Deployment, deployment_id)
-    if d is None:
-        raise not_found("Deployment")
     membership = _get_membership(db, current_user, d.team_id)
     if not can_destroy_deployment(current_user, db, d, membership):  # same permission as mutate
         raise forbidden_exception
@@ -313,15 +295,11 @@ def set_visibility(
 
 @router.post("/{deployment_id}/reset", response_model=DeploymentWithTemplate, status_code=202)
 def reset_deployment(
-    deployment_id: int,
     background_tasks: BackgroundTasks,
+    d: Deployment = Depends(get_deployment_or_404),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user_or_api_key),
 ) -> DeploymentWithTemplate:
-    d = db.get(Deployment, deployment_id)
-    if d is None:
-        raise not_found("Deployment")
-
     membership = _get_membership(db, current_user, d.team_id)
     if not can_destroy_deployment(current_user, db, d, membership):
         raise forbidden_exception
@@ -330,7 +308,7 @@ def reset_deployment(
     if template is None or template.category != "firerange":
         raise bad_request("Reset is only available for fire-range labs")
 
-    background_tasks.add_task(lab_service.reset_lab, deployment_id, current_user.id)
+    background_tasks.add_task(lab_service.reset_lab, d.id, current_user.id)
     return _to_response(d, db)
 
 

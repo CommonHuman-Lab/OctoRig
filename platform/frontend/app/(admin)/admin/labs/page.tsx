@@ -4,15 +4,16 @@
 import "./labs-admin.css";
 
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { X } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { useApiMutation } from "@/hooks/useApiMutation";
 import { SearchBar } from "@/components/ui/SearchBar";
-import { LoadingCell, EmptyCell } from "@/components/ui/TableStates";
+import { EmptyCell } from "@/components/ui/TableStates";
 import { getAdminLabs, updateAdminLab, type AdminLab } from "@/lib/api/admin";
 import { formatDateTime } from "@/lib/utils/date";
-import { useNotificationsStore } from "@/stores/notifications.store";
 import { useConfirmStore } from "@/stores/confirm.store";
 import { useEscapeKey } from "@/hooks/useEscapeKey";
+import { AsyncContent } from "@/components/ui/AsyncContent";
+import { SheetShell } from "@/components/ui/SheetShell";
 
 const CATEGORIES = [
   { id: undefined, label: "All" },
@@ -25,8 +26,6 @@ export default function AdminLabsPage() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<string | undefined>(undefined);
   const [selected, setSelected] = useState<AdminLab | null>(null);
-  const qc = useQueryClient();
-  const { push } = useNotificationsStore();
   const { confirm } = useConfirmStore();
 
   const { data: labs = [], isLoading } = useQuery({
@@ -34,15 +33,13 @@ export default function AdminLabsPage() {
     queryFn: () => getAdminLabs({ category }),
   });
 
-  const toggleMutation = useMutation({
+  const toggleMutation = useApiMutation({
     mutationFn: ({ id, is_active }: { id: number; is_active: boolean }) =>
       updateAdminLab(id, { is_active }),
-    onSuccess: (updated) => {
-      qc.invalidateQueries({ queryKey: ["admin-labs"] });
-      setSelected((prev) => (prev && prev.id === updated.id ? updated : prev));
-      push("success", `${updated.name} ${updated.is_active ? "enabled" : "disabled"}`);
-    },
-    onError: (err: any) => push("error", err?.response?.data?.detail ?? "Failed to update lab"),
+    invalidateKeys: [["admin-labs"]],
+    successMessage: (updated) => `${updated.name} ${updated.is_active ? "enabled" : "disabled"}`,
+    errorMessage: (err: any) => err?.response?.data?.detail ?? "Failed to update lab",
+    onSuccess: (updated) => setSelected((prev) => (prev && prev.id === updated.id ? updated : prev)),
   });
 
   useEscapeKey(() => setSelected(null), !!selected);
@@ -92,71 +89,67 @@ export default function AdminLabsPage() {
       </div>
 
       <div className="g-panel">
-        {isLoading ? (
-          <LoadingCell />
-        ) : filtered.length === 0 ? (
-          <EmptyCell label="No labs found." />
-        ) : (
-          <table className="g-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Slug</th>
-                <th>Category</th>
-                <th>Active deployments</th>
-                <th>Enabled</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((lab) => (
-                <tr key={lab.id}>
-                  <td className="font-mono text-sm">{lab.name}</td>
-                  <td className="font-mono text-11 text-muted">{lab.slug}</td>
-                  <td className="text-11 text-secondary">{lab.category}</td>
-                  <td className="text-11 text-muted">{lab.active_deployment_count}</td>
-                  <td>
-                    <label className="toggle" title={lab.is_active ? "Disable lab" : "Enable lab"}>
-                      <input
-                        type="checkbox"
-                        checked={lab.is_active}
-                        disabled={toggleMutation.isPending}
-                        onChange={() => handleToggle(lab)}
-                      />
-                      <span className="toggle-track" />
-                    </label>
-                  </td>
-                  <td>
-                    <div className="row-actions">
-                      <button
-                        className="g-btn g-btn-ghost g-btn-sm"
-                        onClick={() => setSelected(lab)}
-                      >
-                        Details
-                      </button>
-                    </div>
-                  </td>
+        <AsyncContent
+          isLoading={isLoading}
+          data={filtered}
+          empty={<EmptyCell label="No labs found." />}
+        >
+          {(filtered) => (
+            <table className="g-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Slug</th>
+                  <th>Category</th>
+                  <th>Active deployments</th>
+                  <th>Enabled</th>
+                  <th>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
+              </thead>
+              <tbody>
+                {filtered.map((lab) => (
+                  <tr key={lab.id}>
+                    <td className="font-mono text-sm">{lab.name}</td>
+                    <td className="font-mono text-11 text-muted">{lab.slug}</td>
+                    <td className="text-11 text-secondary">{lab.category}</td>
+                    <td className="text-11 text-muted">{lab.active_deployment_count}</td>
+                    <td>
+                      <label className="toggle" title={lab.is_active ? "Disable lab" : "Enable lab"}>
+                        <input
+                          type="checkbox"
+                          checked={lab.is_active}
+                          disabled={toggleMutation.isPending}
+                          onChange={() => handleToggle(lab)}
+                        />
+                        <span className="toggle-track" />
+                      </label>
+                    </td>
+                    <td>
+                      <div className="row-actions">
+                        <button
+                          className="g-btn g-btn-ghost g-btn-sm"
+                          onClick={() => setSelected(lab)}
+                        >
+                          Details
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </AsyncContent>
       </div>
 
       {selected && (
-        <>
-          <div className="g-backdrop" onClick={() => setSelected(null)} />
-          <div className="ev-sheet">
-            <div className="ev-sheet-header">
-              <h2 style={{ margin: 0, fontSize: "1rem", fontWeight: 700 }}>
-                {selected.name}
-              </h2>
-              <button className="g-btn g-btn-ghost g-btn-sm" onClick={() => setSelected(null)}>
-                <X size={14} />
-              </button>
-            </div>
-
-            <div className="ev-sheet-body">
+        <SheetShell
+          title={<>{selected.name}</>}
+          onClose={() => setSelected(null)}
+          footer={
+            <button className="g-btn g-btn-ghost" onClick={() => setSelected(null)}>Close</button>
+          }
+        >
               <div className="lab-detail-section">
                 <div className="lab-detail-label">Description</div>
                 <p className="text-sm">{selected.description}</p>
@@ -206,13 +199,7 @@ export default function AdminLabsPage() {
                 <div className="lab-detail-label">Last updated</div>
                 <span className="font-mono text-11 text-muted">{formatDateTime(selected.updated_at)}</span>
               </div>
-            </div>
-
-            <div className="ev-sheet-footer">
-              <button className="g-btn g-btn-ghost" onClick={() => setSelected(null)}>Close</button>
-            </div>
-          </div>
-        </>
+        </SheetShell>
       )}
     </div>
   );

@@ -4,13 +4,14 @@
 import "./teams.css";
 
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import { useApiMutation } from "@/hooks/useApiMutation";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Plus, Users, Crown, Shield, Eye } from "lucide-react";
 import { getTeams, createTeam, type TeamRole } from "@/lib/api/teams";
 import { NewTeamSheet } from "@/components/teams/NewTeamSheet";
-import { useNotificationsStore } from "@/stores/notifications.store";
+import { AsyncContent } from "@/components/ui/AsyncContent";
 
 const ROLE_LABEL: Record<TeamRole, { label: string; icon: React.ReactNode }> = {
   owner:   { label: "Owner",   icon: <Crown   size={11} /> },
@@ -21,8 +22,6 @@ const ROLE_LABEL: Record<TeamRole, { label: string; icon: React.ReactNode }> = {
 
 export default function TeamsPage() {
   const router = useRouter();
-  const qc = useQueryClient();
-  const { push } = useNotificationsStore();
   const [sheetOpen, setSheetOpen] = useState(false);
 
   const { data: teams = [], isLoading } = useQuery({
@@ -30,16 +29,14 @@ export default function TeamsPage() {
     queryFn: getTeams,
   });
 
-  const createMutation = useMutation({
+  const createMutation = useApiMutation({
     mutationFn: (data: { name: string; description?: string }) => createTeam(data),
+    invalidateKeys: [["teams"]],
+    successMessage: (team) => `Team "${team.name}" created`,
+    errorMessage: (err: any) => err?.response?.data?.detail ?? "Failed to create team",
     onSuccess: (team) => {
-      qc.invalidateQueries({ queryKey: ["teams"] });
-      push("success", `Team "${team.name}" created`);
       setSheetOpen(false);
       router.push(`/teams/${team.id}`);
-    },
-    onError: (err: any) => {
-      push("error", err?.response?.data?.detail ?? "Failed to create team");
     },
   });
 
@@ -56,45 +53,49 @@ export default function TeamsPage() {
         </button>
       </div>
 
-      {isLoading ? (
-        <div className="text-muted text-sm">Loading…</div>
-      ) : teams.length === 0 ? (
-        <div className="g-panel empty-state">
-          <Users size={32} className="text-muted" />
-          <p className="text-muted text-sm mt-2">No teams yet.</p>
-          <button className="g-btn g-btn-primary mt-2" onClick={() => setSheetOpen(true)}>
-            Create your first team
-          </button>
-        </div>
-      ) : (
-        <div className="team-grid">
-          {teams.map((team) => {
-            const role = ROLE_LABEL[team.my_role];
-            return (
-              <Link key={team.id} href={`/teams/${team.id}`} className="g-card team-card">
-                <div className="team-card-header">
-                  <span className="team-name font-mono">{team.name}</span>
-                  <span className={`role-badge role-badge--${team.my_role}`}>
-                    {role.icon}
-                    {role.label}
-                  </span>
-                </div>
-                {team.description && (
-                  <p className="text-muted text-11 team-desc">{team.description}</p>
-                )}
-                <div className="team-meta">
-                  <span className="text-muted text-11">
-                    <Users size={11} /> {team.member_count} member{team.member_count !== 1 ? "s" : ""}
-                  </span>
-                  {team.is_personal && (
-                    <span className="personal-badge text-11">Personal</span>
+      <AsyncContent
+        isLoading={isLoading}
+        data={teams}
+        empty={
+          <div className="g-panel empty-state">
+            <Users size={32} className="text-muted" />
+            <p className="text-muted text-sm mt-2">No teams yet.</p>
+            <button className="g-btn g-btn-primary mt-2" onClick={() => setSheetOpen(true)}>
+              Create your first team
+            </button>
+          </div>
+        }
+      >
+        {(teams) => (
+          <div className="team-grid">
+            {teams.map((team) => {
+              const role = ROLE_LABEL[team.my_role];
+              return (
+                <Link key={team.id} href={`/teams/${team.id}`} className="g-card team-card">
+                  <div className="team-card-header">
+                    <span className="team-name font-mono">{team.name}</span>
+                    <span className={`role-badge role-badge--${team.my_role}`}>
+                      {role.icon}
+                      {role.label}
+                    </span>
+                  </div>
+                  {team.description && (
+                    <p className="text-muted text-11 team-desc">{team.description}</p>
                   )}
-                </div>
-              </Link>
-            );
-          })}
-        </div>
-      )}
+                  <div className="team-meta">
+                    <span className="text-muted text-11">
+                      <Users size={11} /> {team.member_count} member{team.member_count !== 1 ? "s" : ""}
+                    </span>
+                    {team.is_personal && (
+                      <span className="personal-badge text-11">Personal</span>
+                    )}
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        )}
+      </AsyncContent>
 
       <NewTeamSheet
         open={sheetOpen}

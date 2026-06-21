@@ -3,12 +3,11 @@
 // Copyright (c) 2026 CommonHuman-Lab
 
 import { useEffect, useState } from "react";
-import { X } from "lucide-react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateMyProfile, type ProfileUpdatePayload, type UserProfile } from "@/lib/api/profiles";
-import { useNotificationsStore } from "@/stores/notifications.store";
+import { useApiMutation } from "@/hooks/useApiMutation";
 import { ProfileForm } from "@/components/profile/ProfileForm";
 import { useEscapeKey } from "@/hooks/useEscapeKey";
+import { SheetShell } from "@/components/ui/SheetShell";
 
 export function EditProfileSheet({
   open,
@@ -19,8 +18,6 @@ export function EditProfileSheet({
   profile: UserProfile | null | undefined;
   onClose: () => void;
 }) {
-  const qc = useQueryClient();
-  const { push } = useNotificationsStore();
   const [form, setForm] = useState<ProfileUpdatePayload>({});
 
   useEffect(() => {
@@ -36,14 +33,12 @@ export function EditProfileSheet({
     });
   }, [open, profile]);
 
-  const saveMutation = useMutation({
+  const saveMutation = useApiMutation<UserProfile, void>({
     mutationFn: () => updateMyProfile(form),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["profile"] });
-      push("success", "Profile saved");
-      onClose();
-    },
-    onError: () => push("error", "Failed to save profile"),
+    invalidateKeys: [["profile"]],
+    successMessage: "Profile saved",
+    errorMessage: "Failed to save profile",
+    onSuccess: onClose,
   });
 
   useEscapeKey(onClose, open);
@@ -51,25 +46,13 @@ export function EditProfileSheet({
   if (!open) return null;
 
   return (
-    <>
-      <div className="g-backdrop" onClick={onClose} />
-      <div className="ev-sheet">
-        <div className="ev-sheet-header">
-          <h2 style={{ margin: 0, fontSize: "1rem", fontWeight: 700 }}>Edit Profile</h2>
-          <button className="g-btn g-btn-ghost g-btn-sm" onClick={onClose}>
-            <X size={14} />
-          </button>
-        </div>
-
-        <div className="ev-sheet-body">
-          <ProfileForm
-            form={form}
-            onChange={(key, value) => setForm((prev) => ({ ...prev, [key]: value }))}
-            onSubmit={(e) => { e.preventDefault(); saveMutation.mutate(); }}
-            isPending={saveMutation.isPending}
-          />
-        </div>
-      </div>
-    </>
+    <SheetShell title="Edit Profile" onClose={onClose}>
+      <ProfileForm
+        form={form}
+        onChange={(key, value) => setForm((prev) => ({ ...prev, [key]: value }))}
+        onSubmit={(e) => { e.preventDefault(); saveMutation.mutate(); }}
+        isPending={saveMutation.isPending}
+      />
+    </SheetShell>
   );
 }

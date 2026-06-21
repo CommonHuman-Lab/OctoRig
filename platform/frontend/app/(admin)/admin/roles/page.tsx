@@ -4,7 +4,8 @@
 import "./roles-admin.css";
 
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import { useApiMutation } from "@/hooks/useApiMutation";
 import { Plus, Trash2 } from "lucide-react";
 import {
   listRoles,
@@ -13,15 +14,12 @@ import {
   deleteRole,
   type PlatformRole,
 } from "@/lib/api/admin";
-import { useNotificationsStore } from "@/stores/notifications.store";
 import { useConfirmStore } from "@/stores/confirm.store";
 import { useAdminGuard } from "@/hooks/useAdminGuard";
 import { RoleFormSheet } from "@/components/admin/roles/RoleFormSheet";
 
 export default function AdminRolesPage() {
   useAdminGuard();
-  const qc = useQueryClient();
-  const { push } = useNotificationsStore();
   const { confirm } = useConfirmStore();
 
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -47,34 +45,28 @@ export default function AdminRolesPage() {
     setSelected(null);
   }
 
-  const saveMutation = useMutation({
+  const saveMutation = useApiMutation({
     mutationFn: (payload: any) =>
       selected ? updateRole(selected.slug, payload) : createRole(payload),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["admin-roles"] });
-      push("success", selected ? "Role updated." : "Role created.");
-      closeSheet();
-    },
-    onError: (err: any) => push("error", err?.response?.data?.detail ?? "Failed to save role."),
+    invalidateKeys: [["admin-roles"]],
+    successMessage: () => (selected ? "Role updated." : "Role created."),
+    errorMessage: (err: any) => err?.response?.data?.detail ?? "Failed to save role.",
+    onSuccess: closeSheet,
   });
 
-  const deleteMutation = useMutation({
+  const deleteMutation = useApiMutation({
     mutationFn: (slug: string) => deleteRole(slug),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["admin-roles"] });
-      push("success", "Role deleted.");
-      closeSheet();
-    },
-    onError: (err: any) => push("error", err?.response?.data?.detail ?? "Failed to delete role."),
+    invalidateKeys: [["admin-roles"]],
+    successMessage: "Role deleted.",
+    errorMessage: (err: any) => err?.response?.data?.detail ?? "Failed to delete role.",
+    onSuccess: closeSheet,
   });
 
-  const toggleDefaultMutation = useMutation({
+  const toggleDefaultMutation = useApiMutation({
     mutationFn: ({ slug, is_default }: { slug: string; is_default: boolean }) =>
       updateRole(slug, { is_default }),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["admin-roles"] });
-    },
-    onError: (err: any) => push("error", err?.response?.data?.detail ?? "Failed to update role."),
+    invalidateKeys: [["admin-roles"]],
+    errorMessage: (err: any) => err?.response?.data?.detail ?? "Failed to update role.",
   });
 
   function handleDelete(role: PlatformRole) {

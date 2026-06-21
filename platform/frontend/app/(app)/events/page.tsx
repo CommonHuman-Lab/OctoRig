@@ -5,7 +5,8 @@ import "./events.css";
 
 import { useState } from "react";
 import Link from "next/link";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import { useApiMutation } from "@/hooks/useApiMutation";
 import { Calendar, Clock, Trophy, Users, Lock, Globe, Eye, Plus, Flag } from "lucide-react";
 import {
   getEvents,
@@ -16,12 +17,12 @@ import {
 } from "@/lib/api/events";
 import { useUserStore } from "@/stores/user.store";
 import { formatDateTime } from "@/lib/utils/date";
-import { useNotificationsStore } from "@/stores/notifications.store";
 import { EVENT_STATUS_COLORS } from "@/lib/utils/status";
 import {
   EventFormSheet, BLANK_FORM, toISOOrNull,
   type SheetState, type EventForm,
 } from "@/components/admin/events/EventFormSheet";
+import { AsyncContent } from "@/components/ui/AsyncContent";
 
 const STATUS_TABS: { id: EventStatus | undefined; label: string }[] = [
   { id: undefined, label: "All" },
@@ -88,8 +89,6 @@ export default function EventsPage() {
   const [sheet, setSheet] = useState<SheetState>({ open: false, editing: null });
   const [form, setForm] = useState<EventForm>(BLANK_FORM);
   const { user } = useUserStore();
-  const { push } = useNotificationsStore();
-  const qc = useQueryClient();
   const isAdmin = user?.permissions?.includes("admin.panel") ?? false;
 
   const { data: events = [], isLoading } = useQuery({
@@ -97,7 +96,7 @@ export default function EventsPage() {
     queryFn: () => getEvents(statusFilter),
   });
 
-  const saveMutation = useMutation({
+  const saveMutation = useApiMutation<CtfEvent, void>({
     mutationFn: () => {
       const payload: CreateEventPayload = {
         slug: form.slug,
@@ -111,12 +110,10 @@ export default function EventsPage() {
       };
       return createEvent(payload);
     },
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["events"] });
-      push("success", `Event "${form.title}" created as draft`);
-      setSheet({ open: false, editing: null });
-    },
-    onError: (err: any) => push("error", err?.response?.data?.detail ?? "Failed to create event"),
+    invalidateKeys: [["events"]],
+    successMessage: (data) => `Event "${data.title}" created as draft`,
+    errorMessage: (err: any) => err?.response?.data?.detail ?? "Failed to create event",
+    onSuccess: () => setSheet({ open: false, editing: null }),
   });
 
   function openCreate() {
@@ -155,19 +152,23 @@ export default function EventsPage() {
         ))}
       </div>
 
-      {isLoading ? (
-        <div className="text-muted text-sm" style={{ marginTop: "1.5rem" }}>Loading events…</div>
-      ) : events.length === 0 ? (
-        <div className="text-muted text-sm" style={{ marginTop: "1.5rem" }}>
-          No events found.{isAdmin && " Click “New Event” to create one."}
-        </div>
-      ) : (
-        <div className="ev-grid" style={{ marginTop: "1rem" }}>
-          {events.map((ev) => (
-            <EventCard key={ev.id} ev={ev} />
-          ))}
-        </div>
-      )}
+      <AsyncContent
+        isLoading={isLoading}
+        data={events}
+        empty={
+          <div className="text-muted text-sm" style={{ marginTop: "1.5rem" }}>
+            No events found.{isAdmin && " Click “New Event” to create one."}
+          </div>
+        }
+      >
+        {(events) => (
+          <div className="ev-grid" style={{ marginTop: "1rem" }}>
+            {events.map((ev) => (
+              <EventCard key={ev.id} ev={ev} />
+            ))}
+          </div>
+        )}
+      </AsyncContent>
 
       <EventFormSheet
         sheet={sheet}

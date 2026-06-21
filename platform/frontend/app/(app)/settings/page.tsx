@@ -4,7 +4,8 @@
 import "./settings.css";
 
 import { useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import { useApiMutation } from "@/hooks/useApiMutation";
 import { Palette, User, Shield, FlaskConical, Settings as SettingsIcon } from "lucide-react";
 import { changePassword, getMe } from "@/lib/api/auth";
 import { updateMyProfile } from "@/lib/api/profiles";
@@ -23,9 +24,10 @@ export default function SettingsPage() {
 
   const { data: me } = useQuery({ queryKey: ["me"], queryFn: getMe });
 
-  const themeMutation = useMutation({
+  const themeMutation = useApiMutation({
     mutationFn: (themeId: string) => updateMyProfile({ theme: themeId }),
-    onError: () => push("error", "Failed to save theme preference"),
+    invalidateKeys: [],
+    errorMessage: "Failed to save theme preference",
   });
 
   return (
@@ -185,15 +187,13 @@ function ChangePasswordForm({ push }: { push: (type: "success" | "error", msg: s
   const [next, setNext] = useState("");
   const [confirm, setConfirm] = useState("");
 
-  const mutation = useMutation({
+  const mutation = useApiMutation<void, void>({
     mutationFn: () => changePassword(current, next),
+    invalidateKeys: [],
+    successMessage: "Password changed",
+    errorMessage: (err: any) => err?.response?.data?.detail ?? "Failed to change password",
     onSuccess: () => {
-      push("success", "Password changed");
       setCurrent(""); setNext(""); setConfirm("");
-    },
-    onError: (err: unknown) => {
-      const msg = (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail ?? "Failed to change password";
-      push("error", msg);
     },
   });
 

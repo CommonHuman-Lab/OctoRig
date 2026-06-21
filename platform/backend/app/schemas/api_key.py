@@ -5,13 +5,15 @@ from typing import Optional
 
 from pydantic import BaseModel
 
+from app.schemas.base import ORMModel
+
 
 class ApiKeyCreate(BaseModel):
     name: str
     expires_at: Optional[datetime] = None
 
 
-class ApiKeyResponse(BaseModel):
+class ApiKeyResponse(ORMModel):
     id: int
     name: str
     key_prefix: str
@@ -19,8 +21,6 @@ class ApiKeyResponse(BaseModel):
     last_used_at: Optional[datetime]
     is_active: bool
     created_at: datetime
-
-    model_config = {"from_attributes": True}
 
 
 class ApiKeyCreated(ApiKeyResponse):

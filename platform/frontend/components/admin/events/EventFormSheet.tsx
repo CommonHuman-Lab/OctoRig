@@ -1,12 +1,13 @@
 "use client";
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
-import { Calendar, Save, X } from "lucide-react";
+import { Calendar, Save } from "lucide-react";
 import {
   type CtfEvent, type EventVisibility, type EventScoringMode,
 } from "@/lib/api/events";
 import { MarkdownEditor } from "@/components/ui/MarkdownEditor";
 import { useEscapeKey } from "@/hooks/useEscapeKey";
+import { SheetShell } from "@/components/ui/SheetShell";
 
 export interface SheetState {
   open: boolean;
@@ -51,19 +52,23 @@ export function EventFormSheet({ sheet, form, onChange, onClose, saveMutation }:
   if (!sheet.open) return null;
 
   return (
-    <>
-      <div className="g-backdrop" onClick={onClose} />
-      <div className="ev-sheet">
-        <div className="ev-sheet-header">
-          <h2 style={{ margin: 0, fontSize: "1rem", fontWeight: 700 }}>
-            {sheet.editing ? "Edit Event" : "New Event"}
-          </h2>
-          <button className="g-btn g-btn-ghost g-btn-sm" onClick={onClose}>
-            <X size={14} />
+    <SheetShell
+      title={sheet.editing ? "Edit Event" : "New Event"}
+      onClose={onClose}
+      footer={
+        <>
+          <button className="g-btn g-btn-ghost" onClick={onClose}>Cancel</button>
+          <button
+            className="g-btn g-btn-primary"
+            disabled={!form.title || (!sheet.editing && !form.slug) || saveMutation.isPending}
+            onClick={() => saveMutation.mutate()}
+          >
+            <Save size={13} />
+            {saveMutation.isPending ? "Saving…" : sheet.editing ? "Save Changes" : "Create Event"}
           </button>
-        </div>
-
-        <div className="ev-sheet-body">
+        </>
+      }
+    >
           <label className="ev-field">
             <span className="ev-label">Title</span>
             <input
@@ -169,20 +174,6 @@ export function EventFormSheet({ sheet, form, onChange, onClose, saveMutation }:
               onChange={(e) => onChange({ max_team_size: e.target.value })}
             />
           </label>
-        </div>
-
-        <div className="ev-sheet-footer">
-          <button className="g-btn g-btn-ghost" onClick={onClose}>Cancel</button>
-          <button
-            className="g-btn g-btn-primary"
-            disabled={!form.title || (!sheet.editing && !form.slug) || saveMutation.isPending}
-            onClick={() => saveMutation.mutate()}
-          >
-            <Save size={13} />
-            {saveMutation.isPending ? "Saving…" : sheet.editing ? "Save Changes" : "Create Event"}
-          </button>
-        </div>
-      </div>
-    </>
+    </SheetShell>
   );
 }

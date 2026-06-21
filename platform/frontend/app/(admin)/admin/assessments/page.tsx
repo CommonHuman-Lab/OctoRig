@@ -4,15 +4,16 @@
 import "../admin.css";
 
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import { useApiMutation } from "@/hooks/useApiMutation";
 import { Plus, ClipboardList, Users } from "lucide-react";
 import { listAssessments, createAssessment, type Assessment } from "@/lib/api/assessments";
 import { getLabs, type LabTemplate } from "@/lib/api/labs";
 import { useUserStore } from "@/stores/user.store";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { useNotificationsStore } from "@/stores/notifications.store";
 import { AssessmentFormSheet } from "@/components/admin/assessments/AssessmentFormSheet";
+import { AsyncContent } from "@/components/ui/AsyncContent";
 
 function StatusBadge({ isActive }: { isActive: boolean }) {
   return (
@@ -25,8 +26,6 @@ function StatusBadge({ isActive }: { isActive: boolean }) {
 export default function AdminAssessmentsPage() {
   const { user } = useUserStore();
   const router = useRouter();
-  const { push } = useNotificationsStore();
-  const qc = useQueryClient();
   const [sheetOpen, setSheetOpen] = useState(false);
 
   useEffect(() => {
@@ -45,16 +44,15 @@ export default function AdminAssessmentsPage() {
     staleTime: 60_000,
   });
 
-  const createMutation = useMutation({
+  const createMutation = useApiMutation({
     mutationFn: createAssessment,
+    invalidateKeys: [["admin-assessments"]],
+    successMessage: (assessment) => `Assessment "${assessment.name}" created`,
+    errorMessage: (err: any) => err?.response?.data?.detail ?? "Failed to create assessment",
     onSuccess: (assessment) => {
-      qc.invalidateQueries({ queryKey: ["admin-assessments"] });
-      push("success", `Assessment "${assessment.name}" created`);
       setSheetOpen(false);
       router.push(`/admin/assessments/${assessment.id}`);
     },
-    onError: (err: any) =>
-      push("error", err?.response?.data?.detail ?? "Failed to create assessment"),
   });
 
   return (
@@ -70,68 +68,72 @@ export default function AdminAssessmentsPage() {
         </button>
       </div>
 
-      {isLoading ? (
-        <p className="text-muted text-sm">Loading…</p>
-      ) : assessments.length === 0 ? (
-        <div className="empty-state">
-          <ClipboardList size={40} strokeWidth={1.2} />
-          <p>No assessments yet.</p>
-          <button
-            className="g-btn g-btn-primary g-btn-sm"
-            onClick={() => setSheetOpen(true)}
-          >
-            Create your first assessment
-          </button>
-        </div>
-      ) : (
-        <table className="g-table g-table-hover">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Company</th>
-              <th>Labs</th>
-              <th>Duration</th>
-              <th>Candidates</th>
-              <th>Active</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {assessments.map((a: Assessment) => (
-              <tr
-                key={a.id}
-                style={{ cursor: "pointer" }}
-                onClick={() => router.push(`/admin/assessments/${a.id}`)}
-              >
-                <td style={{ fontWeight: 500, color: "var(--g-text)" }}>{a.name}</td>
-                <td style={{ color: "var(--g-text-muted)", fontSize: "0.8rem" }}>
-                  {a.company_name ?? <span style={{ opacity: 0.4 }}>—</span>}
-                </td>
-                <td style={{ fontFamily: "var(--font-mono, monospace)", fontSize: "0.75rem" }}>
-                  {a.lab_slugs.length}
-                </td>
-                <td style={{ color: "var(--g-text-muted)", fontSize: "0.8rem" }}>
-                  {a.duration_hours}h
-                </td>
-                <td>
-                  <span style={{ display: "flex", alignItems: "center", gap: 4, color: "var(--g-text-muted)", fontSize: "0.8rem" }}>
-                    <Users size={12} />
-                    {a.invite_count}
-                  </span>
-                </td>
-                <td>
-                  <span style={{ color: a.active_invite_count > 0 ? "var(--g-accent)" : "var(--g-text-muted)", fontSize: "0.8rem" }}>
-                    {a.active_invite_count}
-                  </span>
-                </td>
-                <td>
-                  <StatusBadge isActive={a.is_active} />
-                </td>
+      <AsyncContent
+        isLoading={isLoading}
+        data={assessments}
+        empty={
+          <div className="empty-state">
+            <ClipboardList size={40} strokeWidth={1.2} />
+            <p>No assessments yet.</p>
+            <button
+              className="g-btn g-btn-primary g-btn-sm"
+              onClick={() => setSheetOpen(true)}
+            >
+              Create your first assessment
+            </button>
+          </div>
+        }
+      >
+        {(assessments) => (
+          <table className="g-table g-table-hover">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Company</th>
+                <th>Labs</th>
+                <th>Duration</th>
+                <th>Candidates</th>
+                <th>Active</th>
+                <th>Status</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+            </thead>
+            <tbody>
+              {assessments.map((a: Assessment) => (
+                <tr
+                  key={a.id}
+                  style={{ cursor: "pointer" }}
+                  onClick={() => router.push(`/admin/assessments/${a.id}`)}
+                >
+                  <td style={{ fontWeight: 500, color: "var(--g-text)" }}>{a.name}</td>
+                  <td style={{ color: "var(--g-text-muted)", fontSize: "0.8rem" }}>
+                    {a.company_name ?? <span style={{ opacity: 0.4 }}>—</span>}
+                  </td>
+                  <td style={{ fontFamily: "var(--font-mono, monospace)", fontSize: "0.75rem" }}>
+                    {a.lab_slugs.length}
+                  </td>
+                  <td style={{ color: "var(--g-text-muted)", fontSize: "0.8rem" }}>
+                    {a.duration_hours}h
+                  </td>
+                  <td>
+                    <span style={{ display: "flex", alignItems: "center", gap: 4, color: "var(--g-text-muted)", fontSize: "0.8rem" }}>
+                      <Users size={12} />
+                      {a.invite_count}
+                    </span>
+                  </td>
+                  <td>
+                    <span style={{ color: a.active_invite_count > 0 ? "var(--g-accent)" : "var(--g-text-muted)", fontSize: "0.8rem" }}>
+                      {a.active_invite_count}
+                    </span>
+                  </td>
+                  <td>
+                    <StatusBadge isActive={a.is_active} />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </AsyncContent>
 
       <AssessmentFormSheet
         open={sheetOpen}

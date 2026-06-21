@@ -6,6 +6,7 @@ from typing import Any, Optional
 from pydantic import BaseModel, model_validator
 
 from app.models.deployment import DeploymentStatus, DeploymentVisibility
+from app.schemas.base import ORMModel
 
 
 class DeploymentCreate(BaseModel):
@@ -22,7 +23,7 @@ class DeploymentCreate(BaseModel):
         return self
 
 
-class DeploymentResponse(BaseModel):
+class DeploymentResponse(ORMModel):
     id: int
     lab_template_id: int
     started_by_id: int
@@ -43,8 +44,6 @@ class DeploymentResponse(BaseModel):
     started_at: Optional[datetime]
     stopped_at: Optional[datetime]
     created_at: datetime
-
-    model_config = {"from_attributes": True}
 
 
 class DeploymentWithTemplate(DeploymentResponse):

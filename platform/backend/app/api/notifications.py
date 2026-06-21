@@ -8,6 +8,7 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user, get_db
+from app.core.pagination import DefaultLimit
 from app.models.user import User
 from app.models.notification import Notification
 from app.services.notification_service import (
@@ -63,7 +64,7 @@ class MarkedCountOut(BaseModel):
 @router.get("/", response_model=list[NotificationOut])
 def list_notifications_endpoint(
     unread_only: bool = Query(False),
-    limit: int = Query(50, ge=1, le=200),
+    limit: DefaultLimit = 50,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> list[NotificationOut]:

@@ -6,6 +6,7 @@ from typing import Optional
 from pydantic import BaseModel, model_validator
 
 from app.models.scheduled_action import ScheduledActionStatus, ScheduledActionType
+from app.schemas.base import ORMModel
 
 
 class ScheduledActionCreate(BaseModel):
@@ -24,7 +25,7 @@ class ScheduledActionCreate(BaseModel):
         return self
 
 
-class ScheduledActionResponse(BaseModel):
+class ScheduledActionResponse(ORMModel):
     id: int
     user_id: int
     team_id: Optional[int]
@@ -36,5 +37,3 @@ class ScheduledActionResponse(BaseModel):
     status: ScheduledActionStatus
     error_message: Optional[str]
     created_at: datetime
-
-    model_config = {"from_attributes": True}

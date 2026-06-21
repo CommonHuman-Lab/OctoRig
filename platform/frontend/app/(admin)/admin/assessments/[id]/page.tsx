@@ -6,7 +6,8 @@ import "../../settings/settings.css";
 
 import { useState } from "react";
 import { useParams } from "next/navigation";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import { useApiMutation } from "@/hooks/useApiMutation";
 import { ArrowLeft, Copy, Check, Plus, ChevronDown, ChevronRight, Shield, Pencil } from "lucide-react";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
@@ -25,7 +26,6 @@ import {
 } from "@/lib/api/assessments";
 import { getLabs, type LabTemplate } from "@/lib/api/labs";
 import { AssessmentFormSheet } from "@/components/admin/assessments/AssessmentFormSheet";
-import { useNotificationsStore } from "@/stores/notifications.store";
 import { useConfirmStore } from "@/stores/confirm.store";
 import { formatDateTime } from "@/lib/utils/date";
 
@@ -80,17 +80,13 @@ function ProgressRow({
   progress?: AssessmentInviteWithProgress;
 }) {
   const [expanded, setExpanded] = useState(false);
-  const { push } = useNotificationsStore();
   const { confirm } = useConfirmStore();
-  const qc = useQueryClient();
 
-  const revokeMutation = useMutation({
+  const revokeMutation = useApiMutation<void, void>({
     mutationFn: () => revokeInvite(assessmentId, invite.id),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["assessment-invites", assessmentId] });
-      push("success", "Invite revoked");
-    },
-    onError: () => push("error", "Failed to revoke invite"),
+    invalidateKeys: [["assessment-invites", assessmentId]],
+    successMessage: "Invite revoked",
+    errorMessage: "Failed to revoke invite",
   });
 
   const inviteUrl =
@@ -236,8 +232,6 @@ function ProgressRow({
 export default function AssessmentDetailPage() {
   const { id } = useParams<{ id: string }>();
   const assessmentId = Number(id);
-  const { push } = useNotificationsStore();
-  const qc = useQueryClient();
 
   const [editSheetOpen, setEditSheetOpen] = useState(false);
   const [newEmail, setNewEmail] = useState("");
@@ -267,33 +261,27 @@ export default function AssessmentDetailPage() {
     staleTime: 60_000,
   });
 
-  const updateMutation = useMutation({
+  const updateMutation = useApiMutation({
     mutationFn: (payload: CreateAssessmentPayload) => updateAssessment(assessmentId, payload),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["admin-assessment", assessmentId] });
-      qc.invalidateQueries({ queryKey: ["admin-assessments"] });
-      push("success", "Assessment updated");
-      setEditSheetOpen(false);
-    },
-    onError: (err: any) =>
-      push("error", err?.response?.data?.detail ?? "Failed to update assessment"),
+    invalidateKeys: [["admin-assessment", assessmentId], ["admin-assessments"]],
+    successMessage: "Assessment updated",
+    errorMessage: (err: any) => err?.response?.data?.detail ?? "Failed to update assessment",
+    onSuccess: () => setEditSheetOpen(false),
   });
 
-  const inviteMutation = useMutation({
+  const inviteMutation = useApiMutation<AssessmentInvite, void>({
     mutationFn: () =>
       createInvite(assessmentId, {
         email: newEmail,
         candidate_name: newName || undefined,
       }),
+    invalidateKeys: [["assessment-invites", assessmentId], ["admin-assessments"]],
+    successMessage: (data) => `Invite created for ${data.email}`,
+    errorMessage: (err: any) => err?.response?.data?.detail ?? "Failed to create invite",
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["assessment-invites", assessmentId] });
-      qc.invalidateQueries({ queryKey: ["admin-assessments"] });
-      push("success", `Invite created for ${newEmail}`);
       setNewEmail("");
       setNewName("");
     },
-    onError: (err: any) =>
-      push("error", err?.response?.data?.detail ?? "Failed to create invite"),
   });
 
   if (assessmentLoading) {

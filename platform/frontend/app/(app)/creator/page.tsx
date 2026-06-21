@@ -9,6 +9,7 @@ import { Plus, PenTool } from "lucide-react";
 import { getMySubmissions } from "@/lib/api/content";
 import { CreateModal } from "@/components/creator/CreateModal";
 import { SubmissionRow } from "@/components/creator/SubmissionRow";
+import { AsyncContent } from "@/components/ui/AsyncContent";
 
 export default function CreatorPage() {
   const [showCreate, setShowCreate] = useState(false);
@@ -31,32 +32,36 @@ export default function CreatorPage() {
         </button>
       </div>
 
-      {isLoading ? (
-        <div className="text-muted text-sm mt-4">Loading…</div>
-      ) : submissions.length === 0 ? (
-        <div className="creator-empty">
-          No submissions yet. Create a draft to get started.
-        </div>
-      ) : (
-        <div className="creator-table-wrap">
-          <table className="g-table">
-            <thead>
-              <tr>
-                <th>Title</th>
-                <th>Type</th>
-                <th>Status</th>
-                <th>Last Updated</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {submissions.map((sub) => (
-                <SubmissionRow key={sub.id} sub={sub} />
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+      <AsyncContent
+        isLoading={isLoading}
+        data={submissions}
+        empty={
+          <div className="creator-empty">
+            No submissions yet. Create a draft to get started.
+          </div>
+        }
+      >
+        {(submissions) => (
+          <div className="creator-table-wrap">
+            <table className="g-table">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Type</th>
+                  <th>Status</th>
+                  <th>Last Updated</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {submissions.map((sub) => (
+                  <SubmissionRow key={sub.id} sub={sub} />
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </AsyncContent>
 
       {showCreate && <CreateModal onClose={() => setShowCreate(false)} />}
     </div>

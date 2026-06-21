@@ -3,7 +3,7 @@
 // Copyright (c) 2026 CommonHuman-Lab
 
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useApiMutation } from "@/hooks/useApiMutation";
 import { CheckCircle, XCircle, Clock } from "lucide-react";
 import {
   claimSubmission,
@@ -11,24 +11,22 @@ import {
   type ContentSubmission,
   type ReviewVerdict,
 } from "@/lib/api/content";
-import { useNotificationsStore } from "@/stores/notifications.store";
 import { BodyPreview } from "./BodyPreview";
-import { StatusBadge } from "./StatusBadge";
+import { StatusPill } from "@/components/ui/StatusPill";
 
 function ReviewForm({ subId, onDone }: { subId: number; onDone: () => void }) {
-  const qc = useQueryClient();
-  const { push } = useNotificationsStore();
   const [verdict, setVerdict] = useState<ReviewVerdict>("approved");
   const [comment, setComment] = useState("");
 
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending } = useApiMutation<
+    { review_id: number; verdict: ReviewVerdict; submission_status: ContentSubmission["status"] },
+    void
+  >({
     mutationFn: () => reviewSubmission(subId, verdict, comment || undefined),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["content", "queue", "pending"] });
-      push("success", `Verdict submitted: ${verdict}`);
-      onDone();
-    },
-    onError: () => push("error", "Failed to submit review."),
+    invalidateKeys: [["content", "queue", "pending"]],
+    successMessage: (data) => `Verdict submitted: ${data.verdict}`,
+    errorMessage: "Failed to submit review.",
+    onSuccess: onDone,
   });
 
   return (
@@ -70,18 +68,14 @@ function ReviewForm({ subId, onDone }: { subId: number; onDone: () => void }) {
 }
 
 export function PendingRow({ sub }: { sub: ContentSubmission }) {
-  const qc = useQueryClient();
-  const { push } = useNotificationsStore();
   const [showReview, setShowReview] = useState(false);
   const [showBody, setShowBody] = useState(false);
 
-  const { mutate: claim, isPending: claiming } = useMutation({
+  const { mutate: claim, isPending: claiming } = useApiMutation<ContentSubmission, void>({
     mutationFn: () => claimSubmission(sub.id),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["content", "queue", "pending"] });
-      push("success", "Submission claimed.");
-    },
-    onError: () => push("error", "Failed to claim submission."),
+    invalidateKeys: [["content", "queue", "pending"]],
+    successMessage: "Submission claimed.",
+    errorMessage: "Failed to claim submission.",
   });
 
   const isClaimed = sub.status === "in_review";
@@ -105,7 +99,7 @@ export function PendingRow({ sub }: { sub: ContentSubmission }) {
         <td style={{ color: "var(--g-text-muted)", fontSize: "0.75rem" }}>
           {sub.author_username ?? `#${sub.author_id}`}
         </td>
-        <td><StatusBadge status={sub.status} /></td>
+        <td><StatusPill status={sub.status} /></td>
         <td>
           <div style={{ display: "flex", gap: "0.5rem" }}>
             {!isClaimed && (

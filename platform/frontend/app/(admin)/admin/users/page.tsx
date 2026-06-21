@@ -4,8 +4,9 @@
 import "./users-admin.css";
 
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Search, UserPlus, X } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { useApiMutation } from "@/hooks/useApiMutation";
+import { Search, UserPlus } from "lucide-react";
 import {
   getAdminUsers,
   createAdminUser,
@@ -15,16 +16,14 @@ import {
   listRoles,
   type AdminUser,
 } from "@/lib/api/admin";
-import { useNotificationsStore } from "@/stores/notifications.store";
 import { useConfirmStore } from "@/stores/confirm.store";
 import { useUserStore } from "@/stores/user.store";
 import { UsersTable } from "@/components/admin/users/UsersTable";
 import { CreateUserForm } from "@/components/admin/users/CreateUserForm";
 import { useEscapeKey } from "@/hooks/useEscapeKey";
+import { SheetShell } from "@/components/ui/SheetShell";
 
 export default function AdminUsersPage() {
-  const qc = useQueryClient();
-  const { push } = useNotificationsStore();
   const { confirm } = useConfirmStore();
   const { user: currentUser } = useUserStore();
   const [showCreate, setShowCreate] = useState(false);
@@ -45,46 +44,41 @@ export default function AdminUsersPage() {
     queryFn: listRoles,
   });
 
-  const createMutation = useMutation({
+  const createMutation = useApiMutation({
     mutationFn: (payload: { username: string; email: string; password: string; platform_roles: string[] }) =>
       createAdminUser(payload),
-    onSuccess: (_, { username }) => {
-      qc.invalidateQueries({ queryKey: ["admin-users"] });
-      push("success", `User ${username} created`);
-      setShowCreate(false);
-    },
-    onError: (err: any) => push("error", err?.response?.data?.detail ?? "Failed to create user"),
+    invalidateKeys: [["admin-users"]],
+    successMessage: (data) => `User ${data.username} created`,
+    errorMessage: (err: any) => err?.response?.data?.detail ?? "Failed to create user",
+    onSuccess: () => setShowCreate(false),
   });
 
-  const updateMutation = useMutation({
+  const updateMutation = useApiMutation({
     mutationFn: ({ id, patch }: { id: number; patch: Parameters<typeof updateAdminUser>[1] }) =>
       updateAdminUser(id, patch),
-    onSuccess: (updated) => {
-      qc.invalidateQueries({ queryKey: ["admin-users"] });
-      setSelected(updated);
-      push("success", "User updated");
-    },
-    onError: () => push("error", "Failed to update user"),
+    invalidateKeys: [["admin-users"]],
+    successMessage: "User updated",
+    errorMessage: "Failed to update user",
+    onSuccess: (updated) => setSelected(updated),
   });
 
-  const resetMutation = useMutation({
+  const resetMutation = useApiMutation({
     mutationFn: ({ id, password }: { id: number; password: string }) =>
       resetUserPassword(id, password),
+    invalidateKeys: [],
+    successMessage: "Password reset",
+    errorMessage: "Failed to reset password",
     onSuccess: () => {
       setShowReset(false);
       setNewPw("");
-      push("success", "Password reset");
     },
-    onError: () => push("error", "Failed to reset password"),
   });
 
-  const resetPointsMutation = useMutation({
+  const resetPointsMutation = useApiMutation({
     mutationFn: (id: number) => resetUserPoints(id),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["admin-users"] });
-      push("success", "Points reset — all submissions and scores cleared");
-    },
-    onError: () => push("error", "Failed to reset points"),
+    invalidateKeys: [["admin-users"]],
+    successMessage: "Points reset — all submissions and scores cleared",
+    errorMessage: "Failed to reset points",
   });
 
   useEscapeKey(() => setShowReset(false), showReset);
@@ -156,32 +150,11 @@ export default function AdminUsersPage() {
       </div>
 
       {showReset && selected && (
-        <>
-          <div className="g-backdrop" onClick={() => setShowReset(false)} />
-          <div className="ev-sheet">
-            <div className="ev-sheet-header">
-              <h2 style={{ margin: 0, fontSize: "1rem", fontWeight: 700 }}>
-                Reset Password — {selected.username}
-              </h2>
-              <button className="g-btn g-btn-ghost g-btn-sm" onClick={() => setShowReset(false)}>
-                <X size={14} />
-              </button>
-            </div>
-
-            <div className="ev-sheet-body">
-              <label className="ev-field">
-                <span className="ev-label">New Password</span>
-                <input
-                  className="g-input"
-                  type="password"
-                  value={newPw}
-                  onChange={(e) => setNewPw(e.target.value)}
-                  autoFocus
-                />
-              </label>
-            </div>
-
-            <div className="ev-sheet-footer">
+        <SheetShell
+          title={<>Reset Password — {selected.username}</>}
+          onClose={() => setShowReset(false)}
+          footer={
+            <>
               <button className="g-btn g-btn-ghost" onClick={() => setShowReset(false)}>Cancel</button>
               <button
                 className="g-btn g-btn-primary"
@@ -190,42 +163,28 @@ export default function AdminUsersPage() {
               >
                 {resetMutation.isPending ? "Resetting…" : "Reset Password"}
               </button>
-            </div>
-          </div>
-        </>
+            </>
+          }
+        >
+          <label className="ev-field">
+            <span className="ev-label">New Password</span>
+            <input
+              className="g-input"
+              type="password"
+              value={newPw}
+              onChange={(e) => setNewPw(e.target.value)}
+              autoFocus
+            />
+          </label>
+        </SheetShell>
       )}
 
       {showRoles && selected && (
-        <>
-          <div className="g-backdrop" onClick={() => setShowRoles(false)} />
-          <div className="ev-sheet">
-            <div className="ev-sheet-header">
-              <h2 style={{ margin: 0, fontSize: "1rem", fontWeight: 700 }}>
-                Manage Roles — {selected.username}
-              </h2>
-              <button className="g-btn g-btn-ghost g-btn-sm" onClick={() => setShowRoles(false)}>
-                <X size={14} />
-              </button>
-            </div>
-
-            <div className="ev-sheet-body">
-              {availableRoles.map((role) => (
-                <label key={role.slug} className="checkbox-label">
-                  <input
-                    type="checkbox"
-                    checked={pendingRoles.includes(role.slug)}
-                    onChange={() =>
-                      setPendingRoles((r) =>
-                        r.includes(role.slug) ? r.filter((s) => s !== role.slug) : [...r, role.slug]
-                      )
-                    }
-                  />
-                  <span className="text-sm">{role.display_name}</span>
-                </label>
-              ))}
-            </div>
-
-            <div className="ev-sheet-footer">
+        <SheetShell
+          title={<>Manage Roles — {selected.username}</>}
+          onClose={() => setShowRoles(false)}
+          footer={
+            <>
               <button className="g-btn g-btn-ghost" onClick={() => setShowRoles(false)}>Cancel</button>
               <button
                 className="g-btn g-btn-primary"
@@ -237,9 +196,24 @@ export default function AdminUsersPage() {
               >
                 {updateMutation.isPending ? "Saving…" : "Save Roles"}
               </button>
-            </div>
-          </div>
-        </>
+            </>
+          }
+        >
+          {availableRoles.map((role) => (
+            <label key={role.slug} className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={pendingRoles.includes(role.slug)}
+                onChange={() =>
+                  setPendingRoles((r) =>
+                    r.includes(role.slug) ? r.filter((s) => s !== role.slug) : [...r, role.slug]
+                  )
+                }
+              />
+              <span className="text-sm">{role.display_name}</span>
+            </label>
+          ))}
+        </SheetShell>
       )}
     </div>
   );

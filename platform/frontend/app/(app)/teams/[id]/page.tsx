@@ -6,11 +6,12 @@ import "../teams.css";
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useApiMutation } from "@/hooks/useApiMutation";
 import { ArrowLeft, UserPlus, Pencil, Check, X } from "lucide-react";
 import Link from "next/link";
 import {
   getTeam, getTeamMembers, inviteMember, removeMember, changeMemberRole, updateTeam,
-  type TeamRole,
+  type TeamRole, type Team,
 } from "@/lib/api/teams";
 import { useUserStore } from "@/stores/user.store";
 import { useNotificationsStore } from "@/stores/notifications.store";
@@ -49,33 +50,27 @@ export default function TeamDetailPage() {
     onError: (err: any) => push("error", err?.response?.data?.detail ?? "Failed to send invitation"),
   });
 
-  const removeMutation = useMutation({
+  const removeMutation = useApiMutation({
     mutationFn: (userId: number) => removeMember(teamId, userId),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["team-members", teamId] });
-      push("success", "Member removed");
-    },
-    onError: (err: any) => push("error", err?.response?.data?.detail ?? "Failed to remove member"),
+    invalidateKeys: [["team-members", teamId]],
+    successMessage: "Member removed",
+    errorMessage: (err: any) => err?.response?.data?.detail ?? "Failed to remove member",
   });
 
-  const roleMutation = useMutation({
+  const roleMutation = useApiMutation({
     mutationFn: ({ userId, role }: { userId: number; role: TeamRole }) =>
       changeMemberRole(teamId, userId, role),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["team-members", teamId] });
-      push("success", "Role updated");
-    },
-    onError: (err: any) => push("error", err?.response?.data?.detail ?? "Failed to update role"),
+    invalidateKeys: [["team-members", teamId]],
+    successMessage: "Role updated",
+    errorMessage: (err: any) => err?.response?.data?.detail ?? "Failed to update role",
   });
 
-  const editMutation = useMutation({
+  const editMutation = useApiMutation<Team, void>({
     mutationFn: () => updateTeam(teamId, { name: editName.trim(), description: editDesc.trim() || undefined }),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["team", teamId] });
-      push("success", "Team updated");
-      setEditing(false);
-    },
-    onError: (err: any) => push("error", err?.response?.data?.detail ?? "Failed to update team"),
+    invalidateKeys: [["team", teamId]],
+    successMessage: "Team updated",
+    errorMessage: (err: any) => err?.response?.data?.detail ?? "Failed to update team",
+    onSuccess: () => setEditing(false),
   });
 
   function startEdit() {

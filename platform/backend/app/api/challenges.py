@@ -4,13 +4,13 @@ from datetime import datetime, timezone
 from typing import Any, Optional
 
 import redis as redis_lib
-from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
+from fastapi import APIRouter, Depends, Query, Request
 from pydantic import BaseModel, Field, model_validator
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user, get_db, require_admin
 from app.config import settings
-from app.core.exceptions import bad_request, not_found
+from app.core.exceptions import bad_request, not_found, too_many_requests
 from app.models.challenge import ChallengeDifficulty, ChallengeSubmission, ChallengeType
 from app.models.user import User
 from app.services import audit_service
@@ -50,10 +50,7 @@ def _check_submit_rate_limit(user_id: int, challenge_id: int) -> None:
         r.expire(key, _RATE_WINDOW)
     if count > _RATE_LIMIT:
         ttl = max(r.ttl(key), 0)
-        raise HTTPException(
-            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-            detail=f"Too many attempts. Try again in {ttl} seconds.",
-        )
+        raise too_many_requests(f"Too many attempts. Try again in {ttl} seconds.")
 
 
 # ── Schemas ───────────────────────────────────────────────────────────────────
@@ -283,10 +280,7 @@ def submit_flag_endpoint(
             .count()
         )
         if attempt_count >= site.max_flag_attempts:
-            raise HTTPException(
-                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-                detail=f"Max attempts reached ({site.max_flag_attempts}).",
-            )
+            raise too_many_requests(f"Max attempts reached ({site.max_flag_attempts}).")
 
     _check_submit_rate_limit(current_user.id, ch.id)
 
