@@ -81,8 +81,6 @@
         .fb-wrong   { color: var(--g-danger); background: var(--g-danger-bg); }
         .fb-firstblood { display: flex; align-items: center; gap: 0.2rem; margin-left: auto; color: var(--g-warning); font-weight: 700; }
 
-        .text-sm { font-size: 0.75rem; }
-
 /* Python editor split layout */
         .ch-split {
           display: grid;

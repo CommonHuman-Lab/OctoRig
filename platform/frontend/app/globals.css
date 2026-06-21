@@ -7,6 +7,13 @@
 @import "../styles/type.css";
 @import "../styles/color.css";
 @import "../styles/components.css";
+@import "../styles/forms.css";
+@import "../styles/buttons.css";
+@import "../styles/badges.css";
+@import "../styles/overlays.css";
+@import "../styles/data-display.css";
+@import "../styles/nav.css";
+@import "../styles/markdown.css";
 @import "../styles/animations.css";
 @import "../styles/themes/nightfall.css";
 @import "../styles/themes/obsidian.css";

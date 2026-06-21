@@ -166,7 +166,7 @@ export default function ChallengeDetailPage() {
   }
 
   if (isLoading) return <div className="page"><PageSpinner /></div>;
-  if (!ch) return <div className="page text-muted text-sm">Challenge not found.</div>;
+  if (!ch) return <div className="page text-muted text-xs">Challenge not found.</div>;
 
   const codeSnippet = ch.challenge_type === "short_answer" ? (ch.content?.code_snippet as string | undefined) : undefined;
   const language = (ch.content?.language as string | undefined) ?? "text";

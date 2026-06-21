@@ -166,8 +166,8 @@ export default function UserProfilePage() {
         )}
       </div>
 
-      {isLoading && <div className="text-muted text-sm">Loading profile…</div>}
-      {isError && <div className="text-muted text-sm">Profile not found.</div>}
+      {isLoading && <div className="text-muted text-xs">Loading profile…</div>}
+      {isError && <div className="text-muted text-xs">Profile not found.</div>}
       {profile && <ProfileView profile={profile} rankData={rankData} />}
 
       {isOwnProfile && (

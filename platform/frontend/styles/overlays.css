@@ -1,0 +1,97 @@
+/* SPDX-License-Identifier: AGPL-3.0-or-later */
+/* Copyright (c) 2026 CommonHuman-Lab */
+
+/* ── Modal backdrop ───────────────────────────────────────────────────────── */
+
+.g-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 50;
+}
+
+/* ── Modal panel ──────────────────────────────────────────────────────────── */
+
+.g-modal {
+  width: 100%;
+  border-radius: 1rem;
+  border: 1px solid var(--g-border-hover);
+  background-color: var(--g-overlay);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+.g-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--g-border);
+}
+
+.g-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.625rem;
+  padding: 0.75rem 1.5rem;
+  border-top: 1px solid var(--g-border);
+}
+
+/* ── Slide-in sheet (event form, etc.) ────────────────────────────────────── */
+
+.ev-sheet {
+  position: fixed; top: 0; right: 0; bottom: 0; width: 440px;
+  background: var(--g-chrome); border-left: 1px solid var(--g-border);
+  display: flex; flex-direction: column; z-index: 200;
+}
+.ev-sheet-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--g-border);
+}
+.ev-sheet-body {
+  flex: 1; overflow-y: auto; padding: 1.25rem;
+  display: flex; flex-direction: column; gap: 1rem;
+}
+.ev-sheet-footer {
+  display: flex; justify-content: flex-end; gap: 0.5rem;
+  padding: 1rem 1.25rem; border-top: 1px solid var(--g-border);
+}
+.ev-field { display: flex; flex-direction: column; gap: 0.25rem; flex: 0 0 auto; }
+.ev-field-row { display: flex; gap: 0.75rem; }
+.ev-field-row > .ev-field { flex: 1; }
+.ev-label { font-size: 0.75rem; font-weight: 600; color: var(--g-text-muted); }
+
+/* ── Emoji picker — components/ui/EmojiPicker.tsx ─────────────────────────── */
+
+.emoji-picker { position: relative; display: inline-block; }
+.emoji-picker-trigger {
+  display: flex; align-items: center; gap: 0.5rem;
+  border: 1px solid var(--g-border);
+}
+.emoji-picker-preview { font-size: 1.1rem; line-height: 1; }
+.emoji-picker-popover {
+  position: absolute; top: calc(100% + 0.375rem); left: 0; z-index: 50;
+  background: var(--g-chrome); border: 1px solid var(--g-border);
+  border-radius: 0.5rem; padding: 0.5rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+.emoji-picker-grid {
+  display: grid; grid-template-columns: repeat(8, 1fr); gap: 0.125rem;
+  width: 224px;
+}
+.emoji-picker-cell {
+  display: flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px; font-size: 1rem;
+  border: none; background: transparent; border-radius: 0.25rem;
+  cursor: pointer;
+}
+.emoji-picker-cell:hover { background: var(--g-elevated); }
+.emoji-picker-cell--active { background: var(--g-accent-dim); outline: 1px solid var(--g-accent); }
+.emoji-picker-clear { width: 100%; margin-top: 0.375rem; }

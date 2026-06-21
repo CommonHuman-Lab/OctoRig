@@ -2,16 +2,6 @@
 /* Copyright (c) 2026 CommonHuman-Lab */
 /* page.tsx */
 
-        .profile-form { display: flex; flex-direction: column; gap: 1rem; }
-        .form-row { display: flex; flex-direction: column; gap: 0.375rem; }
-        .form-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-        .form-label { font-size: 0.6875rem; font-weight: 600; color: var(--g-text-secondary); }
-        .form-checkbox { flex-direction: row; align-items: center; gap: 0.5rem; }
-        .form-label-inline { font-size: 0.75rem; color: var(--g-text-secondary); cursor: pointer; }
-        .form-actions { display: flex; justify-content: flex-end; padding-top: 0.5rem; }
-        .text-sm { font-size: 0.75rem; }
-
-
 .profile-layout { display: grid; grid-template-columns: 220px 1fr; gap: 1.25rem; align-items: start; }
         @media (max-width: 700px) { .profile-layout { grid-template-columns: 1fr; } }
 

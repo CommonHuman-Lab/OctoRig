@@ -102,9 +102,9 @@ export default function BadgesPage() {
       />
 
       {isLoading ? (
-        <div className="text-muted text-sm">Loading badges…</div>
+        <div className="text-muted text-xs">Loading badges…</div>
       ) : filtered.length === 0 ? (
-        <div className="text-muted text-sm">No badges match this filter.</div>
+        <div className="text-muted text-xs">No badges match this filter.</div>
       ) : catFilter !== "all" ? (
         <div className="g-grid-auto badge-grid">
           {filtered.map((b) => <BadgeCard key={b.id} badge={b} />)}

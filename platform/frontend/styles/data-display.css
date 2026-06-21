@@ -1,0 +1,120 @@
+/* SPDX-License-Identifier: AGPL-3.0-or-later */
+/* Copyright (c) 2026 CommonHuman-Lab */
+
+/* ── Table ────────────────────────────────────────────────────────────────── */
+
+.g-table {
+  width: 100%;
+  font-size: 0.75rem;
+  border-collapse: collapse;
+}
+
+.g-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: var(--g-raised);
+  border-bottom: 1px solid var(--g-border);
+}
+
+.g-table th {
+  text-align: left;
+  padding: 0.375rem 0.5rem;
+  font-size: 0.625rem;
+  color: var(--g-text-muted);
+  font-weight: 500;
+}
+
+.g-table td {
+  padding: 0.375rem 0.5rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--g-border) 60%, transparent);
+}
+
+.g-table tbody tr { cursor: pointer; }
+
+.g-table tbody tr:hover { background-color: var(--g-surface-hover); }
+
+.g-table tbody tr.selected { background-color: var(--g-accent-dim); }
+
+/* ── Admin table row helpers ──────────────────────────────────────────────── */
+
+.table-wrap { overflow-x: auto; }
+.header-actions { display: flex; gap: 0.5rem; align-items: center; }
+.checkbox-label { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; }
+.loading-cell, .empty-cell { padding: 1.5rem; }
+.row-inactive { opacity: 0.5; }
+.row-actions { display: flex; gap: 0.25rem; align-items: center; }
+.row-action-icon { padding: 0.5rem; }
+
+/* ── Progress bar ─────────────────────────────────────────────────────────── */
+
+.g-progress-track {
+  height: 0.375rem;
+  background-color: var(--g-elevated);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.g-progress-fill {
+  height: 100%;
+  background-color: color-mix(in srgb, var(--g-accent) 60%, transparent);
+  border-radius: 9999px;
+  transition: width 0.3s ease;
+}
+
+/* ── Stat card ────────────────────────────────────────────────────────────── */
+
+.g-stat-card {
+  position: relative;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  background-color: var(--g-surface);
+  border: 1px solid var(--g-border);
+  backdrop-filter: blur(12px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  height: 100%;
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  text-decoration: none;
+}
+
+.g-stat-card::before {
+  content: '';
+  position: absolute;
+  inset-x: 0;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--g-shimmer), transparent);
+  pointer-events: none;
+}
+
+.g-stat-card:hover {
+  background-color: var(--g-surface-hover);
+  border-color: var(--g-border-hover);
+}
+
+.g-stat-card .card-icon {
+  color: var(--g-text-dim);
+  transition: color 0.2s ease;
+}
+.g-stat-card:hover .card-icon { color: var(--g-text-muted); }
+
+.g-stat-card .card-arrow {
+  color: var(--g-text-dim);
+  transition: color 0.2s ease;
+  margin-left: auto;
+}
+.g-stat-card:hover .card-arrow { color: var(--g-text-muted); }
+
+/* ── Meta row (label/value pair used in detail panels) ───────────────────── */
+
+.meta-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  padding: 0.375rem 0;
+  border-bottom: 1px solid var(--g-border);
+}
+.meta-row:last-child { border-bottom: none; }

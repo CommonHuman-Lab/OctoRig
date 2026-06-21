@@ -1,0 +1,41 @@
+/* SPDX-License-Identifier: AGPL-3.0-or-later */
+/* Copyright (c) 2026 CommonHuman-Lab */
+
+/* ── Nav item ─────────────────────────────────────────────────────────────── */
+
+.g-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: 1px solid transparent;
+  transition: all 0.15s ease;
+  text-decoration: none;
+  color: var(--g-text-muted);
+}
+
+.g-nav-item:hover {
+  background-color: var(--g-elevated);
+  color: var(--g-text-secondary);
+}
+
+.g-nav-item.active {
+  background-color: var(--g-accent-dim);
+  border-color: var(--g-border-hover);
+  color: var(--g-text);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* ── Accordion / section header ───────────────────────────────────────────── */
+
+.g-section-label {
+  font-size: 0.625rem;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--g-text-muted);
+}

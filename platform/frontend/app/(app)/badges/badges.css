@@ -22,4 +22,3 @@
         .cat-title { font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--g-text-muted); margin-bottom: 0.625rem; }
         .badge-grid { --grid-min: 280px; gap: 0.625rem; }
         .badge-meta { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
-        .text-sm { font-size: 0.75rem; }

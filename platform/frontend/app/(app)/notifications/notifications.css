@@ -13,4 +13,3 @@
         .notif-title { font-size: 0.8125rem; font-weight: 500; color: var(--g-text); }
         .notif-body { font-size: 0.75rem; color: var(--g-text-secondary); line-height: 1.5; margin-top: 0.2rem; }
         .notif-time { font-size: 0.5625rem; color: var(--g-text-muted); white-space: nowrap; margin-top: 0.15rem; flex-shrink: 0; }
-        .text-sm { font-size: 0.75rem; }

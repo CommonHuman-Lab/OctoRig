@@ -1,0 +1,156 @@
+/* SPDX-License-Identifier: AGPL-3.0-or-later */
+/* Copyright (c) 2026 CommonHuman-Lab */
+
+/* ── Input / Select / Textarea ────────────────────────────────────────────── */
+
+.g-input,
+.g-select,
+.g-textarea {
+  background-color: var(--g-raised);
+  border: 1px solid var(--g-border);
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.625rem;
+  font-size: 0.75rem;
+  color: var(--g-text-secondary);
+  outline: none;
+  width: 100%;
+  transition: border-color 0.15s ease;
+}
+
+.g-input::placeholder,
+.g-textarea::placeholder { color: var(--g-text-muted); }
+
+.g-input:focus,
+.g-select:focus,
+.g-textarea:focus { border-color: var(--g-accent); }
+
+.g-input-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.g-input-icon .g-input { padding-left: 1.75rem; }
+.g-input-icon .icon-left {
+  position: absolute;
+  left: 0.625rem;
+  color: var(--g-text-muted);
+  pointer-events: none;
+}
+.g-input-icon .icon-right {
+  position: absolute;
+  right: 0.5rem;
+  color: var(--g-text-muted);
+}
+
+.g-select option {
+  background-color: var(--g-raised);
+  color: var(--g-text);
+}
+
+/* ── Form layout ──────────────────────────────────────────────────────────── */
+
+.g-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.form-row.form-checkbox {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.form-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--g-text-secondary);
+}
+
+.form-label-inline {
+  font-size: 0.75rem;
+  color: var(--g-text-secondary);
+  cursor: pointer;
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+/* ── Toggle switch (button-based, aria-checked) ───────────────────────────── */
+
+.g-toggle {
+  position: relative;
+  width: 30px;
+  height: 17px;
+  border-radius: 9999px;
+  background: var(--g-elevated);
+  border: 1px solid var(--g-border);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.18s ease, border-color 0.18s ease;
+  padding: 0;
+}
+
+.g-toggle::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--g-text-muted);
+  transition: transform 0.18s ease, background 0.18s ease;
+}
+
+.g-toggle[aria-checked="true"] {
+  background: var(--g-accent);
+  border-color: var(--g-accent);
+}
+
+.g-toggle[aria-checked="true"]::after {
+  transform: translateX(13px);
+  background: var(--g-bg);
+}
+
+/* Toggle switch (checkbox-based) — used in admin/settings, admin/roles, admin/ranks */
+.toggle { position: relative; display: inline-flex; cursor: pointer; flex-shrink: 0; }
+.toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+.toggle input:disabled ~ .toggle-track { opacity: 0.5; cursor: not-allowed; }
+.toggle-track {
+  width: 34px; height: 20px;
+  background: var(--g-border);
+  border-radius: 10px;
+  transition: background 0.18s;
+  position: relative;
+}
+.toggle-track::after {
+  content: "";
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.18s;
+}
+.toggle input:checked ~ .toggle-track { background: var(--g-accent); }
+.toggle input:checked ~ .toggle-track::after { transform: translateX(14px); }
+
+/* ── Focus ring on interactive elements ───────────────────────────────────── */
+
+.g-input:focus-visible,
+.g-select:focus-visible,
+.g-btn:focus-visible,
+.g-nav-item:focus-visible {
+  outline: 2px solid var(--g-accent);
+  outline-offset: 2px;
+}

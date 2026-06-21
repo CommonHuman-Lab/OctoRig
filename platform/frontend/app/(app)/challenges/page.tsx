@@ -246,7 +246,7 @@ export default function ChallengesPage() {
             ))}
           </div>
           {displayed.length === 0 && (
-            <div className="text-muted text-sm mt-4">No challenges match your filter.</div>
+            <div className="text-muted text-xs mt-4">No challenges match your filter.</div>
           )}
         </>
       )}

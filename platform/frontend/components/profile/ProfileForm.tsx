@@ -17,7 +17,7 @@ export function ProfileForm({
 }) {
   return (
     <form
-      className="g-card profile-form"
+      className="g-card g-form"
       onSubmit={onSubmit}
     >
       <div className="form-row">

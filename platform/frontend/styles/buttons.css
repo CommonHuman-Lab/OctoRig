@@ -1,0 +1,111 @@
+/* SPDX-License-Identifier: AGPL-3.0-or-later */
+/* Copyright (c) 2026 CommonHuman-Lab */
+
+/* ── Buttons ──────────────────────────────────────────────────────────────── */
+
+.g-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  border-radius: 0.375rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease,
+              border-color 0.15s ease, transform 0.15s ease, opacity 0.15s ease;
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* Primary — filled accent */
+.g-btn-primary {
+  background-color: var(--g-accent);
+  color: var(--g-bg);
+  font-weight: 600;
+  border: none;
+}
+.g-btn-primary:hover { opacity: 0.88; }
+
+/* Ghost — bordered */
+.g-btn-ghost {
+  background-color: transparent;
+  color: var(--g-text-secondary);
+  border: 1px solid var(--g-border-hover);
+}
+.g-btn-ghost:hover {
+  background-color: var(--g-elevated);
+  border-color: var(--g-border-hover);
+  color: var(--g-text);
+}
+
+/* Subtle — minimal, text only */
+.g-btn-subtle {
+  background-color: transparent;
+  color: var(--g-text-muted);
+  border: none;
+  padding: 0.25rem 0.5rem;
+}
+.g-btn-subtle:hover {
+  background-color: var(--g-elevated);
+  color: var(--g-text-secondary);
+}
+
+/* Danger */
+.g-btn-danger {
+  background-color: var(--g-danger);
+  color: #fff;
+  font-weight: 600;
+  border: none;
+}
+.g-btn-danger:hover { opacity: 0.88; }
+
+/* Danger ghost */
+.g-btn-danger-ghost {
+  background-color: transparent;
+  color: var(--g-text-muted);
+  border: none;
+}
+.g-btn-danger-ghost:hover {
+  color: var(--g-danger);
+  background-color: var(--g-danger-bg);
+}
+
+/* Small variant */
+.g-btn-sm {
+  padding: 0.2rem 0.5rem;
+  font-size: 0.6875rem;
+}
+
+/* Icon button (square, no label) */
+.g-btn-icon {
+  background-color: transparent;
+  color: var(--g-text-muted);
+  border: none;
+  padding: 0.375rem;
+  border-radius: 0.375rem;
+}
+.g-btn-icon:hover {
+  background-color: var(--g-elevated);
+  color: var(--g-text-secondary);
+}
+
+/* Accent outlined */
+.g-btn-accent-outline {
+  background-color: var(--g-accent-dim);
+  color: var(--g-accent);
+  border: 1px solid color-mix(in srgb, var(--g-accent) 35%, transparent);
+}
+.g-btn-accent-outline:hover {
+  background-color: color-mix(in srgb, var(--g-accent-dim) 150%, transparent);
+}
+
+/* Active / toggled state modifier */
+.g-btn.active,
+.g-btn-ghost.active {
+  background-color: var(--g-accent-dim);
+  color: var(--g-accent);
+  border-color: color-mix(in srgb, var(--g-accent) 35%, transparent);
+}

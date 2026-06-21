@@ -175,7 +175,7 @@ export default function NotificationsPage() {
         empty={
           <div className="empty-state g-card">
             <Bell size={24} style={{ color: "var(--g-text-muted)" }} />
-            <p className="text-muted text-sm">No notifications yet.</p>
+            <p className="text-muted text-xs">No notifications yet.</p>
           </div>
         }
       >

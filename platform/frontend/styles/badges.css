@@ -1,0 +1,100 @@
+/* SPDX-License-Identifier: AGPL-3.0-or-later */
+/* Copyright (c) 2026 CommonHuman-Lab */
+
+/* ── Badge / Pill ─────────────────────────────────────────────────────────── */
+
+.g-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.125rem 0.5rem;
+  font-size: 0.625rem;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  border-radius: 9999px;
+  border: 1px solid;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.g-badge--accent  { border-color: var(--g-accent);     color: var(--g-accent);      background: var(--g-accent-dim); }
+.g-badge--muted   { border-color: var(--g-border);     color: var(--g-text-muted);  background: var(--g-raised); }
+.g-badge--success { border-color: var(--g-success);    color: var(--g-success);     background: color-mix(in srgb, var(--g-success) 12%, transparent); }
+
+/* ── Tag chip ─────────────────────────────────────────────────────────────── */
+
+.g-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.125rem 0.375rem;
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  border-radius: 0.25rem;
+  background-color: var(--g-elevated);
+  color: var(--g-text-muted);
+  border: 1px solid var(--g-border);
+  white-space: nowrap;
+}
+
+/* ── Challenge difficulty badge ───────────────────────────────────────────── */
+
+.g-diff-badge { font-size: 0.5625rem; text-transform: uppercase; letter-spacing: 0.06em; padding: 0.15rem 0.4rem; border-radius: 0.25rem; font-weight: 600; }
+.g-diff-badge--easy   { color: var(--g-success); background: var(--g-success-bg); box-shadow: 0 0 8px color-mix(in srgb, var(--g-success) 40%, transparent); }
+.g-diff-badge--medium { color: var(--g-warning); background: var(--g-warning-bg); box-shadow: 0 0 8px color-mix(in srgb, var(--g-warning) 40%, transparent); }
+.g-diff-badge--hard   { color: var(--g-orange);  background: rgba(251,146,60,0.1); box-shadow: 0 0 8px color-mix(in srgb, var(--g-orange) 40%, transparent); }
+.g-diff-badge--insane { color: var(--g-danger);  background: var(--g-danger-bg); box-shadow: 0 0 8px color-mix(in srgb, var(--g-danger) 45%, transparent); }
+
+/* ── Status dot ───────────────────────────────────────────────────────────── */
+
+.g-dot {
+  display: inline-block;
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 9999px;
+  flex-shrink: 0;
+}
+
+.g-dot-success  { background-color: var(--g-success); box-shadow: 0 0 6px color-mix(in srgb, var(--g-success) 80%, transparent); }
+.g-dot-warning  { background-color: var(--g-warning); box-shadow: 0 0 6px color-mix(in srgb, var(--g-warning) 80%, transparent); }
+.g-dot-danger   { background-color: var(--g-danger);  box-shadow: 0 0 6px color-mix(in srgb, var(--g-danger) 80%, transparent); }
+.g-dot-accent   { background-color: var(--g-accent);  box-shadow: 0 0 6px color-mix(in srgb, var(--g-accent) 80%, transparent); }
+.g-dot-info     { background-color: var(--g-info);  box-shadow: 0 0 6px color-mix(in srgb, var(--g-info) 80%, transparent); }
+.g-dot-muted    { background-color: var(--g-text-muted); }
+
+/* Status dot + label, e.g. active/inactive rows */
+.g-status-dot { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.6875rem; }
+.g-status-dot::before { content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%; }
+.g-status-dot--active::before { background: var(--g-success); }
+.g-status-dot--inactive::before { background: var(--g-text-muted); }
+
+/* Rank chip — used in scoreboard and admin/ranks */
+.rank-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 99px;
+  font-size: 0.65rem;
+  font-family: var(--font-mono, monospace);
+  font-weight: 600;
+  border: 1px solid currentColor;
+  white-space: nowrap;
+}
+
+/* Status pill — used for content/submission status across creator and admin */
+.g-status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.45rem;
+  border-radius: 3px;
+  font-size: 0.5625rem;
+  font-weight: 700;
+  font-family: var(--font-mono, monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.g-status-pill--on  { background: color-mix(in srgb, var(--g-accent) 15%, transparent); color: var(--g-accent); }
+.g-status-pill--off { background: color-mix(in srgb, var(--g-text-muted) 10%, transparent); color: var(--g-text-muted); }
