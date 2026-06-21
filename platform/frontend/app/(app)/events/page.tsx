@@ -23,6 +23,7 @@ import {
   type SheetState, type EventForm,
 } from "@/components/admin/events/EventFormSheet";
 import { AsyncContent } from "@/components/ui/AsyncContent";
+import { FilterPills } from "@/components/ui/FilterPills";
 
 const STATUS_TABS: { id: EventStatus | undefined; label: string }[] = [
   { id: undefined, label: "All" },
@@ -141,15 +142,16 @@ export default function EventsPage() {
       </div>
 
       <div className="filter-bar">
-        {STATUS_TABS.map((t) => (
-          <button
-            key={String(t.id)}
-            className={`g-btn ${statusFilter === t.id ? "g-btn-primary" : "g-btn-ghost"}`}
-            onClick={() => setStatusFilter(t.id)}
-          >
-            {t.label}
-          </button>
-        ))}
+        <FilterPills
+          groups={[
+            {
+              options: STATUS_TABS.map((t) => t.id),
+              value: statusFilter,
+              onChange: (v) => setStatusFilter(v as EventStatus | undefined),
+              label: (v) => STATUS_TABS.find((t) => t.id === v)?.label ?? "All",
+            },
+          ]}
+        />
       </div>
 
       <AsyncContent

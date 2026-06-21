@@ -14,6 +14,7 @@ import { useConfirmStore } from "@/stores/confirm.store";
 import { useEscapeKey } from "@/hooks/useEscapeKey";
 import { AsyncContent } from "@/components/ui/AsyncContent";
 import { SheetShell } from "@/components/ui/SheetShell";
+import { FilterPills } from "@/components/ui/FilterPills";
 
 const CATEGORIES = [
   { id: undefined, label: "All" },
@@ -75,17 +76,17 @@ export default function AdminLabsPage() {
       </div>
 
       <div className="filter-bar">
-        <div className="flex gap-1">
-          {CATEGORIES.map((c) => (
-            <button
-              key={c.label}
-              className={`g-btn g-btn-sm ${category === c.id ? "g-btn-primary" : "g-btn-ghost"}`}
-              onClick={() => setCategory(c.id)}
-            >
-              {c.label}
-            </button>
-          ))}
-        </div>
+        <FilterPills
+          size="sm"
+          groups={[
+            {
+              options: CATEGORIES.map((c) => c.id),
+              value: category,
+              onChange: setCategory,
+              label: (v) => CATEGORIES.find((c) => c.id === v)?.label ?? "All",
+            },
+          ]}
+        />
       </div>
 
       <div className="g-panel">

@@ -16,6 +16,7 @@ import {
 import { useApiMutation } from "@/hooks/useApiMutation";
 import { DIFF_COLOR } from "@/lib/utils/difficulty";
 import { AsyncContent } from "@/components/ui/AsyncContent";
+import { FilterPills } from "@/components/ui/FilterPills";
 
 function ChallengeRow({ ch }: { ch: ChallengeListItem }) {
   const { mutate, isPending } = useApiMutation<{ slug: string; is_active: boolean }, void>({
@@ -119,16 +120,17 @@ export default function AdminChallengesPage() {
         </div>
       </div>
 
-      <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1rem", alignItems: "center" }}>
-        {(["all", "active", "inactive"] as const).map((f) => (
-          <button
-            key={f}
-            className={`g-btn g-btn-sm ${filter === f ? "g-btn-primary" : "g-btn-ghost"}`}
-            onClick={() => setFilter(f)}
-          >
-            {f.charAt(0).toUpperCase() + f.slice(1)}
-          </button>
-        ))}
+      <div className="filter-bar">
+        <FilterPills
+          size="sm"
+          groups={[
+            {
+              options: ["all", "active", "inactive"],
+              value: filter,
+              onChange: (v) => setFilter(v as "all" | "active" | "inactive"),
+            },
+          ]}
+        />
         <input
           className="g-input"
           placeholder="Search title or category…"

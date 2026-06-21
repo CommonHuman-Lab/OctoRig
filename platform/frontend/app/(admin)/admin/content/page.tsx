@@ -9,6 +9,7 @@ import { getPendingQueue, getApprovedQueue } from "@/lib/api/content";
 import { PendingRow } from "@/components/admin/content/PendingRow";
 import { ApprovedRow } from "@/components/admin/content/ApprovedRow";
 import { AsyncContent } from "@/components/ui/AsyncContent";
+import { FilterPills } from "@/components/ui/FilterPills";
 
 type Tab = "pending" | "approved";
 
@@ -36,19 +37,16 @@ export default function AdminContentPage() {
         <h1 className="page-title font-mono">Content Review</h1>
       </div>
 
-      <div className="flex gap-1 mb-4">
-        <button
-          className={`g-btn ${tab === "pending" ? "g-btn-primary" : "g-btn-ghost"}`}
-          onClick={() => setTab("pending")}
-        >
-          Pending
-        </button>
-        <button
-          className={`g-btn ${tab === "approved" ? "g-btn-primary" : "g-btn-ghost"}`}
-          onClick={() => setTab("approved")}
-        >
-          Approved
-        </button>
+      <div className="filter-bar">
+        <FilterPills
+          groups={[
+            {
+              options: ["pending", "approved"],
+              value: tab,
+              onChange: (v) => setTab(v as Tab),
+            },
+          ]}
+        />
       </div>
 
       <AsyncContent
