@@ -97,7 +97,7 @@ export const THEMES: Theme[] = [
     id: "rose",
     name: "Rosé",
     hint: "Muted charcoal · Dusty rose · Elegant calm",
-    preview: { bg: "#191724", surface: "rgba(196,167,231,0.06)", border: "rgba(196,167,231,0.18)", accent: "#c4a7e7", text: "#e0def4", dim: "#6e6a86" },
+    preview: { bg: "#191724", surface: "rgba(235,188,186,0.06)", border: "rgba(235,188,186,0.18)", accent: "#ebbcba", text: "#e0def4", dim: "#6e6a86" },
   },
   {
     id: "synthwave",
