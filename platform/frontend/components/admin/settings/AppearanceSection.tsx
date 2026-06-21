@@ -40,7 +40,7 @@ export function AppearanceSection({
         control={
           <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
             {THEMES.map((t) => {
-              const isActive = (appearance.default_theme ?? "dracula") === t.id;
+              const isActive = (appearance.default_theme ?? "rose") === t.id;
               return (
                 <button
                   key={t.id}
