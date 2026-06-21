@@ -1,0 +1,40 @@
+/* SPDX-License-Identifier: AGPL-3.0-or-later */
+/* Copyright (c) 2026 CommonHuman-Lab */
+
+/* Topbar — faint ink-green underline, no glow (light bg can't take it) */
+[data-theme="parchment"] header {
+  position: relative;
+  border-bottom: none;
+}
+[data-theme="parchment"] header::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%, rgba(15,122,92,0.15) 30%,
+    rgba(15,122,92,0.45) 50%,
+    rgba(15,122,92,0.15) 70%, transparent 100%);
+  background-size: 300% auto;
+  animation: header-border-shift 14s linear infinite;
+}
+
+/* Sidebar footer — faint ink centre fade */
+[data-theme="parchment"] .sidebar-footer {
+  position: relative;
+  border-top: none;
+}
+[data-theme="parchment"] .sidebar-footer::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  animation: u-pulse 5s ease infinite;
+  background: linear-gradient(90deg, transparent, rgba(15,122,92,0.25), rgba(15,122,92,0.45), rgba(15,122,92,0.25), transparent);
+}
+
+/* Page/challenge titles — solid ink colour, no gradient clip (keeps contrast on cream) */
+[data-theme="parchment"] .page-title,
+[data-theme="parchment"] .ch-title {
+  color: #0f7a5c;
+}

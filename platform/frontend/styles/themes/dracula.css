@@ -1,0 +1,43 @@
+/* SPDX-License-Identifier: AGPL-3.0-or-later */
+/* Copyright (c) 2026 CommonHuman-Lab */
+
+/* Topbar — purple → pink, slow vampiric sweep */
+[data-theme="dracula"] header {
+  position: relative;
+  border-bottom: none;
+}
+[data-theme="dracula"] header::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1.5px;
+  background: linear-gradient(90deg,
+    transparent 0%, rgba(189,147,249,0.25) 20%,
+    #bd93f9 40%, #ff79c6 60%,
+    rgba(255,121,198,0.25) 80%, transparent 100%);
+  background-size: 300% auto;
+  animation: header-border-shift 8s linear infinite;
+}
+
+/* Sidebar footer — purple centre fade */
+[data-theme="dracula"] .sidebar-footer {
+  position: relative;
+  border-top: none;
+}
+[data-theme="dracula"] .sidebar-footer::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  animation: u-pulse 3s ease infinite;
+  background: linear-gradient(90deg, transparent, #bd93f9, #ff79c6, #bd93f9, transparent);
+}
+
+/* Page/challenge titles — static gradient text */
+[data-theme="dracula"] .page-title,
+[data-theme="dracula"] .ch-title {
+  background: linear-gradient(90deg, #bd93f9, #ff79c6, #8be9fd);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}

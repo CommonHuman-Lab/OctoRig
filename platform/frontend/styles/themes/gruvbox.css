@@ -1,0 +1,43 @@
+/* SPDX-License-Identifier: AGPL-3.0-or-later */
+/* Copyright (c) 2026 CommonHuman-Lab */
+
+/* Topbar — slow warm amber pulse, retro CRT feel */
+[data-theme="gruvbox"] header {
+  position: relative;
+  border-bottom: none;
+}
+[data-theme="gruvbox"] header::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%, rgba(254,128,25,0.22) 20%,
+    #fe8019 50%,
+    rgba(254,128,25,0.22) 80%, transparent 100%);
+  background-size: 300% auto;
+  animation: header-border-shift 11s linear infinite;
+}
+
+/* Sidebar footer — amber centre fade */
+[data-theme="gruvbox"] .sidebar-footer {
+  position: relative;
+  border-top: none;
+}
+[data-theme="gruvbox"] .sidebar-footer::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  animation: u-pulse 4s ease infinite;
+  background: linear-gradient(90deg, transparent, rgba(254,128,25,0.4), #fe8019, rgba(254,128,25,0.4), transparent);
+}
+
+/* Page/challenge titles — static gradient text */
+[data-theme="gruvbox"] .page-title,
+[data-theme="gruvbox"] .ch-title {
+  background: linear-gradient(90deg, #d65d0e, #fe8019, #fabd2f);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}

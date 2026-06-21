@@ -152,15 +152,15 @@
   --g-code-bg:        rgba(0, 4, 0, 0.80);
   --g-border:         rgba(34, 197, 94, 0.18);
   --g-border-hover:   rgba(34, 197, 94, 0.35);
-  --g-accent:         #22c55e;
-  --g-accent-dim:     rgba(34, 197, 94, 0.13);
-  --g-accent-glow:    rgba(34, 197, 94, 0.60);
+  --g-accent:         #00e676;
+  --g-accent-dim:     rgba(0, 230, 118, 0.13);
+  --g-accent-glow:    rgba(0, 230, 118, 0.60);
   --g-text:           #f0fdf4;
-  --g-text-secondary: #86efac;
-  --g-text-muted:     #1ba349;
-  --g-text-dim:       rgba(34, 197, 94, 0.20);
-  --g-success:        #22c55e;
-  --g-success-bg:     rgba(34, 197, 94, 0.09);
+  --g-text-secondary: #7a9c84;
+  --g-text-muted:     #4d6b55;
+  --g-text-dim:       rgba(0, 230, 118, 0.20);
+  --g-success:        #00e676;
+  --g-success-bg:     rgba(0, 230, 118, 0.09);
   --g-warning:        #fbbf24;
   --g-warning-bg:     rgba(251, 191, 36, 0.07);
   --g-danger:         #fb7185;
@@ -168,7 +168,7 @@
   --g-info:           #38bdf8;
   --g-info-bg:        rgba(56, 189, 248, 0.07);
   --g-rose: #fb7185; --g-orange: #fb923c; --g-amber: #fbbf24; --g-yellow: #facc15;
-  --g-emerald: #22c55e; --g-sky: #38bdf8; --g-violet: #a78bfa; --g-teal: #2dd4bf; --g-zinc: #3f6b47;
+  --g-emerald: #00e676; --g-sky: #38bdf8; --g-violet: #a78bfa; --g-teal: #2dd4bf; --g-zinc: #3f6b47;
   --g-lab-running: var(--g-success); --g-lab-starting: var(--g-warning);
   --g-lab-stopping: var(--g-warning); --g-lab-stopped: var(--g-text-muted); --g-lab-error: var(--g-danger);
   --g-shimmer: rgba(34,197,94,0.20); --g-radial-1: rgba(34,197,94,0.08); --g-radial-2: rgba(34,197,94,0.03);
@@ -245,4 +245,112 @@
   --g-lab-running: var(--g-success); --g-lab-starting: var(--g-warning);
   --g-lab-stopping: var(--g-warning); --g-lab-stopped: var(--g-text-muted); --g-lab-error: var(--g-danger);
   --g-shimmer: rgba(217,70,239,0.25); --g-radial-1: rgba(168,85,247,0.28); --g-radial-2: rgba(99,102,241,0.14);
+}
+
+/* ── Dracula ────────────────────────────────────────────────────────────────
+   Slate purple · Lavender · Classic vampire
+   ──────────────────────────────────────────────────────────────────────────── */
+:root[data-theme="dracula"] {
+  --g-bg:             #282a36;
+  --g-chrome:         rgba(33, 34, 44, 0.97);
+  --g-raised:         rgba(40, 42, 54, 0.93);
+  --g-elevated:       rgba(189, 147, 249, 0.10);
+  --g-surface:        rgba(189, 147, 249, 0.06);
+  --g-surface-hover:  rgba(189, 147, 249, 0.12);
+  --g-overlay:        rgba(33, 34, 44, 0.85);
+  --g-code-bg:        rgba(20, 21, 28, 0.60);
+  --g-border:         rgba(189, 147, 249, 0.18);
+  --g-border-hover:   rgba(189, 147, 249, 0.36);
+  --g-accent:         #bd93f9;
+  --g-accent-dim:     rgba(189, 147, 249, 0.15);
+  --g-accent-glow:    rgba(189, 147, 249, 0.50);
+  --g-text:           #f8f8f2;
+  --g-text-secondary: #ff79c6;
+  --g-text-muted:     #6272a4;
+  --g-text-dim:       rgba(189, 147, 249, 0.22);
+  --g-success:        #50fa7b;
+  --g-success-bg:     rgba(80, 250, 123, 0.09);
+  --g-warning:        #f1fa8c;
+  --g-warning-bg:     rgba(241, 250, 140, 0.09);
+  --g-danger:         #ff5555;
+  --g-danger-bg:      rgba(255, 85, 85, 0.10);
+  --g-info:           #8be9fd;
+  --g-info-bg:        rgba(139, 233, 253, 0.09);
+  --g-rose: #ff79c6; --g-orange: #ffb86c; --g-amber: #f1fa8c; --g-yellow: #f1fa8c;
+  --g-emerald: #50fa7b; --g-sky: #8be9fd; --g-violet: #bd93f9; --g-teal: #8be9fd; --g-zinc: #6272a4;
+  --g-lab-running: var(--g-success); --g-lab-starting: var(--g-warning);
+  --g-lab-stopping: var(--g-warning); --g-lab-stopped: var(--g-text-muted); --g-lab-error: var(--g-danger);
+  --g-shimmer: rgba(189,147,249,0.22); --g-radial-1: rgba(189,147,249,0.18); --g-radial-2: rgba(255,121,198,0.08);
+}
+
+/* ── Gruvbox ────────────────────────────────────────────────────────────────
+   Warm olive · Burnt orange · Retro terminal
+   ──────────────────────────────────────────────────────────────────────────── */
+:root[data-theme="gruvbox"] {
+  --g-bg:             #282828;
+  --g-chrome:         rgba(24, 23, 21, 0.97);
+  --g-raised:         rgba(40, 40, 40, 0.93);
+  --g-elevated:       rgba(254, 128, 25, 0.09);
+  --g-surface:        rgba(254, 128, 25, 0.055);
+  --g-surface-hover:  rgba(254, 128, 25, 0.10);
+  --g-overlay:        rgba(24, 23, 21, 0.85);
+  --g-code-bg:        rgba(20, 19, 18, 0.60);
+  --g-border:         rgba(254, 128, 25, 0.16);
+  --g-border-hover:   rgba(254, 128, 25, 0.32);
+  --g-accent:         #fe8019;
+  --g-accent-dim:     rgba(254, 128, 25, 0.14);
+  --g-accent-glow:    rgba(254, 128, 25, 0.50);
+  --g-text:           #ebdbb2;
+  --g-text-secondary: #d5c4a1;
+  --g-text-muted:     #a89984;
+  --g-text-dim:       rgba(254, 128, 25, 0.20);
+  --g-success:        #b8bb26;
+  --g-success-bg:     rgba(184, 187, 38, 0.09);
+  --g-warning:        #fabd2f;
+  --g-warning-bg:     rgba(250, 189, 47, 0.09);
+  --g-danger:         #fb4934;
+  --g-danger-bg:      rgba(251, 73, 52, 0.09);
+  --g-info:           #83a598;
+  --g-info-bg:        rgba(131, 165, 152, 0.09);
+  --g-rose: #fb4934; --g-orange: #fe8019; --g-amber: #fabd2f; --g-yellow: #fabd2f;
+  --g-emerald: #b8bb26; --g-sky: #83a598; --g-violet: #d3869b; --g-teal: #8ec07c; --g-zinc: #928374;
+  --g-lab-running: var(--g-success); --g-lab-starting: var(--g-warning);
+  --g-lab-stopping: var(--g-warning); --g-lab-stopped: var(--g-text-muted); --g-lab-error: var(--g-danger);
+  --g-shimmer: rgba(254,128,25,0.20); --g-radial-1: rgba(254,128,25,0.10); --g-radial-2: rgba(184,187,38,0.04);
+}
+
+/* ── Parchment ──────────────────────────────────────────────────────────────
+   Warm cream · Deep forest emerald · Paper & ink
+   ──────────────────────────────────────────────────────────────────────────── */
+:root[data-theme="parchment"] {
+  --g-bg:             #f4ecdc;
+  --g-chrome:         rgba(238, 227, 206, 0.97);
+  --g-raised:         rgba(247, 240, 227, 0.92);
+  --g-elevated:       rgba(15, 122, 92, 0.07);
+  --g-surface:        rgba(15, 122, 92, 0.045);
+  --g-surface-hover:  rgba(15, 122, 92, 0.09);
+  --g-overlay:        rgba(244, 236, 220, 0.85);
+  --g-code-bg:        rgba(232, 221, 199, 0.60);
+  --g-border:         rgba(58, 52, 43, 0.12);
+  --g-border-hover:   rgba(58, 52, 43, 0.22);
+  --g-accent:         #0f7a5c;
+  --g-accent-dim:     rgba(15, 122, 92, 0.12);
+  --g-accent-glow:    rgba(15, 122, 92, 0.35);
+  --g-text:           #3a342b;
+  --g-text-secondary: #5b5340;
+  --g-text-muted:     #8a8068;
+  --g-text-dim:       rgba(58, 52, 43, 0.18);
+  --g-success:        #1f8a52;
+  --g-success-bg:     rgba(31, 138, 82, 0.09);
+  --g-warning:        #b5780f;
+  --g-warning-bg:     rgba(181, 120, 15, 0.10);
+  --g-danger:         #b3392c;
+  --g-danger-bg:      rgba(179, 57, 44, 0.10);
+  --g-info:           #2270a6;
+  --g-info-bg:        rgba(34, 112, 166, 0.09);
+  --g-rose: #b3392c; --g-orange: #c0612b; --g-amber: #b5780f; --g-yellow: #a98a1f;
+  --g-emerald: #1f8a52; --g-sky: #2270a6; --g-violet: #7a5ea8; --g-teal: #2c8a83; --g-zinc: #8a8068;
+  --g-lab-running: var(--g-success); --g-lab-starting: var(--g-warning);
+  --g-lab-stopping: var(--g-warning); --g-lab-stopped: var(--g-text-muted); --g-lab-error: var(--g-danger);
+  --g-shimmer: rgba(15,122,92,0.10); --g-radial-1: rgba(15,122,92,0.06); --g-radial-2: rgba(181,120,15,0.04);
 }

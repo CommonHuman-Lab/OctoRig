@@ -37,6 +37,9 @@ const THEMES = [
   { id: "matrix", name: "Matrix" },
   { id: "nord", name: "Nord" },
   { id: "unicorn", name: "Unicorn" },
+  { id: "dracula", name: "Dracula" },
+  { id: "gruvbox", name: "Gruvbox" },
+  { id: "parchment", name: "Parchment" },
 ];
 
 fs.mkdirSync(OUT, { recursive: true });
