@@ -1,13 +1,13 @@
 /* SPDX-License-Identifier: AGPL-3.0-or-later */
 /* Copyright (c) 2026 CommonHuman-Lab */
-.settings-section {
+.admin-settings-section {
   background: var(--g-surface);
   border: 1px solid var(--g-border);
   border-radius: 8px;
   overflow: hidden;
   margin-top: 1.5rem;
 }
-.settings-section-title {
+.admin-settings-section-title {
   font-size: 0.6875rem;
   font-weight: 700;
   font-family: var(--font-mono, monospace);

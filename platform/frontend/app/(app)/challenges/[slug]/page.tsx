@@ -203,7 +203,7 @@ export default function ChallengeDetailPage() {
             {ch.tags.length > 0 && (
               <div className="ch-tags" style={{ marginTop: "1rem" }}>
                 {ch.tags.map((t) => (
-                  <span key={t} className="ch-tag">{t}</span>
+                  <span key={t} className="g-badge g-badge--accent">{t}</span>
                 ))}
               </div>
             )}

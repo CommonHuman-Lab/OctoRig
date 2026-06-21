@@ -36,7 +36,7 @@ const DIFF_ORDER: Record<ChallengeDifficulty, number> = {
 
 function DiffBadge({ difficulty }: { difficulty: ChallengeDifficulty }) {
   return (
-    <span className={`diff-badge ${DIFF_CLASS[difficulty]}`}>
+    <span className={`g-diff-badge ${DIFF_CLASS[difficulty]}`}>
       {difficulty}
     </span>
   );
@@ -58,7 +58,7 @@ function ChallengeCard({ ch }: { ch: ChallengeListItem }) {
 
       <div className="ch-tags">
         {ch.tags.slice(0, 3).map((t) => (
-          <span key={t} className="ch-tag">{t}</span>
+          <span key={t} className="g-badge g-badge--accent">{t}</span>
         ))}
       </div>
 
@@ -130,7 +130,7 @@ export default function ChallengesPage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <div className="page-header page-header--top">
         <div>
           <h1 className="page-title font-mono">
             <Swords size={18} style={{ display: "inline", marginRight: "0.5rem", verticalAlign: "middle" }} />
@@ -240,7 +240,7 @@ export default function ChallengesPage() {
         <PageSpinner />
       ) : (
         <>
-          <div className="ch-grid" style={{ opacity: isFetching ? 0.6 : 1, transition: "opacity 0.15s" }}>
+          <div className="g-grid-auto ch-grid" style={{ opacity: isFetching ? 0.6 : 1, transition: "opacity 0.15s" }}>
             {displayed.map((ch) => (
               <ChallengeCard key={ch.id} ch={ch} />
             ))}

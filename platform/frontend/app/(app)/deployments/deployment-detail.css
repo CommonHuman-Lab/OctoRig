@@ -2,17 +2,7 @@
 /* Copyright (c) 2026 CommonHuman-Lab */
 /* ── Deployment detail page ─────────────────────────────────────────────── */
 
-.dd-back-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-  font-size: 0.75rem;
-  color: var(--g-text-muted);
-  text-decoration: none;
-  margin-bottom: 1.25rem;
-  transition: color 0.15s;
-}
-.dd-back-link:hover { color: var(--g-text-secondary); }
+.page > .back-link { margin-bottom: 1.25rem; }
 
 /* ── Header ──────────────────────────────────────────────────────────────── */
 
@@ -252,12 +242,6 @@
 .dd-ch-meta { display: flex; align-items: center; gap: 0.4rem; }
 .dd-ch-meta-item { display: flex; align-items: center; gap: 0.2rem; font-size: 0.5625rem; color: var(--g-text-muted); }
 .dd-ch-solved { display: flex; align-items: center; gap: 0.2rem; font-size: 0.5625rem; color: var(--g-success); }
-
-.dd-diff-badge { font-size: 0.5625rem; text-transform: uppercase; letter-spacing: 0.06em; padding: 0.15rem 0.4rem; border-radius: 0.25rem; font-weight: 600; }
-.dd-diff-easy   { color: var(--g-success); background: var(--g-success-bg); }
-.dd-diff-medium { color: var(--g-warning); background: var(--g-warning-bg); }
-.dd-diff-hard   { color: var(--g-orange);  background: rgba(251, 146, 60, 0.1); }
-.dd-diff-insane { color: var(--g-danger);  background: var(--g-danger-bg); }
 
 /* ── Schedule modal helpers ──────────────────────────────────────────────── */
 

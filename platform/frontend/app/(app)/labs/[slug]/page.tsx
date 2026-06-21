@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
 import "./lab-detail.css";
-import "../../challenges/challenges.css";
 
 import { useState } from "react";
 import { useParams } from "next/navigation";
@@ -25,7 +24,7 @@ import { DIFF_CLASS } from "@/lib/utils/difficulty";
 
 function DiffBadge({ difficulty }: { difficulty: ChallengeDifficulty }) {
   return (
-    <span className={`diff-badge ${DIFF_CLASS[difficulty]}`}>{difficulty}</span>
+    <span className={`g-diff-badge ${DIFF_CLASS[difficulty]}`}>{difficulty}</span>
   );
 }
 

@@ -1,8 +1,6 @@
 "use client";
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
-import "./admin-deployments.css";
-
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useApiMutation } from "@/hooks/useApiMutation";
@@ -19,6 +17,11 @@ import { AsyncContent } from "@/components/ui/AsyncContent";
 
 const ACTIVE_STATUSES = new Set(["starting", "running", "error"]);
 const STOPPABLE_STATUSES = new Set(["stopped", "error"]);
+const VISIBILITY_BADGE: Record<string, string> = {
+  private: "g-badge--muted",
+  team: "g-badge--accent",
+  public: "g-badge--success",
+};
 
 export default function AdminDeploymentsPage() {
   const [search, setSearch] = useState("");
@@ -156,7 +159,7 @@ export default function AdminDeploymentsPage() {
                       <td className="text-11 text-secondary">{d.started_by_username}</td>
                       <td className="text-11 text-muted">{d.team_name ?? "—"}</td>
                       <td>
-                        <span className={`vis-badge vis-badge--${d.visibility ?? "private"}`}>
+                        <span className={`g-badge ${VISIBILITY_BADGE[d.visibility ?? "private"]}`}>
                           {d.visibility ?? "private"}
                         </span>
                       </td>

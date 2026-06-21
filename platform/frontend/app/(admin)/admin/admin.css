@@ -26,34 +26,9 @@
   color: var(--g-text-muted);
 }
 
-/* User management */
-.role-pill {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.1rem 0.4rem;
-  border-radius: 3px;
-  font-size: 0.5625rem;
-  font-weight: 700;
-  font-family: var(--font-mono, monospace);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-
-.role-pill--on {
-  background: color-mix(in srgb, var(--g-accent) 15%, transparent);
-  color: var(--g-accent);
-}
-
-.role-pill--off {
-  background: color-mix(in srgb, var(--g-text-muted) 10%, transparent);
-  color: var(--g-text-muted);
-}
-
 /* Stat cards grid on admin dashboard */
 .stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 1rem;
+  --grid-min: 160px;
   margin-bottom: 1.5rem;
 }
 

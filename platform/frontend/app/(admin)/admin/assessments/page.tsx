@@ -17,7 +17,7 @@ import { AsyncContent } from "@/components/ui/AsyncContent";
 
 function StatusBadge({ isActive }: { isActive: boolean }) {
   return (
-    <span className={`role-pill ${isActive ? "role-pill--on" : "role-pill--off"}`}>
+    <span className={`g-status-pill ${isActive ? "g-status-pill--on" : "g-status-pill--off"}`}>
       {isActive ? "active" : "inactive"}
     </span>
   );

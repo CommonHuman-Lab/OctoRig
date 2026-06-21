@@ -27,8 +27,8 @@ export function ScoringSection({
   isPending: boolean;
 }) {
   return (
-    <section className="settings-section">
-      <h2 className="settings-section-title">Scoring</h2>
+    <section className="admin-settings-section">
+      <h2 className="admin-settings-section-title">Scoring</h2>
 
       <SettingToggle
         label="First Blood"

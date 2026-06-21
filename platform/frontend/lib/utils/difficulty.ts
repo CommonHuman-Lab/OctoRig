@@ -10,8 +10,8 @@ export const DIFF_COLOR: Record<ChallengeDifficulty, string> = {
 };
 
 export const DIFF_CLASS: Record<ChallengeDifficulty, string> = {
-  easy:   "diff-easy",
-  medium: "diff-medium",
-  hard:   "diff-hard",
-  insane: "diff-insane",
+  easy:   "g-diff-badge--easy",
+  medium: "g-diff-badge--medium",
+  hard:   "g-diff-badge--hard",
+  insane: "g-diff-badge--insane",
 };

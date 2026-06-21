@@ -2,24 +2,4 @@
 /* Copyright (c) 2026 CommonHuman-Lab */
 /* page.tsx */
 
-.page-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem; }
-        .page-title { font-size: 1.125rem; }
-        .header-actions { display: flex; gap: 0.5rem; align-items: center; }
-        .search-wrap { position: relative; display: flex; align-items: center; }
-        .search-icon { position: absolute; left: 0.625rem; pointer-events: none; }
-        .search-input { padding-left: 2rem; }
-        .checkbox-label { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; }
-        .loading-cell { padding: 1.5rem; }
-        .table-wrap { overflow-x: auto; }
-        .row-inactive { opacity: 0.45; }
-        .role-pills { display: flex; gap: 0.25rem; flex-wrap: wrap; }
-        .role-pill { display: inline-block; padding: 0.1rem 0.4rem; border-radius: 9999px; font-size: 0.625rem; border: 1px solid; }
-        .role-pill--on { color: var(--g-accent); border-color: var(--g-accent); background: var(--g-accent-dim); }
-        .role-pill--off { color: var(--g-text-muted); border-color: var(--g-border); background: var(--g-raised); }
-        .status-dot { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.6875rem; }
-        .status-dot::before { content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%; }
-        .status-dot--active::before { background: var(--g-success); }
-        .status-dot--inactive::before { background: var(--g-text-muted); }
-        .row-actions { display: flex; gap: 0.25rem; align-items: center; }
-        .row-action-icon { padding: 0.5rem; }
-        .role-on { color: var(--g-accent); }
+.role-pills { display: flex; gap: 0.25rem; flex-wrap: wrap; }

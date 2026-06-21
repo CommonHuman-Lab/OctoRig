@@ -11,7 +11,7 @@ function isLocked(u: AdminUser): boolean {
 }
 
 function RolePill({ label }: { label: string }) {
-  return <span className="role-pill role-pill--on">{label}</span>;
+  return <span className="g-badge g-badge--accent">{label}</span>;
 }
 
 export function UsersTable({
@@ -72,11 +72,11 @@ export function UsersTable({
             <td className="text-11 text-muted">{u.team_count}</td>
             <td className="text-11 text-muted">{u.deployment_count}</td>
             <td>
-              <span className={`status-dot ${u.is_active ? "status-dot--active" : "status-dot--inactive"}`}>
+              <span className={`g-status-dot ${u.is_active ? "g-status-dot--active" : "g-status-dot--inactive"}`}>
                 {u.is_active ? "Active" : "Inactive"}
               </span>
-              {isLocked(u) && <span className="role-pill role-pill--off" style={{ marginLeft: 6 }}>Locked</span>}
-              {u.is_owner && <span className="role-pill role-pill--on" style={{ marginLeft: 6 }}>Owner</span>}
+              {isLocked(u) && <span className="g-badge g-badge--muted" style={{ marginLeft: 6 }}>Locked</span>}
+              {u.is_owner && <span className="g-badge g-badge--accent" style={{ marginLeft: 6 }}>Owner</span>}
             </td>
             <td>
               <div className="row-actions">

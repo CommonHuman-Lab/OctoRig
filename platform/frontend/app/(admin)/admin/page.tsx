@@ -68,7 +68,7 @@ export default function AdminDashboard() {
       {isLoading ? (
         <div className="text-muted text-sm">Loading…</div>
       ) : (
-        <div className="stats-grid">
+        <div className="g-grid-auto stats-grid">
           <StatCard
             icon={<Users size={20} />}
             label="Total Users"
@@ -140,7 +140,7 @@ export default function AdminDashboard() {
                 <tr key={p.entry_point}>
                   <td style={{ color: "var(--g-text)" }}>{p.name}</td>
                   <td style={{ color: "var(--g-text-muted)", fontFamily: "var(--font-mono, monospace)", fontSize: "0.75rem" }}>{p.version}</td>
-                  <td><span className="role-pill role-pill--on">{p.plugin_type}</span></td>
+                  <td><span className="g-status-pill g-status-pill--on">{p.plugin_type}</span></td>
                   <td style={{ color: "var(--g-text-muted)", fontFamily: "var(--font-mono, monospace)", fontSize: "0.75rem" }}>{p.entry_point}</td>
                 </tr>
               ))}

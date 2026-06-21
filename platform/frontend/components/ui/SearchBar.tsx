@@ -10,10 +10,10 @@ interface SearchBarProps {
 
 export function SearchBar({ value, onChange, placeholder = "Search…" }: SearchBarProps) {
   return (
-    <div className="search-wrap">
-      <Search size={13} className="search-icon text-muted" />
+    <div className="g-input-icon">
+      <Search size={13} className="icon-left" />
       <input
-        className="g-input g-input-sm search-input"
+        className="g-input g-input-sm"
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange(e.target.value)}

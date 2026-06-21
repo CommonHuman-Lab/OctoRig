@@ -65,7 +65,7 @@ export default function BadgesPage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <div className="page-header page-header--top">
         <div>
           <h1 className="page-title font-mono">
             <Award size={18} style={{ display: "inline", marginRight: "0.5rem", verticalAlign: "middle" }} />
@@ -106,7 +106,7 @@ export default function BadgesPage() {
       ) : filtered.length === 0 ? (
         <div className="text-muted text-sm">No badges match this filter.</div>
       ) : catFilter !== "all" ? (
-        <div className="badge-grid">
+        <div className="g-grid-auto badge-grid">
           {filtered.map((b) => <BadgeCard key={b.id} badge={b} />)}
         </div>
       ) : (
@@ -114,7 +114,7 @@ export default function BadgesPage() {
           {Object.entries(byCategory).map(([cat, catBadges]) => (
             <section key={cat}>
               <h2 className="cat-title">{cat}</h2>
-              <div className="badge-grid">
+              <div className="g-grid-auto badge-grid">
                 {catBadges.map((b) => <BadgeCard key={b.id} badge={b} />)}
               </div>
             </section>

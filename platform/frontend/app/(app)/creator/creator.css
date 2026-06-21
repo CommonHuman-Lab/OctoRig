@@ -14,18 +14,6 @@
   overflow-x: auto;
 }
 
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.15rem 0.45rem;
-  border-radius: 3px;
-  font-size: 0.5625rem;
-  font-weight: 700;
-  font-family: var(--font-mono, monospace);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-
 .modal-backdrop {
   position: fixed;
   inset: 0;

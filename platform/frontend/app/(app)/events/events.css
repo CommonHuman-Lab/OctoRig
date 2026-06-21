@@ -13,8 +13,7 @@
 }
 
 .ev-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  --grid-min: 300px;
   gap: 0.875rem;
 }
 

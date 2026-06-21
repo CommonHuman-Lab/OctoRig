@@ -16,8 +16,8 @@ export function FeaturesSection({
   isPending: boolean;
 }) {
   return (
-    <section className="settings-section">
-      <h2 className="settings-section-title">Features</h2>
+    <section className="admin-settings-section">
+      <h2 className="admin-settings-section-title">Features</h2>
 
       <SettingToggle
         label="Python Editor"

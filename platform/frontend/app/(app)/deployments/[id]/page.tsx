@@ -40,7 +40,7 @@ type Visibility = "private" | "team" | "public";
 
 function DiffBadge({ difficulty }: { difficulty: ChallengeDifficulty }) {
   return (
-    <span className="dd-diff-badge" style={{ color: DIFF_COLOR[difficulty] }}>{difficulty}</span>
+    <span className="g-diff-badge" style={{ color: DIFF_COLOR[difficulty] }}>{difficulty}</span>
   );
 }
 
@@ -155,7 +155,7 @@ export default function DeploymentDetailPage() {
 
   return (
     <div className="page">
-      <Link href="/deployments" className="dd-back-link">
+      <Link href="/deployments" className="back-link">
         <ArrowLeft size={14} /> Deployments
       </Link>
 

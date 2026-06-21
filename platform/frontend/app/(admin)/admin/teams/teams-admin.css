@@ -2,12 +2,4 @@
 /* Copyright (c) 2026 CommonHuman-Lab */
 /* page.tsx */
 
-        .page-header { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 1rem; }
-        .page-title { font-size: 1.125rem; }
-        .search-wrap { position: relative; display: flex; align-items: center; }
-        .search-icon { position: absolute; left: 0.625rem; pointer-events: none; }
-        .search-input { padding-left: 2rem; }
-        .loading-cell, .empty-cell { padding: 1.5rem; }
         .personal-badge { color: var(--g-text-muted); font-style: italic; }
-        .row-actions { display: flex; gap: 0.25rem; align-items: center; }
-        .row-action-icon { padding: 0.5rem; }

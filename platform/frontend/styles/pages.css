@@ -13,8 +13,14 @@
 .page-header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
   gap: 0.75rem;
   margin-bottom: 1.25rem;
+}
+
+.page-header--top {
+  align-items: flex-start;
 }
 
 .page-title {
@@ -78,4 +84,24 @@
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.75rem;
+  color: var(--g-text-muted);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.back-link:hover {
+  color: var(--g-text-secondary);
+}
+
+/* Auto-fill card grid; override --grid-min per page if the default doesn't fit */
+.g-grid-auto {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--grid-min, 260px), 1fr));
+  gap: 1rem;
 }

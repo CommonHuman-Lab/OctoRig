@@ -16,8 +16,8 @@ export function BrandingSection({
   isPending: boolean;
 }) {
   return (
-    <section className="settings-section">
-      <h2 className="settings-section-title">Branding</h2>
+    <section className="admin-settings-section">
+      <h2 className="admin-settings-section-title">Branding</h2>
       <p className="settings-section-desc">
         Global platform branding shown on the candidate-facing assessment pages.
         Individual assessments can override these with their own company name and logo.

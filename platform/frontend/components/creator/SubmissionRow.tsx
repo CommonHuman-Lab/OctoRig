@@ -19,7 +19,7 @@ export function SubmissionRow({ sub }: { sub: ContentSubmission }) {
       <tr>
         <td style={{ color: "var(--g-text)" }}>{sub.title}</td>
         <td>
-          <span className="status-badge" style={{ background: "color-mix(in srgb, var(--g-accent) 10%, transparent)", color: "var(--g-accent)" }}>
+          <span className="g-status-pill" style={{ background: "color-mix(in srgb, var(--g-accent) 10%, transparent)", color: "var(--g-accent)" }}>
             {sub.content_type}
           </span>
         </td>

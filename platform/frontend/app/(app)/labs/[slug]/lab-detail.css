@@ -2,8 +2,7 @@
 /* Copyright (c) 2026 CommonHuman-Lab */
 /* Lab detail page */
 
-.back-link { display: inline-flex; align-items: center; gap: 0.375rem; font-size: 0.75rem; color: var(--g-text-muted); text-decoration: none; margin-bottom: 1.25rem; transition: color 0.15s; }
-.back-link:hover { color: var(--g-text-secondary); }
+.page > .back-link { margin-bottom: 1.25rem; }
 
 .ld-header { margin-bottom: 1.5rem; }
 .ld-title-row { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.5rem; }

@@ -147,7 +147,7 @@ export default function NotificationsPage() {
 
   return (
     <div className="page">
-      <div className="page-header">
+      <div className="page-header page-header--top">
         <div>
           <h1 className="page-title font-mono">
             <Bell size={18} style={{ display: "inline", marginRight: "0.5rem", verticalAlign: "middle" }} />

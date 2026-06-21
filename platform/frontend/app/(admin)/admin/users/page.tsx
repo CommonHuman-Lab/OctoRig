@@ -89,10 +89,10 @@ export default function AdminUsersPage() {
       <div className="page-header">
         <h1 className="page-title font-mono">Users</h1>
         <div className="header-actions">
-          <div className="search-wrap">
-            <Search size={13} className="search-icon text-muted" />
+          <div className="g-input-icon">
+            <Search size={13} className="icon-left" />
             <input
-              className="g-input g-input-sm search-input"
+              className="g-input g-input-sm"
               placeholder="Search users…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}

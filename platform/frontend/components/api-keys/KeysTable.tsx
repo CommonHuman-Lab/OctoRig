@@ -44,7 +44,7 @@ export function KeysTable({
               <td className="font-mono text-sm">{key.name}</td>
               <td className="font-mono text-11 text-muted">oktor_{key.key_prefix}…</td>
               <td>
-                <span className={`status-dot ${key.is_active ? "status-dot--active" : "status-dot--inactive"}`}>
+                <span className={`g-status-dot ${key.is_active ? "g-status-dot--active" : "g-status-dot--inactive"}`}>
                   {key.is_active ? "Active" : "Revoked"}
                 </span>
               </td>

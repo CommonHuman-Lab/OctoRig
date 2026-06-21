@@ -193,11 +193,11 @@ function ProgressRow({
                   <div style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--g-text-muted)", marginBottom: 6, display: "flex", alignItems: "center", gap: 8 }}>
                     Report
                     {invite.completed_at ? (
-                      <span className="role-pill role-pill--on" style={{ fontSize: "0.7rem" }}>Submitted</span>
+                      <span className="g-status-pill g-status-pill--on" style={{ fontSize: "0.7rem" }}>Submitted</span>
                     ) : progress.report_content ? (
-                      <span className="role-pill" style={{ fontSize: "0.7rem", color: "var(--g-warning, #f59e0b)" }}>Draft (in progress)</span>
+                      <span className="g-status-pill" style={{ fontSize: "0.7rem", color: "var(--g-warning, #f59e0b)" }}>Draft (in progress)</span>
                     ) : (
-                      <span className="role-pill role-pill--off" style={{ fontSize: "0.7rem" }}>Not started</span>
+                      <span className="g-status-pill g-status-pill--off" style={{ fontSize: "0.7rem" }}>Not started</span>
                     )}
                   </div>
                   {progress.report_content ? (
@@ -307,7 +307,7 @@ export default function AssessmentDetailPage() {
           <ArrowLeft size={14} /> Back
         </Link>
         <h1 className="page-title font-mono">{assessment.name}</h1>
-        <span className={`role-pill ${assessment.is_active ? "role-pill--on" : "role-pill--off"}`}>
+        <span className={`g-status-pill ${assessment.is_active ? "g-status-pill--on" : "g-status-pill--off"}`}>
           {assessment.is_active ? "active" : "inactive"}
         </span>
         <button
@@ -355,8 +355,8 @@ export default function AssessmentDetailPage() {
       </div>
 
       {/* Add candidate */}
-      <section className="settings-section" style={{ marginBottom: 24 }}>
-        <h2 className="settings-section-title">Add Candidate</h2>
+      <section className="admin-settings-section" style={{ marginBottom: 24 }}>
+        <h2 className="admin-settings-section-title">Add Candidate</h2>
         <div style={{ display: "flex", gap: 10, alignItems: "flex-end", flexWrap: "wrap", padding: "12px 16px" }}>
           <div className="ev-field" style={{ flexShrink: 0, minWidth: 220 }}>
             <label className="ev-label">Email *</label>

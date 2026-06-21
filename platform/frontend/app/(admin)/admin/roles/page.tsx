@@ -120,7 +120,7 @@ export default function AdminRolesPage() {
                     <td className="text-sm">{role.display_name}</td>
                     <td className="text-11 text-muted">{role.permissions.length}</td>
                     <td>
-                      <span className={`role-pill ${role.is_system ? "role-pill--on" : "role-pill--off"}`}>
+                      <span className={`g-status-pill ${role.is_system ? "g-status-pill--on" : "g-status-pill--off"}`}>
                         {role.is_system ? "System" : "Custom"}
                       </span>
                     </td>

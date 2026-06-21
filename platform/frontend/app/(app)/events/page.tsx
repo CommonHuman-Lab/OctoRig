@@ -162,7 +162,7 @@ export default function EventsPage() {
         }
       >
         {(events) => (
-          <div className="ev-grid" style={{ marginTop: "1rem" }}>
+          <div className="g-grid-auto ev-grid" style={{ marginTop: "1rem" }}>
             {events.map((ev) => (
               <EventCard key={ev.id} ev={ev} />
             ))}

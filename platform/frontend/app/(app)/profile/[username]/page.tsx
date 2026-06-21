@@ -22,7 +22,7 @@ function StatBlock({ icon, label, value }: { icon: React.ReactNode; label: strin
   return (
     <div className="stat-block">
       <div className="stat-icon">{icon}</div>
-      <div className="stat-value">{value.toLocaleString()}</div>
+      <div className="profile-stat-value">{value.toLocaleString()}</div>
       <div className="stat-label">{label}</div>
     </div>
   );
@@ -95,9 +95,9 @@ function ProfileView({ profile, rankData }: { profile: UserProfile; rankData?: U
             <h2 className="section-title">Badges</h2>
             <div className="badge-row">
               {profile.badges.map((b) => (
-                <div key={b.slug} className="badge-pill" title={b.name}>
+                <div key={b.slug} className="g-badge g-badge--accent" title={b.name}>
                   <span>{ICON_MAP[b.icon] ?? "🏅"}</span>
-                  <span className="badge-pill-name">{b.name}</span>
+                  <span>{b.name}</span>
                 </div>
               ))}
             </div>

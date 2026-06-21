@@ -2,8 +2,6 @@
 /* Copyright (c) 2026 CommonHuman-Lab */
 /* page.tsx */
 
-        .page-header { margin-bottom: 1rem; }
-        .page-title { font-size: 1.125rem; }
         .audit-filter-bar { padding: 0.875rem; margin-bottom: 0.875rem; display: flex; flex-direction: column; gap: 0.75rem; }
         .audit-filter-group { display: flex; flex-direction: column; gap: 0.375rem; }
         .action-pills { display: flex; gap: 0.375rem; flex-wrap: wrap; }
@@ -14,7 +12,6 @@
         .filter-field { display: flex; flex-direction: column; gap: 0.25rem; }
         .self-end { align-self: flex-end; }
         .log-panel { overflow-x: auto; }
-        .loading-cell, .empty-cell { padding: 1.5rem; }
         .nowrap { white-space: nowrap; }
         .detail-cell { max-width: 320px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .action-badge { display: inline-block; padding: 0.1rem 0.4rem; border-radius: 4px; font-size: 0.625rem; font-family: monospace; border: 1px solid; }

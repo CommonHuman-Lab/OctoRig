@@ -67,7 +67,7 @@ export default function TeamsPage() {
         }
       >
         {(teams) => (
-          <div className="team-grid">
+          <div className="g-grid-auto team-grid">
             {teams.map((team) => {
               const role = ROLE_LABEL[team.my_role];
               return (

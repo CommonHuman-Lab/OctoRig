@@ -101,7 +101,7 @@ export default function LabsPage() {
       {isLoading ? (
         <PageSpinner />
       ) : (
-        <div className="labs-grid mt-4">
+        <div className="g-grid-auto labs-grid mt-4">
           {filtered.map((lab) => (
             <LabCard
               key={lab.id}

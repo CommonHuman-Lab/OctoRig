@@ -46,18 +46,6 @@
   flex-shrink: 0;
 }
 
-.rank-chip-preview {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  padding: 0.15rem 0.5rem;
-  border-radius: 99px;
-  font-size: 0.65rem;
-  font-family: var(--font-mono, monospace);
-  font-weight: 600;
-  border: 1px solid currentColor;
-}
-
 .rank-pts {
   font-family: var(--font-mono, monospace);
   font-size: 0.75rem;
