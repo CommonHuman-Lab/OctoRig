@@ -5,7 +5,6 @@ import "./deployments.css";
 
 import { useQuery } from "@tanstack/react-query";
 import { useApiMutation } from "@/hooks/useApiMutation";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Square, RotateCcw, Play, Trash2, Rocket } from "lucide-react";
 import {
@@ -77,7 +76,7 @@ export default function DeploymentsPage() {
         empty={
           <div className="g-panel empty-state">
             <p className="text-muted text-sm">No deployments yet.</p>
-            <Link href="/labs" className="g-btn g-btn-primary mt-2">Start a Lab</Link>
+            <Button href="/labs" variant="primary" className="mt-2">Start a Lab</Button>
           </div>
         }
       >

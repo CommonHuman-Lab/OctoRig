@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
 import { useEffect, useRef, useState } from "react";
+import { Button } from "./Button";
 
 const EMOJI_OPTIONS = [
   "🐣", "🐛", "🔍", "🛡️", "⚔️", "🏹", "🔥", "⚡",
@@ -24,14 +25,15 @@ export function EmojiPicker({ value, onChange }: { value: string; onChange: (v: 
 
   return (
     <div className="emoji-picker" ref={ref}>
-      <button
+      <Button
         type="button"
-        className="g-btn g-btn-ghost emoji-picker-trigger"
+        variant="ghost"
+        className="emoji-picker-trigger"
         onClick={() => setOpen((o) => !o)}
       >
         <span className="emoji-picker-preview">{value || "🙂"}</span>
         <span className="text-11 text-muted">{value ? "Change icon" : "Choose icon"}</span>
-      </button>
+      </Button>
 
       {open && (
         <div className="emoji-picker-popover">
@@ -49,13 +51,15 @@ export function EmojiPicker({ value, onChange }: { value: string; onChange: (v: 
             ))}
           </div>
           {value && (
-            <button
+            <Button
               type="button"
-              className="g-btn g-btn-ghost g-btn-sm emoji-picker-clear"
+              variant="ghost"
+              size="sm"
+              className="emoji-picker-clear"
               onClick={() => { onChange(""); setOpen(false); }}
             >
               Clear
-            </button>
+            </Button>
           )}
         </div>
       )}

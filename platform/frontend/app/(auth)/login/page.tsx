@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { login, getMe } from "@/lib/api/auth";
 import { useUserStore } from "@/stores/user.store";
+import { Button } from "@/components/ui/Button";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -70,9 +71,9 @@ export default function LoginPage() {
             required
           />
           {error && <p className="text-danger text-11">{error}</p>}
-          <button className="g-btn g-btn-primary w-full" type="submit" disabled={loading}>
+          <Button variant="primary" className="w-full" type="submit" disabled={loading}>
             {loading ? "Signing in…" : "Sign in"}
-          </button>
+          </Button>
         </form>
       </div>
 

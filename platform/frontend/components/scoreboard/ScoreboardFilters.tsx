@@ -2,6 +2,7 @@
 // Copyright (c) 2026 CommonHuman-Lab
 import { Crosshair } from "lucide-react";
 import type { ScoreboardEntry } from "@/lib/api/challenges";
+import { Button } from "@/components/ui/Button";
 
 export const SCOREBOARD_LIMITS = [25, 50, 100] as const;
 
@@ -48,10 +49,9 @@ export function ScoreboardFilters({
       </select>
 
       {myEntry && (
-        <button className="g-btn g-btn-ghost sb-highlight-btn" onClick={onScrollToMe}>
-          <Crosshair size={12} />
+        <Button variant="ghost" className="sb-highlight-btn" onClick={onScrollToMe} leftIcon={<Crosshair size={12} />}>
           My Rank #{myEntry.rank}
-        </button>
+        </Button>
       )}
     </div>
   );

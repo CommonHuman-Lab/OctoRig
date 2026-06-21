@@ -6,6 +6,7 @@ import { Lightbulb, Eye, EyeOff } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { unlockHint, type HintSummary } from "@/lib/api/challenges";
 import { useNotificationsStore } from "@/stores/notifications.store";
+import { Button } from "@/components/ui/Button";
 
 interface HintCardProps {
   hint: HintSummary;
@@ -45,18 +46,19 @@ export function HintCard({ hint, slug, userPoints, onUnlocked }: HintCardProps) 
             </span>
           )}
         </div>
-        <button
-          className="g-btn g-btn-ghost hint-unlock-btn"
+        <Button
+          variant="ghost"
+          className="hint-unlock-btn"
           onClick={() => unlockMutation.mutate()}
           disabled={unlockMutation.isPending || !canAfford}
-          title={!canAfford ? `Not enough points (need ${hint.cost}, have ${userPoints})` : undefined}
+          tooltip={!canAfford ? `Not enough points (need ${hint.cost}, have ${userPoints})` : undefined}
         >
           {unlockMutation.isPending
             ? "Unlocking…"
             : !canAfford
             ? `Not enough pts`
             : `Unlock${hint.cost > 0 ? ` (−${hint.cost} pts)` : ""}`}
-        </button>
+        </Button>
       </div>
     );
   }

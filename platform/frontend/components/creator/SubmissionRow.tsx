@@ -6,6 +6,7 @@ import { Edit3, FileText } from "lucide-react";
 import type { ContentSubmission } from "@/lib/api/content";
 import { formatDate } from "@/lib/utils/date";
 import { StatusPill } from "@/components/ui/StatusPill";
+import { Button } from "@/components/ui/Button";
 import { ChallengeBodyEditor } from "./ChallengeBodyEditor";
 
 export function SubmissionRow({ sub }: { sub: ContentSubmission }) {
@@ -29,13 +30,14 @@ export function SubmissionRow({ sub }: { sub: ContentSubmission }) {
         </td>
         <td>
           <div style={{ display: "flex", gap: "0.5rem" }}>
-            <button
-              className={`g-btn g-btn-sm ${expanded ? "g-btn-subtle" : "g-btn-ghost"}`}
+            <Button
+              size="sm"
+              variant={expanded ? "subtle" : "ghost"}
               onClick={() => setExpanded((v) => !v)}
+              leftIcon={isEditable ? <Edit3 size={12} /> : <FileText size={12} />}
             >
-              {isEditable ? <Edit3 size={12} /> : <FileText size={12} />}
               {expanded ? "Hide" : isEditable ? "Edit" : "View"}
-            </button>
+            </Button>
           </div>
         </td>
       </tr>

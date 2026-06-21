@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
 import { useQuery } from "@tanstack/react-query";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ExternalLink, LayoutDashboard } from "lucide-react";
 import { getDeployments, stopDeployment } from "@/lib/api/deployments";
@@ -132,7 +131,7 @@ export default function Dashboard() {
           empty={
             <div className="g-panel empty-state">
               <p className="text-muted text-sm">No active labs.</p>
-              <Link href="/labs" className="g-btn g-btn-primary mt-2">Browse Lab Catalog</Link>
+              <Button href="/labs" variant="primary" className="mt-2">Browse Lab Catalog</Button>
             </div>
           }
         >

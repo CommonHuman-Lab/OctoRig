@@ -6,7 +6,7 @@ import type { ButtonHTMLAttributes, AnchorHTMLAttributes, ReactNode } from "reac
 import Link from "next/link";
 import { IconSpinner } from "./IconSpinner";
 
-type Variant = "primary" | "ghost" | "danger" | "danger-ghost" | "tab";
+type Variant = "primary" | "ghost" | "subtle" | "danger" | "danger-ghost" | "tab";
 type Size = "sm" | "md";
 
 type CommonProps = {
@@ -19,16 +19,12 @@ type CommonProps = {
   active?: boolean;
   tooltip?: string;
   rowAction?: boolean;
+  className?: string;
   children?: ReactNode;
+  href?: string;
 };
 
-type ButtonAsButton = CommonProps &
-  Omit<ButtonHTMLAttributes<HTMLButtonElement>, "className"> & { href?: undefined };
-
-type ButtonAsLink = CommonProps &
-  Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "className"> & { href: string };
-
-export type ButtonProps = ButtonAsButton | ButtonAsLink;
+export type ButtonProps = CommonProps & Omit<ButtonHTMLAttributes<HTMLButtonElement>, "className">;
 
 const ICON_SIZE: Record<Size, number> = { sm: 12, md: 14 };
 
@@ -43,10 +39,11 @@ export function Button(props: ButtonProps) {
     active = false,
     tooltip,
     rowAction = false,
+    className: extraClassName,
     children,
     href,
     ...rest
-  } = props as ButtonAsLink & ButtonAsButton;
+  } = props;
 
   const className = [
     "g-btn",
@@ -55,6 +52,7 @@ export function Button(props: ButtonProps) {
     icon && "g-btn-icon",
     rowAction && "row-action-icon",
     active && "active",
+    extraClassName,
   ]
     .filter(Boolean)
     .join(" ");
@@ -70,6 +68,7 @@ export function Button(props: ButtonProps) {
 
   if (href) {
     const external = /^https?:\/\//.test(href);
+    const linkProps = rest as unknown as AnchorHTMLAttributes<HTMLAnchorElement>;
     if (external) {
       return (
         <a
@@ -79,20 +78,14 @@ export function Button(props: ButtonProps) {
           aria-label={ariaLabel}
           target="_blank"
           rel="noopener noreferrer"
-          {...(rest as AnchorHTMLAttributes<HTMLAnchorElement>)}
+          {...linkProps}
         >
           {content}
         </a>
       );
     }
     return (
-      <Link
-        href={href}
-        className={className}
-        title={tooltip}
-        aria-label={ariaLabel}
-        {...(rest as Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href">)}
-      >
+      <Link href={href} className={className} title={tooltip} aria-label={ariaLabel} {...linkProps}>
         {content}
       </Link>
     );
@@ -103,8 +96,8 @@ export function Button(props: ButtonProps) {
       className={className}
       title={tooltip}
       aria-label={ariaLabel}
-      disabled={loading || (rest as ButtonHTMLAttributes<HTMLButtonElement>).disabled}
-      {...(rest as ButtonHTMLAttributes<HTMLButtonElement>)}
+      disabled={loading || rest.disabled}
+      {...rest}
     >
       {content}
     </button>

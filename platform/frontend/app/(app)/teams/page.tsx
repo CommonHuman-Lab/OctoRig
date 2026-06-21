@@ -60,9 +60,9 @@ export default function TeamsPage() {
           <div className="g-panel empty-state">
             <Users size={32} className="text-muted" />
             <p className="text-muted text-sm mt-2">No teams yet.</p>
-            <button className="g-btn g-btn-primary mt-2" onClick={() => setSheetOpen(true)}>
+            <Button variant="primary" className="mt-2" onClick={() => setSheetOpen(true)}>
               Create your first team
-            </button>
+            </Button>
           </div>
         }
       >
