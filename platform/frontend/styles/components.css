@@ -95,6 +95,112 @@ a.g-card:hover,
   text-align: center;
 }
 
+/* ── Dashboard widget grid ───────────────────────────────────────────────── */
+
+.dash-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.dash-span-1 { grid-column: span 1; }
+.dash-span-2 { grid-column: span 2; }
+.dash-span-4 { grid-column: span 4; }
+
+@media (max-width: 900px) {
+  .dash-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dash-span-4 { grid-column: span 2; }
+}
+
+@media (max-width: 560px) {
+  .dash-grid { grid-template-columns: 1fr; }
+  .dash-span-2, .dash-span-4 { grid-column: span 1; }
+}
+
+.dash-cell { min-width: 0; }
+
+.dash-panel-scroll { overflow-y: auto; flex: 1; }
+
+.dash-panel-h-sm .dash-panel-scroll, .dash-panel-h-sm.empty-state { max-height: 9rem; }
+.dash-panel-h-md .dash-panel-scroll, .dash-panel-h-md.empty-state { max-height: 16rem; }
+.dash-panel-h-lg .dash-panel-scroll, .dash-panel-h-lg.empty-state { max-height: 24rem; }
+
+.dash-widget-edit {
+  position: relative;
+  outline: 1px dashed var(--g-border-hover);
+  outline-offset: 2px;
+  border-radius: 0.75rem;
+  cursor: grab;
+}
+
+.dash-widget-toolbar {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.4rem;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.2rem 0.35rem;
+  background-color: var(--g-chrome);
+  border: 1px solid var(--g-border);
+  border-radius: 0.5rem;
+}
+
+.dash-widget-grip {
+  color: var(--g-text-muted);
+  margin-right: 0.15rem;
+}
+
+.dash-widget-heights {
+  display: flex;
+  gap: 0.15rem;
+}
+
+.dash-height-btn {
+  font-size: 0.5625rem;
+  font-family: var(--font-mono, monospace);
+  padding: 0.1rem 0.3rem;
+  border-radius: 0.25rem;
+  border: 1px solid var(--g-border);
+  background-color: transparent;
+  color: var(--g-text-muted);
+  cursor: pointer;
+}
+
+.dash-height-btn.active {
+  background-color: var(--g-accent-dim);
+  border-color: var(--g-accent);
+  color: var(--g-accent);
+}
+
+/* ── Add widget / preset picker list ─────────────────────────────────────── */
+
+.dash-add-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.dash-add-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  text-align: left;
+  padding: 0.6rem 0.75rem;
+  border-radius: 0.6rem;
+  border: 1px solid var(--g-border);
+  background-color: var(--g-surface);
+  color: inherit;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.dash-add-item:hover {
+  background-color: var(--g-surface-hover);
+  border-color: var(--g-border-hover);
+}
+
 /* ── Divider ──────────────────────────────────────────────────────────────── */
 
 .g-divider {
