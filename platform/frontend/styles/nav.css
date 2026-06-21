@@ -47,6 +47,16 @@
   transform: translateY(-50%) scaleY(1);
 }
 
+/* ── Icon-only (collapsed) hover ──────────────────────────────────────────── */
+
+.g-nav-item.collapsed .g-nav-icon {
+  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.g-nav-item.collapsed:hover .g-nav-icon {
+  transform: scale(1.18) translateY(-1px);
+}
+
 /* ── Accordion / section header ───────────────────────────────────────────── */
 
 .g-section-label {

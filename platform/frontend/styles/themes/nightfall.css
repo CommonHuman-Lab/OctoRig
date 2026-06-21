@@ -34,7 +34,8 @@
 
 /* Page/challenge titles — static gradient text */
 [data-theme="nightfall"] .page-title,
-[data-theme="nightfall"] .ch-title {
+[data-theme="nightfall"] .ch-title,
+[data-theme="nightfall"] .ch-detail-title {
   background: linear-gradient(90deg, #7c3aed, #6366f1, #38bdf8);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

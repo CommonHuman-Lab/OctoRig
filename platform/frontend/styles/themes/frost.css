@@ -35,6 +35,7 @@
 
 /* Page/challenge titles — solid glacier blue, no gradient clip (keeps contrast on light bg) */
 [data-theme="frost"] .page-title,
-[data-theme="frost"] .ch-title {
+[data-theme="frost"] .ch-title,
+[data-theme="frost"] .ch-detail-title {
   color: #2f7fd1;
 }

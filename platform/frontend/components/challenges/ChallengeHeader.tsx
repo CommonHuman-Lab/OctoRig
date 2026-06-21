@@ -56,7 +56,7 @@ export function ChallengeHeader({
           </span>
         )}
       </div>
-      <h1 className="ch-title">{challenge.title}</h1>
+      <h1 className="ch-detail-title">{challenge.title}</h1>
       <div className="ch-stats">
         <span className="ch-stat">
           <Flag size={12} />

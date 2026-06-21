@@ -35,7 +35,8 @@
 
 /* Page/challenge titles — static gradient text */
 [data-theme="dracula"] .page-title,
-[data-theme="dracula"] .ch-title {
+[data-theme="dracula"] .ch-title,
+[data-theme="dracula"] .ch-detail-title {
   background: linear-gradient(90deg, #bd93f9, #ff79c6, #8be9fd);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

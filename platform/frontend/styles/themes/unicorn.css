@@ -96,7 +96,8 @@
 
 /* Page/challenge titles — holographic gradient text */
 [data-theme="unicorn"] .page-title,
-[data-theme="unicorn"] .ch-title {
+[data-theme="unicorn"] .ch-title,
+[data-theme="unicorn"] .ch-detail-title {
   background: linear-gradient(90deg, #f472b6, #c084fc, #38bdf8);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

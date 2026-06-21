@@ -43,7 +43,8 @@
 
 /* Page/challenge titles — static neon gradient text */
 [data-theme="synthwave"] .page-title,
-[data-theme="synthwave"] .ch-title {
+[data-theme="synthwave"] .ch-title,
+[data-theme="synthwave"] .ch-detail-title {
   background: linear-gradient(90deg, var(--g-flourish-1), var(--g-flourish-2), var(--g-flourish-3));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

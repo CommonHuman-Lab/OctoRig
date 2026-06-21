@@ -5,7 +5,12 @@
 .ch-card { display: flex; flex-direction: column; gap: 0.5rem; cursor: pointer; text-decoration: none; color: inherit; }
         .ch-card-header { display: flex; justify-content: space-between; align-items: center; }
         .ch-category { font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--g-text-muted); }
-        .ch-title { display: inline-block; font-size: 0.875rem; font-weight: 600; color: var(--g-text); line-height: 1.3; }
+        .ch-title {
+          display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
+          overflow: hidden;
+          font-size: 0.875rem; font-weight: 600; color: var(--g-text); line-height: 1.3;
+          height: calc(0.875rem * 1.3 * 2);
+        }
         .ch-card .ch-tags { display: flex; flex-wrap: nowrap; gap: 0.25rem; overflow: hidden; min-height: 1.125rem; }
         .ch-card .ch-tags .g-badge { font-size: 0.5625rem; padding: 0.1rem 0.45rem; max-width: 7.5rem; overflow: hidden; text-overflow: ellipsis; }
         .ch-footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 0.25rem; }
@@ -33,7 +38,7 @@
         .ch-cat { font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--g-text-muted); }
         .ch-diff { font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; }
         .ch-solved { display: flex; align-items: center; gap: 0.2rem; font-size: 0.625rem; color: var(--g-success); }
-        .ch-title { font-size: 1.375rem; font-weight: 700; color: var(--g-text); line-height: 1.2; margin-bottom: 0.625rem; }
+        .ch-detail-title { font-size: 1.375rem; font-weight: 700; color: var(--g-text); line-height: 1.2; margin-bottom: 0.625rem; }
         .ch-stats { display: flex; gap: 1rem; }
         .ch-stat { display: flex; align-items: center; gap: 0.3rem; font-size: 0.6875rem; color: var(--g-text-secondary); }
         .ch-stat--blood { color: #e05252; }

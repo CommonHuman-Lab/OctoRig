@@ -46,7 +46,8 @@
 
 /* Page/challenge titles — static gradient text */
 [data-theme="matrix"] .page-title,
-[data-theme="matrix"] .ch-title {
+[data-theme="matrix"] .ch-title,
+[data-theme="matrix"] .ch-detail-title {
   background: linear-gradient(90deg, var(--g-flourish-1), var(--g-flourish-2), var(--g-flourish-3));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

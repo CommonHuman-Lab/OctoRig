@@ -35,7 +35,8 @@
 
 /* Page/challenge titles — static gradient text */
 [data-theme="obsidian"] .page-title,
-[data-theme="obsidian"] .ch-title {
+[data-theme="obsidian"] .ch-title,
+[data-theme="obsidian"] .ch-detail-title {
   background: linear-gradient(90deg, #0891b2, #22d3ee, #67e8f9);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

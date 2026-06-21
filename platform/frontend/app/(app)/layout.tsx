@@ -13,12 +13,14 @@ import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { LabPoller } from "@/components/deployments/LabPoller";
 import { useUserStore } from "@/stores/user.store";
 import { useThemeStore } from "@/stores/theme.store";
+import { useSidebarStore } from "@/stores/sidebar.store";
 import { getPublicSettings } from "@/lib/api/settings";
 import { getMyProfile } from "@/lib/api/profiles";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const { accessToken, _hasHydrated, isRestoringToken, user } = useUserStore();
   const { theme, applyPlatformDefault, applyProfileTheme } = useThemeStore();
+  const { collapsed: sidebarCollapsed } = useSidebarStore();
   const router = useRouter();
   const [bannerDismissed, setBannerDismissed] = useState(false);
 
@@ -110,13 +112,14 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         style={{
           position: "fixed",
           bottom: 0,
-          left: "13rem",
+          left: sidebarCollapsed ? "3.25rem" : "13rem",
           right: 0,
           height: 28,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           zIndex: 10,
+          transition: "left 0.18s cubic-bezier(0.16, 1, 0.3, 1)",
         }}
       >
         <a

@@ -36,7 +36,8 @@
 
 /* Page/challenge titles — static pastel gradient text */
 [data-theme="catppuccin"] .page-title,
-[data-theme="catppuccin"] .ch-title {
+[data-theme="catppuccin"] .ch-title,
+[data-theme="catppuccin"] .ch-detail-title {
   background: linear-gradient(90deg, var(--g-flourish-1), var(--g-flourish-2), var(--g-flourish-3));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

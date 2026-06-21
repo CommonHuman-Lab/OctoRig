@@ -1,6 +1,40 @@
 /* SPDX-License-Identifier: AGPL-3.0-or-later */
 /* Copyright (c) 2026 CommonHuman-Lab */
 
+/* Ambient body glow — faint rose/iris blobs, low and elegant */
+[data-theme="rose"] body {
+  background-image:
+    radial-gradient(ellipse 55% 40% at 12% -5%, rgba(235,188,186,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 48% 36% at 90% 6%,   rgba(196,167,231,0.07) 0%, transparent 58%),
+    radial-gradient(ellipse 38% 30% at 50% 100%, rgba(235,111,146,0.05) 0%, transparent 55%);
+}
+
+/* Scrollbar — tinted to match the palette */
+[data-theme="rose"] * {
+  scrollbar-color: rgba(235,188,186,0.35) transparent;
+}
+[data-theme="rose"] *::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--g-flourish-1), var(--g-flourish-3));
+}
+
+/* Card shimmer — gentle breathing instead of a static line */
+[data-theme="rose"] .g-card::before,
+[data-theme="rose"] .g-panel::before,
+[data-theme="rose"] .g-stat-card::before {
+  animation: u-pulse 4s ease infinite;
+}
+
+/* Primary button — deeper rose → dusty rose fill, more depth than flat accent */
+[data-theme="rose"] .g-btn-primary {
+  background: linear-gradient(135deg, var(--g-danger) 0%, var(--g-accent) 100%);
+  color: #191724;
+}
+
+/* Active nav accent — two-tone instead of flat */
+[data-theme="rose"] .g-nav-item.active::before {
+  background: linear-gradient(180deg, var(--g-danger), var(--g-flourish-3));
+}
+
 /* Topbar — rose → gold → iris, slow elegant drift */
 [data-theme="rose"] header {
   position: relative;
@@ -32,10 +66,11 @@
   opacity: 0.55;
 }
 
-/* Page/challenge titles — static muted gradient text, kept within the rose/mauve family */
+/* Page/challenge titles — simple two-tone rose → iris sweep */
 [data-theme="rose"] .page-title,
-[data-theme="rose"] .ch-title {
-  background: linear-gradient(90deg, var(--g-flourish-1), var(--g-accent), var(--g-flourish-3));
+[data-theme="rose"] .ch-title,
+[data-theme="rose"] .ch-detail-title {
+  background: linear-gradient(90deg, var(--g-danger), var(--g-flourish-3));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

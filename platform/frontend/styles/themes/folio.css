@@ -35,6 +35,7 @@
 
 /* Page/challenge titles — solid ink colour, no gradient clip (keeps contrast on cream) */
 [data-theme="folio"] .page-title,
-[data-theme="folio"] .ch-title {
+[data-theme="folio"] .ch-title,
+[data-theme="folio"] .ch-detail-title {
   color: #0f7a5c;
 }
