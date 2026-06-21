@@ -11,6 +11,7 @@ import { getLabs } from "@/lib/api/labs";
 import { stopDeployment, resetDeployment } from "@/lib/api/deployments";
 import { LabCard } from "@/components/labs/LabCard";
 import { PageSpinner } from "@/components/ui/Spinner";
+import { FilterPills } from "@/components/ui/FilterPills";
 
 const CATEGORIES = [
   { id: undefined, label: "All" },
@@ -73,19 +74,18 @@ export default function LabsPage() {
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-        <div className="flex gap-1">
-          {CATEGORIES.map((c) => (
-            <button
-              key={String(c.id)}
-              className={`g-btn ${category === c.id ? "g-btn-primary" : "g-btn-ghost"}`}
-              onClick={() => setCategory(c.id)}
-            >
-              {c.label}
-            </button>
-          ))}
-        </div>
+        <FilterPills
+          groups={[
+            {
+              options: CATEGORIES.map((c) => c.id),
+              value: category,
+              onChange: setCategory,
+              label: (v) => CATEGORIES.find((c) => c.id === v)?.label ?? "All",
+            },
+          ]}
+        />
         <button
-          className={`g-btn ${onlyRunning ? "g-btn-primary" : "g-btn-ghost"}`}
+          className={`filter-pill ${onlyRunning ? "active" : ""}`}
           onClick={() => setOnlyRunning((v) => !v)}
           style={{ marginLeft: "auto" }}
         >

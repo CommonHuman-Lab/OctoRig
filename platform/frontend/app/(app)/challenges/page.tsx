@@ -10,6 +10,7 @@ import { Search, CheckCircle2, Clock, Target, Swords } from "lucide-react";
 import { getChallenges, type ChallengeListItem, type ChallengeDifficulty } from "@/lib/api/challenges";
 import { getLabs, type LabTemplate } from "@/lib/api/labs";
 import { PageSpinner } from "@/components/ui/Spinner";
+import { FilterPills } from "@/components/ui/FilterPills";
 import { DIFF_CLASS } from "@/lib/utils/difficulty";
 
 const CATEGORIES = [
@@ -153,64 +154,44 @@ export default function ChallengesPage() {
           />
         </div>
 
-        <div className="flex gap-1">
-          {CATEGORIES.map((c) => (
-            <button
-              key={String(c.id)}
-              className={`g-btn ${category === c.id ? "g-btn-primary" : "g-btn-ghost"}`}
-              onClick={() => setCategory(c.id)}
-            >
-              {c.label}
-            </button>
-          ))}
-        </div>
-
-        <div className="flex gap-1">
-          {DIFFICULTIES.map((d) => (
-            <button
-              key={String(d.id)}
-              className={`g-btn ${difficulty === d.id ? "g-btn-primary" : "g-btn-ghost"}`}
-              onClick={() => setDifficulty(d.id)}
-            >
-              {d.label}
-            </button>
-          ))}
-        </div>
-
-        <div className="flex gap-1">
-          {(["all", "unsolved", "solved"] as const).map((s) => (
-            <button
-              key={s}
-              className={`g-btn ${solvedFilter === s ? "g-btn-primary" : "g-btn-ghost"}`}
-              onClick={() => setSolvedFilter(s)}
-            >
-              {s.charAt(0).toUpperCase() + s.slice(1)}
-            </button>
-          ))}
-        </div>
+        <FilterPills
+          groups={[
+            {
+              options: CATEGORIES.map((c) => c.id),
+              value: category,
+              onChange: (v) => setCategory(v),
+              label: (v) => CATEGORIES.find((c) => c.id === v)?.label ?? "All",
+            },
+            {
+              options: DIFFICULTIES.map((d) => d.id),
+              value: difficulty,
+              onChange: (v) => setDifficulty(v as ChallengeDifficulty | undefined),
+              label: (v) => DIFFICULTIES.find((d) => d.id === v)?.label ?? "Any",
+            },
+            {
+              options: ["all", "unsolved", "solved"],
+              value: solvedFilter,
+              onChange: (v) => setSolvedFilter(v as "all" | "unsolved" | "solved"),
+            },
+          ]}
+        />
       </div>
 
       {/* Lab filters + result count + clear */}
       <div className="ch-filter-meta">
         {labsWithChallenges.length > 0 && (
           <div className="ch-lab-filters">
-            <div className="flex gap-1 flex-wrap">
-              <button
-                className={`g-btn g-btn-sm ${!labSlug ? "g-btn-subtle" : "g-btn-ghost"}`}
-                onClick={() => setLabSlug(undefined)}
-              >
-                All
-              </button>
-              {labsWithChallenges.map((lab) => (
-                <button
-                  key={lab.slug}
-                  className={`g-btn g-btn-sm ${labSlug === lab.slug ? "g-btn-subtle" : "g-btn-ghost"}`}
-                  onClick={() => setLabSlug(lab.slug === labSlug ? undefined : lab.slug)}
-                >
-                  {lab.name}
-                </button>
-              ))}
-            </div>
+            <FilterPills
+              size="sm"
+              groups={[
+                {
+                  options: [undefined, ...labsWithChallenges.map((l) => l.slug)],
+                  value: labSlug,
+                  onChange: (v) => setLabSlug(v === labSlug ? undefined : v),
+                  label: (v) => v === undefined ? "All" : labsWithChallenges.find((l) => l.slug === v)?.name ?? v,
+                },
+              ]}
+            />
           </div>
         )}
         <div className="ch-filter-status">

@@ -13,10 +13,6 @@
         .badge-pts { font-size: 0.625rem; color: var(--g-accent); font-weight: 700; margin-right: 0.5rem; }
         .badge-date { font-size: 0.5625rem; color: var(--g-text-muted); }
 
-        .filter-group { display: flex; gap: 0.25rem; }
-        .filter-pill { padding: 0.25rem 0.75rem; font-size: 0.6875rem; border-radius: 1rem; border: 1px solid var(--g-border); background: transparent; color: var(--g-text-muted); cursor: pointer; transition: all 0.12s; }
-        .filter-pill:hover { border-color: var(--g-border-hover); color: var(--g-text-secondary); }
-        .filter-pill.active { background: var(--g-accent-dim); border-color: var(--g-accent); color: var(--g-accent); font-weight: 600; }
         .categories { display: flex; flex-direction: column; gap: 1.5rem; }
         .cat-title { font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--g-text-muted); margin-bottom: 0.625rem; }
         .badge-grid { --grid-min: 280px; gap: 0.625rem; }

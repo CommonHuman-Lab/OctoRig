@@ -6,7 +6,8 @@
         .ch-card-header { display: flex; justify-content: space-between; align-items: center; }
         .ch-category { font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--g-text-muted); }
         .ch-title { display: inline-block; font-size: 0.875rem; font-weight: 600; color: var(--g-text); line-height: 1.3; }
-        .ch-tags { display: flex; flex-wrap: wrap; gap: 0.25rem; }
+        .ch-card .ch-tags { display: flex; flex-wrap: nowrap; gap: 0.25rem; overflow: hidden; min-height: 1.125rem; }
+        .ch-card .ch-tags .g-badge { font-size: 0.5625rem; padding: 0.1rem 0.45rem; max-width: 7.5rem; overflow: hidden; text-overflow: ellipsis; }
         .ch-footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 0.25rem; }
         .ch-points { font-size: 0.75rem; font-weight: 700; color: var(--g-accent); font-variant-numeric: tabular-nums; text-shadow: 0 0 10px color-mix(in srgb, var(--g-accent) 50%, transparent); }
         .ch-meta { display: flex; gap: 0.5rem; align-items: center; }

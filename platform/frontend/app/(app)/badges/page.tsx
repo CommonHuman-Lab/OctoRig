@@ -85,21 +85,23 @@ export default function BadgesPage() {
 
       {myRank && <RankProgressCard myRank={myRank} />}
 
-      <FilterPills
-        groups={[
-          {
-            options: [...CATEGORIES],
-            value: catFilter,
-            onChange: (v) => setCatFilter(v as CategoryFilter),
-            label: (v) => v === "all" ? "All" : v.charAt(0).toUpperCase() + v.slice(1),
-          },
-          {
-            options: ["all", "earned", "locked"],
-            value: statusFilter,
-            onChange: (v) => setStatusFilter(v as StatusFilter),
-          },
-        ]}
-      />
+      <div className="filter-bar">
+        <FilterPills
+          groups={[
+            {
+              options: [...CATEGORIES],
+              value: catFilter,
+              onChange: (v) => setCatFilter(v as CategoryFilter),
+              label: (v) => v === "all" ? "All" : v!.charAt(0).toUpperCase() + v!.slice(1),
+            },
+            {
+              options: ["all", "earned", "locked"],
+              value: statusFilter,
+              onChange: (v) => setStatusFilter(v as StatusFilter),
+            },
+          ]}
+        />
+      </div>
 
       {isLoading ? (
         <div className="text-muted text-xs">Loading badges…</div>
