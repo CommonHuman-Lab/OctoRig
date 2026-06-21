@@ -10,7 +10,6 @@
         .action-pill--active { border-color: var(--g-accent); background: var(--g-accent-dim); color: var(--g-accent); }
         .filter-row { display: flex; gap: 0.5rem; align-items: flex-end; flex-wrap: wrap; }
         .filter-field { display: flex; flex-direction: column; gap: 0.25rem; }
-        .self-end { align-self: flex-end; }
         .log-panel { overflow-x: auto; }
         .nowrap { white-space: nowrap; }
         .detail-cell { max-width: 320px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

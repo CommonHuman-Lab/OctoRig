@@ -30,6 +30,12 @@
   margin: 0 0 1.25rem;
 }
 
+.page-sub {
+  font-size: 0.75rem;
+  color: var(--g-text-muted);
+  margin-top: 0.2rem;
+}
+
 .page-header .page-title {
   margin: 0;
 }
@@ -97,6 +103,10 @@
 }
 .back-link:hover {
   color: var(--g-text-secondary);
+}
+
+.page > .back-link {
+  margin-bottom: 1.25rem;
 }
 
 /* Auto-fill card grid; override --grid-min per page if the default doesn't fit */

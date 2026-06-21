@@ -2,8 +2,6 @@
 /* Copyright (c) 2026 CommonHuman-Lab */
 /* page.tsx */
 
-        .page-sub { font-size: 0.75rem; color: var(--g-text-muted); margin-top: 0.2rem; }
-
         .notif-list { }
         .notif-row { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.875rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.04); cursor: default; transition: background 0.15s; position: relative; }
         .notif-row--unread { background: var(--g-elevated); cursor: pointer; }

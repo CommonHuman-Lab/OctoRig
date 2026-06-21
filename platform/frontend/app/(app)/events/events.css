@@ -2,16 +2,6 @@
 /* Copyright (c) 2026 CommonHuman-Lab */
 /* Events page & EventCard component */
 
-/* Explicit override — ensures filter buttons always lay out in a row
-   even when pages.css hasn't been applied yet on first paint. */
-.filter-bar {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-
 .ev-grid {
   --grid-min: 300px;
   gap: 0.875rem;
