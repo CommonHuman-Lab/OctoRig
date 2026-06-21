@@ -32,10 +32,10 @@
   opacity: 0.55;
 }
 
-/* Page/challenge titles — static muted gradient text */
+/* Page/challenge titles — static muted gradient text, kept within the rose/mauve family */
 [data-theme="rose"] .page-title,
 [data-theme="rose"] .ch-title {
-  background: linear-gradient(90deg, var(--g-flourish-1), var(--g-flourish-2), var(--g-flourish-3));
+  background: linear-gradient(90deg, var(--g-flourish-1), var(--g-accent), var(--g-flourish-3));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

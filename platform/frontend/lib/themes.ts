@@ -73,7 +73,7 @@ export const THEMES: Theme[] = [
     id: "matrix",
     name: "Matrix",
     hint: "Void black · Emerald · Classic hacker",
-    preview: { bg: "#000100", surface: "rgba(34,197,94,0.05)", border: "rgba(34,197,94,0.22)", accent: "#22c55e", text: "#f0fdf4", dim: "#15803d" },
+    preview: { bg: "#000100", surface: "rgba(34,197,94,0.05)", border: "rgba(34,197,94,0.22)", accent: "#00e676", text: "#f0fdf4", dim: "#15803d" },
   },
   {
     id: "nightfall",
