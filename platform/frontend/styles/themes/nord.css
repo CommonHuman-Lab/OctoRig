@@ -1,6 +1,14 @@
 /* SPDX-License-Identifier: AGPL-3.0-or-later */
 /* Copyright (c) 2026 CommonHuman-Lab */
 
+/* Body — faint multi-stop aurora glow, low and ambient */
+[data-theme="nord"] body {
+  background-image:
+    radial-gradient(ellipse 55% 40% at 15% -5%,  rgba(94, 129, 172, var(--g-texture-opacity)) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 38% at 85% 8%,   rgba(136, 192, 208, var(--g-texture-opacity)) 0%, transparent 58%),
+    radial-gradient(ellipse 40% 30% at 50% 100%, rgba(180, 142, 173, var(--g-texture-opacity)) 0%, transparent 55%);
+}
+
 /* Topbar — aurora ribbon, gentle drift */
 [data-theme="nord"] header {
   position: relative;
@@ -11,7 +19,7 @@
   position: absolute;
   bottom: 0; left: 0; right: 0;
   height: 1px;
-  background: linear-gradient(90deg, #5e81ac, #88c0d0, #b48ead, #a3be8c, #88c0d0, #5e81ac);
+  background: linear-gradient(90deg, var(--g-flourish-1), var(--g-flourish-2), var(--g-flourish-3), #a3be8c, var(--g-flourish-2), var(--g-flourish-1));
   background-size: 300% auto;
   animation: header-border-shift 12s linear infinite;
   opacity: 0.7;
@@ -28,14 +36,14 @@
   top: 0; left: 0; right: 0;
   height: 1px;
   animation: u-pulse 3s ease infinite;
-  background: linear-gradient(90deg, transparent, #5e81ac, #88c0d0, #5e81ac, transparent);
+  background: linear-gradient(90deg, transparent, var(--g-flourish-1), var(--g-flourish-2), var(--g-flourish-1), transparent);
   opacity: 0.6;
 }
 
 /* Page/challenge titles — static gradient text */
 [data-theme="nord"] .page-title,
 [data-theme="nord"] .ch-title {
-  background: linear-gradient(90deg, #5e81ac, #88c0d0, #b48ead);
+  background: linear-gradient(90deg, var(--g-flourish-1), var(--g-flourish-2), var(--g-flourish-3));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

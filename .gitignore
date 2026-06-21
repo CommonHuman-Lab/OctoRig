@@ -74,6 +74,7 @@ Thumbs.db
 
 # ── Miscellaneous ─────────────────────────────────────────────────────────────
 /scripts/screenshots/
+/scripts/content/
 package-lock.json
 package.json
 wiki/

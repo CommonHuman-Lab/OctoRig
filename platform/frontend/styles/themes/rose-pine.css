@@ -1,0 +1,42 @@
+/* SPDX-License-Identifier: AGPL-3.0-or-later */
+/* Copyright (c) 2026 CommonHuman-Lab */
+
+/* Topbar — rose → gold → iris, slow elegant drift */
+[data-theme="rose-pine"] header {
+  position: relative;
+  border-bottom: none;
+}
+[data-theme="rose-pine"] header::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--g-flourish-1), var(--g-flourish-2), var(--g-flourish-3), var(--g-flourish-2), var(--g-flourish-1));
+  background-size: 300% auto;
+  animation: header-border-shift 12s linear infinite;
+  opacity: 0.65;
+}
+
+/* Sidebar footer — muted rose centre fade */
+[data-theme="rose-pine"] .sidebar-footer {
+  position: relative;
+  border-top: none;
+}
+[data-theme="rose-pine"] .sidebar-footer::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  animation: u-pulse 4.5s ease infinite;
+  background: linear-gradient(90deg, transparent, var(--g-flourish-1), var(--g-flourish-3), var(--g-flourish-1), transparent);
+  opacity: 0.55;
+}
+
+/* Page/challenge titles — static muted gradient text */
+[data-theme="rose-pine"] .page-title,
+[data-theme="rose-pine"] .ch-title {
+  background: linear-gradient(90deg, var(--g-flourish-1), var(--g-flourish-2), var(--g-flourish-3));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}

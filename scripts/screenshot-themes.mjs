@@ -40,6 +40,11 @@ const THEMES = [
   { id: "dracula", name: "Dracula" },
   { id: "gruvbox", name: "Gruvbox" },
   { id: "parchment", name: "Parchment" },
+  { id: "tokyo-night", name: "Tokyo Night" },
+  { id: "catppuccin", name: "Catppuccin Mocha" },
+  { id: "synthwave", name: "Synthwave" },
+  { id: "rose-pine", name: "Rosé Pine" },
+  { id: "frost", name: "Frost" },
 ];
 
 fs.mkdirSync(OUT, { recursive: true });

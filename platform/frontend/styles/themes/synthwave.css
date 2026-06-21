@@ -1,0 +1,51 @@
+/* SPDX-License-Identifier: AGPL-3.0-or-later */
+/* Copyright (c) 2026 CommonHuman-Lab */
+
+/* Body — faint scanlines + a low magenta horizon glow, outrun sunset cue */
+[data-theme="synthwave"] body {
+  background-image:
+    repeating-linear-gradient(0deg,
+      rgba(249, 42, 173, var(--g-texture-opacity)) 0px,
+      rgba(249, 42, 173, var(--g-texture-opacity)) 1px,
+      transparent 1px, transparent 4px),
+    radial-gradient(ellipse 70% 35% at 50% 100%, rgba(249, 42, 173, 0.16) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 30% at 50% 100%, rgba(54, 249, 246, 0.10) 0%, transparent 60%);
+}
+
+/* Topbar — magenta ↔ cyan, fast punchy sweep */
+[data-theme="synthwave"] header {
+  position: relative;
+  border-bottom: none;
+}
+[data-theme="synthwave"] header::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1.5px;
+  background: linear-gradient(90deg, var(--g-flourish-1), var(--g-flourish-2), var(--g-flourish-3), var(--g-flourish-2), var(--g-flourish-1));
+  background-size: 300% auto;
+  animation: header-border-shift 4.5s linear infinite;
+}
+
+/* Sidebar footer — neon centre fade */
+[data-theme="synthwave"] .sidebar-footer {
+  position: relative;
+  border-top: none;
+}
+[data-theme="synthwave"] .sidebar-footer::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  animation: u-pulse 2.2s ease infinite;
+  background: linear-gradient(90deg, transparent, var(--g-flourish-1), var(--g-flourish-3), var(--g-flourish-1), transparent);
+}
+
+/* Page/challenge titles — static neon gradient text */
+[data-theme="synthwave"] .page-title,
+[data-theme="synthwave"] .ch-title {
+  background: linear-gradient(90deg, var(--g-flourish-1), var(--g-flourish-2), var(--g-flourish-3));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}

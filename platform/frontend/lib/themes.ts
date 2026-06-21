@@ -10,7 +10,12 @@ export type ThemeId =
   | "unicorn"
   | "dracula"
   | "gruvbox"
-  | "parchment";
+  | "parchment"
+  | "tokyo-night"
+  | "catppuccin"
+  | "synthwave"
+  | "rose-pine"
+  | "frost";
 
 export interface Theme {
   id: ThemeId;
@@ -81,6 +86,36 @@ export const THEMES: Theme[] = [
     hint: "Warm cream · Forest emerald · Paper & ink",
     preview: { bg: "#f4ecdc", surface: "rgba(15,122,92,0.06)", border: "rgba(58,52,43,0.16)", accent: "#0f7a5c", text: "#3a342b", dim: "#8a8068" },
   },
+  {
+    id: "tokyo-night",
+    name: "Tokyo Night",
+    hint: "Deep navy · Electric blue · Pro editor",
+    preview: { bg: "#1a1b26", surface: "rgba(122,162,247,0.06)", border: "rgba(122,162,247,0.20)", accent: "#7aa2f7", text: "#c0caf5", dim: "#565f89" },
+  },
+  {
+    id: "catppuccin",
+    name: "Catppuccin Mocha",
+    hint: "Warm dark · Pastel mauve · Soft & calm",
+    preview: { bg: "#1e1e2e", surface: "rgba(203,166,247,0.06)", border: "rgba(203,166,247,0.20)", accent: "#cba6f7", text: "#cdd6f4", dim: "#6c7086" },
+  },
+  {
+    id: "synthwave",
+    name: "Synthwave",
+    hint: "Outrun purple · Hot magenta · Neon cyan",
+    preview: { bg: "#1a0b2e", surface: "rgba(249,42,173,0.07)", border: "rgba(249,42,173,0.24)", accent: "#f92aad", text: "#fdeff9", dim: "#8b7a9e" },
+  },
+  {
+    id: "rose-pine",
+    name: "Rosé Pine",
+    hint: "Muted charcoal · Dusty rose · Elegant calm",
+    preview: { bg: "#191724", surface: "rgba(196,167,231,0.06)", border: "rgba(196,167,231,0.18)", accent: "#c4a7e7", text: "#e0def4", dim: "#6e6a86" },
+  },
+  {
+    id: "frost",
+    name: "Frost",
+    hint: "Icy white · Glacier blue · Crisp & clinical",
+    preview: { bg: "#eef3f7", surface: "rgba(47,127,209,0.06)", border: "rgba(29,43,58,0.14)", accent: "#2f7fd1", text: "#1d2b3a", dim: "#7c93a5" },
+  },
 ];
 
 export const THEME_STORAGE_KEY = "octorig_theme";
@@ -96,6 +131,11 @@ export function isThemeId(v: string): v is ThemeId {
     "dracula",
     "gruvbox",
     "parchment",
+    "tokyo-night",
+    "catppuccin",
+    "synthwave",
+    "rose-pine",
+    "frost",
   ].includes(v);
 }
 

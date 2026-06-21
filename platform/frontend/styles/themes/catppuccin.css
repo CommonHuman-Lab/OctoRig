@@ -1,0 +1,44 @@
+/* SPDX-License-Identifier: AGPL-3.0-or-later */
+/* Copyright (c) 2026 CommonHuman-Lab */
+
+/* Topbar — lavender → mauve → pink, gentle pastel pulse */
+[data-theme="catppuccin"] header {
+  position: relative;
+  border-bottom: none;
+}
+[data-theme="catppuccin"] header::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%, var(--g-flourish-1) 25%,
+    var(--g-flourish-2) 50%, var(--g-flourish-3) 75%, transparent 100%);
+  background-size: 300% auto;
+  animation: header-border-shift 11s linear infinite;
+  opacity: 0.75;
+}
+
+/* Sidebar footer — soft pastel centre fade */
+[data-theme="catppuccin"] .sidebar-footer {
+  position: relative;
+  border-top: none;
+}
+[data-theme="catppuccin"] .sidebar-footer::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  animation: u-pulse 4s ease infinite;
+  background: linear-gradient(90deg, transparent, var(--g-flourish-1), var(--g-flourish-2), var(--g-flourish-1), transparent);
+  opacity: 0.6;
+}
+
+/* Page/challenge titles — static pastel gradient text */
+[data-theme="catppuccin"] .page-title,
+[data-theme="catppuccin"] .ch-title {
+  background: linear-gradient(90deg, var(--g-flourish-1), var(--g-flourish-2), var(--g-flourish-3));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}

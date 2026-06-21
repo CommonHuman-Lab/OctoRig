@@ -1,46 +1,46 @@
 /* SPDX-License-Identifier: AGPL-3.0-or-later */
 /* Copyright (c) 2026 CommonHuman-Lab */
 
-/* Rainbow body blobs */
+/* Holographic body blobs — pink → violet → indigo → cyan → mint, no yellow/orange */
 [data-theme="unicorn"] body {
   background-image:
-    radial-gradient(ellipse 65% 50% at 50% -5%,  rgba(217,70,239,0.30)  0%, transparent 60%),
+    radial-gradient(ellipse 65% 50% at 50% -5%,  rgba(217,70,239,0.28)  0%, transparent 60%),
     radial-gradient(ellipse 45% 35% at 90% 88%,  rgba(99,102,241,0.22)  0%, transparent 55%),
-    radial-gradient(ellipse 38% 42% at  4% 68%,  rgba(52,211,153,0.14)  0%, transparent 55%),
-    radial-gradient(ellipse 30% 28% at 94% 12%,  rgba(251,191,36,0.16)  0%, transparent 50%),
-    radial-gradient(ellipse 24% 26% at 18% 96%,  rgba(56,189,248,0.18)  0%, transparent 50%);
+    radial-gradient(ellipse 38% 42% at  4% 68%,  rgba(45,212,191,0.14)  0%, transparent 55%),
+    radial-gradient(ellipse 30% 28% at 94% 12%,  rgba(56,189,248,0.16)  0%, transparent 50%),
+    radial-gradient(ellipse 24% 26% at 18% 96%,  rgba(168,139,250,0.18) 0%, transparent 50%);
 }
 
-/* Rainbow scrollbar */
+/* Holographic scrollbar */
 [data-theme="unicorn"] * {
   scrollbar-color: rgba(192,38,211,0.40) transparent;
 }
 [data-theme="unicorn"] *::-webkit-scrollbar-thumb {
   background: linear-gradient(180deg,
-    #f472b6 0%, #a78bfa 25%, #38bdf8 50%, #34d399 75%, #facc15 100%);
+    #f472b6 0%, #a78bfa 25%, #818cf8 50%, #38bdf8 75%, #2dd4bf 100%);
 }
 
-/* Card shimmer → rainbow */
+/* Card shimmer → holographic */
 [data-theme="unicorn"] .g-card::before,
 [data-theme="unicorn"] .g-panel::before,
 [data-theme="unicorn"] .g-stat-card::before {
   background: linear-gradient(90deg,
-    transparent 0%, #f472b6 20%, #a78bfa 40%, #38bdf8 60%, #34d399 80%, transparent 100%);
-  animation: u-pulse 2.8s ease infinite;
-  opacity: 0.6;
+    transparent 0%, #f472b6 20%, #a78bfa 40%, #38bdf8 60%, #2dd4bf 80%, transparent 100%);
+  animation: u-pulse 3.5s ease infinite;
+  opacity: 0.55;
 }
 
-/* Brand wordmark → rainbow gradient text */
+/* Brand wordmark → holographic gradient text */
 [data-theme="unicorn"] .brand-gradient {
-  background: linear-gradient(90deg, #f472b6, #a78bfa, #38bdf8, #34d399, #facc15, #fb923c, #f472b6);
+  background: linear-gradient(90deg, #f472b6, #a78bfa, #818cf8, #38bdf8, #2dd4bf, #a78bfa, #f472b6);
   background-size: 300% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  animation: header-border-shift 5s linear infinite;
+  animation: header-border-shift 7s linear infinite;
 }
 
-/* Topbar — rainbow bottom border */
+/* Topbar — holographic bottom border */
 [data-theme="unicorn"] header {
   position: relative;
   border-bottom: none;
@@ -50,12 +50,12 @@
   position: absolute;
   bottom: 0; left: 0; right: 0;
   height: 1.5px;
-  background: linear-gradient(90deg, #f472b6 0%, #a78bfa 16.66%, #38bdf8 33.33%, #34d399 50%, #facc15 66.66%, #fb923c 83.33%, #f472b6 100%);
+  background: linear-gradient(90deg, #f472b6 0%, #a78bfa 25%, #38bdf8 50%, #2dd4bf 75%, #f472b6 100%);
   background-size: 300% auto;
-  animation: header-border-shift 6s linear infinite;
+  animation: header-border-shift 7.5s linear infinite;
 }
 
-/* Sidebar footer — rainbow top border */
+/* Sidebar footer — holographic top border */
 [data-theme="unicorn"] .sidebar-footer {
   position: relative;
   border-top: none;
@@ -66,24 +66,24 @@
   top: 0; left: 0; right: 0;
   height: 1px;
   background: linear-gradient(90deg, transparent, #f472b6, #a78bfa, #38bdf8, transparent);
-  animation: u-pulse 3s ease infinite;
+  animation: u-pulse 3.5s ease infinite;
 }
 
-/* Active nav item — rainbow left accent */
+/* Active nav item — holographic left accent */
 [data-theme="unicorn"] .g-nav-item.active {
   border-left: 2px solid transparent;
-  border-image: linear-gradient(180deg, #f472b6, #a78bfa, #38bdf8, #34d399) 1;
+  border-image: linear-gradient(180deg, #f472b6, #a78bfa, #38bdf8, #2dd4bf) 1;
 }
 
-/* Accent button → animated rainbow gradient */
+/* Accent button → animated holographic gradient */
 [data-theme="unicorn"] .g-btn-primary {
   background: linear-gradient(135deg, #c026d3 0%, #7c3aed 50%, #2563eb 100%);
   background-size: 200% 200%;
-  animation: u-rainbow-shift 4s ease infinite;
+  animation: u-rainbow-shift 5s ease infinite;
   color: #fff;
 }
 
-/* Ring/focus glow → rainbow shadow */
+/* Ring/focus glow → holographic shadow */
 [data-theme="unicorn"] .ring-accent {
   box-shadow: 0 0 0 1px rgba(192,38,211,0.40),
               0 0 16px rgba(232,121,249,0.24);
@@ -91,10 +91,10 @@
 
 /* Online dot sparkle */
 [data-theme="unicorn"] .g-dot-success {
-  animation: u-sparkle 2.5s ease infinite;
+  animation: u-sparkle 3.2s ease infinite;
 }
 
-/* Page/challenge titles — rainbow gradient text */
+/* Page/challenge titles — holographic gradient text */
 [data-theme="unicorn"] .page-title,
 [data-theme="unicorn"] .ch-title {
   background: linear-gradient(90deg, #f472b6, #c084fc, #38bdf8);

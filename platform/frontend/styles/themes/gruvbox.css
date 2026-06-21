@@ -1,6 +1,15 @@
 /* SPDX-License-Identifier: AGPL-3.0-or-later */
 /* Copyright (c) 2026 CommonHuman-Lab */
 
+/* Body — faint warm CRT scanline grain, retro terminal cue */
+[data-theme="gruvbox"] body {
+  background-image:
+    repeating-linear-gradient(0deg,
+      rgba(254, 128, 25, var(--g-texture-opacity)) 0px,
+      rgba(254, 128, 25, var(--g-texture-opacity)) 1px,
+      transparent 1px, transparent 3px);
+}
+
 /* Topbar — slow warm amber pulse, retro CRT feel */
 [data-theme="gruvbox"] header {
   position: relative;
@@ -13,7 +22,7 @@
   height: 1px;
   background: linear-gradient(90deg,
     transparent 0%, rgba(254,128,25,0.22) 20%,
-    #fe8019 50%,
+    var(--g-flourish-2) 50%,
     rgba(254,128,25,0.22) 80%, transparent 100%);
   background-size: 300% auto;
   animation: header-border-shift 11s linear infinite;
@@ -30,13 +39,13 @@
   top: 0; left: 0; right: 0;
   height: 1px;
   animation: u-pulse 4s ease infinite;
-  background: linear-gradient(90deg, transparent, rgba(254,128,25,0.4), #fe8019, rgba(254,128,25,0.4), transparent);
+  background: linear-gradient(90deg, transparent, rgba(254,128,25,0.4), var(--g-flourish-2), rgba(254,128,25,0.4), transparent);
 }
 
 /* Page/challenge titles — static gradient text */
 [data-theme="gruvbox"] .page-title,
 [data-theme="gruvbox"] .ch-title {
-  background: linear-gradient(90deg, #d65d0e, #fe8019, #fabd2f);
+  background: linear-gradient(90deg, var(--g-flourish-1), var(--g-flourish-2), var(--g-flourish-3));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

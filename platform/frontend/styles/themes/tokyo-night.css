@@ -1,0 +1,42 @@
+/* SPDX-License-Identifier: AGPL-3.0-or-later */
+/* Copyright (c) 2026 CommonHuman-Lab */
+
+/* Topbar — blue → violet → cyan, slow clean sweep */
+[data-theme="tokyo-night"] header {
+  position: relative;
+  border-bottom: none;
+}
+[data-theme="tokyo-night"] header::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--g-flourish-1), var(--g-flourish-2), var(--g-flourish-3), var(--g-flourish-2), var(--g-flourish-1));
+  background-size: 300% auto;
+  animation: header-border-shift 9s linear infinite;
+  opacity: 0.85;
+}
+
+/* Sidebar footer — blue centre fade */
+[data-theme="tokyo-night"] .sidebar-footer {
+  position: relative;
+  border-top: none;
+}
+[data-theme="tokyo-night"] .sidebar-footer::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  animation: u-pulse 3.5s ease infinite;
+  background: linear-gradient(90deg, transparent, var(--g-flourish-1), var(--g-flourish-2), var(--g-flourish-1), transparent);
+  opacity: 0.7;
+}
+
+/* Page/challenge titles — static gradient text */
+[data-theme="tokyo-night"] .page-title,
+[data-theme="tokyo-night"] .ch-title {
+  background: linear-gradient(90deg, var(--g-flourish-1), var(--g-flourish-2), var(--g-flourish-3));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}

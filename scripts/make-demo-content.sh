@@ -3,12 +3,14 @@
 # Copyright (c) 2026 CommonHuman-Lab
 #
 # make-demo-content.sh — single entry point that chains the screenshot/gif
-# scripts in this directory into the two demo-content flows:
+# scripts in this directory into the two demo-content flows. All output (raw
+# screenshots, gifs, the slices jpg) is written under ./content/, next to
+# this script, so the whole batch of generated material lives in one place:
 #
-#   demo   screenshot-demo.mjs   -> screenshots-to-gif.mjs   -> demo.gif (non-admin pages)
-#                                -> screenshots-to-gif.mjs   -> demo-admin.gif (admin pages)
-#   themes screenshot-themes.mjs -> screenshots-to-gif.mjs   -> themes.gif
-#                                -> screenshot-themes-slices.mjs -> themes-slices.jpg
+#   demo   screenshot-demo.mjs   -> screenshots-to-gif.mjs   -> content/demo.gif (non-admin pages)
+#                                -> screenshots-to-gif.mjs   -> content/demo-admin.gif (admin pages)
+#   themes screenshot-themes.mjs -> screenshots-to-gif.mjs   -> content/themes.gif
+#                                -> screenshot-themes-slices.mjs -> content/themes-slices.jpg
 #
 # Usage:
 #   ./scripts/make-demo-content.sh            # run both flows
@@ -24,30 +26,33 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
+CONTENT_DIR="$SCRIPT_DIR/content"
+mkdir -p "$CONTENT_DIR"
+
 MODE="${1:-all}"
 
 run_demo() {
   echo "==> [demo] capturing page screenshots"
-  node screenshot-demo.mjs
+  OUT_DIR="$CONTENT_DIR/screenshots" node screenshot-demo.mjs
 
   echo "==> [demo] stitching demo.gif (non-admin pages)"
-  IN_DIR="$SCRIPT_DIR/screenshots" OUT_FILE="$SCRIPT_DIR/demo.gif" SKIP="admin,after-login,settings-demo-on,team-detail,challenge-detail" \
+  IN_DIR="$CONTENT_DIR/screenshots" OUT_FILE="$CONTENT_DIR/demo.gif" SKIP="admin,after-login,settings-demo-on,team-detail,challenge-detail" \
     FADE_MS="${FADE_MS:-450}" LOOP_FADE="${LOOP_FADE:-1}" FIRST_HOLD_MS="${FIRST_HOLD_MS:-${HOLD_MS:-1100}}" LAST_HOLD_MS="${LAST_HOLD_MS:-${HOLD_MS:-1100}}" \
     node screenshots-to-gif.mjs
 
   echo "==> [demo] stitching demo-admin.gif (admin pages)"
-  IN_DIR="$SCRIPT_DIR/screenshots" OUT_FILE="$SCRIPT_DIR/demo-admin.gif" ONLY="admin" \
+  IN_DIR="$CONTENT_DIR/screenshots" OUT_FILE="$CONTENT_DIR/demo-admin.gif" ONLY="admin" \
     FADE_MS="${FADE_MS:-450}" LOOP_FADE="${LOOP_FADE:-1}" FIRST_HOLD_MS="${FIRST_HOLD_MS:-${HOLD_MS:-1100}}" LAST_HOLD_MS="${LAST_HOLD_MS:-${HOLD_MS:-1100}}" \
     node screenshots-to-gif.mjs
 }
 
 run_themes() {
   echo "==> [themes] capturing per-theme screenshots"
-  node screenshot-themes.mjs
+  OUT_DIR="$CONTENT_DIR/themes" node screenshot-themes.mjs
   echo "==> [themes] stitching themes.gif"
-  IN_DIR="$SCRIPT_DIR/themes" OUT_FILE="$SCRIPT_DIR/themes.gif" FADE_MS="${FADE_MS:-450}" LOOP_FADE="${LOOP_FADE:-1}" FIRST_HOLD_MS="${FIRST_HOLD_MS:-${HOLD_MS:-1100}}" LAST_HOLD_MS="${LAST_HOLD_MS:-${HOLD_MS:-1100}}" node screenshots-to-gif.mjs
+  IN_DIR="$CONTENT_DIR/themes" OUT_FILE="$CONTENT_DIR/themes.gif" FADE_MS="${FADE_MS:-450}" LOOP_FADE="${LOOP_FADE:-1}" FIRST_HOLD_MS="${FIRST_HOLD_MS:-${HOLD_MS:-1100}}" LAST_HOLD_MS="${LAST_HOLD_MS:-${HOLD_MS:-1100}}" node screenshots-to-gif.mjs
   echo "==> [themes] building themes-slices.jpg"
-  node screenshot-themes-slices.mjs
+  IN_DIR="$CONTENT_DIR/themes" OUT_FILE="$CONTENT_DIR/themes-slices.jpg" node screenshot-themes-slices.mjs
 }
 
 case "$MODE" in

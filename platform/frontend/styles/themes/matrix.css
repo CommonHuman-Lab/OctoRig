@@ -1,6 +1,17 @@
 /* SPDX-License-Identifier: AGPL-3.0-or-later */
 /* Copyright (c) 2026 CommonHuman-Lab */
 
+/* Body — sparse vertical code-rain columns, very low opacity */
+[data-theme="matrix"] body {
+  background-image:
+    repeating-linear-gradient(90deg,
+      rgba(34, 197, 94, var(--g-texture-opacity)) 0px,
+      rgba(34, 197, 94, var(--g-texture-opacity)) 1px,
+      transparent 1px, transparent 96px),
+    linear-gradient(180deg,
+      rgba(34, 197, 94, calc(var(--g-texture-opacity) * 1.6)) 0%, transparent 35%);
+}
+
 /* Topbar — phosphor line drifting across the screen */
 [data-theme="matrix"] header {
   position: relative;
@@ -13,7 +24,7 @@
   height: 1px;
   background: linear-gradient(90deg,
     transparent 0%, rgba(34,197,94,0.2) 20%,
-    #22c55e 50%,
+    var(--g-flourish-2) 50%,
     rgba(34,197,94,0.2) 80%, transparent 100%);
   background-size: 300% auto;
   animation: header-border-shift 4.5s linear infinite;
@@ -30,13 +41,13 @@
   top: 0; left: 0; right: 0;
   height: 1px;
   animation: u-pulse 3s ease infinite;
-  background: linear-gradient(90deg, transparent, rgba(34,197,94,0.4), #22c55e, rgba(34,197,94,0.4), transparent);
+  background: linear-gradient(90deg, transparent, rgba(34,197,94,0.4), var(--g-flourish-2), rgba(34,197,94,0.4), transparent);
 }
 
 /* Page/challenge titles — static gradient text */
 [data-theme="matrix"] .page-title,
 [data-theme="matrix"] .ch-title {
-  background: linear-gradient(90deg, #15803d, #22c55e, #86efac);
+  background: linear-gradient(90deg, var(--g-flourish-1), var(--g-flourish-2), var(--g-flourish-3));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
