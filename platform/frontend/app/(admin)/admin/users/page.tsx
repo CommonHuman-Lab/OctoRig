@@ -22,6 +22,7 @@ import { UsersTable } from "@/components/admin/users/UsersTable";
 import { CreateUserForm } from "@/components/admin/users/CreateUserForm";
 import { useEscapeKey } from "@/hooks/useEscapeKey";
 import { SheetShell } from "@/components/ui/SheetShell";
+import { Button } from "@/components/ui/Button";
 
 export default function AdminUsersPage() {
   const { confirm } = useConfirmStore();
@@ -98,13 +99,14 @@ export default function AdminUsersPage() {
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
-          <button
-            className="g-btn g-btn-primary g-btn-sm"
+          <Button
+            variant="primary"
+            size="sm"
+            leftIcon={<UserPlus size={13} />}
             onClick={() => setShowCreate(true)}
           >
-            <UserPlus size={13} />
             New User
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -155,14 +157,14 @@ export default function AdminUsersPage() {
           onClose={() => setShowReset(false)}
           footer={
             <>
-              <button className="g-btn g-btn-ghost" onClick={() => setShowReset(false)}>Cancel</button>
-              <button
-                className="g-btn g-btn-primary"
+              <Button onClick={() => setShowReset(false)}>Cancel</Button>
+              <Button
+                variant="primary"
                 disabled={!newPw || resetMutation.isPending}
                 onClick={() => resetMutation.mutate({ id: selected.id, password: newPw })}
               >
                 {resetMutation.isPending ? "Resetting…" : "Reset Password"}
-              </button>
+              </Button>
             </>
           }
         >
@@ -185,9 +187,9 @@ export default function AdminUsersPage() {
           onClose={() => setShowRoles(false)}
           footer={
             <>
-              <button className="g-btn g-btn-ghost" onClick={() => setShowRoles(false)}>Cancel</button>
-              <button
-                className="g-btn g-btn-primary"
+              <Button onClick={() => setShowRoles(false)}>Cancel</Button>
+              <Button
+                variant="primary"
                 disabled={updateMutation.isPending}
                 onClick={() => {
                   updateMutation.mutate({ id: selected.id, patch: { platform_roles: pendingRoles } });
@@ -195,7 +197,7 @@ export default function AdminUsersPage() {
                 }}
               >
                 {updateMutation.isPending ? "Saving…" : "Save Roles"}
-              </button>
+              </Button>
             </>
           }
         >

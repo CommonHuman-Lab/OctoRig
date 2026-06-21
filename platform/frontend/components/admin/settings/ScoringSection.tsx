@@ -4,6 +4,7 @@ import { Save, Droplets, Snowflake } from "lucide-react";
 import type { SiteSettings } from "@/lib/api/settings";
 import { SettingToggle } from "./SettingToggle";
 import { SettingRow } from "./SettingRow";
+import { Button } from "@/components/ui/Button";
 
 function toISOOrNull(val: string | null | undefined): string | null {
   if (!val) return null;
@@ -95,26 +96,27 @@ export function ScoringSection({
               onChange={(e) => onChange({ scoreboard_frozen_at: toISOOrNull(e.target.value) })}
             />
             {scoring.scoreboard_frozen_at && (
-              <button
-                className="g-btn g-btn-ghost g-btn-sm"
+              <Button
+                size="sm"
                 onClick={() => onChange({ scoreboard_frozen_at: null })}
               >
                 Clear
-              </button>
+              </Button>
             )}
           </div>
         }
       />
 
       <div className="settings-row-actions">
-        <button
-          className="g-btn g-btn-primary g-btn-sm"
+        <Button
+          variant="primary"
+          size="sm"
           disabled={isPending}
           onClick={onSave}
+          leftIcon={<Save size={13} />}
         >
-          <Save size={13} />
           Save Scoring Settings
-        </button>
+        </Button>
       </div>
     </section>
   );

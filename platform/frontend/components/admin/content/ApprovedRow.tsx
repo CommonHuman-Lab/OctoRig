@@ -11,6 +11,7 @@ import {
 import { useApiMutation } from "@/hooks/useApiMutation";
 import { BodyPreview } from "./BodyPreview";
 import { StatusPill } from "@/components/ui/StatusPill";
+import { Button } from "@/components/ui/Button";
 
 export function ApprovedRow({ sub }: { sub: ContentSubmission }) {
   const [showBody, setShowBody] = useState(false);
@@ -26,14 +27,15 @@ export function ApprovedRow({ sub }: { sub: ContentSubmission }) {
     <>
       <tr>
         <td>
-          <button
-            className="g-btn g-btn-ghost g-btn-sm"
+          <Button
+            variant="ghost"
+            size="sm"
             style={{ padding: "0.1rem 0.4rem", fontSize: "0.7rem" }}
             onClick={() => setShowBody((v) => !v)}
-            title="Toggle body"
+            tooltip="Toggle body"
           >
             {showBody ? "▾" : "▸"}
-          </button>
+          </Button>
           {" "}
           <span style={{ color: "var(--g-text)" }}>{sub.title}</span>
         </td>
@@ -43,10 +45,15 @@ export function ApprovedRow({ sub }: { sub: ContentSubmission }) {
         </td>
         <td><StatusPill status={sub.status} /></td>
         <td>
-          <button className="g-btn g-btn-primary g-btn-sm" disabled={isPending} onClick={() => publish()}>
-            <Printer size={12} />
+          <Button
+            variant="primary"
+            size="sm"
+            disabled={isPending}
+            onClick={() => publish()}
+            leftIcon={<Printer size={12} />}
+          >
             {isPending ? "Publishing…" : "Publish"}
-          </button>
+          </Button>
         </td>
       </tr>
       {showBody && (

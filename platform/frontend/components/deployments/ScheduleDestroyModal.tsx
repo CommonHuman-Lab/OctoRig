@@ -3,6 +3,7 @@
 // Copyright (c) 2026 CommonHuman-Lab
 import { addHours } from "@/lib/utils/date";
 import { useEscapeKey } from "@/hooks/useEscapeKey";
+import { Button } from "@/components/ui/Button";
 
 const PRESETS: { label: string; hours: number }[] = [
   { label: "2 h", hours: 2 },
@@ -41,13 +42,13 @@ export function ScheduleDestroyModal({
           </p>
           <div className="dd-preset-row">
             {PRESETS.map((p) => (
-              <button
+              <Button
                 key={p.label}
-                className="g-btn g-btn-ghost g-btn-sm"
+                size="sm"
                 onClick={() => onChangeScheduledAt(addHours(p.hours))}
               >
                 {p.label}
-              </button>
+              </Button>
             ))}
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
@@ -62,16 +63,16 @@ export function ScheduleDestroyModal({
           </div>
         </div>
         <div className="g-modal-footer">
-          <button className="g-btn g-btn-ghost" onClick={onClose}>
+          <Button onClick={onClose}>
             Cancel
-          </button>
-          <button
-            className="g-btn g-btn-danger"
+          </Button>
+          <Button
+            variant="danger"
             onClick={onConfirm}
             disabled={isPending}
           >
             {isPending ? "Scheduling…" : "Schedule Destroy"}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

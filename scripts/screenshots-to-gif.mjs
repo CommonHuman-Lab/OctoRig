@@ -28,13 +28,16 @@
 //   DITHER          paletteuse dither algo; default bayer
 //   SKIP            comma-separated substrings — drop any filename containing one
 //   ONLY            comma-separated substrings — keep only filenames containing one
+//   LABELS          "1" to caption each frame with its filename, "0" to disable (default)
+//   FONT_FILE       path to a .ttf/.otf used for labels; default a DejaVu Sans Mono
+//                   found on the system
 //
 // Example — drop the login screens, slower pace, hard cuts:
 //   SKIP=after-login,settings-demo-on HOLD_MS=1500 FADE_MS=0 node scripts/screenshots-to-gif.mjs
 //
 // Example — themes gif (files already sort alphabetically: crimson, matrix,
-// nightfall, nord, obsidian, unicorn):
-//   IN_DIR=scripts/themes OUT_FILE=scripts/themes.gif node scripts/screenshots-to-gif.mjs
+// nightfall, nord, obsidian, unicorn), captioned with theme names:
+//   IN_DIR=scripts/themes OUT_FILE=scripts/themes.gif LABELS=1 node scripts/screenshots-to-gif.mjs
 
 import fs from "fs";
 import path from "path";
@@ -57,6 +60,21 @@ const SKIP = (process.env.SKIP ?? "").split(",").map((s) => s.trim()).filter(Boo
 const ONLY = (process.env.ONLY ?? "").split(",").map((s) => s.trim()).filter(Boolean);
 const LOOP_FADE = (process.env.LOOP_FADE ?? "0") !== "0";
 const DUP_HOLD_MS = Number(process.env.DUP_HOLD_MS ?? 0);
+const LABELS = (process.env.LABELS ?? "0") !== "0";
+const FONT_FILE = process.env.FONT_FILE ?? findFont();
+
+function findFont() {
+  const candidates = [
+    "/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf",
+    "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+  ];
+  return candidates.find((f) => fs.existsSync(f));
+}
+
+if (LABELS && !FONT_FILE) {
+  console.error("No font found for labels. Set FONT_FILE to a .ttf/.otf path, or LABELS=0 to disable captions.");
+  process.exit(1);
+}
 
 let files = fs.readdirSync(IN_DIR)
   .filter((f) => f.toLowerCase().endsWith(".png"))
@@ -92,11 +110,29 @@ for (let i = 0; i < files.length; i++) {
   args.push("-loop", "1", "-t", clipLen[i].toFixed(3), "-i", path.join(IN_DIR, files[i]));
 }
 
+const outHeight = Math.round(WIDTH * 9 / 16); // approximation, only used to size label text
+
 const scaleLabels = [];
 let filter = "";
 for (let i = 0; i < files.length; i++) {
-  const label = `v${i}`;
-  filter += `[${i}:v]scale=${WIDTH}:-2:flags=lanczos,fps=${FPS},setsar=1[${label}];`;
+  const scaled = `v${i}`;
+  filter += `[${i}:v]scale=${WIDTH}:-2:flags=lanczos,fps=${FPS},setsar=1[${scaled}];`;
+  if (!LABELS) {
+    scaleLabels.push(scaled);
+    continue;
+  }
+  const label = `vl${i}`;
+  const text = path
+    .basename(files[i], path.extname(files[i]))
+    .replace(/^\d+[a-z]?-/, "")
+    .replace(/[-_]/g, " ")
+    .toUpperCase()
+    .replace(/'/g, "\\'");
+  filter +=
+    `[${scaled}]drawtext=fontfile='${FONT_FILE}':text='${text}':` +
+    `fontcolor=white:fontsize=${Math.round(outHeight * 0.06)}:` +
+    `x=(w-text_w)/2:y=h-text_h-${Math.round(outHeight * 0.03)}:` +
+    `box=1:boxcolor=black@0.55:boxborderw=${Math.round(outHeight * 0.02)}[${label}];`;
   scaleLabels.push(label);
 }
 

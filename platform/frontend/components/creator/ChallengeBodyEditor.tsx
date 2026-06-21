@@ -12,6 +12,7 @@ import {
   type HintInput,
 } from "@/lib/api/content";
 import { MarkdownEditor } from "@/components/ui/MarkdownEditor";
+import { Button } from "@/components/ui/Button";
 
 const fieldStyle = { display: "flex", flexDirection: "column" as const, gap: "0.25rem" };
 const labelStyle = { fontSize: "0.6875rem", textTransform: "uppercase" as const, letterSpacing: "0.07em", color: "var(--g-text-muted)" };
@@ -199,12 +200,13 @@ export function ChallengeBodyEditor({ sub }: { sub: ContentSubmission }) {
       <div style={sectionStyle}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "0.5rem" }}>
           <span style={labelStyle}>Flags * (at least one required)</span>
-          <button
-            className="g-btn g-btn-ghost g-btn-sm"
+          <Button
+            size="sm"
+            leftIcon={<Plus size={11} />}
             onClick={() => setFlags((f) => [...f, { value: "", flag_type: "static", case_sensitive: true }])}
           >
-            <Plus size={11} /> Add Flag
-          </button>
+            Add Flag
+          </Button>
         </div>
         {flags.map((flag, i) => (
           <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr auto auto auto", gap: "0.4rem", alignItems: "center", marginBottom: "0.35rem" }}>
@@ -233,14 +235,14 @@ export function ChallengeBodyEditor({ sub }: { sub: ContentSubmission }) {
               />
               Case sensitive
             </label>
-            <button
-              className="g-btn g-btn-ghost g-btn-sm"
+            <Button
+              size="sm"
+              icon
+              leftIcon={<X size={12} />}
               style={{ color: "var(--g-danger)" }}
               disabled={flags.length === 1}
               onClick={() => setFlags((f) => f.filter((_, j) => j !== i))}
-            >
-              <X size={12} />
-            </button>
+            />
           </div>
         ))}
       </div>
@@ -249,12 +251,13 @@ export function ChallengeBodyEditor({ sub }: { sub: ContentSubmission }) {
       <div style={sectionStyle}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "0.5rem" }}>
           <span style={labelStyle}>Hints (optional)</span>
-          <button
-            className="g-btn g-btn-ghost g-btn-sm"
+          <Button
+            size="sm"
+            leftIcon={<Plus size={11} />}
             onClick={() => setHints((h) => [...h, { order_num: h.length + 1, content: "", cost: 0 }])}
           >
-            <Plus size={11} /> Add Hint
-          </button>
+            Add Hint
+          </Button>
         </div>
         {hints.map((hint, i) => (
           <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr auto auto", gap: "0.4rem", alignItems: "center", marginBottom: "0.35rem" }}>
@@ -274,34 +277,35 @@ export function ChallengeBodyEditor({ sub }: { sub: ContentSubmission }) {
               value={hint.cost}
               onChange={(e) => setHints((h) => h.map((x, j) => j === i ? { ...x, cost: parseInt(e.target.value, 10) || 0 } : x))}
             />
-            <button
-              className="g-btn g-btn-ghost g-btn-sm"
+            <Button
+              size="sm"
+              icon
+              leftIcon={<X size={12} />}
               style={{ color: "var(--g-danger)" }}
               onClick={() => setHints((h) => h.filter((_, j) => j !== i))}
-            >
-              <X size={12} />
-            </button>
+            />
           </div>
         ))}
       </div>
 
       {/* Actions */}
       <div style={{ display: "flex", gap: "0.5rem", justifyContent: "flex-end", borderTop: "1px solid var(--g-border)", paddingTop: "0.75rem" }}>
-        <button
-          className="g-btn g-btn-ghost g-btn-sm"
+        <Button
+          size="sm"
           disabled={saveMutation.isPending}
           onClick={() => saveMutation.mutate()}
         >
           {saveMutation.isPending ? "Saving…" : "Save Draft"}
-        </button>
-        <button
-          className="g-btn g-btn-primary g-btn-sm"
+        </Button>
+        <Button
+          variant="primary"
+          size="sm"
+          leftIcon={<Send size={12} />}
           disabled={!canSubmit || submitMutation.isPending}
           onClick={() => submitMutation.mutate()}
         >
-          <Send size={12} />
           {submitMutation.isPending ? "Submitting…" : "Save & Submit for Review"}
-        </button>
+        </Button>
       </div>
     </div>
   );

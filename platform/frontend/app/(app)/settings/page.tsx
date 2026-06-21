@@ -14,6 +14,7 @@ import { useUserStore } from "@/stores/user.store";
 import { useNotificationsStore } from "@/stores/notifications.store";
 import { useDemoStore } from "@/stores/demo.store";
 import { THEMES } from "@/lib/themes";
+import { Button } from "@/components/ui/Button";
 
 export default function SettingsPage() {
   const { theme, setTheme } = useThemeStore();
@@ -237,13 +238,13 @@ function ChangePasswordForm({ push }: { push: (type: "success" | "error", msg: s
         {mismatch && <span className="input-hint text-danger text-11">Passwords don't match</span>}
       </div>
       <div className="settings-field" style={{ alignItems: "flex-start" }}>
-        <button
+        <Button
           type="submit"
-          className="g-btn g-btn-primary"
+          variant="primary"
           disabled={!canSubmit || mutation.isPending}
         >
           {mutation.isPending ? "Saving…" : "Update Password"}
-        </button>
+        </Button>
       </div>
     </form>
   );

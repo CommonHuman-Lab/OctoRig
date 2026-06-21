@@ -3,6 +3,7 @@
 import { Pencil, Trash2 } from "lucide-react";
 import type { Rank } from "@/lib/api/ranks";
 import { RankChip } from "@/components/ui/RankChip";
+import { Button } from "@/components/ui/Button";
 
 export function RankTable({
   ranks,
@@ -53,22 +54,18 @@ export function RankTable({
             </td>
             <td>
               <div style={{ display: "flex", gap: "0.4rem" }} onClick={(e) => e.stopPropagation()}>
-                <button
-                  className="g-btn g-btn-ghost"
+                <Button
                   style={{ padding: "0.2rem 0.4rem" }}
                   onClick={() => onEdit(rank)}
-                  title="Edit"
-                >
-                  <Pencil size={12} />
-                </button>
-                <button
-                  className="g-btn g-btn-ghost"
+                  tooltip="Edit"
+                  leftIcon={<Pencil size={12} />}
+                />
+                <Button
                   style={{ padding: "0.2rem 0.4rem", color: "var(--g-danger)" }}
                   onClick={() => onDelete(rank)}
-                  title="Delete"
-                >
-                  <Trash2 size={12} />
-                </button>
+                  tooltip="Delete"
+                  leftIcon={<Trash2 size={12} />}
+                />
               </div>
             </td>
           </tr>

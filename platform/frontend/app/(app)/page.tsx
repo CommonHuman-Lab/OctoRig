@@ -12,6 +12,7 @@ import { getMyProfile } from "@/lib/api/profiles";
 import { DeploymentStatusBadge } from "@/components/deployments/DeploymentStatusBadge";
 import { useApiMutation } from "@/hooks/useApiMutation";
 import { AsyncContent } from "@/components/ui/AsyncContent";
+import { Button } from "@/components/ui/Button";
 
 function formatRelative(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime();
@@ -163,14 +164,14 @@ export default function Dashboard() {
                         {d.started_at ? formatRelative(d.started_at) : "—"}
                       </td>
                       <td>
-                        <button
-                          className="g-btn g-btn-danger g-btn-icon"
+                        <Button
+                          variant="danger"
+                          icon
+                          leftIcon="■"
                           onClick={(e) => { e.stopPropagation(); stopMutation.mutate(d.id); }}
                           disabled={d.status === "stopping" || stopMutation.isPending}
-                          title="Stop lab"
-                        >
-                          ■
-                        </button>
+                          tooltip="Stop lab"
+                        />
                       </td>
                     </tr>
                   ))}

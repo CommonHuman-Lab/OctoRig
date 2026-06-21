@@ -8,6 +8,7 @@ import { RankChip } from "@/components/ui/RankChip";
 import { EmojiPicker } from "@/components/ui/EmojiPicker";
 import { useEscapeKey } from "@/hooks/useEscapeKey";
 import { SheetShell } from "@/components/ui/SheetShell";
+import { Button } from "@/components/ui/Button";
 
 const BLANK_FORM = { name: "", min_points: 0, icon: "", color: "#6b7280" };
 export type RankFormState = typeof BLANK_FORM;
@@ -59,15 +60,15 @@ export function RankFormSheet({ open, initialValues, saveMutation, onToggleActiv
       onClose={onClose}
       footer={
         <>
-          <button className="g-btn g-btn-ghost" onClick={onClose}>Cancel</button>
-          <button
-            className="g-btn g-btn-primary"
+          <Button onClick={onClose}>Cancel</Button>
+          <Button
+            variant="primary"
             disabled={!form.name || saveMutation.isPending}
             onClick={handleSubmit}
+            leftIcon={<Save size={13} />}
           >
-            <Save size={13} />
             {saveMutation.isPending ? "Saving…" : isEdit ? "Save Changes" : "Create Rank"}
-          </button>
+          </Button>
         </>
       }
     >

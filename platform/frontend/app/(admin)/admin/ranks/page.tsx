@@ -17,6 +17,7 @@ import { useConfirmStore } from "@/stores/confirm.store";
 import { RankTable } from "@/components/admin/ranks/RankTable";
 import { RankFormSheet } from "@/components/admin/ranks/RankFormSheet";
 import { useApiMutation } from "@/hooks/useApiMutation";
+import { Button } from "@/components/ui/Button";
 
 export default function AdminRanksPage() {
   const { confirm } = useConfirmStore();
@@ -84,10 +85,9 @@ export default function AdminRanksPage() {
           <h1 className="page-title font-mono">Ranks</h1>
           <p className="page-sub">{ranks.length} ranks configured</p>
         </div>
-        <button className="g-btn g-btn-primary" onClick={openCreate}>
-          <Plus size={13} />
+        <Button variant="primary" leftIcon={<Plus size={13} />} onClick={openCreate}>
           New Rank
-        </button>
+        </Button>
       </div>
 
       <div className="g-card" style={{ padding: 0, overflow: "hidden" }}>

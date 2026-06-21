@@ -12,6 +12,7 @@ import { useNotificationsStore } from "@/stores/notifications.store";
 import { usePendingLabsStore } from "@/stores/pending-labs.store";
 import { useEscapeKey } from "@/hooks/useEscapeKey";
 import { IconSpinner } from "@/components/ui/IconSpinner";
+import { Button } from "@/components/ui/Button";
 
 interface Props {
   lab: LabTemplate;
@@ -70,9 +71,7 @@ export function StartLabDialog({ lab, open, onClose }: Props) {
       <div className="g-modal start-dialog" onClick={(e) => e.stopPropagation()}>
         <div className="g-modal-header">
           <span className="font-mono text-sm">{lab.name}</span>
-          <button className="g-btn g-btn-ghost g-btn-icon" onClick={onClose}>
-            <X size={16} />
-          </button>
+          <Button icon leftIcon={<X size={16} />} onClick={onClose} />
         </div>
 
         <div className="g-modal-body">
@@ -139,14 +138,14 @@ export function StartLabDialog({ lab, open, onClose }: Props) {
         <div className="g-modal-footer">
           {phase === "confirm" && (
             <>
-              <button className="g-btn g-btn-ghost" onClick={onClose}>Cancel</button>
-              <button className="g-btn g-btn-primary" onClick={handleStart}>
+              <Button onClick={onClose}>Cancel</Button>
+              <Button variant="primary" onClick={handleStart}>
                 Start Lab
-              </button>
+              </Button>
             </>
           )}
           {phase === "error" && (
-            <button className="g-btn g-btn-ghost" onClick={onClose}>Close</button>
+            <Button onClick={onClose}>Close</Button>
           )}
         </div>
       </div>

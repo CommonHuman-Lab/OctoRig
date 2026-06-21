@@ -7,6 +7,7 @@ import { type LabTemplate } from "@/lib/api/labs";
 import { type Assessment, type CreateAssessmentPayload } from "@/lib/api/assessments";
 import { useEscapeKey } from "@/hooks/useEscapeKey";
 import { SheetShell } from "@/components/ui/SheetShell";
+import { Button } from "@/components/ui/Button";
 
 const BLANK_FORM = {
   name: "",
@@ -106,17 +107,17 @@ export function AssessmentFormSheet({
       onClose={onClose}
       footer={
         <>
-          <button className="g-btn g-btn-ghost" onClick={onClose}>
+          <Button onClick={onClose}>
             Cancel
-          </button>
-          <button
-            className="g-btn g-btn-primary"
+          </Button>
+          <Button
+            variant="primary"
             disabled={!form.name || form.selectedSlugs.length === 0 || saveMutation.isPending}
             onClick={handleSubmit}
+            leftIcon={<Save size={13} />}
           >
-            <Save size={13} />
             {saveMutation.isPending ? (isEdit ? "Saving…" : "Creating…") : (isEdit ? "Save Changes" : "Create Assessment")}
-          </button>
+          </Button>
         </>
       }
     >

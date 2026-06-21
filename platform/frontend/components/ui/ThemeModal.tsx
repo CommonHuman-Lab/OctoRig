@@ -8,6 +8,7 @@ import { clsx } from "clsx";
 import { THEMES, type ThemeId } from "@/lib/themes";
 import { useThemeStore } from "@/stores/theme.store";
 import { useEscapeKey } from "@/hooks/useEscapeKey";
+import { Button } from "./Button";
 
 export function ThemeModal() {
   const [open, setOpen] = useState(false);
@@ -22,18 +23,14 @@ export function ThemeModal() {
 
   return (
     <>
-      <button className="g-btn g-btn-ghost g-btn-icon" onClick={() => setOpen(true)} title="Change theme">
-        <Palette size={16} />
-      </button>
+      <Button icon leftIcon={<Palette size={16} />} onClick={() => setOpen(true)} tooltip="Change theme" />
 
       {open && (
         <div className="g-backdrop" onClick={() => setOpen(false)}>
           <div className="g-modal theme-modal" onClick={(e) => e.stopPropagation()}>
             <div className="g-modal-header">
               <span className="font-mono text-sm">THEME</span>
-              <button className="g-btn g-btn-ghost g-btn-icon" onClick={() => setOpen(false)}>
-                <X size={16} />
-              </button>
+              <Button icon leftIcon={<X size={16} />} onClick={() => setOpen(false)} />
             </div>
             <div className="theme-grid">
               {THEMES.map((t) => (

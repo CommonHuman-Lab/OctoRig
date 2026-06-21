@@ -11,6 +11,7 @@ import { getChallenges, type ChallengeListItem, type ChallengeDifficulty } from 
 import { getLabs, type LabTemplate } from "@/lib/api/labs";
 import { PageSpinner } from "@/components/ui/Spinner";
 import { FilterPills } from "@/components/ui/FilterPills";
+import { Button } from "@/components/ui/Button";
 import { DIFF_CLASS } from "@/lib/utils/difficulty";
 
 const CATEGORIES = [
@@ -201,8 +202,8 @@ export default function ChallengesPage() {
             </span>
           )}
           {(category || difficulty || labSlug || solvedFilter !== "all" || search) && (
-            <button
-              className="g-btn g-btn-ghost g-btn-sm"
+            <Button
+              size="sm"
               onClick={() => {
                 setCategory(undefined);
                 setDifficulty(undefined);
@@ -212,7 +213,7 @@ export default function ChallengesPage() {
               }}
             >
               Clear filters
-            </button>
+            </Button>
           )}
         </div>
       </div>

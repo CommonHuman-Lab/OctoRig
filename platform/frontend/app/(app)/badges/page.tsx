@@ -12,6 +12,7 @@ import { useNotificationsStore } from "@/stores/notifications.store";
 import { BadgeCard } from "@/components/badges/BadgeCard";
 import { RankProgressCard } from "@/components/badges/RankProgressCard";
 import { FilterPills } from "@/components/ui/FilterPills";
+import { Button } from "@/components/ui/Button";
 
 const CATEGORIES = ["all", "milestone", "competition", "skill"] as const;
 type CategoryFilter = typeof CATEGORIES[number];
@@ -73,14 +74,13 @@ export default function BadgesPage() {
           </h1>
           {!isLoading && <p className="page-sub">{earned}/{total} earned</p>}
         </div>
-        <button
-          className="g-btn g-btn-ghost"
+        <Button
+          leftIcon={<RefreshCw size={13} />}
           onClick={() => evalMutation.mutate()}
           disabled={evalMutation.isPending}
         >
-          <RefreshCw size={13} />
           {evalMutation.isPending ? "Checking…" : "Check Achievements"}
-        </button>
+        </Button>
       </div>
 
       {myRank && <RankProgressCard myRank={myRank} />}

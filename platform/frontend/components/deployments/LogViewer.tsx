@@ -5,6 +5,7 @@
 import { useRef, useEffect, useState } from "react";
 import { Download, Trash2, Wifi, WifiOff } from "lucide-react";
 import { useLogStream } from "@/hooks/useLogStream";
+import { Button } from "@/components/ui/Button";
 
 interface Props {
   deploymentId: number;
@@ -109,12 +110,8 @@ export function LogViewer({ deploymentId, containerNames }: Props) {
               : <><WifiOff size={12} className="text-muted" /> disconnected</>
             }
           </span>
-          <button className="g-btn g-btn-ghost g-btn-icon" onClick={clearLines} title="Clear">
-            <Trash2 size={14} />
-          </button>
-          <button className="g-btn g-btn-ghost g-btn-icon" onClick={downloadLogs} title="Download">
-            <Download size={14} />
-          </button>
+          <Button icon leftIcon={<Trash2 size={14} />} onClick={clearLines} tooltip="Clear" />
+          <Button icon leftIcon={<Download size={14} />} onClick={downloadLogs} tooltip="Download" />
         </div>
       </div>
 

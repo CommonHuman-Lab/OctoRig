@@ -3,6 +3,7 @@
 // Copyright (c) 2026 CommonHuman-Lab
 
 import type { ProfileUpdatePayload } from "@/lib/api/profiles";
+import { Button } from "@/components/ui/Button";
 
 export function ProfileForm({
   form,
@@ -97,13 +98,13 @@ export function ProfileForm({
       </div>
 
       <div className="form-actions">
-        <button
+        <Button
           type="submit"
-          className="g-btn g-btn-primary"
+          variant="primary"
           disabled={isPending}
         >
           {isPending ? "Saving…" : "Save Changes"}
-        </button>
+        </Button>
       </div>
     </form>
   );

@@ -5,6 +5,7 @@
 import { useState } from "react";
 import { Copy, Check } from "lucide-react";
 import type { ApiKeyCreated } from "@/lib/api/apiKeys";
+import { Button } from "@/components/ui/Button";
 
 export function KeyReveal({ createdKey, onDismiss }: { createdKey: ApiKeyCreated; onDismiss: () => void }) {
   const [copied, setCopied] = useState(false);
@@ -26,17 +27,16 @@ export function KeyReveal({ createdKey, onDismiss }: { createdKey: ApiKeyCreated
         </p>
         <div className="key-display">
           <code className="key-value font-mono text-sm">{createdKey.raw_key}</code>
-          <button
-            className="g-btn g-btn-ghost g-btn-icon"
+          <Button
+            icon
             onClick={copyKey}
-            title="Copy key"
-          >
-            {copied ? <Check size={14} className="text-success" /> : <Copy size={14} />}
-          </button>
+            tooltip="Copy key"
+            leftIcon={copied ? <Check size={14} className="text-success" /> : <Copy size={14} />}
+          />
         </div>
-        <button className="g-btn g-btn-ghost g-btn-sm mt-2" onClick={onDismiss}>
+        <Button size="sm" onClick={onDismiss} style={{ marginTop: "0.5rem" }}>
           I&apos;ve saved my key
-        </button>
+        </Button>
       </div>
     </div>
   );

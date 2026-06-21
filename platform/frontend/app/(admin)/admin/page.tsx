@@ -11,6 +11,7 @@ import { getPlugins } from "@/lib/api/system";
 import { useUserStore } from "@/stores/user.store";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { Button } from "@/components/ui/Button";
 
 function StatCard({
   icon,
@@ -111,11 +112,11 @@ export default function AdminDashboard() {
       <div className="quick-links">
         <h2 className="section-title text-11 text-muted">Quick Links</h2>
         <div className="link-row">
-          <Link href="/admin/users" className="g-btn g-btn-ghost g-btn-sm">Users</Link>
-          <Link href="/admin/teams" className="g-btn g-btn-ghost g-btn-sm">Teams</Link>
-          <Link href="/admin/deployments" className="g-btn g-btn-ghost g-btn-sm">Deployments</Link>
-          <Link href="/admin/audit" className="g-btn g-btn-ghost g-btn-sm">Audit Log</Link>
-          <Link href="/admin/assessments" className="g-btn g-btn-ghost g-btn-sm">Assessments</Link>
+          <Button href="/admin/users" size="sm">Users</Button>
+          <Button href="/admin/teams" size="sm">Teams</Button>
+          <Button href="/admin/deployments" size="sm">Deployments</Button>
+          <Button href="/admin/audit" size="sm">Audit Log</Button>
+          <Button href="/admin/assessments" size="sm">Assessments</Button>
         </div>
       </div>
 

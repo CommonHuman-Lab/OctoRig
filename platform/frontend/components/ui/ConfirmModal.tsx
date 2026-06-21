@@ -4,6 +4,7 @@
 
 import { useConfirmStore } from "@/stores/confirm.store";
 import { AlertTriangle } from "lucide-react";
+import { Button } from "./Button";
 
 export function ConfirmModal() {
   const { pending, resolve } = useConfirmStore();
@@ -26,15 +27,15 @@ export function ConfirmModal() {
         )}
 
         <div className="confirm-actions">
-          <button className="g-btn g-btn-ghost" onClick={() => resolve(false)}>
+          <Button onClick={() => resolve(false)}>
             Cancel
-          </button>
-          <button
-            className={`g-btn ${pending.dangerous ? "g-btn-danger" : "g-btn-primary"}`}
+          </Button>
+          <Button
+            variant={pending.dangerous ? "danger" : "primary"}
             onClick={() => resolve(true)}
           >
             {label}
-          </button>
+          </Button>
         </div>
       </div>
 

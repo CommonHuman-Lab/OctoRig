@@ -14,6 +14,7 @@ import { EmptyCell } from "@/components/ui/TableStates";
 import { useConfirmStore } from "@/stores/confirm.store";
 import { formatDateTime } from "@/lib/utils/date";
 import { AsyncContent } from "@/components/ui/AsyncContent";
+import { Button } from "@/components/ui/Button";
 
 const ACTIVE_STATUSES = new Set(["starting", "running", "error"]);
 const STOPPABLE_STATUSES = new Set(["stopped", "error"]);
@@ -114,14 +115,15 @@ export default function AdminDeploymentsPage() {
         <h1 className="page-title font-mono">All Deployments</h1>
         <SearchBar value={search} onChange={setSearch} placeholder="Filter by user or lab…" />
         {deployments.some((d) => ACTIVE_STATUSES.has(d.status)) && (
-          <button
-            className="g-btn g-btn-danger g-btn-sm"
+          <Button
+            variant="danger"
+            size="sm"
+            leftIcon={<StopCircle size={14} />}
             disabled={stopAllMutation.isPending}
             onClick={handleStopAll}
           >
-            <StopCircle size={14} />
             {stopAllMutation.isPending ? "Stopping…" : "Stop All"}
-          </button>
+          </Button>
         )}
       </div>
 
@@ -176,42 +178,41 @@ export default function AdminDeploymentsPage() {
                         <div style={{ display: "flex", gap: 4 }}>
                           {isActive && (
                             <>
-                              <button
-                                className="g-btn g-btn-ghost g-btn-sm"
-                                title="Reset"
+                              <Button
+                                size="sm"
+                                tooltip="Reset"
+                                leftIcon={<RefreshCw size={12} />}
                                 disabled={resetMutation.isPending}
                                 onClick={() => handleReset(d)}
-                              >
-                                <RefreshCw size={12} />
-                              </button>
-                              <button
-                                className="g-btn g-btn-danger g-btn-sm"
-                                title="Destroy"
+                              />
+                              <Button
+                                variant="danger"
+                                size="sm"
+                                tooltip="Destroy"
+                                leftIcon={<Trash2 size={12} />}
                                 disabled={destroyMutation.isPending}
                                 onClick={() => handleDestroy(d)}
-                              >
-                                <Trash2 size={12} />
-                              </button>
+                              />
                             </>
                           )}
                           {isStoppable && (
                             <>
-                              <button
-                                className="g-btn g-btn-primary g-btn-sm"
-                                title="Start"
+                              <Button
+                                variant="primary"
+                                size="sm"
+                                tooltip="Start"
+                                leftIcon={<Play size={12} />}
                                 disabled={startMutation.isPending}
                                 onClick={() => startMutation.mutate(d.id)}
-                              >
-                                <Play size={12} />
-                              </button>
-                              <button
-                                className="g-btn g-btn-danger g-btn-sm"
-                                title="Remove"
+                              />
+                              <Button
+                                variant="danger"
+                                size="sm"
+                                tooltip="Remove"
+                                leftIcon={<X size={12} />}
                                 disabled={removeMutation.isPending}
                                 onClick={() => handleRemove(d)}
-                              >
-                                <X size={12} />
-                              </button>
+                              />
                             </>
                           )}
                         </div>

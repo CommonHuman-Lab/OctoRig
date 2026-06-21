@@ -92,6 +92,17 @@
   color: var(--g-text-secondary);
 }
 
+/* Tab variant — strip-style toggle (events detail tabs, etc.) */
+.g-btn-tab {
+  background-color: transparent;
+  color: var(--g-text-muted);
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  padding: 0.5rem 0.875rem;
+}
+.g-btn-tab:hover { color: var(--g-text-secondary); }
+
 /* Accent outlined */
 .g-btn-accent-outline {
   background-color: var(--g-accent-dim);
@@ -108,4 +119,11 @@
   background-color: var(--g-accent-dim);
   color: var(--g-accent);
   border-color: color-mix(in srgb, var(--g-accent) 35%, transparent);
+}
+
+/* Tab variant active state — overrides the generic active fill above */
+.g-btn-tab.active {
+  background-color: transparent;
+  color: var(--g-accent);
+  border-bottom-color: var(--g-accent);
 }

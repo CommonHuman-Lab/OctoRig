@@ -19,6 +19,7 @@ import { CountdownDisplay } from "@/components/assessment/CountdownDisplay";
 import { LabCard } from "@/components/assessment/LabCard";
 import { ReportSection } from "@/components/assessment/ReportSection";
 import { WorkspaceSidebar, type SectionId } from "@/components/assessment/WorkspaceSidebar";
+import { Button } from "@/components/ui/Button";
 
 export default function AssessmentWorkspacePage() {
   const { accessToken, user, _hasHydrated, isRestoringToken } = useUserStore();
@@ -209,14 +210,14 @@ export default function AssessmentWorkspacePage() {
                       (/* duration */ status.time_remaining_seconds ?? 0) / 3600 || 48
                     )}h</strong> to complete the assessment.
                   </p>
-                  <button
-                    className="g-btn g-btn-primary"
+                  <Button
+                    variant="primary"
                     disabled={startMutation.isPending}
                     onClick={() => startMutation.mutate()}
+                    leftIcon={<Play size={15} />}
                   >
-                    <Play size={15} />
                     {startMutation.isPending ? "Starting…" : "Start Assessment"}
-                  </button>
+                  </Button>
                 </div>
               )}
 
@@ -262,15 +263,16 @@ export default function AssessmentWorkspacePage() {
                       Finalize your report and shut down your labs now, instead of waiting for the timer to run out.
                     </p>
                   </div>
-                  <button
-                    className="g-btn g-btn-danger g-btn-sm"
+                  <Button
+                    variant="danger"
+                    size="sm"
                     style={{ flexShrink: 0 }}
                     disabled={completeMutation.isPending}
                     onClick={confirmComplete}
+                    leftIcon={<CheckCircle2 size={13} />}
                   >
-                    <CheckCircle2 size={13} />
                     {completeMutation.isPending ? "Completing…" : "Complete Assessment"}
-                  </button>
+                  </Button>
                 </div>
               )}
             </>

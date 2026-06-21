@@ -3,6 +3,7 @@
 import { Save } from "lucide-react";
 import type { SiteSettings } from "@/lib/api/settings";
 import { SettingToggle } from "./SettingToggle";
+import { Button } from "@/components/ui/Button";
 
 export function FeaturesSection({
   features,
@@ -34,14 +35,15 @@ export function FeaturesSection({
       />
 
       <div className="settings-row-actions">
-        <button
-          className="g-btn g-btn-primary g-btn-sm"
+        <Button
+          variant="primary"
+          size="sm"
           disabled={isPending}
           onClick={onSave}
+          leftIcon={<Save size={13} />}
         >
-          <Save size={13} />
           Save Feature Settings
-        </button>
+        </Button>
       </div>
     </section>
   );

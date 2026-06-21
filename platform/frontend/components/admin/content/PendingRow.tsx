@@ -13,6 +13,7 @@ import {
 } from "@/lib/api/content";
 import { BodyPreview } from "./BodyPreview";
 import { StatusPill } from "@/components/ui/StatusPill";
+import { Button } from "@/components/ui/Button";
 
 function ReviewForm({ subId, onDone }: { subId: number; onDone: () => void }) {
   const [verdict, setVerdict] = useState<ReviewVerdict>("approved");
@@ -37,16 +38,19 @@ function ReviewForm({ subId, onDone }: { subId: number; onDone: () => void }) {
     }}>
       <div style={{ display: "flex", gap: "0.5rem" }}>
         {(["approved", "rejected", "needs_changes"] as ReviewVerdict[]).map((v) => (
-          <button
+          <Button
             key={v}
-            className={`g-btn g-btn-sm ${verdict === v ? "g-btn-primary" : "g-btn-ghost"}`}
+            size="sm"
+            variant={verdict === v ? "primary" : "ghost"}
             onClick={() => setVerdict(v)}
+            leftIcon={
+              v === "approved" ? <CheckCircle size={12} /> :
+              v === "rejected" ? <XCircle size={12} /> :
+              <Clock size={12} />
+            }
           >
-            {v === "approved" && <CheckCircle size={12} />}
-            {v === "rejected" && <XCircle size={12} />}
-            {v === "needs_changes" && <Clock size={12} />}
             {v.replace("_", " ")}
-          </button>
+          </Button>
         ))}
       </div>
       <textarea
@@ -58,10 +62,10 @@ function ReviewForm({ subId, onDone }: { subId: number; onDone: () => void }) {
         style={{ resize: "vertical", fontSize: "0.8125rem" }}
       />
       <div style={{ display: "flex", gap: "0.5rem", justifyContent: "flex-end" }}>
-        <button className="g-btn g-btn-ghost g-btn-sm" onClick={onDone}>Cancel</button>
-        <button className="g-btn g-btn-primary g-btn-sm" disabled={isPending} onClick={() => mutate()}>
+        <Button variant="ghost" size="sm" onClick={onDone}>Cancel</Button>
+        <Button variant="primary" size="sm" disabled={isPending} onClick={() => mutate()}>
           {isPending ? "Submitting…" : "Submit Review"}
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -84,14 +88,15 @@ export function PendingRow({ sub }: { sub: ContentSubmission }) {
     <>
       <tr>
         <td>
-          <button
-            className="g-btn g-btn-ghost g-btn-sm"
+          <Button
+            variant="ghost"
+            size="sm"
             style={{ padding: "0.1rem 0.4rem", fontSize: "0.7rem" }}
             onClick={() => setShowBody((v) => !v)}
-            title="Toggle body"
+            tooltip="Toggle body"
           >
             {showBody ? "▾" : "▸"}
-          </button>
+          </Button>
           {" "}
           <span style={{ color: "var(--g-text)" }}>{sub.title}</span>
         </td>
@@ -103,17 +108,14 @@ export function PendingRow({ sub }: { sub: ContentSubmission }) {
         <td>
           <div style={{ display: "flex", gap: "0.5rem" }}>
             {!isClaimed && (
-              <button className="g-btn g-btn-ghost g-btn-sm" disabled={claiming} onClick={() => claim()}>
+              <Button variant="ghost" size="sm" disabled={claiming} onClick={() => claim()}>
                 {claiming ? "Claiming…" : "Claim"}
-              </button>
+              </Button>
             )}
             {isClaimed && (
-              <button
-                className="g-btn g-btn-primary g-btn-sm"
-                onClick={() => setShowReview((v) => !v)}
-              >
+              <Button variant="primary" size="sm" onClick={() => setShowReview((v) => !v)}>
                 Review
-              </button>
+              </Button>
             )}
           </div>
         </td>

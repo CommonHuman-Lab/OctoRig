@@ -11,6 +11,7 @@ import { getApiKeys, createApiKey, revokeApiKey, type ApiKeyCreated } from "@/li
 import { KeyReveal } from "@/components/api-keys/KeyReveal";
 import { CreateKeyForm } from "@/components/api-keys/CreateKeyForm";
 import { KeysTable } from "@/components/api-keys/KeysTable";
+import { Button } from "@/components/ui/Button";
 
 export default function ApiKeysPage() {
   const [showCreate, setShowCreate] = useState(false);
@@ -46,13 +47,13 @@ export default function ApiKeysPage() {
           <KeyRound size={18} style={{ display: "inline", marginRight: "0.5rem", verticalAlign: "middle" }} />
           API Keys
         </h1>
-        <button
-          className="g-btn g-btn-primary"
+        <Button
+          variant="primary"
+          leftIcon={<Plus size={14} />}
           onClick={() => { setShowCreate(true); setCreatedKey(null); }}
         >
-          <Plus size={14} />
           New Key
-        </button>
+        </Button>
       </div>
 
       {createdKey && (

@@ -20,6 +20,7 @@ import { DeploymentStatusBadge } from "@/components/deployments/DeploymentStatus
 import { StartLabDialog } from "@/components/deployments/StartLabDialog";
 import { PageSpinner } from "@/components/ui/Spinner";
 import { CopyButton } from "@/components/ui/CopyButton";
+import { Button } from "@/components/ui/Button";
 import { DIFF_CLASS } from "@/lib/utils/difficulty";
 
 function DiffBadge({ difficulty }: { difficulty: ChallengeDifficulty }) {
@@ -141,30 +142,31 @@ export default function LabDetailPage() {
         {/* Controls */}
         <div className="ld-controls">
           {!isRunning ? (
-            <button className="g-btn g-btn-primary" onClick={() => setStartOpen(true)}>
-              <Play size={14} /> Start Lab
-            </button>
+            <Button variant="primary" leftIcon={<Play size={14} />} onClick={() => setStartOpen(true)}>
+              Start Lab
+            </Button>
           ) : (
             <>
-              <button
-                className="g-btn g-btn-danger"
+              <Button
+                variant="danger"
+                leftIcon={<Square size={14} />}
                 onClick={() => deployment && stopMutation.mutate(deployment.id)}
                 disabled={deployment?.status === "stopping"}
               >
-                <Square size={14} /> Stop
-              </button>
+                Stop
+              </Button>
               {lab.category === "firerange" && (
-                <button
-                  className="g-btn g-btn-ghost"
+                <Button
+                  leftIcon={<RotateCcw size={14} />}
                   onClick={() => deployment && resetMutation.mutate(deployment.id)}
                 >
-                  <RotateCcw size={14} /> Reset
-                </button>
+                  Reset
+                </Button>
               )}
               {labUrl && (
-                <a href={labUrl} target="_blank" rel="noopener noreferrer" className="g-btn g-btn-ghost">
-                  <ExternalLink size={14} /> Open Lab
-                </a>
+                <Button href={labUrl} leftIcon={<ExternalLink size={14} />}>
+                  Open Lab
+                </Button>
               )}
             </>
           )}

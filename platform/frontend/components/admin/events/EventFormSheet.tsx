@@ -8,6 +8,7 @@ import {
 import { MarkdownEditor } from "@/components/ui/MarkdownEditor";
 import { useEscapeKey } from "@/hooks/useEscapeKey";
 import { SheetShell } from "@/components/ui/SheetShell";
+import { Button } from "@/components/ui/Button";
 
 export interface SheetState {
   open: boolean;
@@ -57,15 +58,15 @@ export function EventFormSheet({ sheet, form, onChange, onClose, saveMutation }:
       onClose={onClose}
       footer={
         <>
-          <button className="g-btn g-btn-ghost" onClick={onClose}>Cancel</button>
-          <button
-            className="g-btn g-btn-primary"
+          <Button onClick={onClose}>Cancel</Button>
+          <Button
+            variant="primary"
             disabled={!form.title || (!sheet.editing && !form.slug) || saveMutation.isPending}
             onClick={() => saveMutation.mutate()}
+            leftIcon={<Save size={13} />}
           >
-            <Save size={13} />
             {saveMutation.isPending ? "Saving…" : sheet.editing ? "Save Changes" : "Create Event"}
-          </button>
+          </Button>
         </>
       }
     >

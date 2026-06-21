@@ -27,6 +27,7 @@ import { InstanceCard } from "@/components/challenges/InstanceCard";
 import { HintCard } from "@/components/challenges/HintCard";
 import { ChallengeHeader } from "@/components/challenges/ChallengeHeader";
 import { SubmitForm } from "@/components/challenges/SubmitForm";
+import { Button } from "@/components/ui/Button";
 
 export default function ChallengeDetailPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -265,14 +266,14 @@ export default function ChallengeDetailPage() {
                   <p className="text-11 text-muted mb-3">
                     This challenge requires a personal lab instance. Instances auto-destroy after 2 hours.
                   </p>
-                  <button
-                    className="g-btn g-btn-primary"
+                  <Button
+                    variant="primary"
+                    leftIcon={<Container size={13} />}
                     onClick={() => deployMutation.mutate()}
                     disabled={deployMutation.isPending}
                   >
-                    <Container size={13} />
                     {deployMutation.isPending ? "Deploying…" : "Deploy Instance"}
-                  </button>
+                  </Button>
                 </div>
               )}
             </section>

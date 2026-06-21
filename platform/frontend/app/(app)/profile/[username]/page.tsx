@@ -17,6 +17,7 @@ import { formatDate } from "@/lib/utils/date";
 import { useUserStore } from "@/stores/user.store";
 import { ICON_MAP } from "@/lib/utils/badge-icons";
 import { EditProfileSheet } from "@/components/profile/EditProfileSheet";
+import { Button } from "@/components/ui/Button";
 
 function StatBlock({ icon, label, value }: { icon: React.ReactNode; label: string; value: number }) {
   return (
@@ -155,14 +156,13 @@ export default function UserProfilePage() {
           <span>Back</span>
         </Link>
         {isOwnProfile && (
-          <button
-            className="g-btn g-btn-ghost g-btn-sm"
-            style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem" }}
+          <Button
+            size="sm"
+            leftIcon={<Pencil size={13} />}
             onClick={() => setEditOpen(true)}
           >
-            <Pencil size={13} />
             Edit Profile
-          </button>
+          </Button>
         )}
       </div>
 

@@ -9,6 +9,7 @@ import type { LabTemplate } from "@/lib/api/labs";
 import { LabCategoryBadge } from "./LabCategoryBadge";
 import { DeploymentStatusBadge } from "@/components/deployments/DeploymentStatusBadge";
 import { StartLabDialog } from "@/components/deployments/StartLabDialog";
+import { Button } from "@/components/ui/Button";
 
 interface Props {
   lab: LabTemplate;
@@ -49,29 +50,27 @@ export function LabCard({ lab, onStop, onReset }: Props) {
 
         <div className="lab-card-actions" onClick={(e) => e.stopPropagation()}>
           {!isRunning ? (
-            <button className="g-btn g-btn-primary" onClick={() => setStartOpen(true)}>
-              <Play size={14} />
+            <Button variant="primary" leftIcon={<Play size={14} />} onClick={() => setStartOpen(true)}>
               Start
-            </button>
+            </Button>
           ) : (
             <>
-              <button
-                className="g-btn g-btn-danger"
+              <Button
+                variant="danger"
+                leftIcon={<Square size={14} />}
                 onClick={() => deployment && onStop?.(deployment.id)}
                 disabled={deployment?.status === "stopping"}
               >
-                <Square size={14} />
                 Stop
-              </button>
+              </Button>
               {lab.category === "firerange" && (
-                <button
-                  className="g-btn g-btn-ghost"
+                <Button
+                  leftIcon={<RotateCcw size={14} />}
                   onClick={() => deployment && onReset?.(deployment.id)}
-                  title="Reset scoreboard and restart"
+                  tooltip="Reset scoreboard and restart"
                 >
-                  <RotateCcw size={14} />
                   Reset
-                </button>
+                </Button>
               )}
             </>
           )}

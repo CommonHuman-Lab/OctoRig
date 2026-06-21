@@ -12,6 +12,7 @@ import { Plus, Users, Crown, Shield, Eye } from "lucide-react";
 import { getTeams, createTeam, type TeamRole } from "@/lib/api/teams";
 import { NewTeamSheet } from "@/components/teams/NewTeamSheet";
 import { AsyncContent } from "@/components/ui/AsyncContent";
+import { Button } from "@/components/ui/Button";
 
 const ROLE_LABEL: Record<TeamRole, { label: string; icon: React.ReactNode }> = {
   owner:   { label: "Owner",   icon: <Crown   size={11} /> },
@@ -47,10 +48,9 @@ export default function TeamsPage() {
           <Users size={18} style={{ display: "inline", marginRight: "0.5rem", verticalAlign: "middle" }} />
           Teams
         </h1>
-        <button className="g-btn g-btn-primary" onClick={() => setSheetOpen(true)}>
-          <Plus size={14} />
+        <Button variant="primary" leftIcon={<Plus size={14} />} onClick={() => setSheetOpen(true)}>
           New Team
-        </button>
+        </Button>
       </div>
 
       <AsyncContent

@@ -3,6 +3,7 @@
 import { Trash2 } from "lucide-react";
 import type { ApiKey } from "@/lib/api/apiKeys";
 import { formatDateTime } from "@/lib/utils/date";
+import { Button } from "@/components/ui/Button";
 
 export function KeysTable({
   keys,
@@ -59,18 +60,18 @@ export function KeysTable({
               </td>
               <td>
                 {key.is_active && (
-                  <button
-                    className="g-btn g-btn-danger g-btn-icon"
+                  <Button
+                    variant="danger"
+                    icon
                     onClick={() => {
                       if (confirm("Revoke this API key? This cannot be undone.")) {
                         onRevoke(key.id);
                       }
                     }}
                     disabled={isPending}
-                    title="Revoke key"
-                  >
-                    <Trash2 size={13} />
-                  </button>
+                    tooltip="Revoke key"
+                    leftIcon={<Trash2 size={13} />}
+                  />
                 )}
               </td>
             </tr>

@@ -9,6 +9,7 @@ import { getInviteLanding, acceptInvite } from "@/lib/api/assessments";
 import { login, getMe } from "@/lib/api/auth";
 import { useUserStore } from "@/stores/user.store";
 import { useNotificationsStore } from "@/stores/notifications.store";
+import { Button } from "@/components/ui/Button";
 
 export default function InviteLandingPage() {
   const { token } = useParams<{ token: string }>();
@@ -215,14 +216,14 @@ export default function InviteLandingPage() {
               />
             </div>
 
-            <button
+            <Button
               type="submit"
-              className="g-btn g-btn-primary"
+              variant="primary"
               disabled={acceptMutation.isPending || !username || !password}
               style={{ marginTop: 4 }}
             >
               {acceptMutation.isPending ? "Setting up…" : "Accept Invite & Begin Assessment"}
-            </button>
+            </Button>
 
             <p style={{ fontSize: "0.75rem", color: "var(--g-text-muted)", textAlign: "center", margin: 0 }}>
               The timer starts when you click <strong>Start Assessment</strong> on the next page.
@@ -236,13 +237,13 @@ export default function InviteLandingPage() {
             <p style={{ color: "var(--g-text-muted)", fontSize: "0.875rem", marginBottom: 16 }}>
               You are signed in as <strong>{user?.username}</strong>.
             </p>
-            <button
-              className="g-btn g-btn-primary"
+            <Button
+              variant="primary"
               disabled={acceptMutation.isPending}
               onClick={() => acceptMutation.mutate()}
             >
               {acceptMutation.isPending ? "Linking…" : "Accept Invite & Go to Assessment"}
-            </button>
+            </Button>
           </div>
         )}
 
@@ -276,13 +277,13 @@ export default function InviteLandingPage() {
                 onChange={(e) => setLoginPassword(e.target.value)}
               />
             </div>
-            <button
+            <Button
               type="submit"
-              className="g-btn g-btn-primary"
+              variant="primary"
               disabled={loginMutation.isPending || !loginUsername || !loginPassword}
             >
               {loginMutation.isPending ? "Signing in…" : "Sign In & Go to Assessment"}
-            </button>
+            </Button>
           </form>
         )}
 
@@ -292,9 +293,9 @@ export default function InviteLandingPage() {
             <p style={{ color: "var(--g-text-muted)", marginBottom: 16 }}>
               You have already accepted this invite. Go to your workspace to start the clock.
             </p>
-            <button className="g-btn g-btn-primary" onClick={() => router.replace("/assessment")}>
+            <Button variant="primary" onClick={() => router.replace("/assessment")}>
               Go to Assessment
-            </button>
+            </Button>
           </div>
         )}
       </div>

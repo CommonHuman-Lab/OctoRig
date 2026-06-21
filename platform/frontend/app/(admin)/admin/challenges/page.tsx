@@ -17,6 +17,7 @@ import { useApiMutation } from "@/hooks/useApiMutation";
 import { DIFF_COLOR } from "@/lib/utils/difficulty";
 import { AsyncContent } from "@/components/ui/AsyncContent";
 import { FilterPills } from "@/components/ui/FilterPills";
+import { Button } from "@/components/ui/Button";
 
 function ChallengeRow({ ch }: { ch: ChallengeListItem }) {
   const { mutate, isPending } = useApiMutation<{ slug: string; is_active: boolean }, void>({
@@ -72,20 +73,20 @@ function ChallengeRow({ ch }: { ch: ChallengeListItem }) {
         {ch.solve_count}
       </td>
       <td>
-        <button
-          className="g-btn g-btn-ghost g-btn-sm"
+        <Button
+          variant="ghost"
+          size="sm"
           disabled={isPending}
           onClick={() => mutate()}
-          style={{ display: "flex", alignItems: "center", gap: "0.3rem" }}
-          title={ch.is_active ? "Disable challenge" : "Enable challenge"}
-        >
-          {ch.is_active ? (
-            <ToggleRight size={16} style={{ color: "var(--g-success)" }} />
+          tooltip={ch.is_active ? "Disable challenge" : "Enable challenge"}
+          leftIcon={ch.is_active ? (
+            <ToggleRight size={14} style={{ color: "var(--g-success)" }} />
           ) : (
-            <ToggleLeft size={16} style={{ color: "var(--g-text-muted)" }} />
+            <ToggleLeft size={14} style={{ color: "var(--g-text-muted)" }} />
           )}
+        >
           {isPending ? "…" : ch.is_active ? "Enabled" : "Disabled"}
-        </button>
+        </Button>
       </td>
     </tr>
   );

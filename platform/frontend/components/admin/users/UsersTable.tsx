@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ShieldCheck, ShieldOff, RotateCcw, UserCog, LockOpen, KeyRound } from "lucide-react";
 import type { AdminUser } from "@/lib/api/admin";
+import { Button } from "@/components/ui/Button";
 
 const ACTION_ICON_SIZE = 16;
 
@@ -81,47 +82,47 @@ export function UsersTable({
             <td>
               <div className="row-actions">
                 {!u.is_owner && !(u.is_active && u.id === currentUserId) && (
-                  <button
-                    className="g-btn g-btn-ghost g-btn-icon row-action-icon"
-                    title={u.is_active ? "Deactivate" : "Activate"}
+                  <Button
+                    icon
+                    rowAction
+                    tooltip={u.is_active ? "Deactivate" : "Activate"}
                     onClick={() => onActivate(u)}
-                  >
-                    {u.is_active ? <ShieldOff size={ACTION_ICON_SIZE} /> : <ShieldCheck size={ACTION_ICON_SIZE} />}
-                  </button>
+                    leftIcon={u.is_active ? <ShieldOff size={ACTION_ICON_SIZE} /> : <ShieldCheck size={ACTION_ICON_SIZE} />}
+                  />
                 )}
                 {isLocked(u) && (
-                  <button
-                    className="g-btn g-btn-ghost g-btn-icon row-action-icon"
-                    title="Unlock account"
+                  <Button
+                    icon
+                    rowAction
+                    tooltip="Unlock account"
                     onClick={() => onUnlock(u)}
-                  >
-                    <LockOpen size={ACTION_ICON_SIZE} />
-                  </button>
+                    leftIcon={<LockOpen size={ACTION_ICON_SIZE} />}
+                  />
                 )}
                 {!u.is_owner && u.id !== currentUserId && (
-                  <button
-                    className="g-btn g-btn-ghost g-btn-icon row-action-icon"
-                    title="Manage roles"
+                  <Button
+                    icon
+                    rowAction
+                    tooltip="Manage roles"
                     onClick={() => onManageRoles(u)}
-                  >
-                    <UserCog size={ACTION_ICON_SIZE} />
-                  </button>
+                    leftIcon={<UserCog size={ACTION_ICON_SIZE} />}
+                  />
                 )}
-                <button
-                  className="g-btn g-btn-ghost g-btn-icon row-action-icon"
-                  title="Reset password"
+                <Button
+                  icon
+                  rowAction
+                  tooltip="Reset password"
                   onClick={() => onResetPassword(u)}
-                >
-                  <KeyRound size={ACTION_ICON_SIZE} />
-                </button>
-                <button
-                  className="g-btn g-btn-ghost g-btn-icon row-action-icon"
-                  title="Reset points &amp; submissions"
+                  leftIcon={<KeyRound size={ACTION_ICON_SIZE} />}
+                />
+                <Button
+                  icon
+                  rowAction
+                  tooltip="Reset points &amp; submissions"
                   disabled={isPending}
                   onClick={() => onResetPoints(u)}
-                >
-                  <RotateCcw size={ACTION_ICON_SIZE} />
-                </button>
+                  leftIcon={<RotateCcw size={ACTION_ICON_SIZE} />}
+                />
               </div>
             </td>
           </tr>

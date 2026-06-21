@@ -17,6 +17,7 @@ import { useUserStore } from "@/stores/user.store";
 import { useNotificationsStore } from "@/stores/notifications.store";
 import { InviteForm } from "@/components/teams/InviteForm";
 import { MembersTable } from "@/components/teams/MembersTable";
+import { Button } from "@/components/ui/Button";
 
 export default function TeamDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -113,18 +114,18 @@ export default function TeamDetailPage() {
                 placeholder="Description (optional)"
               />
               <div style={{ display: "flex", gap: "0.4rem" }}>
-                <button
-                  className="g-btn g-btn-primary g-btn-sm"
+                <Button
+                  variant="primary"
+                  size="sm"
+                  leftIcon={<Check size={12} />}
                   onClick={() => editMutation.mutate()}
                   disabled={!editName.trim() || editMutation.isPending}
                 >
-                  <Check size={12} />
                   {editMutation.isPending ? "Saving…" : "Save"}
-                </button>
-                <button className="g-btn g-btn-ghost g-btn-sm" onClick={() => setEditing(false)}>
-                  <X size={12} />
+                </Button>
+                <Button size="sm" leftIcon={<X size={12} />} onClick={() => setEditing(false)}>
                   Cancel
-                </button>
+                </Button>
               </div>
             </div>
           ) : (
@@ -138,9 +139,7 @@ export default function TeamDetailPage() {
               <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                 <span className={`role-badge role-badge--${team.my_role}`}>{team.my_role}</span>
                 {canManage && (
-                  <button className="g-btn g-btn-ghost g-btn-icon" onClick={startEdit} title="Edit team">
-                    <Pencil size={13} />
-                  </button>
+                  <Button icon leftIcon={<Pencil size={13} />} onClick={startEdit} tooltip="Edit team" />
                 )}
               </div>
             </>
@@ -152,13 +151,13 @@ export default function TeamDetailPage() {
         <div className="g-panel-header">
           <span className="font-mono text-sm">Members ({members.length})</span>
           {canManage && (
-            <button
-              className="g-btn g-btn-ghost g-btn-sm"
+            <Button
+              size="sm"
+              leftIcon={<UserPlus size={13} />}
               onClick={() => setShowInvite(!showInvite)}
             >
-              <UserPlus size={13} />
               Invite
-            </button>
+            </Button>
           )}
         </div>
 

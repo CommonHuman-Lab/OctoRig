@@ -6,6 +6,7 @@ import { Save } from "lucide-react";
 import { type AdminTeam } from "@/lib/api/admin";
 import { useEscapeKey } from "@/hooks/useEscapeKey";
 import { SheetShell } from "@/components/ui/SheetShell";
+import { Button } from "@/components/ui/Button";
 
 interface TeamEditSheetProps {
   open: boolean;
@@ -31,15 +32,15 @@ export function TeamEditSheet({ open, team, saveMutation, onClose }: TeamEditShe
       onClose={onClose}
       footer={
         <>
-          <button className="g-btn g-btn-ghost" onClick={onClose}>Cancel</button>
-          <button
-            className="g-btn g-btn-primary"
+          <Button onClick={onClose}>Cancel</Button>
+          <Button
+            variant="primary"
             disabled={!name || saveMutation.isPending}
             onClick={() => saveMutation.mutate({ name })}
+            leftIcon={<Save size={13} />}
           >
-            <Save size={13} />
             {saveMutation.isPending ? "Saving…" : "Save Changes"}
-          </button>
+          </Button>
         </>
       }
     >

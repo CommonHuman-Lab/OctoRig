@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { AssessmentFormSheet } from "@/components/admin/assessments/AssessmentFormSheet";
 import { AsyncContent } from "@/components/ui/AsyncContent";
+import { Button } from "@/components/ui/Button";
 
 function StatusBadge({ isActive }: { isActive: boolean }) {
   return (
@@ -59,13 +60,14 @@ export default function AdminAssessmentsPage() {
     <div className="page">
       <div className="page-header">
         <h1 className="page-title font-mono">Assessments</h1>
-        <button
-          className="g-btn g-btn-primary g-btn-sm"
+        <Button
+          variant="primary"
+          size="sm"
+          leftIcon={<Plus size={14} />}
           onClick={() => setSheetOpen(true)}
         >
-          <Plus size={14} />
           New Assessment
-        </button>
+        </Button>
       </div>
 
       <AsyncContent
@@ -75,12 +77,13 @@ export default function AdminAssessmentsPage() {
           <div className="empty-state">
             <ClipboardList size={40} strokeWidth={1.2} />
             <p>No assessments yet.</p>
-            <button
-              className="g-btn g-btn-primary g-btn-sm"
+            <Button
+              variant="primary"
+              size="sm"
               onClick={() => setSheetOpen(true)}
             >
               Create your first assessment
-            </button>
+            </Button>
           </div>
         }
       >

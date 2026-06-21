@@ -10,6 +10,7 @@ import { submitReport } from "@/lib/api/assessments";
 import { formatTime } from "@/lib/utils/date";
 import { useNotificationsStore } from "@/stores/notifications.store";
 import { MarkdownEditor } from "@/components/ui/MarkdownEditor";
+import { Button } from "@/components/ui/Button";
 
 const AUTOSAVE_DELAY_MS = 1500;
 
@@ -142,14 +143,15 @@ export function ReportSection({
 
       {!expired && (
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 10 }}>
-          <button
-            className="g-btn g-btn-primary g-btn-sm"
+          <Button
+            variant="primary"
+            size="sm"
             disabled={saveMutation.isPending || !content.trim() || content === savedContentRef.current}
             onClick={saveNow}
+            leftIcon={<Send size={13} />}
           >
-            <Send size={13} />
             {saveMutation.isPending ? "Saving…" : "Save Report"}
-          </button>
+          </Button>
           <span style={{ fontSize: "0.75rem", color: "var(--g-text-muted)" }}>
             Autosaves a couple seconds after you stop typing.
           </span>

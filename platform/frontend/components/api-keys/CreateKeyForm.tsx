@@ -3,6 +3,7 @@
 // Copyright (c) 2026 CommonHuman-Lab
 
 import { useState } from "react";
+import { Button } from "@/components/ui/Button";
 
 export function CreateKeyForm({
   onSubmit,
@@ -48,16 +49,16 @@ export function CreateKeyForm({
           />
         </div>
         <div className="form-actions">
-          <button className="g-btn g-btn-ghost" onClick={onCancel}>
+          <Button onClick={onCancel}>
             Cancel
-          </button>
-          <button
-            className="g-btn g-btn-primary"
+          </Button>
+          <Button
+            variant="primary"
             onClick={handleSubmit}
             disabled={!name.trim() || isPending}
           >
             {isPending ? "Creating…" : "Create Key"}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

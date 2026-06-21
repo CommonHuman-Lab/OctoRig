@@ -4,6 +4,7 @@
 
 import { useState } from "react";
 import { Copy, Check } from "lucide-react";
+import { Button } from "./Button";
 
 export function CopyButton({ value }: { value: string }) {
   const [copied, setCopied] = useState(false);
@@ -16,13 +17,13 @@ export function CopyButton({ value }: { value: string }) {
   }
 
   return (
-    <button
-      className="g-btn g-btn-ghost g-btn-icon"
+    <Button
+      icon
+      variant="ghost"
       onClick={handleCopy}
-      title="Copy"
+      tooltip="Copy"
       style={{ opacity: copied ? 1 : undefined }}
-    >
-      {copied ? <Check size={11} className="text-success" /> : <Copy size={11} />}
-    </button>
+      leftIcon={copied ? <Check size={11} className="text-success" /> : <Copy size={11} />}
+    />
   );
 }

@@ -10,6 +10,7 @@ import { getAdminAuditLogs, type AdminAuditLog } from "@/lib/api/admin";
 import { EmptyCell } from "@/components/ui/TableStates";
 import { formatDateTime } from "@/lib/utils/date";
 import { AsyncContent } from "@/components/ui/AsyncContent";
+import { Button } from "@/components/ui/Button";
 
 const ACTION_GROUPS = [
   { label: "All", value: "" },
@@ -99,12 +100,13 @@ export default function AdminAuditPage() {
             />
           </div>
           {(actionFilter || fromDate || toDate) && (
-            <button
-              className="g-btn g-btn-ghost g-btn-sm self-end"
+            <Button
+              size="sm"
+              style={{ alignSelf: "flex-end" }}
               onClick={() => { setActionFilter(""); setFromDate(""); setToDate(""); setOffset(0); }}
             >
               Clear
-            </button>
+            </Button>
           )}
         </div>
       </div>
@@ -155,23 +157,23 @@ export default function AdminAuditPage() {
 
               {/* Pagination */}
               <div className="pagination">
-                <button
-                  className="g-btn g-btn-ghost g-btn-sm"
+                <Button
+                  size="sm"
                   disabled={offset === 0}
                   onClick={() => setOffset(Math.max(0, offset - LIMIT))}
                 >
                   ← Prev
-                </button>
+                </Button>
                 <span className="text-muted text-11">
                   Showing {offset + 1}–{offset + data.length}
                 </span>
-                <button
-                  className="g-btn g-btn-ghost g-btn-sm"
+                <Button
+                  size="sm"
                   disabled={data.length < LIMIT}
                   onClick={() => setOffset(offset + LIMIT)}
                 >
                   Next →
-                </button>
+                </Button>
               </div>
             </>
           )}

@@ -13,6 +13,7 @@ import {
 import { acceptInvitation, declineInvitation } from "@/lib/api/teams";
 import { useNotificationsStore } from "@/stores/notifications.store";
 import { AsyncContent } from "@/components/ui/AsyncContent";
+import { Button } from "@/components/ui/Button";
 
 function timeAgo(created_at: string) {
   const ms = Date.now() - new Date(created_at).getTime();
@@ -56,22 +57,23 @@ function TeamInviteActions({
 
   return (
     <div style={{ display: "flex", gap: "0.4rem", marginTop: "0.5rem" }}>
-      <button
-        className="g-btn g-btn-primary g-btn-sm"
+      <Button
+        variant="primary"
+        size="sm"
+        leftIcon={<Check size={12} />}
         onClick={() => acceptMutation.mutate()}
         disabled={acceptMutation.isPending || declineMutation.isPending}
       >
-        <Check size={12} />
         Accept
-      </button>
-      <button
-        className="g-btn g-btn-ghost g-btn-sm"
+      </Button>
+      <Button
+        size="sm"
+        leftIcon={<X size={12} />}
         onClick={() => declineMutation.mutate()}
         disabled={acceptMutation.isPending || declineMutation.isPending}
       >
-        <X size={12} />
         Decline
-      </button>
+      </Button>
     </div>
   );
 }
@@ -102,14 +104,13 @@ function NotificationRow({
       <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "0.4rem", flexShrink: 0 }}>
         <span className="notif-time">{timeAgo(n.created_at)}</span>
         {!isUnread && (
-          <button
-            className="g-btn g-btn-ghost g-btn-icon"
+          <Button
+            icon
             style={{ padding: "0.2rem" }}
+            leftIcon={<Trash2 size={12} />}
             onClick={() => onDelete(n.id)}
-            title="Delete"
-          >
-            <Trash2 size={12} />
-          </button>
+            tooltip="Delete"
+          />
         )}
       </div>
     </div>
@@ -158,14 +159,13 @@ export default function NotificationsPage() {
           )}
         </div>
         {unread > 0 && (
-          <button
-            className="g-btn g-btn-ghost"
+          <Button
+            leftIcon={<CheckCheck size={13} />}
             onClick={() => readAllMutation.mutate()}
             disabled={readAllMutation.isPending}
           >
-            <CheckCheck size={13} />
             Mark all read
-          </button>
+          </Button>
         )}
       </div>
 

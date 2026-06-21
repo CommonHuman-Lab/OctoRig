@@ -14,6 +14,7 @@ import { useUserStore } from "@/stores/user.store";
 import { useAdminGuard } from "@/hooks/useAdminGuard";
 import { formatDateTime } from "@/lib/utils/date";
 import { AsyncContent } from "@/components/ui/AsyncContent";
+import { Button } from "@/components/ui/Button";
 
 export default function AdminApiKeysPage() {
   const { confirm } = useConfirmStore();
@@ -114,14 +115,15 @@ export default function AdminApiKeysPage() {
                     </td>
                     <td>
                       {k.is_active && (
-                        <button
-                          className="g-btn g-btn-danger g-btn-sm"
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          leftIcon={<ShieldOff size={12} />}
                           disabled={revokeMutation.isPending}
                           onClick={() => handleRevoke(k.id, k.name, k.username)}
                         >
-                          <ShieldOff size={12} />
                           Revoke
-                        </button>
+                        </Button>
                       )}
                     </td>
                   </tr>

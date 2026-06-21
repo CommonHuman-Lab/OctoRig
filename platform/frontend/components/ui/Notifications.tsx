@@ -5,6 +5,7 @@
 import { X } from "lucide-react";
 import { clsx } from "clsx";
 import { useNotificationsStore } from "@/stores/notifications.store";
+import { Button } from "./Button";
 
 export function Notifications() {
   const { items, dismiss } = useNotificationsStore();
@@ -15,9 +16,7 @@ export function Notifications() {
       {items.map((n) => (
         <div key={n.id} className={clsx("g-card notification", `notification--${n.kind}`)}>
           <span className="text-sm">{n.message}</span>
-          <button className="g-btn g-btn-ghost g-btn-icon" onClick={() => dismiss(n.id)}>
-            <X size={14} />
-          </button>
+          <Button icon leftIcon={<X size={14} />} onClick={() => dismiss(n.id)} />
         </div>
       ))}
 

@@ -7,6 +7,7 @@ import { Server, Flag, CheckCircle, XCircle } from "lucide-react";
 import { type CandidateLabInfo } from "@/lib/api/assessments";
 import { getChallenges, submitFlag, type ChallengeListItem } from "@/lib/api/challenges";
 import { CopyButton } from "@/components/ui/CopyButton";
+import { Button } from "@/components/ui/Button";
 
 const STATUS_COLORS: Record<string, string> = {
   running: "var(--g-success, #22c55e)",
@@ -75,13 +76,14 @@ function ChallengeFlagItem({ challenge }: { challenge: ChallengeListItem }) {
             spellCheck={false}
             autoComplete="off"
           />
-          <button
+          <Button
             type="submit"
-            className="g-btn g-btn-primary g-btn-sm"
+            variant="primary"
+            size="sm"
             disabled={submitMutation.isPending || !flag.trim()}
           >
             {submitMutation.isPending ? "…" : "Submit"}
-          </button>
+          </Button>
         </form>
       )}
 

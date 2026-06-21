@@ -9,7 +9,6 @@ import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { useApiMutation } from "@/hooks/useApiMutation";
 import { ArrowLeft, Copy, Check, Plus, ChevronDown, ChevronRight, Shield, Pencil } from "lucide-react";
-import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import {
@@ -28,6 +27,7 @@ import { getLabs, type LabTemplate } from "@/lib/api/labs";
 import { AssessmentFormSheet } from "@/components/admin/assessments/AssessmentFormSheet";
 import { useConfirmStore } from "@/stores/confirm.store";
 import { formatDateTime } from "@/lib/utils/date";
+import { Button } from "@/components/ui/Button";
 
 function StatusBadge({ status }: { status: InviteStatus }) {
   const colors: Record<InviteStatus, string> = {
@@ -56,17 +56,17 @@ function StatusBadge({ status }: { status: InviteStatus }) {
 function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
   return (
-    <button
-      className="g-btn g-btn-ghost g-btn-sm"
-      title="Copy invite link"
+    <Button
+      size="sm"
+      icon
+      tooltip="Copy invite link"
+      leftIcon={copied ? <Check size={12} /> : <Copy size={12} />}
       onClick={() => {
         navigator.clipboard.writeText(text);
         setCopied(true);
         setTimeout(() => setCopied(false), 1500);
       }}
-    >
-      {copied ? <Check size={12} /> : <Copy size={12} />}
-    </button>
+    />
   );
 }
 
@@ -132,8 +132,8 @@ function ProgressRow({
           <div style={{ display: "flex", gap: 6 }} onClick={(e) => e.stopPropagation()}>
             <CopyButton text={inviteUrl} />
             {!invite.is_revoked && (
-              <button
-                className="g-btn g-btn-ghost g-btn-sm"
+              <Button
+                size="sm"
                 style={{ color: "var(--g-danger)" }}
                 onClick={() =>
                   confirm({
@@ -146,7 +146,7 @@ function ProgressRow({
                 }
               >
                 Revoke
-              </button>
+              </Button>
             )}
           </div>
         </td>
@@ -303,20 +303,21 @@ export default function AssessmentDetailPage() {
   return (
     <div className="page">
       <div className="page-header">
-        <Link href="/admin/assessments" className="g-btn g-btn-ghost g-btn-sm">
-          <ArrowLeft size={14} /> Back
-        </Link>
+        <Button href="/admin/assessments" size="sm" leftIcon={<ArrowLeft size={14} />}>
+          Back
+        </Button>
         <h1 className="page-title font-mono">{assessment.name}</h1>
         <span className={`g-status-pill ${assessment.is_active ? "g-status-pill--on" : "g-status-pill--off"}`}>
           {assessment.is_active ? "active" : "inactive"}
         </span>
-        <button
-          className="g-btn g-btn-ghost g-btn-sm"
+        <Button
+          size="sm"
           style={{ marginLeft: "auto" }}
+          leftIcon={<Pencil size={13} />}
           onClick={() => setEditSheetOpen(true)}
         >
-          <Pencil size={13} /> Edit
-        </button>
+          Edit
+        </Button>
       </div>
 
       {/* Assessment summary */}
@@ -377,14 +378,15 @@ export default function AssessmentDetailPage() {
               onChange={(e) => setNewName(e.target.value)}
             />
           </div>
-          <button
-            className="g-btn g-btn-primary g-btn-sm"
+          <Button
+            variant="primary"
+            size="sm"
+            leftIcon={<Plus size={13} />}
             disabled={!newEmail || inviteMutation.isPending}
             onClick={() => inviteMutation.mutate()}
           >
-            <Plus size={13} />
             {inviteMutation.isPending ? "Creating…" : "Generate Invite"}
-          </button>
+          </Button>
         </div>
       </section>
 

@@ -4,6 +4,7 @@
 import { useRef, useState, useCallback } from "react";
 import { Play, RotateCcw } from "lucide-react";
 import { IconSpinner } from "@/components/ui/IconSpinner";
+import { Button } from "@/components/ui/Button";
 
 const PYODIDE_CDN = "https://cdn.jsdelivr.net/pyodide/v0.27.5/full/pyodide.js";
 
@@ -83,23 +84,24 @@ export function PyodideEditor({ starterCode }: { starterCode?: string }) {
           Python
         </span>
         <div style={{ display: "flex", gap: "0.375rem" }}>
-          <button
-            className="g-btn g-btn-sm"
-            title="Clear output"
+          <Button
+            size="sm"
+            tooltip="Clear output"
             onClick={() => { setOutput(""); setStatus("idle"); }}
             disabled={isbusy}
             style={{ padding: "0.2rem 0.5rem" }}
-          >
-            <RotateCcw size={11} />
-          </button>
-          <button
-            className="g-btn g-btn-primary g-btn-sm"
+            icon
+            leftIcon={<RotateCcw size={11} />}
+          />
+          <Button
+            variant="primary"
+            size="sm"
             onClick={handleRun}
             disabled={isbusy}
+            leftIcon={isbusy ? <IconSpinner size={12} /> : <Play size={12} />}
           >
-            {isbusy ? <IconSpinner size={12} /> : <Play size={12} />}
             {status === "loading" ? "Loading…" : "Run"}
-          </button>
+          </Button>
         </div>
       </div>
 

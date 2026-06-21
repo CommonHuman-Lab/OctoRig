@@ -3,6 +3,7 @@
 // Copyright (c) 2026 CommonHuman-Lab
 import type { ReactNode } from "react";
 import { X } from "lucide-react";
+import { Button } from "./Button";
 
 interface Props {
   title: ReactNode;
@@ -18,9 +19,7 @@ export function SheetShell({ title, onClose, footer, children }: Props) {
       <div className="ev-sheet">
         <div className="ev-sheet-header">
           <h2 style={{ margin: 0, fontSize: "1rem", fontWeight: 700 }}>{title}</h2>
-          <button className="g-btn g-btn-ghost g-btn-sm" onClick={onClose}>
-            <X size={14} />
-          </button>
+          <Button size="sm" icon leftIcon={<X size={14} />} onClick={onClose} />
         </div>
         <div className="ev-sheet-body">{children}</div>
         {footer && <div className="ev-sheet-footer">{footer}</div>}

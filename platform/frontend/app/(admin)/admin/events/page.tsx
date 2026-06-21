@@ -23,6 +23,7 @@ import {
 } from "@/components/admin/events/EventFormSheet";
 import { EventsTable } from "@/components/admin/events/EventsTable";
 import { ChallengeMappingPanel } from "@/components/admin/events/ChallengeMappingPanel";
+import { Button } from "@/components/ui/Button";
 
 export default function AdminEventsPage() {
   const { confirm } = useConfirmStore();
@@ -129,10 +130,9 @@ export default function AdminEventsPage() {
     <div className="page">
       <div className="page-header">
         <h1 className="page-title font-mono">Events</h1>
-        <button className="g-btn g-btn-primary g-btn-sm" onClick={openCreate}>
-          <Plus size={13} />
+        <Button variant="primary" size="sm" leftIcon={<Plus size={13} />} onClick={openCreate}>
           New Event
-        </button>
+        </Button>
       </div>
 
       <EventsTable

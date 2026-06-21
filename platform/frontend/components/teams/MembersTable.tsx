@@ -4,6 +4,7 @@ import { Trash2 } from "lucide-react";
 import type { TeamMember, TeamRole } from "@/lib/api/teams";
 import { TEAM_ROLES } from "@/lib/api/teams";
 import { formatDate } from "@/lib/utils/date";
+import { Button } from "@/components/ui/Button";
 
 export function MembersTable({
   members,
@@ -60,14 +61,14 @@ export function MembersTable({
               {canManage && (
                 <td>
                   {!isSelf && (
-                    <button
-                      className="g-btn g-btn-danger g-btn-icon"
+                    <Button
+                      variant="danger"
+                      icon
+                      leftIcon={<Trash2 size={13} />}
                       onClick={() => onRemove(m.user_id)}
                       disabled={isPending}
-                      title="Remove member"
-                    >
-                      <Trash2 size={13} />
-                    </button>
+                      tooltip="Remove member"
+                    />
                   )}
                 </td>
               )}

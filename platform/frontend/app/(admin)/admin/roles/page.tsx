@@ -17,6 +17,7 @@ import {
 import { useConfirmStore } from "@/stores/confirm.store";
 import { useAdminGuard } from "@/hooks/useAdminGuard";
 import { RoleFormSheet } from "@/components/admin/roles/RoleFormSheet";
+import { Button } from "@/components/ui/Button";
 
 export default function AdminRolesPage() {
   useAdminGuard();
@@ -86,10 +87,9 @@ export default function AdminRolesPage() {
           <h1 className="page-title font-mono">Roles</h1>
           <p className="page-sub">{roles.length} roles configured</p>
         </div>
-        <button className="g-btn g-btn-primary" onClick={openCreate}>
-          <Plus size={13} />
+        <Button variant="primary" leftIcon={<Plus size={13} />} onClick={openCreate}>
           New Role
-        </button>
+        </Button>
       </div>
 
       <div className="g-card" style={{ padding: 0, overflow: "hidden" }}>
@@ -143,13 +143,12 @@ export default function AdminRolesPage() {
                     </td>
                     <td>
                       {!role.is_system && (
-                        <button
-                          className="g-btn g-btn-ghost g-btn-icon"
-                          title="Delete role"
+                        <Button
+                          icon
+                          tooltip="Delete role"
+                          leftIcon={<Trash2 size={13} />}
                           onClick={(e) => { e.stopPropagation(); handleDelete(role); }}
-                        >
-                          <Trash2 size={13} />
-                        </button>
+                        />
                       )}
                     </td>
                   </tr>

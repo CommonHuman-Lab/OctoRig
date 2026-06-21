@@ -5,6 +5,7 @@ import { useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Bold, Italic, Heading2, Code, CodeSquare, Link, List, ListOrdered, Quote } from "lucide-react";
+import { Button } from "./Button";
 
 interface MarkdownEditorProps {
   value: string;
@@ -82,20 +83,22 @@ export function MarkdownEditor({
     >
       <div className="md-editor-bar">
         <div className="md-editor-tabs">
-          <button
+          <Button
             type="button"
-            className={`g-btn g-btn-sm ${tab === "write" ? "g-btn-primary" : "g-btn-ghost"}`}
+            size="sm"
+            variant={tab === "write" ? "primary" : "ghost"}
             onClick={() => setTab("write")}
           >
             Write
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
-            className={`g-btn g-btn-sm ${tab === "preview" ? "g-btn-primary" : "g-btn-ghost"}`}
+            size="sm"
+            variant={tab === "preview" ? "primary" : "ghost"}
             onClick={() => setTab("preview")}
           >
             Preview
-          </button>
+          </Button>
         </div>
         {tab === "write" && (
           <div className="md-editor-toolbar">

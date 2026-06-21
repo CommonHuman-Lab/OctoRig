@@ -8,6 +8,7 @@ import {
   type ContentSubmission,
   type ContentType,
 } from "@/lib/api/content";
+import { Button } from "@/components/ui/Button";
 
 export function CreateModal({ onClose }: { onClose: () => void }) {
   const [title, setTitle] = useState("");
@@ -51,14 +52,14 @@ export function CreateModal({ onClose }: { onClose: () => void }) {
         </div>
 
         <div className="modal-footer">
-          <button className="g-btn g-btn-ghost" onClick={onClose}>Cancel</button>
-          <button
-            className="g-btn g-btn-primary"
+          <Button onClick={onClose}>Cancel</Button>
+          <Button
+            variant="primary"
             disabled={!title.trim() || isPending}
             onClick={() => mutate()}
           >
             {isPending ? "Creating…" : "Create Draft"}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

@@ -10,6 +10,7 @@ import { getMySubmissions } from "@/lib/api/content";
 import { CreateModal } from "@/components/creator/CreateModal";
 import { SubmissionRow } from "@/components/creator/SubmissionRow";
 import { AsyncContent } from "@/components/ui/AsyncContent";
+import { Button } from "@/components/ui/Button";
 
 export default function CreatorPage() {
   const [showCreate, setShowCreate] = useState(false);
@@ -26,10 +27,9 @@ export default function CreatorPage() {
           <PenTool size={18} style={{ display: "inline", marginRight: "0.5rem", verticalAlign: "middle" }} />
           Content Creator
         </h1>
-        <button className="g-btn g-btn-primary" onClick={() => setShowCreate(true)}>
-          <Plus size={14} />
+        <Button variant="primary" leftIcon={<Plus size={14} />} onClick={() => setShowCreate(true)}>
           New Draft
-        </button>
+        </Button>
       </div>
 
       <AsyncContent

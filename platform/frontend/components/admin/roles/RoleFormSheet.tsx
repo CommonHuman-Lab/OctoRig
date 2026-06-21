@@ -6,6 +6,7 @@ import { Save } from "lucide-react";
 import { type PlatformRole, type PlatformRoleCreate, type PlatformRoleUpdate } from "@/lib/api/admin";
 import { useEscapeKey } from "@/hooks/useEscapeKey";
 import { SheetShell } from "@/components/ui/SheetShell";
+import { Button } from "@/components/ui/Button";
 
 const PERMISSION_GROUPS = [
   {
@@ -118,17 +119,17 @@ export function RoleFormSheet({ open, initialValues, saveMutation, onClose }: Ro
       onClose={onClose}
       footer={
         <>
-          <button className="g-btn g-btn-ghost" onClick={onClose}>
+          <Button onClick={onClose}>
             Cancel
-          </button>
-          <button
-            className="g-btn g-btn-primary"
+          </Button>
+          <Button
+            variant="primary"
             disabled={!form.display_name || (!isEdit && !form.slug) || saveMutation.isPending}
             onClick={handleSubmit}
+            leftIcon={<Save size={13} />}
           >
-            <Save size={13} />
             {saveMutation.isPending ? "Saving…" : isEdit ? "Save Changes" : "Create Role"}
-          </button>
+          </Button>
         </>
       }
     >

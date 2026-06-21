@@ -15,6 +15,7 @@ import { DeploymentStatusBadge } from "@/components/deployments/DeploymentStatus
 import { useConfirmStore } from "@/stores/confirm.store";
 import { formatDateTime } from "@/lib/utils/date";
 import { AsyncContent } from "@/components/ui/AsyncContent";
+import { Button } from "@/components/ui/Button";
 
 export default function DeploymentsPage() {
   const router = useRouter();
@@ -118,44 +119,43 @@ export default function DeploymentsPage() {
                     <td onClick={(e) => e.stopPropagation()}>
                       <div className="flex gap-1">
                         {canStop && (
-                          <button
-                            className="g-btn g-btn-danger g-btn-icon"
+                          <Button
+                            variant="danger"
+                            icon
+                            leftIcon={<Square size={13} />}
                             onClick={() => stopMutation.mutate(d.id)}
                             disabled={stopMutation.isPending || d.status === "stopping"}
-                            title="Stop lab"
-                          >
-                            <Square size={13} />
-                          </button>
+                            tooltip="Stop lab"
+                          />
                         )}
                         {canReset && (
-                          <button
-                            className="g-btn g-btn-ghost g-btn-icon"
+                          <Button
+                            icon
+                            leftIcon={<RotateCcw size={13} />}
                             onClick={() => resetMutation.mutate(d.id)}
                             disabled={resetMutation.isPending}
-                            title="Reset scoreboard"
-                          >
-                            <RotateCcw size={13} />
-                          </button>
+                            tooltip="Reset scoreboard"
+                          />
                         )}
                         {canStart && (
-                          <button
-                            className="g-btn g-btn-primary g-btn-icon"
+                          <Button
+                            variant="primary"
+                            icon
+                            leftIcon={<Play size={13} />}
                             onClick={() => startMutation.mutate(d.id)}
                             disabled={startMutation.isPending}
-                            title="Start lab"
-                          >
-                            <Play size={13} />
-                          </button>
+                            tooltip="Start lab"
+                          />
                         )}
                         {canRemove && (
-                          <button
-                            className="g-btn g-btn-danger g-btn-icon"
+                          <Button
+                            variant="danger"
+                            icon
+                            leftIcon={<Trash2 size={13} />}
                             onClick={() => handleRemove(d.id, d.lab_name)}
                             disabled={removeMutation.isPending}
-                            title="Remove deployment"
-                          >
-                            <Trash2 size={13} />
-                          </button>
+                            tooltip="Remove deployment"
+                          />
                         )}
                       </div>
                     </td>

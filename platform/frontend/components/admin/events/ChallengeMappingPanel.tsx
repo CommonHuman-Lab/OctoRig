@@ -3,6 +3,7 @@
 // Copyright (c) 2026 CommonHuman-Lab
 import { X } from "lucide-react";
 import type { CtfEvent } from "@/lib/api/events";
+import { Button } from "@/components/ui/Button";
 
 interface EventChallenge {
   id: number;
@@ -38,9 +39,9 @@ export function ChallengeMappingPanel({
         <h3 style={{ margin: 0, fontSize: "0.875rem", fontWeight: 600 }}>
           Challenges in <em>{mapEvent.title}</em>
         </h3>
-        <button className="g-btn g-btn-ghost g-btn-sm" onClick={onClose}>
-          <X size={12} /> Close
-        </button>
+        <Button size="sm" onClick={onClose} leftIcon={<X size={12} />}>
+          Close
+        </Button>
       </div>
 
       {eventChallenges.length === 0 ? (
@@ -62,13 +63,14 @@ export function ChallengeMappingPanel({
                 <td style={{ fontSize: "0.75rem", color: "var(--g-text-muted)" }}>{c.category}</td>
                 <td style={{ fontSize: "0.75rem" }}>{c.points}</td>
                 <td>
-                  <button
-                    className="g-btn g-btn-danger g-btn-sm"
+                  <Button
+                    variant="danger"
+                    size="sm"
                     disabled={removeChallMutation.isPending}
                     onClick={() => removeChallMutation.mutate(c.id)}
                   >
                     Remove
-                  </button>
+                  </Button>
                 </td>
               </tr>
             ))}
@@ -92,13 +94,13 @@ export function ChallengeMappingPanel({
                 {c.title}{" "}
                 <span style={{ color: "var(--g-text-muted)", fontSize: "0.6875rem" }}>({c.category})</span>
               </span>
-              <button
-                className="g-btn g-btn-ghost g-btn-sm"
+              <Button
+                size="sm"
                 disabled={addChallMutation.isPending}
                 onClick={() => addChallMutation.mutate(c.id)}
               >
                 + Add
-              </button>
+              </Button>
             </div>
           ))}
           {filteredAll.length === 0 && (

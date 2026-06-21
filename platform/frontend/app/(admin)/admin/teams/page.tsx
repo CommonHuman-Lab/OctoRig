@@ -15,6 +15,7 @@ import { formatDateTime } from "@/lib/utils/date";
 import { useConfirmStore } from "@/stores/confirm.store";
 import { TeamEditSheet } from "@/components/admin/teams/TeamEditSheet";
 import { AsyncContent } from "@/components/ui/AsyncContent";
+import { Button } from "@/components/ui/Button";
 
 const ACTION_ICON_SIZE = 16;
 
@@ -98,21 +99,21 @@ export default function AdminTeamsPage() {
                     </td>
                     <td>
                       <div className="row-actions">
-                        <button
-                          className="g-btn g-btn-ghost g-btn-icon row-action-icon"
-                          title="Edit team"
+                        <Button
+                          icon
+                          rowAction
+                          tooltip="Edit team"
+                          leftIcon={<Pencil size={ACTION_ICON_SIZE} />}
                           onClick={() => setEditing(t)}
-                        >
-                          <Pencil size={ACTION_ICON_SIZE} />
-                        </button>
+                        />
                         {!t.is_personal && (
-                          <button
-                            className="g-btn g-btn-ghost g-btn-icon row-action-icon"
-                            title="Delete team"
+                          <Button
+                            icon
+                            rowAction
+                            tooltip="Delete team"
+                            leftIcon={<Trash2 size={ACTION_ICON_SIZE} />}
                             onClick={() => handleDelete(t)}
-                          >
-                            <Trash2 size={ACTION_ICON_SIZE} />
-                          </button>
+                          />
                         )}
                       </div>
                     </td>

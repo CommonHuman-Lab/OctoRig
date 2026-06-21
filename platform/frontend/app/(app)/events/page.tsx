@@ -24,6 +24,7 @@ import {
 } from "@/components/admin/events/EventFormSheet";
 import { AsyncContent } from "@/components/ui/AsyncContent";
 import { FilterPills } from "@/components/ui/FilterPills";
+import { Button } from "@/components/ui/Button";
 
 const STATUS_TABS: { id: EventStatus | undefined; label: string }[] = [
   { id: undefined, label: "All" },
@@ -130,14 +131,14 @@ export default function EventsPage() {
           CTF Events
         </h1>
         {isAdmin && (
-          <button
-            className="g-btn g-btn-primary"
+          <Button
+            variant="primary"
             style={{ marginLeft: "auto" }}
             onClick={openCreate}
+            leftIcon={<Plus size={13} />}
           >
-            <Plus size={13} />
             New Event
-          </button>
+          </Button>
         )}
       </div>
 

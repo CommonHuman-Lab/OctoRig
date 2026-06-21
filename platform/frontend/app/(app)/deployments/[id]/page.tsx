@@ -33,6 +33,7 @@ import { useCountdown } from "@/hooks/useCountdown";
 import { useNotificationsStore } from "@/stores/notifications.store";
 import { useConfirmStore } from "@/stores/confirm.store";
 import { PageSpinner } from "@/components/ui/Spinner";
+import { Button } from "@/components/ui/Button";
 import { DIFF_COLOR } from "@/lib/utils/difficulty";
 import { addHours } from "@/lib/utils/date";
 
@@ -172,53 +173,57 @@ export default function DeploymentDetailPage() {
 
         <div className="dd-controls">
           {canStop && (
-            <button
-              className="g-btn g-btn-danger"
+            <Button
+              variant="danger"
+              leftIcon={<Square size={14} />}
               onClick={() => stopMutation.mutate()}
               disabled={stopMutation.isPending || deployment.status === "stopping"}
             >
-              <Square size={14} /> Stop
-            </button>
+              Stop
+            </Button>
           )}
           {canReset && (
-            <button
-              className="g-btn g-btn-ghost"
+            <Button
+              leftIcon={<RotateCcw size={14} />}
               onClick={() => resetMutation.mutate()}
               disabled={resetMutation.isPending}
             >
-              <RotateCcw size={14} /> Reset
-            </button>
+              Reset
+            </Button>
           )}
           {canStart && (
-            <button
-              className="g-btn g-btn-primary"
+            <Button
+              variant="primary"
+              leftIcon={<Play size={14} />}
               onClick={() => startMutation.mutate()}
               disabled={startMutation.isPending}
             >
-              <Play size={14} /> Start
-            </button>
+              Start
+            </Button>
           )}
           {canRemove && (
-            <button
-              className="g-btn g-btn-danger"
+            <Button
+              variant="danger"
+              leftIcon={<Trash2 size={14} />}
               onClick={handleRemove}
               disabled={removeMutation.isPending}
             >
-              <Trash2 size={14} /> Remove
-            </button>
+              Remove
+            </Button>
           )}
           {labUrl && isActive && (
-            <a href={labUrl} target="_blank" rel="noopener noreferrer" className="g-btn g-btn-ghost">
-              <ExternalLink size={14} /> Open Lab
-            </a>
+            <Button href={labUrl} leftIcon={<ExternalLink size={14} />}>
+              Open Lab
+            </Button>
           )}
           {canSchedule && (
-            <button
-              className="g-btn g-btn-ghost g-btn-sm"
+            <Button
+              size="sm"
+              leftIcon={<Clock size={13} />}
               onClick={() => { setShowSchedule(true); setScheduledAt(addHours(2)); }}
             >
-              <Clock size={13} /> Schedule Destroy
-            </button>
+              Schedule Destroy
+            </Button>
           )}
         </div>
       </div>

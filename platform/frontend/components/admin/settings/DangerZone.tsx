@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
 import { AlertTriangle, Power, RotateCcw } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 
 export function DangerZone({
   onResetDb,
@@ -27,14 +28,14 @@ export function DangerZone({
             logs. Accounts, teams, labs, and challenges are preserved.
           </span>
         </div>
-        <button
-          className="g-btn g-btn-danger"
+        <Button
+          variant="danger"
           disabled={isPending}
           onClick={onResetDb}
+          leftIcon={<RotateCcw size={13} />}
         >
-          <RotateCcw size={13} />
           {isPending ? "Resetting…" : "Reset Database"}
-        </button>
+        </Button>
       </div>
       <div className="danger-action">
         <div className="danger-action-info">
@@ -44,14 +45,14 @@ export function DangerZone({
             The platform will be briefly unreachable while it comes back up.
           </span>
         </div>
-        <button
-          className="g-btn g-btn-danger"
+        <Button
+          variant="danger"
           disabled={isRestartPending}
           onClick={onRestartPlatform}
+          leftIcon={<Power size={13} />}
         >
-          <Power size={13} />
           {isRestartPending ? "Restarting…" : "Restart Platform"}
-        </button>
+        </Button>
       </div>
     </div>
   );

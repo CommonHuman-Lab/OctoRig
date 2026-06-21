@@ -6,6 +6,7 @@ import { THEMES } from "@/lib/themes";
 import type { SiteSettings } from "@/lib/api/settings";
 import { useThemeStore } from "@/stores/theme.store";
 import { SettingRow } from "./SettingRow";
+import { Button } from "@/components/ui/Button";
 
 export function AppearanceSection({
   appearance,
@@ -95,14 +96,15 @@ export function AppearanceSection({
       />
 
       <div className="settings-row-actions">
-        <button
-          className="g-btn g-btn-primary g-btn-sm"
+        <Button
+          variant="primary"
+          size="sm"
           disabled={isPending}
           onClick={onSave}
+          leftIcon={<Save size={13} />}
         >
-          <Save size={13} />
           Save Appearance
-        </button>
+        </Button>
       </div>
     </section>
   );

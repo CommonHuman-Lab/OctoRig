@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Plus } from "lucide-react";
 import { useEscapeKey } from "@/hooks/useEscapeKey";
 import { SheetShell } from "@/components/ui/SheetShell";
+import { Button } from "@/components/ui/Button";
 
 interface NewTeamSheetProps {
   open: boolean;
@@ -35,15 +36,15 @@ export function NewTeamSheet({ open, createMutation, onClose }: NewTeamSheetProp
       onClose={handleClose}
       footer={
         <>
-          <button className="g-btn g-btn-ghost" onClick={handleClose}>Cancel</button>
-          <button
-            className="g-btn g-btn-primary"
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button
+            variant="primary"
+            leftIcon={<Plus size={13} />}
             disabled={!name.trim() || createMutation.isPending}
             onClick={() => createMutation.mutate({ name, description: description || undefined })}
           >
-            <Plus size={13} />
             {createMutation.isPending ? "Creating…" : "Create Team"}
-          </button>
+          </Button>
         </>
       }
     >

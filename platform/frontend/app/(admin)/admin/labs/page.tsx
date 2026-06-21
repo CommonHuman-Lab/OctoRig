@@ -15,6 +15,7 @@ import { useEscapeKey } from "@/hooks/useEscapeKey";
 import { AsyncContent } from "@/components/ui/AsyncContent";
 import { SheetShell } from "@/components/ui/SheetShell";
 import { FilterPills } from "@/components/ui/FilterPills";
+import { Button } from "@/components/ui/Button";
 
 const CATEGORIES = [
   { id: undefined, label: "All" },
@@ -127,12 +128,9 @@ export default function AdminLabsPage() {
                     </td>
                     <td>
                       <div className="row-actions">
-                        <button
-                          className="g-btn g-btn-ghost g-btn-sm"
-                          onClick={() => setSelected(lab)}
-                        >
+                        <Button variant="ghost" size="sm" onClick={() => setSelected(lab)}>
                           Details
-                        </button>
+                        </Button>
                       </div>
                     </td>
                   </tr>
@@ -148,7 +146,7 @@ export default function AdminLabsPage() {
           title={<>{selected.name}</>}
           onClose={() => setSelected(null)}
           footer={
-            <button className="g-btn g-btn-ghost" onClick={() => setSelected(null)}>Close</button>
+            <Button variant="ghost" onClick={() => setSelected(null)}>Close</Button>
           }
         >
               <div className="lab-detail-section">

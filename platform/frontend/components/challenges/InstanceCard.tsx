@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Container, Clock, Trash2, Copy } from "lucide-react";
 import { type Deployment } from "@/lib/api/deployments";
 import { useCountdown } from "@/hooks/useCountdown";
+import { Button } from "@/components/ui/Button";
 
 interface InstanceCardProps {
   instance: Deployment;
@@ -47,14 +48,14 @@ export function InstanceCard({ instance, onStop, isStopping }: InstanceCardProps
             {instance.status}
           </span>
         </div>
-        <button
-          className="g-btn g-btn-danger g-btn-icon"
+        <Button
+          variant="danger"
+          icon
           onClick={onStop}
           disabled={isStopping || instance.status === "stopping"}
-          title="Destroy instance"
-        >
-          <Trash2 size={12} />
-        </button>
+          tooltip="Destroy instance"
+          leftIcon={<Trash2 size={12} />}
+        />
       </div>
 
       {instance.auto_destroy_at && (
@@ -76,14 +77,13 @@ export function InstanceCard({ instance, onStop, isStopping }: InstanceCardProps
             >
               {instance.dynamic_flag}
             </code>
-            <button
-              className="g-btn g-btn-ghost g-btn-icon"
+            <Button
+              icon
               onClick={copyFlag}
-              title="Copy flag"
+              tooltip="Copy flag"
               style={{ flexShrink: 0 }}
-            >
-              <Copy size={12} style={{ color: copied ? "var(--g-success)" : undefined }} />
-            </button>
+              leftIcon={<Copy size={12} style={{ color: copied ? "var(--g-success)" : undefined }} />}
+            />
           </div>
         </div>
       )}

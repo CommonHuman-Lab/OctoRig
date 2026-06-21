@@ -15,6 +15,7 @@ import {
 } from "@/lib/api/events";
 import { formatDateTime } from "@/lib/utils/date";
 import { DIFF_COLOR } from "@/lib/utils/difficulty";
+import { Button } from "@/components/ui/Button";
 
 function ChallengeGrid({ challenges }: { challenges: EventChallenge[] }) {
   const byCategory = challenges.reduce<Record<string, EventChallenge[]>>((acc, ch) => {
@@ -156,18 +157,12 @@ export default function EventDetailPage() {
 
       {/* Tabs */}
       <div className="tabs">
-        <button
-          className={`tab-btn ${tab === "challenges" ? "tab-btn--active" : ""}`}
-          onClick={() => setTab("challenges")}
-        >
+        <Button variant="tab" active={tab === "challenges"} onClick={() => setTab("challenges")}>
           Challenges {challenges.length > 0 && `(${challenges.length})`}
-        </button>
-        <button
-          className={`tab-btn ${tab === "scoreboard" ? "tab-btn--active" : ""}`}
-          onClick={() => setTab("scoreboard")}
-        >
+        </Button>
+        <Button variant="tab" active={tab === "scoreboard"} onClick={() => setTab("scoreboard")}>
           Scoreboard
-        </button>
+        </Button>
       </div>
 
       <div className="tab-content">

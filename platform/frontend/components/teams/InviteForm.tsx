@@ -6,6 +6,7 @@ import { useState, useRef, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import type { TeamRole } from "@/lib/api/teams";
 import { ASSIGNABLE_ROLES, searchUsers } from "@/lib/api/teams";
+import { Button } from "@/components/ui/Button";
 
 export function InviteForm({
   onSubmit,
@@ -104,16 +105,17 @@ export function InviteForm({
           </option>
         ))}
       </select>
-      <button
-        className="g-btn g-btn-primary g-btn-sm"
+      <Button
+        variant="primary"
+        size="sm"
         onClick={handleSubmit}
         disabled={!selected || isPending}
       >
         {isPending ? "Sending…" : "Invite"}
-      </button>
-      <button className="g-btn g-btn-ghost g-btn-sm" onClick={onCancel}>
+      </Button>
+      <Button size="sm" onClick={onCancel}>
         Cancel
-      </button>
+      </Button>
     </div>
   );
 }

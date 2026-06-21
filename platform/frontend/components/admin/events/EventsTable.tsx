@@ -8,6 +8,7 @@ import {
 import { EVENT_STATUS_COLORS } from "@/lib/utils/status";
 import { formatDateTime } from "@/lib/utils/date";
 import { AsyncContent } from "@/components/ui/AsyncContent";
+import { Button } from "@/components/ui/Button";
 
 const STATUS_ORDER: EventStatus[] = ["draft", "published", "running", "ended", "archived"];
 
@@ -96,25 +97,27 @@ export function EventsTable({
                       {formatDateTime(ev.end_at)}
                     </td>
                     <td>
-                      <button
-                        className="g-btn g-btn-ghost g-btn-sm"
+                      <Button
+                        size="sm"
                         onClick={() => onToggleMap(ev.slug)}
+                        rightIcon={
+                          <ChevronRight
+                            size={12}
+                            style={{
+                              transform: mapSlug === ev.slug ? "rotate(90deg)" : "none",
+                              transition: "transform 0.15s",
+                            }}
+                          />
+                        }
                       >
                         Challenges
-                        <ChevronRight
-                          size={12}
-                          style={{
-                            transform: mapSlug === ev.slug ? "rotate(90deg)" : "none",
-                            transition: "transform 0.15s",
-                          }}
-                        />
-                      </button>
+                      </Button>
                     </td>
                     <td>
                       <div style={{ display: "flex", gap: 6 }}>
                         {next && (
-                          <button
-                            className="g-btn g-btn-ghost g-btn-sm"
+                          <Button
+                            size="sm"
                             disabled={transitionMutation.isPending}
                             onClick={() => confirm({
                               title: `Set status to "${next}"?`,
@@ -124,11 +127,11 @@ export function EventsTable({
                             })}
                           >
                             → {next}
-                          </button>
+                          </Button>
                         )}
-                        <button className="g-btn g-btn-ghost g-btn-sm" onClick={() => onEdit(ev)}>
+                        <Button size="sm" onClick={() => onEdit(ev)}>
                           Edit
-                        </button>
+                        </Button>
                       </div>
                     </td>
                   </tr>

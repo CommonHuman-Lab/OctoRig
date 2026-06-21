@@ -3,6 +3,7 @@
 // Copyright (c) 2026 CommonHuman-Lab
 
 import { CheckCircle2, XCircle, Zap } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 
 export function SubmitForm({
   codeSnippet,
@@ -43,14 +44,14 @@ export function SubmitForm({
               autoComplete="off"
               style={{ resize: "vertical" }}
             />
-            <button
+            <Button
               type="submit"
-              className="g-btn g-btn-primary"
+              variant="primary"
               style={{ alignSelf: "flex-end" }}
               disabled={isLoading || !flag.trim() || cooldownRemaining > 0}
             >
               {btnLabel}
-            </button>
+            </Button>
           </div>
         ) : (
           <input
@@ -64,13 +65,13 @@ export function SubmitForm({
           />
         )}
         {!codeSnippet && (
-          <button
+          <Button
             type="submit"
-            className="g-btn g-btn-primary"
+            variant="primary"
             disabled={isLoading || !flag.trim() || cooldownRemaining > 0}
           >
             {btnLabel}
-          </button>
+          </Button>
         )}
       </div>
 
