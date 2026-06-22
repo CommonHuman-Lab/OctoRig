@@ -3,7 +3,7 @@
 </p>
 
 <h1 align="center">OctoRig</h1>
-<p align="center"><em>Spin up realistic vulnerable environments for pentesting, security research, and offensive security training — with a single command.</em></p>
+<p align="center"><em>Realistic vulnerable labs and a self-hosted CTF platform — events, badges, scoreboards — spun up with one command.</em></p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Shell-Bash-green.svg" />
@@ -13,21 +13,16 @@
 
 ---
 
-OctoRig is a modular vulnerable lab platform that spins up realistic Docker-based targets for penetration testing practice, security research, red team training, and security tool validation — all with a single command.
-
-Unlike traditional CTF-style machines, OctoRig labs are designed to feel closer to real-world applications and infrastructure. Each environment contains layered vulnerabilities, insecure business logic, hidden attack paths, weak operational security, and realistic application flows for deeper testing and exploration.
+OctoRig pairs 21 realistic, layered-vulnerability lab environments with a built-in training platform — CTF events, badges, scoreboards, and a plugin API for your own DAST tools. No artificial puzzle boxes: labs feel like real apps and infrastructure, mistakes and all.
 
 ## Features
 
-- One-command lab deployment
-- Fully isolated Docker environments
-- Realistic vulnerable applications
-- Multiple vulnerability classes per lab
-- Designed for DAST and offensive tooling
-- Beginner to advanced attack paths
-- Hidden easter eggs and chained exploits
-- Fast teardown and reset workflows
-- Ideal for workshops, demos, and practice environments
+- One-command deploy, fully isolated in Docker
+- 21 labs — world scenarios, scanner fire-ranges, and classics (Juice Shop, DVWA, AD, more)
+- Built-in CTF platform — events, badges, scoreboards, team play
+- Assessment Mode for proctored skills testing
+- Plugin API to wire in your own DAST scanners
+- Hidden easter eggs and chained exploit paths
 
 ---
 
@@ -64,26 +59,24 @@ Full lab list with IPs, credentials, and vulnerability details: [Labs Overview �
 
 ---
 
+## Platform
+
+The other half of OctoRig: a self-hosted CTF engine that runs alongside the labs.
+
+- Time-boxed competitions, teams, and a global scoreboard fed by live fire-range scores
+- Badges, ranks, and a challenge-creator workflow
+- Plugin API for wiring in your own DAST scanners, plus proctored Assessment Mode
+
+→ Full setup and feature breakdown: [platform/README.md](platform/README.md)
+
+---
+
 ## Requirements
 
 - Docker (daemon running)
 - Bash 4.0+
 - `nc` (netcat)
 - Internet access on first run (image pulls)
-
----
-
-## Philosophy
-
-OctoRig focuses on realistic offensive security training rather than artificial puzzle-based challenges.
-
-The goal is to provide reproducible vulnerable environments that resemble modern applications, internal tooling, and operational mistakes commonly encountered during real assessments.
-
-## Platform
-
-OctoRig includes a self-hosted training platform that layers CTF-style challenge competitions, achievement badges, user profiles, and a content marketplace on top of the lab infrastructure. It runs alongside the labs and feeds fire-range scores into a global scoreboard and badge engine.
-
-→ See [platform/README.md](platform/README.md) for setup and usage.
 
 ---
 

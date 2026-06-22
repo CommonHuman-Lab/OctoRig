@@ -4,6 +4,16 @@ A self-hosted offensive security training platform built on top of OctoRig's vul
 
 ---
 
+## Features
+
+- **CTF Events** — time-boxed competitions, static or dynamic scoring, solo or team play
+- **Challenges** — markdown descriptions, file attachments, hints, flag validation, linked to live lab endpoints
+- **Badges and Ranks** — award badges for solves and participation, configure rank thresholds
+- **Plugin API** — DAST scanners register via the `octorig.plugins` entry point and are discovered automatically
+- **Assessment Mode** — proctored, time-boxed skills testing
+
+---
+
 ## Requirements
 
 - Docker and Docker Compose
