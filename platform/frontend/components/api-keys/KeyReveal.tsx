@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Copy, Check } from "lucide-react";
 import type { ApiKeyCreated } from "@/lib/api/apiKeys";
 import { Button } from "@/components/ui/Button";
+import { TIMING } from "@/lib/config";
 
 export function KeyReveal({ createdKey, onDismiss }: { createdKey: ApiKeyCreated; onDismiss: () => void }) {
   const [copied, setCopied] = useState(false);
@@ -13,7 +14,7 @@ export function KeyReveal({ createdKey, onDismiss }: { createdKey: ApiKeyCreated
   async function copyKey() {
     await navigator.clipboard.writeText(createdKey.raw_key);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setTimeout(() => setCopied(false), TIMING.KEY_REVEAL_HIDE_MS);
   }
 
   return (

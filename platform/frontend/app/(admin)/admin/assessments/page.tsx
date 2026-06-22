@@ -15,6 +15,7 @@ import { useEffect } from "react";
 import { AssessmentFormSheet } from "@/components/admin/assessments/AssessmentFormSheet";
 import { AsyncContent } from "@/components/ui/AsyncContent";
 import { Button } from "@/components/ui/Button";
+import { STALE_TIME } from "@/lib/config";
 
 function StatusBadge({ isActive }: { isActive: boolean }) {
   return (
@@ -42,7 +43,7 @@ export default function AdminAssessmentsPage() {
   const { data: labs = [], isLoading: labsLoading } = useQuery<LabTemplate[]>({
     queryKey: ["labs", "world"],
     queryFn: () => getLabs("world"),
-    staleTime: 60_000,
+    staleTime: STALE_TIME.MEDIUM,
   });
 
   const createMutation = useApiMutation({

@@ -13,6 +13,7 @@ import { PageSpinner } from "@/components/ui/Spinner";
 import { FilterPills } from "@/components/ui/FilterPills";
 import { Button } from "@/components/ui/Button";
 import { DIFF_CLASS } from "@/lib/utils/difficulty";
+import { STALE_TIME } from "@/lib/config";
 
 const CATEGORIES = [
   { id: undefined, label: "All" },
@@ -110,7 +111,7 @@ export default function ChallengesPage() {
   const { data: labs = [] } = useQuery<LabTemplate[]>({
     queryKey: ["labs"],
     queryFn: () => getLabs(),
-    staleTime: 60_000,
+    staleTime: STALE_TIME.MEDIUM,
   });
 
   const labsWithChallenges = labs.filter((l) => l.category === "world");

@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
 import { useState, useEffect } from "react";
+import { TIMING } from "@/lib/config";
 
 export function useCountdown(isoTarget: string | null | undefined): { label: string; remainingMs: number } {
   const [state, setState] = useState({ label: "", remainingMs: Infinity });
@@ -17,7 +18,7 @@ export function useCountdown(isoTarget: string | null | undefined): { label: str
       setState({ label: h > 0 ? `${h}h ${m}m` : `${m}m ${s}s`, remainingMs: diff });
     };
     tick();
-    const id = setInterval(tick, 1_000);
+    const id = setInterval(tick, TIMING.CLOCK_TICK_MS);
     return () => clearInterval(id);
   }, [isoTarget]);
 

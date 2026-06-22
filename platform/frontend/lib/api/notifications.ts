@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
 import { apiClient } from "./client";
+import { PAGINATION } from "@/lib/config";
 
 export interface AppNotification {
   id: number;
@@ -20,7 +21,7 @@ export interface NotificationPreferences {
   event_filter: Record<string, boolean>;
 }
 
-export async function getNotifications(unreadOnly = false, limit = 50): Promise<AppNotification[]> {
+export async function getNotifications(unreadOnly = false, limit: number = PAGINATION.DEFAULT_LIMIT): Promise<AppNotification[]> {
   const { data } = await apiClient.get<AppNotification[]>("/notifications/", {
     params: { unread_only: unreadOnly, limit },
   });

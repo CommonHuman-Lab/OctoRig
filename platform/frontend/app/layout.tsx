@@ -3,6 +3,7 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { Providers } from "./providers";
+import { THEME_STORAGE_KEY } from "@/lib/themes";
 import "./globals.css";
 import "@/styles/pages.css";
 
@@ -21,7 +22,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* FOUC prevention — apply stored theme before first paint */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{var s=localStorage.getItem("octorig_theme");if(s){var t=JSON.parse(s).state?.theme;if(t)document.documentElement.setAttribute("data-theme",t);}}catch(e){}`,
+            __html: `try{var s=localStorage.getItem(${JSON.stringify(THEME_STORAGE_KEY)});if(s){var t=JSON.parse(s).state?.theme;if(t)document.documentElement.setAttribute("data-theme",t);}}catch(e){}`,
           }}
         />
       </head>

@@ -28,6 +28,7 @@ import { AssessmentFormSheet } from "@/components/admin/assessments/AssessmentFo
 import { useConfirmStore } from "@/stores/confirm.store";
 import { formatDateTime } from "@/lib/utils/date";
 import { Button } from "@/components/ui/Button";
+import { TIMING, STALE_TIME } from "@/lib/config";
 
 function StatusBadge({ status }: { status: InviteStatus }) {
   const colors: Record<InviteStatus, string> = {
@@ -64,7 +65,7 @@ function CopyButton({ text }: { text: string }) {
       onClick={() => {
         navigator.clipboard.writeText(text);
         setCopied(true);
-        setTimeout(() => setCopied(false), 1500);
+        setTimeout(() => setCopied(false), TIMING.COPY_FEEDBACK_MS);
       }}
     />
   );
@@ -258,7 +259,7 @@ export default function AssessmentDetailPage() {
   const { data: labs = [], isLoading: labsLoading } = useQuery<LabTemplate[]>({
     queryKey: ["labs", "world"],
     queryFn: () => getLabs("world"),
-    staleTime: 60_000,
+    staleTime: STALE_TIME.MEDIUM,
   });
 
   const updateMutation = useApiMutation({

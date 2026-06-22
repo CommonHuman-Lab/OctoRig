@@ -13,6 +13,7 @@ import { BadgeCard } from "@/components/badges/BadgeCard";
 import { RankProgressCard } from "@/components/badges/RankProgressCard";
 import { FilterPills } from "@/components/ui/FilterPills";
 import { Button } from "@/components/ui/Button";
+import { STALE_TIME } from "@/lib/config";
 
 const CATEGORIES = ["all", "milestone", "competition", "skill"] as const;
 type CategoryFilter = typeof CATEGORIES[number];
@@ -45,7 +46,7 @@ export default function BadgesPage() {
   const { data: myRank } = useQuery({
     queryKey: ["rank", "me"],
     queryFn: getMyRank,
-    staleTime: 60_000,
+    staleTime: STALE_TIME.MEDIUM,
   });
 
   const earned = badges.filter((b) => b.earned).length;

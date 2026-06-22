@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
 import { apiClient } from "./client";
+import { PAGINATION } from "@/lib/config";
 import type { ScoreboardEntry, ChallengeDifficulty } from "./challenges";
 
 export type EventStatus = "draft" | "published" | "running" | "ended" | "archived";
@@ -55,7 +56,7 @@ export async function getEventChallenges(slug: string): Promise<EventChallenge[]
 
 export async function getEventScoreboard(
   slug: string,
-  limit = 100
+  limit: number = PAGINATION.LARGE_LIMIT
 ): Promise<ScoreboardEntry[]> {
   const { data } = await apiClient.get<ScoreboardEntry[]>(
     `/events/${slug}/scoreboard`,

@@ -8,9 +8,10 @@ import { AsyncContent } from "@/components/ui/AsyncContent";
 import { ICON_MAP } from "@/lib/utils/badge-icons";
 import { formatDate } from "@/lib/utils/date";
 import type { WidgetComponentProps } from "@/lib/widgets/types";
+import { STALE_TIME } from "@/lib/config";
 
 export function RecentBadgesWidget({ widget }: WidgetComponentProps) {
-  const { data, isLoading } = useQuery({ queryKey: ["badges", "me"], queryFn: getMyBadges, staleTime: 30_000 });
+  const { data, isLoading } = useQuery({ queryKey: ["badges", "me"], queryFn: getMyBadges, staleTime: STALE_TIME.SHORT });
 
   const earned = (data ?? [])
     .filter((b) => b.earned && b.earned_at)

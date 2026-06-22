@@ -7,12 +7,13 @@ import { getScheduledActions } from "@/lib/api/scheduler";
 import { AsyncContent } from "@/components/ui/AsyncContent";
 import { formatDateTime } from "@/lib/utils/date";
 import type { WidgetComponentProps } from "@/lib/widgets/types";
+import { STALE_TIME } from "@/lib/config";
 
 export function ScheduledActionsWidget({ widget }: WidgetComponentProps) {
   const { data, isLoading } = useQuery({
     queryKey: ["scheduled-actions", "pending"],
     queryFn: () => getScheduledActions("pending"),
-    staleTime: 30_000,
+    staleTime: STALE_TIME.SHORT,
   });
 
   const upcoming = (data ?? []).sort((a, b) => a.scheduled_at.localeCompare(b.scheduled_at));

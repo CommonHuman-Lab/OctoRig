@@ -119,7 +119,7 @@ export default function AssessmentWorkspacePage() {
           justifyContent: "space-between",
           position: "sticky",
           top: 0,
-          zIndex: 10,
+          zIndex: "var(--z-dropdown)",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>

@@ -24,6 +24,7 @@ import {
 import { EventsTable } from "@/components/admin/events/EventsTable";
 import { ChallengeMappingPanel } from "@/components/admin/events/ChallengeMappingPanel";
 import { Button } from "@/components/ui/Button";
+import { STALE_TIME } from "@/lib/config";
 
 export default function AdminEventsPage() {
   const { confirm } = useConfirmStore();
@@ -53,7 +54,7 @@ export default function AdminEventsPage() {
   const { data: allChallenges = [] } = useQuery({
     queryKey: ["challenges-all"],
     queryFn: () => getChallenges(),
-    staleTime: 60_000,
+    staleTime: STALE_TIME.MEDIUM,
   });
 
   function openCreate() {

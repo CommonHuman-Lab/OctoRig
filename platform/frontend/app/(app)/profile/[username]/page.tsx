@@ -18,6 +18,7 @@ import { useUserStore } from "@/stores/user.store";
 import { ICON_MAP } from "@/lib/utils/badge-icons";
 import { EditProfileSheet } from "@/components/profile/EditProfileSheet";
 import { Button } from "@/components/ui/Button";
+import { STALE_TIME } from "@/lib/config";
 
 function StatBlock({ icon, label, value }: { icon: React.ReactNode; label: string; value: number }) {
   return (
@@ -145,7 +146,7 @@ export default function UserProfilePage() {
     queryKey: ["rank", "user", profile?.user_id],
     queryFn: () => getUserRank(profile!.user_id),
     enabled: !!profile,
-    staleTime: 60_000,
+    staleTime: STALE_TIME.MEDIUM,
   });
 
   return (

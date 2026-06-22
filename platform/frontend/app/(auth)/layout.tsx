@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useThemeStore } from "@/stores/theme.store";
 import { getPublicSettings } from "@/lib/api/settings";
+import { STALE_TIME } from "@/lib/config";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   const { theme, applyPlatformDefault } = useThemeStore();
@@ -17,7 +18,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
   const { data: publicSettings } = useQuery({
     queryKey: ["public-settings"],
     queryFn: getPublicSettings,
-    staleTime: 300_000,
+    staleTime: STALE_TIME.LONG,
   });
 
   useEffect(() => {

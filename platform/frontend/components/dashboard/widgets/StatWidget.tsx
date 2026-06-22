@@ -10,6 +10,7 @@ import { getMyProfile } from "@/lib/api/profiles";
 import { getEvents } from "@/lib/api/events";
 import { getScheduledActions } from "@/lib/api/scheduler";
 import type { WidgetComponentProps, WidgetType } from "@/lib/widgets/types";
+import { STALE_TIME } from "@/lib/config";
 
 interface StatData {
   value: string | number;
@@ -32,13 +33,13 @@ export const STAT_META: Partial<Record<WidgetType, { label: string; icon: Lucide
 
 function useStatData(type: WidgetType): StatData {
   const health = useQuery({ queryKey: ["health"], queryFn: getHealth, refetchInterval: 30_000 });
-  const labs = useQuery({ queryKey: ["labs"], queryFn: () => getLabs(), staleTime: 60_000 });
-  const profile = useQuery({ queryKey: ["profile", "me"], queryFn: getMyProfile, staleTime: 60_000 });
-  const events = useQuery({ queryKey: ["events", "running"], queryFn: () => getEvents("running"), staleTime: 30_000 });
+  const labs = useQuery({ queryKey: ["labs"], queryFn: () => getLabs(), staleTime: STALE_TIME.MEDIUM });
+  const profile = useQuery({ queryKey: ["profile", "me"], queryFn: getMyProfile, staleTime: STALE_TIME.MEDIUM });
+  const events = useQuery({ queryKey: ["events", "running"], queryFn: () => getEvents("running"), staleTime: STALE_TIME.SHORT });
   const pending = useQuery({
     queryKey: ["scheduled-actions", "pending"],
     queryFn: () => getScheduledActions("pending"),
-    staleTime: 30_000,
+    staleTime: STALE_TIME.SHORT,
   });
 
   switch (type) {

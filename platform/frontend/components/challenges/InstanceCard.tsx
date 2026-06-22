@@ -6,6 +6,7 @@ import { Container, Clock, Trash2, Copy } from "lucide-react";
 import { type Deployment } from "@/lib/api/deployments";
 import { useCountdown } from "@/hooks/useCountdown";
 import { Button } from "@/components/ui/Button";
+import { TIMING } from "@/lib/config";
 
 interface InstanceCardProps {
   instance: Deployment;
@@ -21,7 +22,7 @@ export function InstanceCard({ instance, onStop, isStopping }: InstanceCardProps
     if (!instance.dynamic_flag) return;
     navigator.clipboard.writeText(instance.dynamic_flag).then(() => {
       setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
+      setTimeout(() => setCopied(false), TIMING.COPY_FEEDBACK_MS);
     });
   }
 

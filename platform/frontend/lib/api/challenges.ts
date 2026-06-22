@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
 import { apiClient } from "./client";
+import { PAGINATION } from "@/lib/config";
 
 export type ChallengeDifficulty = "easy" | "medium" | "hard" | "insane";
 export type ChallengeType =
@@ -114,7 +115,7 @@ export async function unlockHint(
 }
 
 export async function getGlobalScoreboard(
-  limit = 100
+  limit: number = PAGINATION.LARGE_LIMIT
 ): Promise<ScoreboardEntry[]> {
   const { data } = await apiClient.get<ScoreboardEntry[]>(
     "/scoreboards/global",

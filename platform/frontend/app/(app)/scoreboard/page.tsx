@@ -13,10 +13,11 @@ import { useUserStore } from "@/stores/user.store";
 import { ScoreRow } from "@/components/scoreboard/ScoreRow";
 import { ScoreboardFilters, SCOREBOARD_LIMITS } from "@/components/scoreboard/ScoreboardFilters";
 import { AsyncContent } from "@/components/ui/AsyncContent";
+import { STALE_TIME, PAGINATION } from "@/lib/config";
 
 export default function ScoreboardPage() {
   const { user } = useUserStore();
-  const [limit, setLimit] = useState(50);
+  const [limit, setLimit] = useState<number>(PAGINATION.DEFAULT_LIMIT);
   const [eventSlug, setEventSlug] = useState("");
   const myRowRef = useRef<HTMLTableRowElement>(null);
 
@@ -28,7 +29,7 @@ export default function ScoreboardPage() {
   const { data: ranks = [] } = useQuery({
     queryKey: ["ranks"],
     queryFn: getRanks,
-    staleTime: 60_000,
+    staleTime: STALE_TIME.MEDIUM,
   });
 
   const isGlobal = eventSlug === "";

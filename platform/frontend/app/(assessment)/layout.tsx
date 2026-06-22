@@ -8,6 +8,7 @@ import { useThemeStore } from "@/stores/theme.store";
 import { getPublicSettings } from "@/lib/api/settings";
 import { Notifications } from "@/components/ui/Notifications";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
+import { STALE_TIME } from "@/lib/config";
 
 export default function AssessmentLayout({ children }: { children: React.ReactNode }) {
   const { theme, applyPlatformDefault } = useThemeStore();
@@ -19,7 +20,7 @@ export default function AssessmentLayout({ children }: { children: React.ReactNo
   const { data: publicSettings } = useQuery({
     queryKey: ["public-settings"],
     queryFn: getPublicSettings,
-    staleTime: 300_000,
+    staleTime: STALE_TIME.LONG,
   });
 
   useEffect(() => {

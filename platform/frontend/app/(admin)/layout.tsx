@@ -11,6 +11,7 @@ import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { useUserStore } from "@/stores/user.store";
 import { useThemeStore } from "@/stores/theme.store";
 import { getPublicSettings } from "@/lib/api/settings";
+import { STALE_TIME } from "@/lib/config";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const { accessToken, _hasHydrated, isRestoringToken, user } = useUserStore();
@@ -30,7 +31,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const { data: publicSettings } = useQuery({
     queryKey: ["public-settings"],
     queryFn: getPublicSettings,
-    staleTime: 300_000,
+    staleTime: STALE_TIME.LONG,
     enabled: !!accessToken,
   });
 

@@ -7,9 +7,10 @@ import { getEvents } from "@/lib/api/events";
 import { AsyncContent } from "@/components/ui/AsyncContent";
 import { formatDateTime } from "@/lib/utils/date";
 import type { WidgetComponentProps } from "@/lib/widgets/types";
+import { STALE_TIME } from "@/lib/config";
 
 export function UpcomingEventsWidget({ widget }: WidgetComponentProps) {
-  const { data, isLoading } = useQuery({ queryKey: ["events"], queryFn: () => getEvents(), staleTime: 30_000 });
+  const { data, isLoading } = useQuery({ queryKey: ["events"], queryFn: () => getEvents(), staleTime: STALE_TIME.SHORT });
 
   const upcoming = (data ?? [])
     .filter((e) => e.status === "running" || e.status === "published")

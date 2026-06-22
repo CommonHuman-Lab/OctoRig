@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import type { TeamRole } from "@/lib/api/teams";
 import { ASSIGNABLE_ROLES, searchUsers } from "@/lib/api/teams";
 import { Button } from "@/components/ui/Button";
+import { STALE_TIME } from "@/lib/config";
 
 export function InviteForm({
   onSubmit,
@@ -27,7 +28,7 @@ export function InviteForm({
     queryKey: ["user-search", query],
     queryFn: () => searchUsers(query),
     enabled: query.length >= 2,
-    staleTime: 10_000,
+    staleTime: STALE_TIME.INVITE,
   });
 
   useEffect(() => {
@@ -71,7 +72,7 @@ export function InviteForm({
         />
         {open && results.length > 0 && (
           <div style={{
-            position: "absolute", top: "100%", left: 0, right: 0, zIndex: 50,
+            position: "absolute", top: "100%", left: 0, right: 0, zIndex: "var(--z-popover)",
             background: "var(--g-surface)", border: "1px solid var(--g-border)",
             borderRadius: "6px", marginTop: "2px", overflow: "hidden",
             boxShadow: "0 4px 12px rgba(0,0,0,0.3)",

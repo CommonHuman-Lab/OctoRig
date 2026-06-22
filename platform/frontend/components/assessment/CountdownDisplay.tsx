@@ -3,6 +3,7 @@
 // Copyright (c) 2026 CommonHuman-Lab
 import { useEffect, useState } from "react";
 import { Clock } from "lucide-react";
+import { TIMING } from "@/lib/config";
 
 function useCountdown(expiresAt: string | null) {
   const [remaining, setRemaining] = useState<number | null>(null);
@@ -14,7 +15,7 @@ function useCountdown(expiresAt: string | null) {
       setRemaining(diff);
     };
     update();
-    const id = setInterval(update, 1000);
+    const id = setInterval(update, TIMING.CLOCK_TICK_MS);
     return () => clearInterval(id);
   }, [expiresAt]);
 

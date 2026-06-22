@@ -47,8 +47,8 @@ export function ConfirmModal() {
           display: flex;
           align-items: center;
           justify-content: center;
-          z-index: 1000;
-          animation: fade-in 0.15s ease both;
+          z-index: var(--z-modal);
+          animation: fade-in var(--t-fast) ease both;
         }
         .confirm-modal {
           background: var(--g-chrome);
@@ -59,7 +59,7 @@ export function ConfirmModal() {
           display: flex;
           flex-direction: column;
           gap: 1rem;
-          animation: modal-pop 0.18s cubic-bezier(0.16, 1, 0.3, 1) both;
+          animation: modal-pop var(--t-modal-pop) both;
         }
         .confirm-header {
           display: flex;

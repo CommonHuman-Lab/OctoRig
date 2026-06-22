@@ -7,12 +7,13 @@ import { useEffect, useState } from "react";
 import { WSProvider } from "@/providers/WSProvider";
 import { useUserStore } from "@/stores/user.store";
 import { refreshToken } from "@/lib/api/auth";
+import { STALE_TIME } from "@/lib/config";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [client] = useState(
     () =>
       new QueryClient({
-        defaultOptions: { queries: { staleTime: 60_000, retry: 1 } },
+        defaultOptions: { queries: { staleTime: STALE_TIME.MEDIUM, retry: 1 } },
       })
   );
 

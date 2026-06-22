@@ -1,6 +1,26 @@
 /* SPDX-License-Identifier: AGPL-3.0-or-later */
 /* Copyright (c) 2026 CommonHuman-Lab */
 
+/* ── Structural scales (theme-independent) ──────────────────────────────────
+   ──────────────────────────────────────────────────────────────────────────── */
+:root {
+  /* Z-index */
+  --z-base:      1;
+  --z-raised:    2;
+  --z-dropdown:  10;
+  --z-topbar:    20;
+  --z-popover:   50;
+  --z-overlay:   200;
+  --z-modal:     1000;
+  --z-toast:     9999;
+
+  /* Durations */
+  --t-fast:      0.15s;
+  --t-base:      0.2s;
+  --t-slow:      0.3s;
+  --t-modal-pop: 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 /* ── Nightfall (default) ────────────────────────────────────────────────────
    Deep void · Emerald · OctoRig brand
    ──────────────────────────────────────────────────────────────────────────── */

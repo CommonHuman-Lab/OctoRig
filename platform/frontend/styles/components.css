@@ -79,7 +79,7 @@ a.g-card:hover,
   height: 1px;
   background: linear-gradient(90deg, transparent, var(--g-shimmer), transparent);
   pointer-events: none;
-  z-index: 1;
+  z-index: var(--z-base);
 }
 
 .g-panel-header {
@@ -148,7 +148,7 @@ a.g-card:hover,
   position: absolute;
   top: 0.4rem;
   right: 0.4rem;
-  z-index: 2;
+  z-index: var(--z-raised);
   display: flex;
   align-items: center;
   gap: 0.25rem;

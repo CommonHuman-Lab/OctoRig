@@ -6,12 +6,13 @@ import { Flag } from "lucide-react";
 import { getChallenges } from "@/lib/api/challenges";
 import { AsyncContent } from "@/components/ui/AsyncContent";
 import type { WidgetComponentProps } from "@/lib/widgets/types";
+import { STALE_TIME } from "@/lib/config";
 
 export function RecentChallengesWidget({ widget }: WidgetComponentProps) {
   const { data, isLoading } = useQuery({
     queryKey: ["challenges", "recent"],
     queryFn: () => getChallenges(),
-    staleTime: 30_000,
+    staleTime: STALE_TIME.SHORT,
   });
 
   const recent = (data ?? [])

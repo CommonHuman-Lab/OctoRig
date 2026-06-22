@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
 
+import { WS_RECONNECT } from "@/lib/config";
+
 export type WsState = "connecting" | "connected" | "disconnected";
 
 export interface OctoEvent {
@@ -17,7 +19,7 @@ class OctoWSClient {
   private stateHandlers = new Set<(s: WsState) => void>();
   private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
   private reconnectCount = 0;
-  private reconnectDelay = 2_000;
+  private reconnectDelay: number = WS_RECONNECT.INITIAL_DELAY_MS;
   private readonly url: string;
   private getToken: (() => string | null) | null = null;
   state: WsState = "disconnected";
@@ -35,7 +37,7 @@ class OctoWSClient {
 
     ws.onopen = () => {
       this.reconnectCount = 0;
-      this.reconnectDelay = 2_000;
+      this.reconnectDelay = WS_RECONNECT.INITIAL_DELAY_MS;
       ws.send(JSON.stringify({ token: this.getToken?.() ?? "" }));
       this._setState("connected");
     };
@@ -54,7 +56,7 @@ class OctoWSClient {
     ws.onclose = () => {
       this._setState("disconnected");
       this.reconnectCount++;
-      this.reconnectDelay = Math.min(this.reconnectDelay * 1.5, 30_000);
+      this.reconnectDelay = Math.min(this.reconnectDelay * WS_RECONNECT.BACKOFF_MULTIPLIER, WS_RECONNECT.MAX_DELAY_MS);
       this.reconnectTimer = setTimeout(() => {
         if (this.getToken) this.connect(this.getToken);
       }, this.reconnectDelay);

@@ -28,6 +28,7 @@ import { HintCard } from "@/components/challenges/HintCard";
 import { ChallengeHeader } from "@/components/challenges/ChallengeHeader";
 import { SubmitForm } from "@/components/challenges/SubmitForm";
 import { Button } from "@/components/ui/Button";
+import { TIMING, STALE_TIME } from "@/lib/config";
 
 export default function ChallengeDetailPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -53,14 +54,14 @@ export default function ChallengeDetailPage() {
       setCooldownRemaining(remaining);
     };
     tick();
-    const id = setInterval(tick, 500);
+    const id = setInterval(tick, TIMING.CHALLENGE_TICK_MS);
     return () => clearInterval(id);
   }, [cooldownUntil]);
 
   const { data: profile } = useQuery({
     queryKey: ["profile", "me"],
     queryFn: getMyProfile,
-    staleTime: 30_000,
+    staleTime: STALE_TIME.SHORT,
   });
   const userPoints = profile?.total_points ?? 0;
 
@@ -72,14 +73,14 @@ export default function ChallengeDetailPage() {
   const { data: labs = [] } = useQuery({
     queryKey: ["labs"],
     queryFn: () => getLabs(),
-    staleTime: 30_000,
+    staleTime: STALE_TIME.SHORT,
     enabled: !!ch?.lab_slug,
   });
 
   const { data: publicSettings } = useQuery({
     queryKey: ["public-settings"],
     queryFn: getPublicSettings,
-    staleTime: 300_000,
+    staleTime: STALE_TIME.LONG,
   });
 
   const labTemplate = ch?.lab_slug

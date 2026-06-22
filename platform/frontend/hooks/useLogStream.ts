@@ -4,6 +4,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useUserStore } from "@/stores/user.store";
+import { BUFFER_LIMITS } from "@/lib/config";
 
 interface Options {
   deploymentId: number;
@@ -36,7 +37,7 @@ export function useLogStream({ deploymentId, container = "app", tail = 100, enab
       const newLines = chunk.split(/\r?\n/);
       setLines((prev) => {
         const next = [...prev, ...newLines].filter(Boolean);
-        return next.slice(-2000); // keep last 2000 lines to avoid memory growth
+        return next.slice(-BUFFER_LIMITS.LOG_STREAM_MAX_LINES);
       });
     };
     ws.onerror = () => setConnected(false);

@@ -36,6 +36,7 @@ import { PageSpinner } from "@/components/ui/Spinner";
 import { Button } from "@/components/ui/Button";
 import { DIFF_COLOR } from "@/lib/utils/difficulty";
 import { addHours } from "@/lib/utils/date";
+import { STALE_TIME } from "@/lib/config";
 
 type Visibility = "private" | "team" | "public";
 
@@ -64,7 +65,7 @@ export default function DeploymentDetailPage() {
   const { data: labs = [] } = useQuery<LabTemplate[]>({
     queryKey: ["labs"],
     queryFn: () => getLabs(),
-    staleTime: 30_000,
+    staleTime: STALE_TIME.SHORT,
     enabled: !!deployment,
   });
 

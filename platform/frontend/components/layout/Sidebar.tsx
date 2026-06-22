@@ -18,6 +18,7 @@ import { useThemeStore } from "@/stores/theme.store";
 import { useSidebarStore } from "@/stores/sidebar.store";
 import { logout } from "@/lib/api/auth";
 import { getMyProfile } from "@/lib/api/profiles";
+import { STALE_TIME } from "@/lib/config";
 
 const NAV_MAIN = [
   { href: "/",             icon: LayoutDashboard, label: "Dashboard" },
@@ -43,13 +44,13 @@ export function Sidebar() {
   const { data: profile } = useQuery({
     queryKey: ["profile", "me"],
     queryFn: getMyProfile,
-    staleTime: 60_000,
+    staleTime: STALE_TIME.MEDIUM,
   });
 
   const { data: myRank } = useQuery({
     queryKey: ["rank", "me"],
     queryFn: getMyRank,
-    staleTime: 60_000,
+    staleTime: STALE_TIME.MEDIUM,
     enabled: !!user,
   });
 

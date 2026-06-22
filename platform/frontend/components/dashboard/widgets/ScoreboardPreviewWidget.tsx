@@ -6,12 +6,13 @@ import { Trophy } from "lucide-react";
 import { getGlobalScoreboard } from "@/lib/api/challenges";
 import { AsyncContent } from "@/components/ui/AsyncContent";
 import type { WidgetComponentProps } from "@/lib/widgets/types";
+import { STALE_TIME } from "@/lib/config";
 
 export function ScoreboardPreviewWidget({ widget }: WidgetComponentProps) {
   const { data, isLoading } = useQuery({
     queryKey: ["scoreboard", "global", "preview"],
     queryFn: () => getGlobalScoreboard(8),
-    staleTime: 30_000,
+    staleTime: STALE_TIME.SHORT,
   });
 
   return (

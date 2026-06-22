@@ -12,7 +12,7 @@
 .g-table thead {
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: var(--z-dropdown);
   background-color: var(--g-raised);
   border-bottom: 1px solid var(--g-border);
 }
@@ -66,7 +66,7 @@
   height: 100%;
   background-color: color-mix(in srgb, var(--g-accent) 60%, transparent);
   border-radius: 9999px;
-  transition: width 0.3s ease;
+  transition: width var(--t-slow) ease;
 }
 
 /* ── Stat card ────────────────────────────────────────────────────────────── */
@@ -83,7 +83,7 @@
   justify-content: space-between;
   overflow: hidden;
   height: 100%;
-  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: background-color var(--t-base) ease, border-color var(--t-base) ease, box-shadow var(--t-base) ease;
   text-decoration: none;
 }
 
@@ -104,13 +104,13 @@
 
 .g-stat-card .card-icon {
   color: var(--g-text-dim);
-  transition: color 0.2s ease;
+  transition: color var(--t-base) ease;
 }
 .g-stat-card:hover .card-icon { color: var(--g-text-muted); }
 
 .g-stat-card .card-arrow {
   color: var(--g-text-dim);
-  transition: color 0.2s ease;
+  transition: color var(--t-base) ease;
   margin-left: auto;
 }
 .g-stat-card:hover .card-arrow { color: var(--g-text-muted); }

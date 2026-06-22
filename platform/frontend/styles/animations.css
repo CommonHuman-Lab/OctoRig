@@ -74,8 +74,8 @@
 .animate-pulse    { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
 .animate-spin     { animation: spin 1s linear infinite; }
 .animate-ping     { animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite; }
-.animate-fade-in  { animation: fade-in 0.2s ease forwards; }
-.animate-slide-up { animation: slide-up 0.2s ease forwards; }
+.animate-fade-in  { animation: fade-in var(--t-base) ease forwards; }
+.animate-slide-up { animation: slide-up var(--t-base) ease forwards; }
 
 /* ── Reduced motion ───────────────────────────────────────────────────────── */
 /* Honour the OS-level motion preference for every animation/transition in the app. */

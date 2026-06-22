@@ -11,8 +11,7 @@ import { formatTime } from "@/lib/utils/date";
 import { useNotificationsStore } from "@/stores/notifications.store";
 import { MarkdownEditor } from "@/components/ui/MarkdownEditor";
 import { Button } from "@/components/ui/Button";
-
-const AUTOSAVE_DELAY_MS = 1500;
+import { TIMING } from "@/lib/config";
 
 function timeAgo(date: Date, now: number): string {
   const s = Math.max(0, Math.floor((now - date.getTime()) / 1000));
@@ -41,7 +40,7 @@ export function ReportSection({
 
   // Tick once a second so "Saved Xs/Xm ago" stays live without re-saving.
   useEffect(() => {
-    const id = setInterval(() => setNow(Date.now()), 1000);
+    const id = setInterval(() => setNow(Date.now()), TIMING.CLOCK_TICK_MS);
     return () => clearInterval(id);
   }, []);
 
@@ -59,7 +58,7 @@ export function ReportSection({
     setAutosaving(true);
     const id = setTimeout(() => {
       saveMutation.mutate(content, { onSettled: () => setAutosaving(false) });
-    }, AUTOSAVE_DELAY_MS);
+    }, TIMING.AUTOSAVE_DELAY_MS);
     return () => clearTimeout(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [content, expired]);

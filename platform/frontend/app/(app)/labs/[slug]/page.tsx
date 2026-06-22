@@ -22,6 +22,7 @@ import { PageSpinner } from "@/components/ui/Spinner";
 import { CopyButton } from "@/components/ui/CopyButton";
 import { Button } from "@/components/ui/Button";
 import { DIFF_CLASS } from "@/lib/utils/difficulty";
+import { STALE_TIME } from "@/lib/config";
 
 function DiffBadge({ difficulty }: { difficulty: ChallengeDifficulty }) {
   return (
@@ -65,7 +66,7 @@ export default function LabDetailPage() {
   const { data: labs = [], isLoading: labsLoading } = useQuery<LabTemplate[]>({
     queryKey: ["labs"],
     queryFn: () => getLabs(),
-    staleTime: 30_000,
+    staleTime: STALE_TIME.SHORT,
   });
 
   const lab = labs.find((l) => l.slug === slug) as LabTemplate | undefined;

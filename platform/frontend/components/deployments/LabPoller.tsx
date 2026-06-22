@@ -7,6 +7,7 @@ import { getDeployment } from "@/lib/api/deployments";
 import { usePendingLabsStore } from "@/stores/pending-labs.store";
 import { useNotificationsStore } from "@/stores/notifications.store";
 import { useQueryClient } from "@tanstack/react-query";
+import { TIMING } from "@/lib/config";
 
 export function LabPoller() {
   const { pending, remove } = usePendingLabsStore();
@@ -38,7 +39,7 @@ export function LabPoller() {
         } catch {
           // transient network error — keep polling
         }
-      }, 3000);
+      }, TIMING.LAB_POLL_INTERVAL_MS);
     }
   }, [pending, remove, update, qc]);
 

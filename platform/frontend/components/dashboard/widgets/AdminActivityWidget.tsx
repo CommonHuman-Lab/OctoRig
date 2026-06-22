@@ -7,12 +7,13 @@ import { getAdminAuditLogs } from "@/lib/api/admin";
 import { AsyncContent } from "@/components/ui/AsyncContent";
 import { formatDateTime } from "@/lib/utils/date";
 import type { WidgetComponentProps } from "@/lib/widgets/types";
+import { STALE_TIME } from "@/lib/config";
 
 export function AdminActivityWidget({ widget }: WidgetComponentProps) {
   const { data, isLoading } = useQuery({
     queryKey: ["admin", "audit-logs", "recent"],
     queryFn: () => getAdminAuditLogs({ limit: 10 }),
-    staleTime: 30_000,
+    staleTime: STALE_TIME.SHORT,
   });
 
   return (

@@ -3,6 +3,7 @@
 // Copyright (c) 2026 CommonHuman-Lab
 
 import { create } from "zustand";
+import { TIMING } from "@/lib/config";
 
 export type NotificationKind = "success" | "error" | "warning" | "info";
 
@@ -25,7 +26,7 @@ export const useNotificationsStore = create<NotificationsState>((set) => ({
   push: (kind, message) => {
     const id = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
     set((s) => ({ items: [...s.items, { id, kind, message }] }));
-    setTimeout(() => set((s) => ({ items: s.items.filter((n) => n.id !== id) })), 5000);
+    setTimeout(() => set((s) => ({ items: s.items.filter((n) => n.id !== id) })), TIMING.TOAST_DURATION_MS);
   },
   pushPersistent: (kind, message) => {
     const id = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
@@ -34,7 +35,7 @@ export const useNotificationsStore = create<NotificationsState>((set) => ({
   },
   update: (id, kind, message) => {
     set((s) => ({ items: s.items.map((n) => n.id === id ? { ...n, kind, message } : n) }));
-    setTimeout(() => set((s) => ({ items: s.items.filter((n) => n.id !== id) })), 5000);
+    setTimeout(() => set((s) => ({ items: s.items.filter((n) => n.id !== id) })), TIMING.TOAST_DURATION_MS);
   },
   dismiss: (id) => set((s) => ({ items: s.items.filter((n) => n.id !== id) })),
 }));

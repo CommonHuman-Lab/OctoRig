@@ -8,6 +8,7 @@ import { getContainers } from "@/lib/api/system";
 import { getLabs, type LabTemplate } from "@/lib/api/labs";
 import { DeploymentStatusBadge } from "@/components/deployments/DeploymentStatusBadge";
 import type { WidgetComponentProps } from "@/lib/widgets/types";
+import { STALE_TIME } from "@/lib/config";
 
 function getLabUrl(labs: LabTemplate[], containerName: string): string | null {
   const lab = labs.find((l) => l.container_names.some((cn) => containerName.startsWith(`${cn}-`)));
@@ -18,7 +19,7 @@ function getLabUrl(labs: LabTemplate[], containerName: string): string | null {
 export function ExternalContainersWidget({ widget }: WidgetComponentProps) {
   const { data: deployments = [] } = useQuery({ queryKey: ["deployments"], queryFn: () => getDeployments() });
   const { data: containers = [] } = useQuery({ queryKey: ["containers"], queryFn: getContainers });
-  const { data: labs = [] } = useQuery<LabTemplate[]>({ queryKey: ["labs"], queryFn: () => getLabs(), staleTime: 60_000 });
+  const { data: labs = [] } = useQuery<LabTemplate[]>({ queryKey: ["labs"], queryFn: () => getLabs(), staleTime: STALE_TIME.MEDIUM });
 
   const knownNames = new Set(deployments.flatMap((d) => d.container_names));
   const externalContainers = containers.filter(

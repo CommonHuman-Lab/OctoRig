@@ -28,7 +28,7 @@ export function Notifications() {
           display: flex;
           flex-direction: column;
           gap: 0.5rem;
-          z-index: 9999;
+          z-index: var(--z-toast);
           max-width: 360px;
         }
         .notification {

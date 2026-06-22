@@ -16,6 +16,7 @@ import { useThemeStore } from "@/stores/theme.store";
 import { useSidebarStore } from "@/stores/sidebar.store";
 import { getPublicSettings } from "@/lib/api/settings";
 import { getMyProfile } from "@/lib/api/profiles";
+import { STALE_TIME } from "@/lib/config";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const { accessToken, _hasHydrated, isRestoringToken, user } = useUserStore();
@@ -39,14 +40,14 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const { data: publicSettings } = useQuery({
     queryKey: ["public-settings"],
     queryFn: getPublicSettings,
-    staleTime: 300_000,
+    staleTime: STALE_TIME.LONG,
     enabled: !!accessToken,
   });
 
   const { data: myProfile } = useQuery({
     queryKey: ["profile", "me"],
     queryFn: getMyProfile,
-    staleTime: 60_000,
+    staleTime: STALE_TIME.MEDIUM,
     enabled: !!accessToken,
   });
 
@@ -118,7 +119,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          zIndex: 10,
+          zIndex: "var(--z-dropdown)",
           transition: "left 0.18s cubic-bezier(0.16, 1, 0.3, 1)",
         }}
       >
