@@ -67,7 +67,7 @@ The other half of OctoRig: a self-hosted CTF engine that runs alongside the labs
 - Badges, ranks, and a challenge-creator workflow
 - Plugin API for wiring in your own DAST scanners, plus proctored Assessment Mode
 
-→ Full setup and feature breakdown: [platform/README.md](platform/README.md)
+→ Full setup and feature breakdown: [Platform](https://github.com/CommonHuman-Lab/OctoRig/wiki/Platform)
 
 ---
 
