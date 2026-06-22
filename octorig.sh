@@ -293,10 +293,36 @@ _dc() {
   docker compose -f "${PLATFORM_DIR}/docker-compose.yml" --project-directory "${PLATFORM_DIR}" "$@"
 }
 
+_platform_env_get() {
+  local key="$1" file="${PLATFORM_DIR}/.env" line val
+  [[ -f "$file" ]] || return 1
+  line="$(grep -E "^${key}=" "$file" | tail -1)"
+  [[ -z "$line" ]] && return 1
+  val="${line#*=}"
+  val="${val%%#*}"
+  val="$(printf '%s' "$val" | sed -e 's/[[:space:]]*$//')"
+  printf '%s' "$val"
+}
+
 _platform_env_check() {
   if [[ ! -f "${PLATFORM_DIR}/.env" ]]; then
-    warn "No .env found in platform/. Copying .env.example — edit it before going to production."
+    warn "No .env found in platform/. Copying .env.example — you must set required values before starting."
     cp "${PLATFORM_DIR}/.env.example" "${PLATFORM_DIR}/.env"
+  fi
+
+  local missing=() key val
+  for key in POSTGRES_PASSWORD SECRET_KEY ADMIN_PASSWORD; do
+    val="$(_platform_env_get "$key")"
+    [[ -z "$val" ]] && missing+=("$key")
+  done
+
+  if (( ${#missing[@]} > 0 )); then
+    bad "platform/.env is missing required values: ${missing[*]}"
+    info "Edit platform/.env and set:"
+    info "  POSTGRES_PASSWORD  — strong random password"
+    info "  SECRET_KEY         — 32+ random chars, e.g. openssl rand -hex 32"
+    info "  ADMIN_PASSWORD     — strong password (not 'changeme', 'admin', etc.)"
+    return 1
   fi
 }
 
@@ -306,7 +332,7 @@ platform_action() {
 
   case "$subcmd" in
     start)
-      _platform_env_check
+      _platform_env_check || return 1
       check_docker
       info "Starting platform..."
       _dc --progress quiet --profile ui up -d --build
@@ -331,9 +357,9 @@ platform_action() {
       good "Platform stopped (data volumes preserved)"
       ;;
     restart)
+      _platform_env_check || return 1
       info "Restarting platform..."
       _dc --profile ui down
-      _platform_env_check
       _dc --progress quiet --profile ui up -d --build
       good "Platform restarted"
       ;;
