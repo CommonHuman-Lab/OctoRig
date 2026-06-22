@@ -12,7 +12,7 @@ Be kind, rewind — then exploit. Rewind Range is a deliberately vulnerable retr
 
 ## What to Try
 
-- The `/browse` endpoint accepts `genre`, `platform`, `type`, and `year` query parameters. All of them feed straight into a raw SQL query. How far can you take a UNION?
+- The `/browse` endpoint accepts `genre`, `platform`, `type`, and `year` query parameters. How are they handled?
 - The `/search` endpoint reflects `?q=` back into the page. Does it escape your input before rendering?
 - Private messages are at `/inbox/<id>`. Does the server verify you're the intended recipient, or is sequential enumeration enough?
 - The feedback board stores user submissions. Is the content sanitised before it's displayed to the next visitor?
@@ -29,22 +29,6 @@ Be kind, rewind — then exploit. Rewind Range is a deliberately vulnerable retr
 # Stop
 ./octorig.sh stop rewind
 ```
-
-The app starts on **http://172.28.1.2**.
-
----
-
-## Access
-
-| Service | Details |
-|---------|---------|
-| Web | http://172.28.1.2 |
-| SSH | `ssh staff@172.28.1.2` |
-| FTP | `ftp 172.28.1.2` |
-
-| Account | Username | Password |
-|---------|----------|----------|
-| Admin | `admin` | `123456789` |
 
 ---
 

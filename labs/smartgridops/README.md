@@ -15,13 +15,13 @@ SmartGridOps is a deliberately vulnerable IoT energy / smart-city SCADA control 
 
 ## What to Try
 
-- **SSRF** — the device status poller at `/devices/poll` fetches any URL server-side and reflects the body. Point it at internal addresses / cloud metadata.
-- **Command injection** — `/devices/<id>/reboot` pings the management target via a shell, and `/devices/<id>/config-push` echoes your config through one too. A `;` or `$(...)` runs as the app. (`/flag_cmdi.txt`)
-- **Weak auth / hardcoded tokens** — the device API under `/api/device/*` is gated only by a static, fleet-wide `X-Device-Token`. The token (and an admin token) leak via anonymous FTP and the SSH operator home.
-- **IDOR** — `/zones/<id>` exposes any zone's restricted note and `/meters/<id>` exposes any customer's meter data, with no ownership check.
-- **Business logic** — `/credits` transfers accept negative, unbounded amounts. Move credit "the wrong way" to inflate your own balance.
-- **MQTT / IoT injection** — `/mqtt` lets you set the full publish topic. Publishing to another zone's `grid/zone/<n>/cmd` topic or a `#`/`+` wildcard trips the broker ACL audit.
-- **Bonus** — the login form is an f-string SQLi and honours an unvalidated `?next=` open redirect.
+- **Device status poller** — `/devices/poll` fetches a URL server-side and reflects the body back. Where else might that reach?
+- **Device controls** — `/devices/<id>/reboot` and `/devices/<id>/config-push` talk to the management target in a way that trusts its input more than it should.
+- **Device API** — `/api/device/*` is gated by a token. Where might that token be lying around?
+- **IDOR** — `/zones/<id>` and `/meters/<id>` are fetched with no ownership check.
+- **Business logic** — `/credits` transfers are worth testing at the edges of what they expect.
+- **MQTT / IoT** — `/mqtt` lets you set the publish topic. What happens if you target someone else's?
+- **Bonus** — the login form trusts more than it should, and `?next=` isn't validated either.
 
 ---
 
@@ -34,25 +34,6 @@ SmartGridOps is a deliberately vulnerable IoT energy / smart-city SCADA control 
 # Stop
 ./octorig.sh stop smartgridops
 ```
-
-The app starts on **http://172.28.16.2**.
-
----
-
-## Access
-
-| Service | Details |
-|---------|---------|
-| Web | http://172.28.16.2 |
-| SSH | `ssh gridadmin@172.28.16.2` |
-| FTP | `ftp 172.28.16.2` |
-
-| Account | Username | Password |
-|---------|----------|----------|
-| Admin | `admin` | `grid-master-2023` |
-| Demo operator | `demo` | `demo` |
-
-15 operator accounts are seeded (1 admin + 14 operators across 15 zones). Passwords are stored as **unsalted MD5** hashes (intentionally weak / crackable); the app MD5s the submitted password before comparison, but the username is still interpolated unsanitised, so the login SQLi stands. Other seeded operator creds include `r.fischer:summer2024`, `a.kowalski:password123`, `n.popova:qwerty2024`, `y.nakamura:feeder123`.
 
 ---
 

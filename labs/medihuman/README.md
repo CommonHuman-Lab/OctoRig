@@ -13,12 +13,11 @@ A deliberately vulnerable healthcare patient portal exposing medical records, pr
 
 ## What to Try
 
-- The login form injects your input directly into the SQL query. Once inside, the patient search at `/patients` accepts a `?q=` parameter that reflects back into the page and straight into the database.
+- The login form trusts user input more than it should. Once inside, the patient search at `/patients` has the same weak spot.
 - Patient records are fetched by integer ID at `/patients/<id>` with no ownership check. How many records can you enumerate?
-- The staff detail endpoint at `/admin/staff/<id>` enforces a different — and weaker — check than the main `/admin` panel. Can a regular user reach it?
+- The staff detail endpoint at `/admin/staff/<id>` enforces a different — and weaker — check than the main `/admin` panel.
 - Messages at `/messages/<id>` have no ownership check. Whose messages can you read?
-- SSH is open on port 22. The system has more than one way in.
-- FTP is on port 21. What does the server expose?
+- The system has more than one way in beyond the web app.
 - `/patient-records`, `/staff-only`, and `/mri-archive` are disallowed in `robots.txt`. Worth a look.
 
 ---
@@ -32,22 +31,6 @@ A deliberately vulnerable healthcare patient portal exposing medical records, pr
 # Stop
 ./octorig.sh stop medihuman
 ```
-
-The app starts on **http://172.28.5.2**.
-
----
-
-## Access
-
-| Service | Details |
-|---------|---------|
-| Web | http://172.28.5.2 |
-| SSH | `ssh sysadmin@172.28.5.2` |
-| FTP | `ftp 172.28.5.2` |
-
-| Account | Username | Password |
-|---------|----------|----------|
-| Admin | `admin` | `commonhuman-lab` |
 
 ---
 

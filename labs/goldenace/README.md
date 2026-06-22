@@ -12,12 +12,12 @@ The house always wins — unless you know where the vulnerabilities are. GoldenA
 
 ## What to Try
 
-- The **slot machine** at `/slots/spin` takes the bet amount straight from the POST body with no server-side validation. What happens when the bet is negative?
-- The promo code endpoint at `/promo` injects your input directly into a query — and doesn't verify whether you've already redeemed the same code.
-- The leaderboard at `/leaderboard` takes `?q=` and pipes it into both the SQL query and the HTML output unescaped. One shot, two vulnerabilities.
+- The **slot machine** at `/slots/spin` takes the bet amount straight from the POST body. What happens at the edges of what it expects?
+- The promo code endpoint at `/promo` doesn't verify whether you've already redeemed the same code.
+- The leaderboard at `/leaderboard` takes `?q=` — see how it's handled on the way in and on the way back out.
 - Player suites are at `/suite/<user_id>`. Is there anything stopping you from viewing any player's private profile by incrementing the ID?
-- The live casino chat at `/chat` stores messages raw. Post a payload and wait for another player — or the admin — to load the page.
-- The `/admin` panel checks if you're logged in, but not whether you're actually an admin. Log in as any user and see what you can reach.
+- The live casino chat at `/chat` stores messages raw. Post something and wait for another player — or the admin — to load the page.
+- The `/admin` panel checks if you're logged in, but not whether you're actually an admin.
 
 ---
 
@@ -30,22 +30,6 @@ The house always wins — unless you know where the vulnerabilities are. GoldenA
 # Stop
 ./octorig.sh stop goldenace
 ```
-
-The app starts on **http://172.28.3.2**.
-
----
-
-## Access
-
-| Service | Details |
-|---------|---------|
-| Web | http://172.28.3.2 |
-| SSH | `ssh casinoops@172.28.3.2` |
-| FTP | `ftp 172.28.3.2` |
-
-| Account | Username | Password |
-|---------|----------|----------|
-| Admin | `admin` | `commonhuman-lab` |
 
 ---
 

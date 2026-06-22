@@ -12,10 +12,9 @@ Welcome to 1998. NetPulse is a deliberately vulnerable dial-up ISP customer port
 
 ## What to Try
 
-- The **Link Checker** at `/tools/linkcheck` fetches any URL you give it and reflects the response back. Point it at an internal address and see what the server can reach.
-- The **DNS Lookup** tool at `/tools/dnslookup` shells out to `nslookup` with your input. What happens when the hostname contains a semicolon?
-- The login form has an unvalidated `?next=` redirect parameter. Where can you send a victim after they authenticate?
-- The login query is also an f-string. A quote and a comment may be all you need.
+- The **Link Checker** at `/tools/linkcheck` fetches a URL on the server's behalf. What else might it reach?
+- The **DNS Lookup** tool at `/tools/dnslookup` shells out to resolve a hostname. What happens with unusual input?
+- The login form has an unvalidated `?next=` redirect parameter — and trusts your input in more ways than one.
 - Billing records and account pages use integer IDs. Is there an ownership check on each one?
 - `/syslog`, `/billing-db`, and `/dialup-pool` are disallowed in `robots.txt`. Worth a look.
 
@@ -30,22 +29,6 @@ Welcome to 1998. NetPulse is a deliberately vulnerable dial-up ISP customer port
 # Stop
 ./octorig.sh stop netpulse
 ```
-
-The app starts on **http://172.28.6.2**.
-
----
-
-## Access
-
-| Service | Details |
-|---------|---------|
-| Web | http://172.28.6.2 |
-| SSH | `ssh netadmin@172.28.6.2` |
-| FTP | `ftp 172.28.6.2` |
-
-| Account | Username | Password |
-|---------|----------|----------|
-| Admin | `admin` | `commonhuman-lab` |
 
 ---
 

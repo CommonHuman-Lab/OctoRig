@@ -12,16 +12,16 @@ The popcorn smells real. The vulnerabilities are too. Limelight is a deliberatel
 
 ## What to Try
 
-- The search bar at `/movies?q=` drops your input straight into a LIKE query. There's no parameterisation. The results page also echoes your query back unescaped — one request, two vulnerabilities.
-- Movie reviews are stored raw and rendered with no output encoding. Post a payload on any film's page and wait for someone else to load it.
+- The search bar at `/movies?q=` handles your input the same way on the way into the database and the way back out onto the page.
+- Movie reviews are stored raw. Post something on any film's page and wait for someone else to load it.
 - Booking references are sequential integers at `/booking/<id>`. Is there any check that the booking belongs to you?
-- The API at `/api/booking/<id>` and `/api/user/<id>` require no authentication at all. Start from 1 and keep going.
-- Profile editing at `/profile/<user_id>` checks that you're logged in — but not that the profile is yours. The `is_admin` and `balance` fields are also accepted in the POST body without restriction.
-- Gift card redemption at `/gift` passes the code directly into the SQL query. No parameterisation.
-- The `/admin` panel checks for a session but never verifies whether you're actually an admin. Any authenticated user can reach it.
-- The announcement editor at `/admin/announce` renders your input through Flask's `render_template_string`. Type `{{ 7*7 }}` and see what comes back.
-- Login accepts a `?next=` redirect parameter with no validation. Where can you send someone after they authenticate?
-- Ticket price is submitted as a hidden field from the seat-selection form. The server uses whatever value arrives in the POST — try editing it before you submit.
+- The API at `/api/booking/<id>` and `/api/user/<id>` — try them without logging in at all.
+- Profile editing at `/profile/<user_id>` checks that you're logged in — but look closely at which fields the update actually accepts.
+- Gift card redemption at `/gift` is worth a closer look.
+- The `/admin` panel checks for a session but never verifies whether you're actually an admin.
+- The announcement editor at `/admin/announce` renders your input through a template engine. What does that let you do?
+- Login accepts a `?next=` redirect parameter — where can you send someone after they authenticate?
+- Ticket price is submitted as a hidden field from the seat-selection form. What does the server actually trust?
 
 ---
 
@@ -34,22 +34,6 @@ The popcorn smells real. The vulnerabilities are too. Limelight is a deliberatel
 # Stop
 ./octorig.sh stop limelight
 ```
-
-The app starts on **http://172.28.7.2**.
-
----
-
-## Access
-
-| Service | Details |
-|---------|---------|
-| Web | http://172.28.7.2 |
-| SSH | `ssh cinemaops@172.28.7.2` |
-| FTP | `ftp 172.28.7.2` |
-
-| Account | Username | Password |
-|---------|----------|----------|
-| Admin | `admin` | `commonhuman-lab` |
 
 ---
 

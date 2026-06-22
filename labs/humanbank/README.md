@@ -12,11 +12,11 @@ A deliberately vulnerable online banking application packed with real-world auth
 
 ## What to Try
 
-- The login form trusts user input directly in the SQL query. A single quote and a comment can bypass the password check — and the error messages tell you whether a username exists before you've guessed the password.
-- Password reset tokens are computed, not random: `md5(username + epoch_seconds)`. If you know the username and roughly when the reset was requested, you can forge the link.
+- The login form trusts user input more than it should — and the error messages might tell you more than they intend to.
+- Password reset tokens aren't quite as random as they look.
 - Browse to `/accounts` while logged in as a regular user. Does it show only your own account?
 - Support tickets have sequential integer IDs at `/tickets/<id>`. Does the server check that the ticket belongs to you?
-- The transaction filter on `/accounts/<id>/transactions` accepts `memo`, `type`, `date_from`, and `date_to` — all injected raw into the query.
+- The transaction filter on `/accounts/<id>/transactions` takes several parameters — see how each one is used.
 - `/vault`, `/wire-transfers`, and `/audit-log` are hidden from crawlers. What's inside?
 
 ---
@@ -30,22 +30,6 @@ A deliberately vulnerable online banking application packed with real-world auth
 # Stop
 ./octorig.sh stop humanbank
 ```
-
-The app starts on **http://172.28.4.2**.
-
----
-
-## Access
-
-| Service | Details |
-|---------|---------|
-| Web | http://172.28.4.2 |
-| SSH | `ssh bankops@172.28.4.2` |
-| FTP | `ftp 172.28.4.2` |
-
-| Account | Username | Password |
-|---------|----------|----------|
-| Admin | `admin` | `commonhuman-lab` |
 
 ---
 

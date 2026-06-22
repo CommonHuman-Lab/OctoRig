@@ -15,16 +15,16 @@ FleetWave is a deliberately vulnerable logistics / delivery fleet-management Saa
 
 ## What to Try
 
-- **Recon** — anonymous FTP drops a nightly WMS backup manifest in `pub/`.
-- **SQLi (login)** — the sign-in username is interpolated raw; `admin'--` bypasses the password. The `/admin` response carries an `X-Admin-Flag` header.
-- **SQLi (search)** — `/shipments/search` injects your term into a `LIKE` clause; UNION into the `_flags` table (4 columns).
-- **IDOR (shipment)** — `/shipments/<id>` has no ownership check; walk the ids.
-- **IDOR (depot manifest)** — `/depots/<id>` exposes restricted manifest notes, ignoring the `depot_access` table entirely.
-- **BAC** — `/admin/driver-roster` (driver PII) checks only that you're logged in, not that you're an admin.
-- **Stored XSS** — a delivery-issue report note is rendered unescaped in `/admin/review`; the admin cookie isn't HttpOnly.
-- **Mass assignment** — `POST /profile` as JSON accepts a `role` field → escalate to admin.
-- **Business logic** — `/billing` freight-credit transfers accept negative, unbounded amounts → inflate your own balance.
-- **SSRF → command injection** — admin-only `/api/admin/carrier-check` fetches any URL; point it at the loopback-only `/api/internal/manifest-export`, whose `format` param is a shell-injection sink (the insane chain).
+- **Recon** — anonymous FTP drops more than you'd expect in `pub/`.
+- **Login** — the sign-in form trusts your username more than it should.
+- **Search** — `/shipments/search` has the same weak spot as the login form.
+- **Shipments** — `/shipments/<id>` has no ownership check. Walk the ids.
+- **Depot manifests** — `/depots/<id>` exposes restricted notes — is access actually enforced?
+- **Driver roster** — `/admin/driver-roster` checks only that you're logged in, not that you're an admin.
+- **Review queue** — a delivery-issue report note ends up rendered in `/admin/review`. How carefully?
+- **Profile** — compare what the form shows you to what the update endpoint actually accepts.
+- **Billing** — freight-credit transfers are worth testing at the edges of what they expect.
+- **The deep chain** — a privileged feature fetches a URL server-side. Where else might that reach?
 
 ---
 
@@ -37,25 +37,6 @@ FleetWave is a deliberately vulnerable logistics / delivery fleet-management Saa
 # Stop
 ./octorig.sh stop fleetwave
 ```
-
-The app starts on **http://172.28.21.2**.
-
----
-
-## Access
-
-| Service | Details |
-|---------|---------|
-| Web | http://172.28.21.2 |
-| SSH | `ssh fw-ops@172.28.21.2` |
-| FTP | `ftp 172.28.21.2` |
-
-| Account | Username | Password |
-|---------|----------|----------|
-| Admin | `admin` | `fleet-master-2026` |
-| Demo dispatcher | `demo` | `demo` |
-
-Passwords are stored as unsalted MD5 (crackable); the app MD5s the submitted password before comparison, so the username SQLi still stands.
 
 ---
 
