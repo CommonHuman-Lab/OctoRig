@@ -27,6 +27,7 @@ import { InstanceCard } from "@/components/challenges/InstanceCard";
 import { HintCard } from "@/components/challenges/HintCard";
 import { ChallengeHeader } from "@/components/challenges/ChallengeHeader";
 import { SubmitForm } from "@/components/challenges/SubmitForm";
+import { NoteList } from "@/components/notes/NoteList";
 import { Button } from "@/components/ui/Button";
 import { TIMING, STALE_TIME } from "@/lib/config";
 
@@ -279,6 +280,11 @@ export default function ChallengeDetailPage() {
               )}
             </section>
           )}
+
+          <section className="g-card">
+            <h2 className="section-title">Notes</h2>
+            <NoteList filter={{ challenge_id: ch.id }} emptyMessage="No notes for this challenge yet." />
+          </section>
 
           <section className="g-card submit-card">
             <h2 className="section-title">{codeSnippet ? "Submit Answer" : "Submit Flag"}</h2>

@@ -16,6 +16,7 @@ import { getLabs, type LabTemplate } from "@/lib/api/labs";
 import { getChallenges, type ChallengeListItem, type ChallengeDifficulty } from "@/lib/api/challenges";
 import { stopDeployment, resetDeployment } from "@/lib/api/deployments";
 import { LabCategoryBadge } from "@/components/labs/LabCategoryBadge";
+import { NoteList } from "@/components/notes/NoteList";
 import { DeploymentStatusBadge } from "@/components/deployments/DeploymentStatusBadge";
 import { StartLabDialog } from "@/components/deployments/StartLabDialog";
 import { PageSpinner } from "@/components/ui/Spinner";
@@ -249,6 +250,11 @@ export default function LabDetailPage() {
               ))}
             </div>
           )}
+        </div>
+        {/* Notes */}
+        <div className="g-card ld-info-card">
+          <h2 className="ld-section-title">Notes</h2>
+          <NoteList filter={{ lab_template_id: lab.id }} emptyMessage="No notes for this lab yet." />
         </div>
       </div>
 

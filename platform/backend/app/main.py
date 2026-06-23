@@ -157,6 +157,7 @@ def create_app() -> FastAPI:
     from app.api.challenges import router as challenges_router
     from app.api.content import router as content_router
     from app.api.marketplace import router as marketplace_router
+    from app.api.notes import router as notes_router
     from app.api.notifications import router as notifications_router
     from app.api.profiles import router as profiles_router
     from app.api.deployments import router as deployments_router
@@ -187,6 +188,7 @@ def create_app() -> FastAPI:
     app.include_router(events_router, prefix=prefix)
     app.include_router(badges_router, prefix=prefix)
     app.include_router(profiles_router, prefix=prefix)
+    app.include_router(notes_router, prefix=prefix)
     app.include_router(notifications_router, prefix=prefix)
     app.include_router(content_router, prefix=prefix)
     app.include_router(marketplace_router, prefix=prefix)

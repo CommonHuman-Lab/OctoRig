@@ -9,7 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import {
   LayoutDashboard, FlaskConical, Rocket, Settings, LogOut, Users,
   KeyRound, ShieldCheck, Swords, Flag, Award, ChevronUp, Zap, PenTool,
-  User, Trophy, PanelLeftClose, PanelLeftOpen,
+  User, Trophy, PanelLeftClose, PanelLeftOpen, NotebookPen,
 } from "lucide-react";
 import { getMyRank } from "@/lib/api/ranks";
 import { clsx } from "clsx";
@@ -27,6 +27,7 @@ const NAV_MAIN = [
   { href: "/scoreboard",   icon: Trophy,          label: "Scoreboard" },
   { href: "/badges",       icon: Award,           label: "Badges" },
   { href: "/labs",         icon: FlaskConical,    label: "Labs" },
+  { href: "/notes",        icon: NotebookPen,     label: "Notes" },
   { href: "/deployments",  icon: Rocket,          label: "Deployments" },
   { href: "/teams",        icon: Users,           label: "Teams" },
   { href: "/api-keys",     icon: KeyRound,        label: "API Keys" },

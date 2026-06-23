@@ -15,6 +15,7 @@ if TYPE_CHECKING:
     from app.models.badge import UserBadge
     from app.models.challenge import Challenge, ChallengeSubmission
     from app.models.deployment import Deployment
+    from app.models.note import Note
     from app.models.notification import Notification, NotificationPreference
     from app.models.profile import UserProfile
     from app.models.refresh_token import RefreshToken
@@ -57,6 +58,7 @@ class User(Base):
     notifications: Mapped[list["Notification"]] = relationship(back_populates="user")
     notification_preferences: Mapped[Optional["NotificationPreference"]] = relationship(back_populates="user")
     profile: Mapped[Optional["UserProfile"]] = relationship(back_populates="user")
+    notes: Mapped[list["Note"]] = relationship(back_populates="owner")
     refresh_tokens: Mapped[list["RefreshToken"]] = relationship(
         back_populates="user", cascade="all, delete-orphan"
     )
