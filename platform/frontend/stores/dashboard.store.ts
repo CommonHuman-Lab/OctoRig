@@ -63,6 +63,18 @@ export const useDashboardStore = create<DashboardState>()(
 
       resetToDefault: () => set({ widgets: withIds(DEFAULT_WIDGETS) }),
     }),
-    { name: "octorig_dashboard_v1" }
+    {
+      name: "octorig_dashboard_v1",
+      version: 2,
+      migrate: (persisted, version) => {
+        const state = persisted as DashboardState;
+        if (version < 2) {
+          state.widgets = state.widgets.map((w) =>
+            w.type.startsWith("panel_") ? { ...w, span: (w.span * 2) as WidgetSpan } : w
+          );
+        }
+        return state;
+      },
+    }
   )
 );

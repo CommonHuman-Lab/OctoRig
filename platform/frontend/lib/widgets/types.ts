@@ -2,7 +2,7 @@
 // Copyright (c) 2026 CommonHuman-Lab
 
 export type WidgetCategory = "stat" | "panel";
-export type WidgetSpan = 1 | 2 | 4;
+export type WidgetSpan = 1 | 2 | 4 | 8;
 export type WidgetHeight = "sm" | "md" | "lg";
 
 export type WidgetType =

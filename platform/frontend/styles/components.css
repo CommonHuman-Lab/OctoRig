@@ -110,25 +110,26 @@ a.g-card:hover,
 
 .dash-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(8, minmax(0, 1fr));
   gap: 0.75rem;
 }
 
 .dash-span-1 { grid-column: span 1; }
 .dash-span-2 { grid-column: span 2; }
 .dash-span-4 { grid-column: span 4; }
+.dash-span-8 { grid-column: span 8; }
 
 @media (max-width: 900px) {
   .dash-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .dash-span-4 { grid-column: span 2; }
+  .dash-span-4, .dash-span-8 { grid-column: span 2; }
 }
 
 @media (max-width: 560px) {
   .dash-grid { grid-template-columns: 1fr; }
-  .dash-span-2, .dash-span-4 { grid-column: span 1; }
+  .dash-span-2, .dash-span-4, .dash-span-8 { grid-column: span 1; }
 }
 
-.dash-cell { min-width: 0; }
+.dash-cell { min-width: 0; transition: opacity 0.15s, transform 0.15s; }
 
 .dash-panel-scroll { overflow-y: auto; flex: 1; }
 
@@ -143,6 +144,10 @@ a.g-card:hover,
   border-radius: 0.75rem;
   cursor: grab;
 }
+
+.dash-dragging { opacity: 0.4; transform: scale(0.97); }
+
+.dash-drag-over { outline: 2px solid var(--g-accent); outline-offset: 2px; border-radius: 0.75rem; }
 
 .dash-widget-toolbar {
   position: absolute;

@@ -68,35 +68,35 @@ export const WIDGET_REGISTRY: Record<WidgetType, WidgetRegistryEntry> = {
   },
   panel_active_deployments: {
     label: "Active Deployments", description: "Your running labs, with quick stop actions.",
-    icon: Server, category: "panel", defaultSpan: 4, defaultHeight: "md", component: ActiveDeploymentsWidget,
+    icon: Server, category: "panel", defaultSpan: 8, defaultHeight: "md", component: ActiveDeploymentsWidget,
   },
   panel_external_containers: {
     label: "Externally Managed", description: "Containers started via the CLI, outside the platform.",
-    icon: Boxes, category: "panel", defaultSpan: 4, defaultHeight: "md", component: ExternalContainersWidget,
+    icon: Boxes, category: "panel", defaultSpan: 8, defaultHeight: "md", component: ExternalContainersWidget,
   },
   panel_scoreboard: {
     label: "Global Scoreboard", description: "Top-ranked players across the platform.",
-    icon: Trophy, category: "panel", defaultSpan: 2, defaultHeight: "md", component: ScoreboardPreviewWidget,
+    icon: Trophy, category: "panel", defaultSpan: 4, defaultHeight: "md", component: ScoreboardPreviewWidget,
   },
   panel_badges: {
     label: "Recent Badges", description: "Badges you've recently earned.",
-    icon: Award, category: "panel", defaultSpan: 2, defaultHeight: "md", component: RecentBadgesWidget,
+    icon: Award, category: "panel", defaultSpan: 4, defaultHeight: "md", component: RecentBadgesWidget,
   },
   panel_events: {
     label: "Events", description: "Upcoming and running CTF events.",
-    icon: CalendarClock, category: "panel", defaultSpan: 2, defaultHeight: "md", component: UpcomingEventsWidget,
+    icon: CalendarClock, category: "panel", defaultSpan: 4, defaultHeight: "md", component: UpcomingEventsWidget,
   },
   panel_challenges: {
     label: "New Challenges", description: "Active challenges you haven't solved yet.",
-    icon: Flag, category: "panel", defaultSpan: 2, defaultHeight: "md", component: RecentChallengesWidget,
+    icon: Flag, category: "panel", defaultSpan: 4, defaultHeight: "md", component: RecentChallengesWidget,
   },
   panel_scheduled_actions: {
     label: "My Scheduled Actions", description: "Your upcoming auto-destroy and scheduled actions.",
-    icon: Timer, category: "panel", defaultSpan: 2, defaultHeight: "md", component: ScheduledActionsWidget,
+    icon: Timer, category: "panel", defaultSpan: 4, defaultHeight: "md", component: ScheduledActionsWidget,
   },
   panel_admin_activity: {
     label: "Admin: Recent Activity", description: "Latest audit log entries across the platform.",
-    icon: ShieldCheck, category: "panel", defaultSpan: 2, defaultHeight: "md", adminOnly: true, component: AdminActivityWidget,
+    icon: ShieldCheck, category: "panel", defaultSpan: 4, defaultHeight: "md", adminOnly: true, component: AdminActivityWidget,
   },
 };
 

@@ -15,6 +15,7 @@ export function WidgetGrid() {
   const reorder = useDashboardStore((s) => s.reorder);
   const isAdmin = usePermission("admin.panel");
   const [dragId, setDragId] = useState<string | null>(null);
+  const [dragOverId, setDragOverId] = useState<string | null>(null);
 
   const visible = widgets.filter((w) => {
     const entry = WIDGET_REGISTRY[w.type];
@@ -29,17 +30,33 @@ export function WidgetGrid() {
         return (
           <div
             key={w.id}
-            className={`dash-cell dash-span-${w.span} widget-enter`}
+            className={[
+              "dash-cell",
+              `dash-span-${w.span}`,
+              "widget-enter",
+              dragId === w.id ? "dash-dragging" : "",
+              dragOverId === w.id && dragId !== w.id ? "dash-drag-over" : "",
+            ]
+              .filter(Boolean)
+              .join(" ")}
             style={{ animationDelay: `${Math.min(i, 8) * 40}ms` }}
             draggable={isCustomizing}
             onDragStart={() => setDragId(w.id)}
+            onDragEnd={() => {
+              setDragId(null);
+              setDragOverId(null);
+            }}
             onDragOver={(e) => {
-              if (isCustomizing) e.preventDefault();
+              if (isCustomizing) {
+                e.preventDefault();
+                setDragOverId(w.id);
+              }
             }}
             onDrop={(e) => {
               e.preventDefault();
               if (dragId && dragId !== w.id) reorder(dragId, w.id);
               setDragId(null);
+              setDragOverId(null);
             }}
           >
             <WidgetShell
