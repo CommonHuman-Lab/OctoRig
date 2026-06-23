@@ -77,16 +77,17 @@
 }
 
 .stat-card {
-  padding: 1rem;
+  padding: 0.625rem 0.75rem;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.2rem;
 }
 
 .stat-value {
-  font-size: 1.5rem;
+  font-size: 1.125rem;
   font-weight: 700;
   font-family: var(--font-mono, monospace);
+  line-height: 1.2;
 }
 
 /* Centred placeholder inside g-panel */
