@@ -28,7 +28,9 @@ def create_role(
     _: User = Depends(require_admin),
     db: Session = Depends(get_db),
 ) -> PlatformRoleResponse:
-    raise_if_exists(db, PlatformRole, f"Role slug '{payload.slug}' already exists", slug=payload.slug)
+    raise_if_exists(
+        db, PlatformRole, f"Role slug '{payload.slug}' already exists", slug=payload.slug
+    )
     role = PlatformRole(
         slug=payload.slug,
         display_name=payload.display_name,

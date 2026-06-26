@@ -69,12 +69,18 @@ def create_team(
 ) -> TeamWithRole:
     team = team_service.create_team(db, current_user, payload.name, payload.description)
     audit_service.write_audit(
-        db, action="team.created", user_id=current_user.id, team_id=team.id,
-        detail={"name": team.name}, ip=ip,
+        db,
+        action="team.created",
+        user_id=current_user.id,
+        team_id=team.id,
+        detail={"name": team.name},
+        ip=ip,
     )
-    membership = db.query(TeamMember).filter(
-        TeamMember.team_id == team.id, TeamMember.user_id == current_user.id
-    ).first()
+    membership = (
+        db.query(TeamMember)
+        .filter(TeamMember.team_id == team.id, TeamMember.user_id == current_user.id)
+        .first()
+    )
     return TeamWithRole(
         **TeamResponse.model_validate(team).model_dump(),
         my_role=membership.role,
@@ -115,7 +121,10 @@ def update_team(
         raise forbidden_exception
     team = team_service.update_team(db, team, payload.name, payload.description)
     audit_service.write_audit(
-        db, action="team.updated", user_id=current_user.id, team_id=team.id,
+        db,
+        action="team.updated",
+        user_id=current_user.id,
+        team_id=team.id,
         ip=ip,
     )
     return TeamResponse.model_validate(team)
@@ -135,10 +144,15 @@ def delete_team(
         raise forbidden_exception
     if team.is_personal:
         from app.core.exceptions import bad_request
+
         raise bad_request("Personal teams cannot be deleted")
     audit_service.write_audit(
-        db, action="team.deleted", user_id=current_user.id, team_id=team.id,
-        detail={"name": team.name}, ip=ip,
+        db,
+        action="team.deleted",
+        user_id=current_user.id,
+        team_id=team.id,
+        detail={"name": team.name},
+        ip=ip,
     )
     team_service.delete_team(db, team, db)
 
@@ -171,7 +185,10 @@ def invite_member(
         raise forbidden_exception
     inv = team_service.invite_member(db, current_user, team, payload.username, payload.role)
     audit_service.write_audit(
-        db, action="team.member_invited", user_id=current_user.id, team_id=team.id,
+        db,
+        action="team.member_invited",
+        user_id=current_user.id,
+        team_id=team.id,
         detail={"username": payload.username, "role": payload.role.value},
         ip=ip,
     )
@@ -195,7 +212,10 @@ def remove_member(
             raise forbidden_exception
     team_service.remove_member(db, team, user_id)
     audit_service.write_audit(
-        db, action="team.member_removed", user_id=current_user.id, team_id=team.id,
+        db,
+        action="team.member_removed",
+        user_id=current_user.id,
+        team_id=team.id,
         detail={"removed_user_id": user_id},
         ip=ip,
     )
@@ -217,15 +237,22 @@ def change_member_role(
         raise forbidden_exception
     updated = team_service.change_member_role(db, team, user_id, payload.role)
     audit_service.write_audit(
-        db, action="team.member_role_changed", user_id=current_user.id, team_id=team.id,
+        db,
+        action="team.member_role_changed",
+        user_id=current_user.id,
+        team_id=team.id,
         detail={"target_user_id": user_id, "new_role": payload.role.value},
         ip=ip,
     )
     target_user = db.get(User, user_id)
     return MemberResponse(
-        id=updated.id, team_id=updated.team_id, user_id=updated.user_id,
-        username=target_user.username if target_user else "", email=target_user.email if target_user else "",
-        role=updated.role, joined_at=updated.joined_at,
+        id=updated.id,
+        team_id=updated.team_id,
+        user_id=updated.user_id,
+        username=target_user.username if target_user else "",
+        email=target_user.email if target_user else "",
+        role=updated.role,
+        joined_at=updated.joined_at,
     )
 
 
@@ -244,7 +271,10 @@ def transfer_ownership(
         raise forbidden_exception
     team_service.transfer_ownership(db, team, current_user, payload.new_owner_id)
     audit_service.write_audit(
-        db, action="team.ownership_transferred", user_id=current_user.id, team_id=team.id,
+        db,
+        action="team.ownership_transferred",
+        user_id=current_user.id,
+        team_id=team.id,
         detail={"new_owner_id": payload.new_owner_id},
         ip=ip,
     )
@@ -291,12 +321,19 @@ def accept_invitation(
 ) -> MemberResponse:
     membership = team_service.accept_invitation(db, token, current_user)
     audit_service.write_audit(
-        db, action="team.member_joined", user_id=current_user.id, team_id=membership.team_id,
+        db,
+        action="team.member_joined",
+        user_id=current_user.id,
+        team_id=membership.team_id,
         detail={"role": membership.role.value},
         ip=ip,
     )
     return MemberResponse(
-        id=membership.id, team_id=membership.team_id, user_id=membership.user_id,
-        username=current_user.username, email=current_user.email,
-        role=membership.role, joined_at=membership.joined_at,
+        id=membership.id,
+        team_id=membership.team_id,
+        user_id=membership.user_id,
+        username=current_user.username,
+        email=current_user.email,
+        role=membership.role,
+        joined_at=membership.joined_at,
     )

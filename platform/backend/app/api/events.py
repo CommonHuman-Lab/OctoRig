@@ -34,6 +34,7 @@ router = APIRouter(prefix="/events", tags=["events"])
 
 # ── Schemas ───────────────────────────────────────────────────────────────────
 
+
 class EventSummary(BaseModel):
     id: int
     slug: str
@@ -116,6 +117,7 @@ def _serialize(ev) -> EventSummary:
 
 # ── Public / authenticated endpoints ─────────────────────────────────────────
 
+
 @router.get("/", response_model=list[EventSummary])
 def list_events_endpoint(
     status: str | None = Query(None),
@@ -181,7 +183,11 @@ def register_endpoint(
     if not role_gte(membership, TeamRole.MEMBER) and not is_privileged(current_user, db):
         raise forbidden_exception
     reg = register_team(db, ev, body.team_id)
-    return {"event_id": ev.id, "team_id": reg.team_id, "registered_at": reg.registered_at.isoformat()}
+    return {
+        "event_id": ev.id,
+        "team_id": reg.team_id,
+        "registered_at": reg.registered_at.isoformat(),
+    }
 
 
 @router.delete("/{slug}/register/{team_id}", status_code=204)
@@ -202,6 +208,7 @@ def unregister_endpoint(
 
 # ── Admin-only endpoints ──────────────────────────────────────────────────────
 
+
 @router.post("/", response_model=EventSummary, dependencies=[Depends(require_admin)])
 def create_event_endpoint(
     body: EventCreateRequest,
@@ -209,6 +216,7 @@ def create_event_endpoint(
     current_user: User = Depends(get_current_user),
 ) -> EventSummary:
     from app.models.ctf_event import CtfEvent
+
     ev = CtfEvent(
         slug=body.slug,
         title=body.title,
@@ -224,7 +232,9 @@ def create_event_endpoint(
     db.add(ev)
     db.commit()
     db.refresh(ev)
-    audit_service.write_audit(db, "event.created", user_id=current_user.id, detail={"slug": ev.slug})
+    audit_service.write_audit(
+        db, "event.created", user_id=current_user.id, detail={"slug": ev.slug}
+    )
     return _serialize(ev)
 
 
@@ -265,14 +275,17 @@ def transition_status_endpoint(
     ev = get_event_by_slug_or_404(db, slug)
     ev = transition_status(db, ev, body.status)
     audit_service.write_audit(
-        db, "event.status_changed",
+        db,
+        "event.status_changed",
         user_id=current_user.id,
         detail={"slug": ev.slug, "new_status": ev.status.value},
     )
     return _serialize(ev)
 
 
-@router.post("/{slug}/challenges", response_model=dict[str, Any], dependencies=[Depends(require_admin)])
+@router.post(
+    "/{slug}/challenges", response_model=dict[str, Any], dependencies=[Depends(require_admin)]
+)
 def add_challenge_endpoint(
     slug: str,
     body: AddChallengeRequest,
@@ -289,7 +302,9 @@ def add_challenge_endpoint(
     }
 
 
-@router.delete("/{slug}/challenges/{challenge_id}", status_code=204, dependencies=[Depends(require_admin)])
+@router.delete(
+    "/{slug}/challenges/{challenge_id}", status_code=204, dependencies=[Depends(require_admin)]
+)
 def remove_challenge_endpoint(
     slug: str,
     challenge_id: int,

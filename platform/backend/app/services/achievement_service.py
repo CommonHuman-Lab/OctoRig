@@ -15,21 +15,19 @@ from app.services.scoring_service import ScoreTransactionSource, award_points
 
 # ── Rule evaluators ───────────────────────────────────────────────────────────
 
+
 def _eval_solve_count(db: Session, user_id: int, config: dict[str, Any]) -> bool:
     from app.models.challenge import Challenge
+
     threshold = config.get("threshold", 1)
     category = config.get("category")
-    q = (
-        db.query(func.count(ChallengeSubmission.id))
-        .filter(
-            ChallengeSubmission.user_id == user_id,
-            ChallengeSubmission.is_correct.is_(True),
-        )
+    q = db.query(func.count(ChallengeSubmission.id)).filter(
+        ChallengeSubmission.user_id == user_id,
+        ChallengeSubmission.is_correct.is_(True),
     )
     if category:
-        q = (
-            q.join(Challenge, ChallengeSubmission.challenge_id == Challenge.id)
-            .filter(Challenge.category == category)
+        q = q.join(Challenge, ChallengeSubmission.challenge_id == Challenge.id).filter(
+            Challenge.category == category
         )
     return (q.scalar() or 0) >= threshold
 
@@ -43,13 +41,15 @@ def _eval_first_blood(db: Session, user_id: int, config: dict[str, Any]) -> bool
             ChallengeSubmission.is_correct.is_(True),
             ChallengeSubmission.is_first_blood.is_(True),
         )
-        .scalar() or 0
+        .scalar()
+        or 0
     )
     return count >= threshold
 
 
 def _eval_category_complete(db: Session, user_id: int, config: dict[str, Any]) -> bool:
     from app.models.challenge import Challenge
+
     category = config.get("category")
     if not category:
         return False
@@ -60,7 +60,8 @@ def _eval_category_complete(db: Session, user_id: int, config: dict[str, Any]) -
             Challenge.is_active.is_(True),
             Challenge.is_archived.is_(False),
         )
-        .scalar() or 0
+        .scalar()
+        or 0
     )
     if total == 0:
         return False
@@ -72,7 +73,8 @@ def _eval_category_complete(db: Session, user_id: int, config: dict[str, Any]) -
             ChallengeSubmission.is_correct.is_(True),
             Challenge.category == category,
         )
-        .scalar() or 0
+        .scalar()
+        or 0
     )
     return solved >= total
 
@@ -82,7 +84,8 @@ def _eval_points_threshold(db: Session, user_id: int, config: dict[str, Any]) ->
     total = (
         db.query(func.coalesce(func.sum(ScoreTransaction.points), 0))
         .filter(ScoreTransaction.user_id == user_id)
-        .scalar() or 0
+        .scalar()
+        or 0
     )
     return int(total) >= threshold
 
@@ -92,16 +95,17 @@ def _eval_manual(_db: Session, _user_id: int, _config: dict[str, Any]) -> bool:
 
 
 _EVALUATORS: dict[AchievementRuleType, Callable] = {
-    AchievementRuleType.SOLVE_COUNT:       _eval_solve_count,
-    AchievementRuleType.FIRST_BLOOD:       _eval_first_blood,
-    AchievementRuleType.STREAK_DAYS:       lambda *_: False,
+    AchievementRuleType.SOLVE_COUNT: _eval_solve_count,
+    AchievementRuleType.FIRST_BLOOD: _eval_first_blood,
+    AchievementRuleType.STREAK_DAYS: lambda *_: False,
     AchievementRuleType.CATEGORY_COMPLETE: _eval_category_complete,
-    AchievementRuleType.POINTS_THRESHOLD:  _eval_points_threshold,
-    AchievementRuleType.MANUAL:            _eval_manual,
+    AchievementRuleType.POINTS_THRESHOLD: _eval_points_threshold,
+    AchievementRuleType.MANUAL: _eval_manual,
 }
 
 
 # ── Badge award ───────────────────────────────────────────────────────────────
+
 
 def _already_earned(db: Session, user_id: int, badge_id: int) -> bool:
     return (
@@ -150,6 +154,7 @@ def award_badge(
 
 
 # ── Evaluation entry point ────────────────────────────────────────────────────
+
 
 def evaluate_achievements(db: Session, user_id: int) -> list[str]:
     """Check all active rules for user_id; award any newly-earned badges.

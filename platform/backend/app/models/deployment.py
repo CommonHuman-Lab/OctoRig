@@ -37,10 +37,14 @@ class Deployment(Base):
     __tablename__ = "deployments"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    lab_template_id: Mapped[int] = mapped_column(ForeignKey("lab_templates.id"), nullable=False, index=True)
+    lab_template_id: Mapped[int] = mapped_column(
+        ForeignKey("lab_templates.id"), nullable=False, index=True
+    )
     started_by_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
     team_id: Mapped[int | None] = mapped_column(ForeignKey("teams.id"), nullable=True, index=True)
-    challenge_id: Mapped[int | None] = mapped_column(ForeignKey("challenges.id"), nullable=True, index=True)
+    challenge_id: Mapped[int | None] = mapped_column(
+        ForeignKey("challenges.id"), nullable=True, index=True
+    )
     instance_for_user_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
 
     status: Mapped[DeploymentStatus] = mapped_column(
@@ -68,9 +72,7 @@ class Deployment(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     lab_template: Mapped["LabTemplate"] = relationship(back_populates="deployments")
-    user: Mapped["User"] = relationship(
-        foreign_keys=[started_by_id], back_populates="deployments"
-    )
+    user: Mapped["User"] = relationship(foreign_keys=[started_by_id], back_populates="deployments")
     team: Mapped[Optional["Team"]] = relationship(back_populates="deployments")
     challenge: Mapped[Optional["Challenge"]] = relationship(back_populates="deployments")
     audit_logs: Mapped[list["AuditLog"]] = relationship(back_populates="deployment")

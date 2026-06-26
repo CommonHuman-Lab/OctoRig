@@ -7,6 +7,7 @@ content authors write `{container_ip}` and this fills in the viewer's own
 live deployment IP, or a "not live" message linking to the lab if they
 haven't started it.
 """
+
 import re
 
 from sqlalchemy.orm import Session

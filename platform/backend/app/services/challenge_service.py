@@ -46,6 +46,7 @@ def list_challenges(
     lab_slug: str | None = None,
 ) -> list[Challenge]:
     from app.models.lab_template import LabTemplate
+
     q = db.query(Challenge).filter(
         Challenge.is_active.is_(True),
         Challenge.is_archived.is_(False),

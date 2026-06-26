@@ -34,9 +34,7 @@ def health(
         db_ok = False
 
     running_labs = (
-        db.query(Deployment)
-        .filter(Deployment.status == DeploymentStatus.RUNNING)
-        .count()
+        db.query(Deployment).filter(Deployment.status == DeploymentStatus.RUNNING).count()
     )
 
     all_containers = docker_service.get_all_octorig_containers()
@@ -61,4 +59,5 @@ def containers(_: User = Depends(require_admin)) -> list[dict]:
 @router.get("/plugins")
 def list_plugins(_: User = Depends(require_admin)) -> list[dict]:
     from app.plugins.registry import list_plugins as _list
+
     return _list()

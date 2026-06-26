@@ -24,6 +24,15 @@ def upgrade() -> None:
 def downgrade() -> None:
     import sqlalchemy as sa
 
-    op.add_column("lab_templates", sa.Column("app_ip", sa.String(length=32), nullable=False, server_default=""))
-    op.add_column("lab_templates", sa.Column("subnet", sa.String(length=32), nullable=False, server_default=""))
-    op.add_column("lab_templates", sa.Column("network_name", sa.String(length=128), nullable=False, server_default=""))
+    op.add_column(
+        "lab_templates",
+        sa.Column("app_ip", sa.String(length=32), nullable=False, server_default=""),
+    )
+    op.add_column(
+        "lab_templates",
+        sa.Column("subnet", sa.String(length=32), nullable=False, server_default=""),
+    )
+    op.add_column(
+        "lab_templates",
+        sa.Column("network_name", sa.String(length=128), nullable=False, server_default=""),
+    )

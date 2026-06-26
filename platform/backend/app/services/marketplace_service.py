@@ -35,6 +35,7 @@ def _sha256(data: bytes) -> str:
 def _verify_ed25519(zip_bytes: bytes, signature_hex: str, public_key_hex: str) -> bool:
     try:
         from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
+
         pub = Ed25519PublicKey.from_public_bytes(bytes.fromhex(public_key_hex))
         pub.verify(bytes.fromhex(signature_hex), zip_bytes)
         return True
@@ -43,6 +44,7 @@ def _verify_ed25519(zip_bytes: bytes, signature_hex: str, public_key_hex: str) -
 
 
 # ── Install flow ──────────────────────────────────────────────────────────────
+
 
 def install_package(
     db: Session,
@@ -78,7 +80,9 @@ def install_package(
     signature_hex = zf.read("signature.sig").decode().strip()
     is_verified = any(_verify_ed25519(zip_bytes, signature_hex, key) for key in trusted_keys)
     if not is_verified:
-        raise bad_request("Package signature verification failed against all configured trusted keys")
+        raise bad_request(
+            "Package signature verification failed against all configured trusted keys"
+        )
 
     slug = manifest["slug"]
     existing = db.query(MarketplacePackage).filter(MarketplacePackage.slug == slug).first()
@@ -134,6 +138,7 @@ def _import_challenges(db: Session, challenges: list[dict], pkg: MarketplacePack
         ChallengeType,
         FlagType,
     )
+
     for ch_dict in challenges:
         slug = ch_dict.get("slug") or f"{pkg.slug}-{ch_dict.get('id', '')}"
         if db.query(Challenge).filter(Challenge.slug == slug).first():
@@ -159,23 +164,28 @@ def _import_challenges(db: Session, challenges: list[dict], pkg: MarketplacePack
         db.flush()
 
         for flag_val in ch_dict.get("flags", []):
-            db.add(ChallengeFlag(
-                challenge_id=ch.id,
-                flag_type=FlagType.STATIC,
-                value=flag_val,
-                case_sensitive=True,
-            ))
+            db.add(
+                ChallengeFlag(
+                    challenge_id=ch.id,
+                    flag_type=FlagType.STATIC,
+                    value=flag_val,
+                    case_sensitive=True,
+                )
+            )
 
         for i, hint_text in enumerate(ch_dict.get("hints", []), 1):
-            db.add(ChallengeHint(
-                challenge_id=ch.id,
-                order_num=i,
-                content=hint_text,
-                cost=0,
-            ))
+            db.add(
+                ChallengeHint(
+                    challenge_id=ch.id,
+                    order_num=i,
+                    content=hint_text,
+                    cost=0,
+                )
+            )
 
 
 # ── Uninstall ─────────────────────────────────────────────────────────────────
+
 
 def uninstall_package(db: Session, package_id: int, user_id: int) -> None:
     pkg = db.get(MarketplacePackage, package_id)
@@ -192,6 +202,7 @@ def uninstall_package(db: Session, package_id: int, user_id: int) -> None:
 
 
 # ── List ──────────────────────────────────────────────────────────────────────
+
 
 def list_packages(db: Session) -> list[MarketplacePackage]:
     return db.query(MarketplacePackage).order_by(MarketplacePackage.created_at.desc()).all()

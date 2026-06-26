@@ -35,8 +35,16 @@ NETPULSE_LAB: LabDefinition = {
             "skills": [],
             "flags": [],
             "hints": [
-                {"order_num": 1, "content": "Web servers often publish a file telling crawlers which paths to avoid. That list can be revealing.", "cost": 0},
-                {"order_num": 2, "content": "One of the disallowed paths serves raw JSON without requiring authentication. Look through the records.", "cost": 25},
+                {
+                    "order_num": 1,
+                    "content": "Web servers often publish a file telling crawlers which paths to avoid. That list can be revealing.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "One of the disallowed paths serves raw JSON without requiring authentication. Look through the records.",
+                    "cost": 25,
+                },
             ],
         },
         {
@@ -54,9 +62,21 @@ NETPULSE_LAB: LabDefinition = {
             "skills": [],
             "flags": [],
             "hints": [
-                {"order_num": 1, "content": "Try entering unusual characters in the username. Does the error change?", "cost": 0},
-                {"order_num": 2, "content": "A quote in the username changes the query structure. A comment character ends it early.", "cost": 50},
-                {"order_num": 3, "content": "After logging in as admin, check the HTTP response headers on the admin panel page.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "Try entering unusual characters in the username. Does the error change?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "A quote in the username changes the query structure. A comment character ends it early.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "After logging in as admin, check the HTTP response headers on the admin panel page.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -74,9 +94,21 @@ NETPULSE_LAB: LabDefinition = {
             "skills": [],
             "flags": [],
             "hints": [
-                {"order_num": 1, "content": "Try entering a single quote in the search. What does the response tell you?", "cost": 0},
-                {"order_num": 2, "content": "The database stores more than posts. Enumerate the schema to find what else is there.", "cost": 50},
-                {"order_num": 3, "content": "Use UNION SELECT — match the column count, then target the internal flags table.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "Try entering a single quote in the search. What does the response tell you?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The database stores more than posts. Enumerate the schema to find what else is there.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Use UNION SELECT — match the column count, then target the internal flags table.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -94,8 +126,16 @@ NETPULSE_LAB: LabDefinition = {
             "skills": [],
             "flags": [],
             "hints": [
-                {"order_num": 1, "content": "The API spec lists a users endpoint. Try accessing IDs other than your own.", "cost": 0},
-                {"order_num": 2, "content": "The first user created in the system usually has the lowest ID.", "cost": 25},
+                {
+                    "order_num": 1,
+                    "content": "The API spec lists a users endpoint. Try accessing IDs other than your own.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The first user created in the system usually has the lowest ID.",
+                    "cost": 25,
+                },
             ],
         },
         {
@@ -113,8 +153,16 @@ NETPULSE_LAB: LabDefinition = {
             "skills": [],
             "flags": [],
             "hints": [
-                {"order_num": 1, "content": "Browse to the tickets API. What happens when you try IDs you didn't create?", "cost": 0},
-                {"order_num": 2, "content": "Internal ops tickets were created before customer accounts. Try lower IDs.", "cost": 25},
+                {
+                    "order_num": 1,
+                    "content": "Browse to the tickets API. What happens when you try IDs you didn't create?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Internal ops tickets were created before customer accounts. Try lower IDs.",
+                    "cost": 25,
+                },
             ],
         },
         {
@@ -132,8 +180,16 @@ NETPULSE_LAB: LabDefinition = {
             "skills": [],
             "flags": [],
             "hints": [
-                {"order_num": 1, "content": "Check robots.txt or the API spec for admin paths.", "cost": 0},
-                {"order_num": 2, "content": "Try accessing an admin path while logged in as a regular user. The check may only verify you have a session.", "cost": 50},
+                {
+                    "order_num": 1,
+                    "content": "Check robots.txt or the API spec for admin paths.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Try accessing an admin path while logged in as a regular user. The check may only verify you have a session.",
+                    "cost": 50,
+                },
             ],
         },
         {
@@ -151,9 +207,21 @@ NETPULSE_LAB: LabDefinition = {
             "skills": [],
             "flags": [],
             "hints": [
-                {"order_num": 1, "content": "Try submitting `{{ 7*7 }}` in the preview body. If the result is 49, the server is evaluating your input.", "cost": 0},
-                {"order_num": 2, "content": "The preview endpoint doesn't verify admin role — any logged-in user can reach it.", "cost": 50},
-                {"order_num": 3, "content": "The server exposes its configuration object in the template context. Look for the flag there.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "Try submitting `{{ 7*7 }}` in the preview body. If the result is 49, the server is evaluating your input.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The preview endpoint doesn't verify admin role — any logged-in user can reach it.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "The server exposes its configuration object in the template context. Look for the flag there.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -171,9 +239,21 @@ NETPULSE_LAB: LabDefinition = {
             "skills": [],
             "flags": [],
             "hints": [
-                {"order_num": 1, "content": "What separates one shell command from another? Try those characters in the hostname field.", "cost": 0},
-                {"order_num": 2, "content": "The tool runs a DNS lookup command. Appending a shell separator lets you run something else after it.", "cost": 50},
-                {"order_num": 3, "content": "The flag is in a file at the root of the filesystem. Read it with `cat`.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "What separates one shell command from another? Try those characters in the hostname field.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The tool runs a DNS lookup command. Appending a shell separator lets you run something else after it.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "The flag is in a file at the root of the filesystem. Read it with `cat`.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -191,9 +271,21 @@ NETPULSE_LAB: LabDefinition = {
             "skills": [],
             "flags": [],
             "hints": [
-                {"order_num": 1, "content": "Try entering some HTML in the search. Does the page render it?", "cost": 0},
-                {"order_num": 2, "content": "If HTML renders, JavaScript does too. The page sets a cookie that JavaScript can read.", "cost": 50},
-                {"order_num": 3, "content": "Read `document.cookie` from your script. The cookie value is the flag.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "Try entering some HTML in the search. Does the page render it?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "If HTML renders, JavaScript does too. The page sets a cookie that JavaScript can read.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Read `document.cookie` from your script. The cookie value is the flag.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -213,14 +305,29 @@ NETPULSE_LAB: LabDefinition = {
             "skills": ["requests", "SSTI", "template expression crafting"],
             "points": 250,
             "flags": [
-                {"value": "FLAG{np_python_ssti_tapped}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{np_python_ssti_tapped}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Template engines have a syntax for expressions. Some let expressions do more than format strings.", "cost": 0},
-                {"order_num": 2, "content": "The diagnostics notification preview endpoint passes your input into a render call. Try an arithmetic expression first to confirm.", "cost": 50},
-                {"order_num": 3, "content": "POST your expression as the template_body field to /api/admin/notify/preview and inspect the rendered output.", "cost": 100},
+                {
+                    "order_num": 1,
+                    "content": "Template engines have a syntax for expressions. Some let expressions do more than format strings.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The diagnostics notification preview endpoint passes your input into a render call. Try an arithmetic expression first to confirm.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "POST your expression as the template_body field to /api/admin/notify/preview and inspect the rendered output.",
+                    "cost": 100,
+                },
             ],
         },
     ],
 }
-

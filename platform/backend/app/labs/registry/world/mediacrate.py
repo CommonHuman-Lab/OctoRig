@@ -37,11 +37,23 @@ MEDIACRATE_LAB: LabDefinition = {
             "points": 50,
             "estimated_minutes": 10,
             "flags": [
-                {"value": "FLAG{mc_recon_ftp_backup_leak}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{mc_recon_ftp_backup_leak}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "The FTP service is on port 21. Try connecting anonymously — no credentials required.", "cost": 0},
-                {"order_num": 2, "content": "Browse the pub/ directory and read what's there in full.", "cost": 25},
+                {
+                    "order_num": 1,
+                    "content": "The FTP service is on port 21. Try connecting anonymously — no credentials required.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Browse the pub/ directory and read what's there in full.",
+                    "cost": 25,
+                },
             ],
         },
         {
@@ -64,12 +76,28 @@ MEDIACRATE_LAB: LabDefinition = {
             "points": 100,
             "estimated_minutes": 15,
             "flags": [
-                {"value": "FLAG{mc_sqli_login_bypassed}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{mc_sqli_login_bypassed}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Try a special character in the username field. Does the server behave differently?", "cost": 0},
-                {"order_num": 2, "content": "A single quote breaks the query. A comment character after the username silences the password check.", "cost": 50},
-                {"order_num": 3, "content": "Username: admin'-- with any password. After signing in, inspect the HTTP response headers on /admin.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "Try a special character in the username field. Does the server behave differently?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "A single quote breaks the query. A comment character after the username silences the password check.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Username: admin'-- with any password. After signing in, inspect the HTTP response headers on /admin.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -89,12 +117,28 @@ MEDIACRATE_LAB: LabDefinition = {
             "points": 250,
             "estimated_minutes": 25,
             "flags": [
-                {"value": "FLAG{mc_sqli_search_videos_union}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{mc_sqli_search_videos_union}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Try an unusual character in the search box. Does the error tell you how the query is built?", "cost": 0},
-                {"order_num": 2, "content": "The search wraps your input in a LIKE clause. Closing it early lets you append your own query — match the column count first.", "cost": 50},
-                {"order_num": 3, "content": "UNION SELECT into the _flags table. The original query returns 4 columns.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "Try an unusual character in the search box. Does the error tell you how the query is built?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The search wraps your input in a LIKE clause. Closing it early lets you append your own query — match the column count first.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "UNION SELECT into the _flags table. The original query returns 4 columns.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -114,11 +158,23 @@ MEDIACRATE_LAB: LabDefinition = {
             "points": 100,
             "estimated_minutes": 10,
             "flags": [
-                {"value": "FLAG{mc_idor_video_exposed}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{mc_idor_video_exposed}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Log in as any user. Try visiting /videos/<id> for ids you'd never normally see linked anywhere.", "cost": 0},
-                {"order_num": 2, "content": "Start from video id 1. The notes field on it contains more than an editor's reminder.", "cost": 25},
+                {
+                    "order_num": 1,
+                    "content": "Log in as any user. Try visiting /videos/<id> for ids you'd never normally see linked anywhere.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Start from video id 1. The notes field on it contains more than an editor's reminder.",
+                    "cost": 25,
+                },
             ],
         },
         {
@@ -138,11 +194,23 @@ MEDIACRATE_LAB: LabDefinition = {
             "points": 100,
             "estimated_minutes": 10,
             "flags": [
-                {"value": "FLAG{mc_idor_subscriber_content_exposed}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{mc_idor_subscriber_content_exposed}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Channel ids are sequential integers in the URL. Try /channels/<id>/exclusive for a channel you never subscribed to.", "cost": 0},
-                {"order_num": 2, "content": "Channel 4 (\"Mira Sessions\") has tier-2 exclusive content. Visit /channels/4/exclusive directly without subscribing.", "cost": 25},
+                {
+                    "order_num": 1,
+                    "content": "Channel ids are sequential integers in the URL. Try /channels/<id>/exclusive for a channel you never subscribed to.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": 'Channel 4 ("Mira Sessions") has tier-2 exclusive content. Visit /channels/4/exclusive directly without subscribing.',
+                    "cost": 25,
+                },
             ],
         },
         {
@@ -162,11 +230,23 @@ MEDIACRATE_LAB: LabDefinition = {
             "points": 150,
             "estimated_minutes": 15,
             "flags": [
-                {"value": "FLAG{mc_bac_admin_streamkeys_exposed}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{mc_bac_admin_streamkeys_exposed}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Register a regular account. The path is listed in robots.txt under Disallow.", "cost": 0},
-                {"order_num": 2, "content": "Visit /admin/stream-keys directly while signed in as your regular account.", "cost": 25},
+                {
+                    "order_num": 1,
+                    "content": "Register a regular account. The path is listed in robots.txt under Disallow.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Visit /admin/stream-keys directly while signed in as your regular account.",
+                    "cost": 25,
+                },
             ],
         },
         {
@@ -189,12 +269,28 @@ MEDIACRATE_LAB: LabDefinition = {
             "points": 200,
             "estimated_minutes": 20,
             "flags": [
-                {"value": "FLAG{mc_xss_admin_cookie_stolen}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{mc_xss_admin_cookie_stolen}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "The \"report this video\" form on any video submits a note. Try submitting HTML.", "cost": 0},
-                {"order_num": 2, "content": "The review queue doesn't escape notes when it renders them. You'll need an admin session to view the queue — there's a faster way to get one than waiting.", "cost": 50},
-                {"order_num": 3, "content": "Bypass login as admin (SQLi), submit a report containing a script that reads document.cookie, then visit /admin/review yourself.", "cost": 100},
+                {
+                    "order_num": 1,
+                    "content": 'The "report this video" form on any video submits a note. Try submitting HTML.',
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The review queue doesn't escape notes when it renders them. You'll need an admin session to view the queue — there's a faster way to get one than waiting.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Bypass login as admin (SQLi), submit a report containing a script that reads document.cookie, then visit /admin/review yourself.",
+                    "cost": 100,
+                },
             ],
         },
         {
@@ -214,12 +310,28 @@ MEDIACRATE_LAB: LabDefinition = {
             "points": 300,
             "estimated_minutes": 25,
             "flags": [
-                {"value": "FLAG{mc_mass_assign_admin_escalated}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{mc_mass_assign_admin_escalated}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Intercept the profile update request. Are there fields the server accepts that the HTML form never shows?", "cost": 0},
-                {"order_num": 2, "content": "Try sending a JSON body to /profile instead of a form post. Include a field related to account role.", "cost": 50},
-                {"order_num": 3, "content": "POST {\"role\": \"admin\"} as JSON to /profile, then visit /admin — the X-Admin-Flag header confirms escalation.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "Intercept the profile update request. Are there fields the server accepts that the HTML form never shows?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Try sending a JSON body to /profile instead of a form post. Include a field related to account role.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": 'POST {"role": "admin"} as JSON to /profile, then visit /admin — the X-Admin-Flag header confirms escalation.',
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -240,12 +352,28 @@ MEDIACRATE_LAB: LabDefinition = {
             "points": 350,
             "estimated_minutes": 30,
             "flags": [
-                {"value": "FLAG{mc_ssrf_internal_transcode}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{mc_ssrf_internal_transcode}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "The thumbnail-import feature is admin-only. You'll need admin access before you can reach it.", "cost": 0},
-                {"order_num": 2, "content": "POST to /api/admin/import-thumbnail with a url field pointing at http://127.0.0.1/. There's an internal-only transcode endpoint under /api/internal/.", "cost": 75},
-                {"order_num": 3, "content": "Point the import at http://127.0.0.1/api/internal/transcode?format=mp4 and read the JSON it reflects back.", "cost": 100},
+                {
+                    "order_num": 1,
+                    "content": "The thumbnail-import feature is admin-only. You'll need admin access before you can reach it.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "POST to /api/admin/import-thumbnail with a url field pointing at http://127.0.0.1/. There's an internal-only transcode endpoint under /api/internal/.",
+                    "cost": 75,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Point the import at http://127.0.0.1/api/internal/transcode?format=mp4 and read the JSON it reflects back.",
+                    "cost": 100,
+                },
             ],
         },
         {
@@ -264,12 +392,28 @@ MEDIACRATE_LAB: LabDefinition = {
             "skills": ["requests", "session handling", "sequential enumeration", "JSON parsing"],
             "points": 200,
             "flags": [
-                {"value": "FLAG{mc_python_idor_video_swept}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{mc_python_idor_video_swept}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Log in with requests.Session(), then GET /api/v1/videos/<id> for a small range of ids.", "cost": 0},
-                {"order_num": 2, "content": "The endpoint doesn't check video visibility. One video's notes field is worth reading.", "cost": 50},
-                {"order_num": 3, "content": "Sweep video ids 1 through 10. Video 9's notes field has the flag.", "cost": 100},
+                {
+                    "order_num": 1,
+                    "content": "Log in with requests.Session(), then GET /api/v1/videos/<id> for a small range of ids.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The endpoint doesn't check video visibility. One video's notes field is worth reading.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Sweep video ids 1 through 10. Video 9's notes field has the flag.",
+                    "cost": 100,
+                },
             ],
         },
         {
@@ -291,12 +435,28 @@ MEDIACRATE_LAB: LabDefinition = {
             "points": 300,
             "estimated_minutes": 30,
             "flags": [
-                {"value": "FLAG{mc_path_traversal_legal_hold}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{mc_path_traversal_legal_hold}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Log in, open your own channel page, and find the banner upload form (only the channel owner sees it).", "cost": 0},
-                {"order_num": 2, "content": "Uploaded banners are served from /uploads/<channel_id>/<filename>. The filename isn't sanitized on either the upload or the serve side.", "cost": 50},
-                {"order_num": 3, "content": "GET /uploads/<your_channel_id>/../../../data/.private/legal_takedowns.txt — count the ../ until you land outside the upload directory entirely.", "cost": 100},
+                {
+                    "order_num": 1,
+                    "content": "Log in, open your own channel page, and find the banner upload form (only the channel owner sees it).",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Uploaded banners are served from /uploads/<channel_id>/<filename>. The filename isn't sanitized on either the upload or the serve side.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "GET /uploads/<your_channel_id>/../../../data/.private/legal_takedowns.txt — count the ../ until you land outside the upload directory entirely.",
+                    "cost": 100,
+                },
             ],
         },
         {
@@ -317,11 +477,23 @@ MEDIACRATE_LAB: LabDefinition = {
             "points": 200,
             "estimated_minutes": 20,
             "flags": [
-                {"value": "FLAG{mc_csrf_tip_drained}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{mc_csrf_tip_drained}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "POST /channels/<id>/tip takes just an `amount` form field. Check what protects it from a forged cross-site request — nothing does.", "cost": 0},
-                {"order_num": 2, "content": "Host an auto-submitting HTML form targeting that endpoint and have a logged-in session (yours is fine) open it. A successful cross-channel tip returns the flag inline.", "cost": 50},
+                {
+                    "order_num": 1,
+                    "content": "POST /channels/<id>/tip takes just an `amount` form field. Check what protects it from a forged cross-site request — nothing does.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Host an auto-submitting HTML form targeting that endpoint and have a logged-in session (yours is fine) open it. A successful cross-channel tip returns the flag inline.",
+                    "cost": 50,
+                },
             ],
         },
         {
@@ -341,11 +513,23 @@ MEDIACRATE_LAB: LabDefinition = {
             "points": 100,
             "estimated_minutes": 10,
             "flags": [
-                {"value": "FLAG{mc_open_redirect_login_next}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{mc_open_redirect_login_next}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "The login form posts a hidden `next` field. Try setting it to a full external URL before logging in.", "cost": 0},
-                {"order_num": 2, "content": "POST /login with next=http://evil.example.com and valid credentials. Check the response headers on the redirect.", "cost": 25},
+                {
+                    "order_num": 1,
+                    "content": "The login form posts a hidden `next` field. Try setting it to a full external URL before logging in.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "POST /login with next=http://evil.example.com and valid credentials. Check the response headers on the redirect.",
+                    "cost": 25,
+                },
             ],
         },
         {
@@ -366,12 +550,28 @@ MEDIACRATE_LAB: LabDefinition = {
             "points": 350,
             "estimated_minutes": 30,
             "flags": [
-                {"value": "FLAG{mc_jwt_alg_none_admin}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{mc_jwt_alg_none_admin}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "GET /api/v1/auth/token while logged in to see a legitimate token's shape: header.payload.signature, each base64url.", "cost": 0},
-                {"order_num": 2, "content": "Decode the header and payload. Try rebuilding a token with {\"alg\":\"none\"} in the header, a payload claiming role: admin, and an empty signature segment.", "cost": 75},
-                {"order_num": 3, "content": "Send it as `Authorization: Bearer <header>.<payload>.` (trailing dot, empty third segment) to /api/v1/admin/secrets.", "cost": 100},
+                {
+                    "order_num": 1,
+                    "content": "GET /api/v1/auth/token while logged in to see a legitimate token's shape: header.payload.signature, each base64url.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": 'Decode the header and payload. Try rebuilding a token with {"alg":"none"} in the header, a payload claiming role: admin, and an empty signature segment.',
+                    "cost": 75,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Send it as `Authorization: Bearer <header>.<payload>.` (trailing dot, empty third segment) to /api/v1/admin/secrets.",
+                    "cost": 100,
+                },
             ],
         },
         {
@@ -395,12 +595,28 @@ MEDIACRATE_LAB: LabDefinition = {
             "points": 300,
             "estimated_minutes": 30,
             "flags": [
-                {"value": "FLAG{mc_credential_reuse_pivot}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{mc_credential_reuse_pivot}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "You already know /videos/<id> has no visibility check. Keep enumerating past the ids you've already found.", "cost": 0},
-                {"order_num": 2, "content": "Video 11's notes mention a password reused on a Limelight bookings account. Start the Limelight lab (id 7) and try logging in with it there.", "cost": 50},
-                {"order_num": 3, "content": "Username nova.lee, password Popcorn21! on Limelight. Check that account's own profile after logging in.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "You already know /videos/<id> has no visibility check. Keep enumerating past the ids you've already found.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Video 11's notes mention a password reused on a Limelight bookings account. Start the Limelight lab (id 7) and try logging in with it there.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Username nova.lee, password Popcorn21! on Limelight. Check that account's own profile after logging in.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -420,10 +636,18 @@ MEDIACRATE_LAB: LabDefinition = {
             "points": 700,
             "estimated_minutes": 60,
             "flags": [
-                {"value": "FLAG{mc_insane_chained_rce}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{mc_insane_chained_rce}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Nothing here is exploitable alone. Look at what each vulnerability hands the next one.", "cost": 0},
+                {
+                    "order_num": 1,
+                    "content": "Nothing here is exploitable alone. Look at what each vulnerability hands the next one.",
+                    "cost": 0,
+                },
             ],
         },
     ],

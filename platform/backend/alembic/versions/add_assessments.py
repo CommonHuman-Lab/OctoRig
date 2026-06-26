@@ -16,6 +16,7 @@ down_revision: str | None = "add_python_editor_toggle"
 branch_labels = None
 depends_on = None
 
+
 def upgrade() -> None:
     op.add_column(
         "users",
@@ -84,6 +85,7 @@ def upgrade() -> None:
             server_default=sa.text("now()"),
         ),
     )
+
 
 def downgrade() -> None:
     op.drop_table("assessment_reports")

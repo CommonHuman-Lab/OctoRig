@@ -37,11 +37,23 @@ HUMANBANK_LAB: LabDefinition = {
             "points": 50,
             "estimated_minutes": 10,
             "flags": [
-                {"value": "FLAG{hb_recon_audit_exposed}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{hb_recon_audit_exposed}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "The API publishes a machine-readable description of every endpoint it exposes.", "cost": 0},
-                {"order_num": 2, "content": "One of the paths listed contains audit information. Try accessing it without a session cookie.", "cost": 25},
+                {
+                    "order_num": 1,
+                    "content": "The API publishes a machine-readable description of every endpoint it exposes.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "One of the paths listed contains audit information. Try accessing it without a session cookie.",
+                    "cost": 25,
+                },
             ],
         },
         {
@@ -63,12 +75,28 @@ HUMANBANK_LAB: LabDefinition = {
             "points": 100,
             "estimated_minutes": 15,
             "flags": [
-                {"value": "FLAG{hb_sqli_login_bypassed}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{hb_sqli_login_bypassed}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "What happens when you put special characters in the username field?", "cost": 0},
-                {"order_num": 2, "content": "A single quote in the username causes an error. What if you also added a comment character after the username?", "cost": 50},
-                {"order_num": 3, "content": "Username: `admin'--`, any password. After login, the flag is in `/profile` under the admin's address field.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "What happens when you put special characters in the username field?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "A single quote in the username causes an error. What if you also added a comment character after the username?",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Username: `admin'--`, any password. After login, the flag is in `/profile` under the admin's address field.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -88,12 +116,28 @@ HUMANBANK_LAB: LabDefinition = {
             "points": 250,
             "estimated_minutes": 25,
             "flags": [
-                {"value": "FLAG{hb_sqli_search_union}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{hb_sqli_search_union}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Try entering unusual characters in the search box. Does the response change?", "cost": 0},
-                {"order_num": 2, "content": "The database has more tables than the app shows you. SQLite keeps a schema table you can query.", "cost": 50},
-                {"order_num": 3, "content": "UNION SELECT into the `_flags` table. Match the 7-column count of the original query.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "Try entering unusual characters in the search box. Does the response change?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The database has more tables than the app shows you. SQLite keeps a schema table you can query.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "UNION SELECT into the `_flags` table. Match the 7-column count of the original query.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -116,9 +160,21 @@ HUMANBANK_LAB: LabDefinition = {
                 {"value": "FLAG{hb_sqli_txn_dump}", "flag_type": "static", "case_sensitive": False}
             ],
             "hints": [
-                {"order_num": 1, "content": "Try putting unusual characters in the `memo` filter. What does the server respond with?", "cost": 0},
-                {"order_num": 2, "content": "The memo filter wraps your input in a LIKE clause. Closing it early opens the door to appending your own query.", "cost": 50},
-                {"order_num": 3, "content": "UNION SELECT into the `_flags` table from the memo param. The original query returns 6 columns.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "Try putting unusual characters in the `memo` filter. What does the server respond with?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The memo filter wraps your input in a LIKE clause. Closing it early opens the door to appending your own query.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "UNION SELECT into the `_flags` table from the memo param. The original query returns 6 columns.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -139,11 +195,23 @@ HUMANBANK_LAB: LabDefinition = {
             "points": 100,
             "estimated_minutes": 10,
             "flags": [
-                {"value": "FLAG{hb_idor_cmnh_exposed}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{hb_idor_cmnh_exposed}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Log in as any user. Browse to the accounts list — does it only show your own?", "cost": 0},
-                {"order_num": 2, "content": "Look for an account with an unusual holder name. Its transactions contain a flag in an internal memo.", "cost": 25},
+                {
+                    "order_num": 1,
+                    "content": "Log in as any user. Browse to the accounts list — does it only show your own?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Look for an account with an unusual holder name. Its transactions contain a flag in an internal memo.",
+                    "cost": 25,
+                },
             ],
         },
         {
@@ -164,11 +232,23 @@ HUMANBANK_LAB: LabDefinition = {
             "points": 100,
             "estimated_minutes": 10,
             "flags": [
-                {"value": "FLAG{hb_idor_ticket_read}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{hb_idor_ticket_read}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Ticket IDs are sequential numbers. Try visiting a ticket that isn't yours.", "cost": 0},
-                {"order_num": 2, "content": "Internal support tickets were created before any customer accounts. Try the earliest IDs.", "cost": 25},
+                {
+                    "order_num": 1,
+                    "content": "Ticket IDs are sequential numbers. Try visiting a ticket that isn't yours.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Internal support tickets were created before any customer accounts. Try the earliest IDs.",
+                    "cost": 25,
+                },
             ],
         },
         {
@@ -188,11 +268,23 @@ HUMANBANK_LAB: LabDefinition = {
             "points": 150,
             "estimated_minutes": 15,
             "flags": [
-                {"value": "FLAG{hb_bac_api_admin_bypass}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{hb_bac_api_admin_bypass}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "The API spec lists every endpoint. Look for paths under an `/admin/` prefix.", "cost": 0},
-                {"order_num": 2, "content": "Log in as any regular customer and call an admin endpoint. Inspect the JSON response carefully.", "cost": 25},
+                {
+                    "order_num": 1,
+                    "content": "The API spec lists every endpoint. Look for paths under an `/admin/` prefix.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Log in as any regular customer and call an admin endpoint. Inspect the JSON response carefully.",
+                    "cost": 25,
+                },
             ],
         },
         {
@@ -214,11 +306,23 @@ HUMANBANK_LAB: LabDefinition = {
             "points": 100,
             "estimated_minutes": 10,
             "flags": [
-                {"value": "FLAG{hb_bac_admin_detail_exposed}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{hb_bac_admin_detail_exposed}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Look for an admin section in the API spec or robots.txt. Try navigating there while logged in as a regular user.", "cost": 0},
-                {"order_num": 2, "content": "The admin user-detail path takes a user ID. User ID 1 is the admin. The flag is in the profile data.", "cost": 50},
+                {
+                    "order_num": 1,
+                    "content": "Look for an admin section in the API spec or robots.txt. Try navigating there while logged in as a regular user.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The admin user-detail path takes a user ID. User ID 1 is the admin. The flag is in the profile data.",
+                    "cost": 50,
+                },
             ],
         },
         {
@@ -240,12 +344,28 @@ HUMANBANK_LAB: LabDefinition = {
             "points": 300,
             "estimated_minutes": 30,
             "flags": [
-                {"value": "FLAG{hb_xss_admin_cookie_stolen}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{hb_xss_admin_cookie_stolen}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Try submitting HTML in a ticket body. Does the admin panel render it?", "cost": 0},
-                {"order_num": 2, "content": "The admin ticket view renders content without escaping. JavaScript submitted in a ticket runs when an admin views it.", "cost": 50},
-                {"order_num": 3, "content": "Log in as admin (hint: the login form has its own flaw) and visit the ticket list. `document.cookie` will have the flag.", "cost": 100},
+                {
+                    "order_num": 1,
+                    "content": "Try submitting HTML in a ticket body. Does the admin panel render it?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The admin ticket view renders content without escaping. JavaScript submitted in a ticket runs when an admin views it.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Log in as admin (hint: the login form has its own flaw) and visit the ticket list. `document.cookie` will have the flag.",
+                    "cost": 100,
+                },
             ],
         },
         {
@@ -264,14 +384,29 @@ HUMANBANK_LAB: LabDefinition = {
             "skills": ["requests", "session handling", "SQLi chaining", "response parsing"],
             "points": 225,
             "flags": [
-                {"value": "FLAG{hb_python_sqli_chained}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{hb_python_sqli_chained}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "One endpoint lets you in without the right password. Another leaks more than it should once you're authenticated.", "cost": 0},
-                {"order_num": 2, "content": "The account search endpoint accepts user input that reaches the query directly.", "cost": 50},
-                {"order_num": 3, "content": "Use a single requests.Session() — first post to /login with the bypass, then query /accounts/search with your payload.", "cost": 100},
+                {
+                    "order_num": 1,
+                    "content": "One endpoint lets you in without the right password. Another leaks more than it should once you're authenticated.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The account search endpoint accepts user input that reaches the query directly.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Use a single requests.Session() — first post to /login with the bypass, then query /accounts/search with your payload.",
+                    "cost": 100,
+                },
             ],
         },
     ],
 }
-

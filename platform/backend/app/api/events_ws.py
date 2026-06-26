@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
 """WebSocket endpoint — /ws/events — broadcasts platform events to connected browsers."""
+
 import asyncio
 import json as _json
 

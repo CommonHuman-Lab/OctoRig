@@ -39,11 +39,23 @@ FLEETWAVE_LAB: LabDefinition = {
             "points": 50,
             "estimated_minutes": 10,
             "flags": [
-                {"value": "FLAG{fw_recon_ftp_backup_leak}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{fw_recon_ftp_backup_leak}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "The FTP service is on port 21. Try connecting anonymously — no credentials required.", "cost": 0},
-                {"order_num": 2, "content": "Browse the pub/ directory and read the backup manifest in full.", "cost": 25},
+                {
+                    "order_num": 1,
+                    "content": "The FTP service is on port 21. Try connecting anonymously — no credentials required.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Browse the pub/ directory and read the backup manifest in full.",
+                    "cost": 25,
+                },
             ],
         },
         {
@@ -66,12 +78,28 @@ FLEETWAVE_LAB: LabDefinition = {
             "points": 100,
             "estimated_minutes": 15,
             "flags": [
-                {"value": "FLAG{fw_sqli_login_bypassed}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{fw_sqli_login_bypassed}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Try a special character in the username field. Does the server behave differently?", "cost": 0},
-                {"order_num": 2, "content": "A single quote breaks the query. A comment character after the username silences the password check.", "cost": 50},
-                {"order_num": 3, "content": "Username: admin'-- with any password. After signing in, inspect the HTTP response headers on /admin.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "Try a special character in the username field. Does the server behave differently?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "A single quote breaks the query. A comment character after the username silences the password check.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Username: admin'-- with any password. After signing in, inspect the HTTP response headers on /admin.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -92,12 +120,28 @@ FLEETWAVE_LAB: LabDefinition = {
             "points": 250,
             "estimated_minutes": 25,
             "flags": [
-                {"value": "FLAG{fw_sqli_shipment_search_union}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{fw_sqli_shipment_search_union}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Try an unusual character in the search box. Does an error reveal how the query is built?", "cost": 0},
-                {"order_num": 2, "content": "The search wraps your input in a LIKE clause. Close it early and append your own query — match the column count first.", "cost": 50},
-                {"order_num": 3, "content": "UNION SELECT into the _flags table. The original query returns 4 columns.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "Try an unusual character in the search box. Does an error reveal how the query is built?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The search wraps your input in a LIKE clause. Close it early and append your own query — match the column count first.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "UNION SELECT into the _flags table. The original query returns 4 columns.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -117,11 +161,23 @@ FLEETWAVE_LAB: LabDefinition = {
             "points": 100,
             "estimated_minutes": 10,
             "flags": [
-                {"value": "FLAG{fw_idor_shipment_exposed}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{fw_idor_shipment_exposed}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Sign in as any dispatcher. Try /shipments/<id> for ids you'd never normally be linked to.", "cost": 0},
-                {"order_num": 2, "content": "Start at shipment id 1. Its manifest notes field contains more than handling instructions.", "cost": 25},
+                {
+                    "order_num": 1,
+                    "content": "Sign in as any dispatcher. Try /shipments/<id> for ids you'd never normally be linked to.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Start at shipment id 1. Its manifest notes field contains more than handling instructions.",
+                    "cost": 25,
+                },
             ],
         },
         {
@@ -142,11 +198,23 @@ FLEETWAVE_LAB: LabDefinition = {
             "points": 100,
             "estimated_minutes": 10,
             "flags": [
-                {"value": "FLAG{fw_idor_depot_manifest_exposed}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{fw_idor_depot_manifest_exposed}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Depot ids are sequential integers. Try /depots/<id> for a depot you're not assigned to.", "cost": 0},
-                {"order_num": 2, "content": "Depot 4 (\"Harbor Depot\") has a bonded-cargo manifest note. Visit /depots/4 directly — the depot_access table is never consulted.", "cost": 25},
+                {
+                    "order_num": 1,
+                    "content": "Depot ids are sequential integers. Try /depots/<id> for a depot you're not assigned to.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": 'Depot 4 ("Harbor Depot") has a bonded-cargo manifest note. Visit /depots/4 directly — the depot_access table is never consulted.',
+                    "cost": 25,
+                },
             ],
         },
         {
@@ -166,11 +234,23 @@ FLEETWAVE_LAB: LabDefinition = {
             "points": 150,
             "estimated_minutes": 15,
             "flags": [
-                {"value": "FLAG{fw_bac_admin_driver_roster_exposed}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{fw_bac_admin_driver_roster_exposed}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Register a regular dispatcher account. The path is listed in robots.txt under Disallow.", "cost": 0},
-                {"order_num": 2, "content": "Visit /admin/driver-roster directly while signed in as your regular account. Read every driver's notes.", "cost": 25},
+                {
+                    "order_num": 1,
+                    "content": "Register a regular dispatcher account. The path is listed in robots.txt under Disallow.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Visit /admin/driver-roster directly while signed in as your regular account. Read every driver's notes.",
+                    "cost": 25,
+                },
             ],
         },
         {
@@ -193,12 +273,28 @@ FLEETWAVE_LAB: LabDefinition = {
             "points": 200,
             "estimated_minutes": 20,
             "flags": [
-                {"value": "FLAG{fw_xss_admin_cookie_stolen}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{fw_xss_admin_cookie_stolen}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "The \"report a delivery issue\" form on any shipment submits a note. Try submitting HTML.", "cost": 0},
-                {"order_num": 2, "content": "The review queue doesn't escape notes when it renders them. You'll need an admin session to view the queue — there's a faster way than waiting.", "cost": 50},
-                {"order_num": 3, "content": "Bypass login as admin (SQLi), file a report containing a script that reads document.cookie, then visit /admin/review yourself.", "cost": 100},
+                {
+                    "order_num": 1,
+                    "content": 'The "report a delivery issue" form on any shipment submits a note. Try submitting HTML.',
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The review queue doesn't escape notes when it renders them. You'll need an admin session to view the queue — there's a faster way than waiting.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Bypass login as admin (SQLi), file a report containing a script that reads document.cookie, then visit /admin/review yourself.",
+                    "cost": 100,
+                },
             ],
         },
         {
@@ -218,12 +314,28 @@ FLEETWAVE_LAB: LabDefinition = {
             "points": 300,
             "estimated_minutes": 25,
             "flags": [
-                {"value": "FLAG{fw_mass_assign_admin_escalated}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{fw_mass_assign_admin_escalated}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Intercept the profile update. Are there fields the server accepts that the form never shows?", "cost": 0},
-                {"order_num": 2, "content": "Send a JSON body to /profile instead of a form post. Include a field related to account role.", "cost": 50},
-                {"order_num": 3, "content": "POST {\"role\": \"admin\"} as JSON to /profile — the profile page confirms the escalation with the flag.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "Intercept the profile update. Are there fields the server accepts that the form never shows?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Send a JSON body to /profile instead of a form post. Include a field related to account role.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": 'POST {"role": "admin"} as JSON to /profile — the profile page confirms the escalation with the flag.',
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -243,11 +355,23 @@ FLEETWAVE_LAB: LabDefinition = {
             "points": 200,
             "estimated_minutes": 20,
             "flags": [
-                {"value": "FLAG{fw_biz_freight_credit_overflow}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{fw_biz_freight_credit_overflow}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "What happens if you transfer a negative amount to another account?", "cost": 0},
-                {"order_num": 2, "content": "A negative transfer moves credit the wrong way — your own balance goes up. Push it past the reconciliation threshold to trip the alarm.", "cost": 50},
+                {
+                    "order_num": 1,
+                    "content": "What happens if you transfer a negative amount to another account?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "A negative transfer moves credit the wrong way — your own balance goes up. Push it past the reconciliation threshold to trip the alarm.",
+                    "cost": 50,
+                },
             ],
         },
         {
@@ -268,12 +392,28 @@ FLEETWAVE_LAB: LabDefinition = {
             "points": 350,
             "estimated_minutes": 30,
             "flags": [
-                {"value": "FLAG{fw_ssrf_internal_manifest}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{fw_ssrf_internal_manifest}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "The carrier-check feature is admin-only. You'll need admin access before you can reach it.", "cost": 0},
-                {"order_num": 2, "content": "POST to /api/admin/carrier-check with a url field pointing at http://127.0.0.1/. There's an internal-only endpoint under /api/internal/.", "cost": 75},
-                {"order_num": 3, "content": "Point the check at http://127.0.0.1/api/internal/manifest-export?format=csv and read the JSON it reflects back.", "cost": 100},
+                {
+                    "order_num": 1,
+                    "content": "The carrier-check feature is admin-only. You'll need admin access before you can reach it.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "POST to /api/admin/carrier-check with a url field pointing at http://127.0.0.1/. There's an internal-only endpoint under /api/internal/.",
+                    "cost": 75,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Point the check at http://127.0.0.1/api/internal/manifest-export?format=csv and read the JSON it reflects back.",
+                    "cost": 100,
+                },
             ],
         },
         {
@@ -292,12 +432,28 @@ FLEETWAVE_LAB: LabDefinition = {
             "skills": ["requests", "session handling", "sequential enumeration", "JSON parsing"],
             "points": 200,
             "flags": [
-                {"value": "FLAG{fw_python_idor_shipment_swept}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{fw_python_idor_shipment_swept}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Log in with requests.Session(), then GET /api/v1/shipments/<id> for a small range of ids.", "cost": 0},
-                {"order_num": 2, "content": "The endpoint doesn't check ownership. One shipment's notes field is worth reading.", "cost": 50},
-                {"order_num": 3, "content": "Sweep shipment ids 1 through 10. Shipment 9's notes field has the flag.", "cost": 100},
+                {
+                    "order_num": 1,
+                    "content": "Log in with requests.Session(), then GET /api/v1/shipments/<id> for a small range of ids.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The endpoint doesn't check ownership. One shipment's notes field is worth reading.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Sweep shipment ids 1 through 10. Shipment 9's notes field has the flag.",
+                    "cost": 100,
+                },
             ],
         },
         {
@@ -317,10 +473,18 @@ FLEETWAVE_LAB: LabDefinition = {
             "points": 700,
             "estimated_minutes": 60,
             "flags": [
-                {"value": "FLAG{fw_insane_chained_rce}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{fw_insane_chained_rce}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Nothing here is exploitable alone. Look at what each vulnerability hands the next one.", "cost": 0},
+                {
+                    "order_num": 1,
+                    "content": "Nothing here is exploitable alone. Look at what each vulnerability hands the next one.",
+                    "cost": 0,
+                },
             ],
         },
     ],

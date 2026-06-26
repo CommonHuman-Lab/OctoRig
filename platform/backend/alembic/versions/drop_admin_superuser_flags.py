@@ -38,8 +38,12 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    op.add_column("users", sa.Column("is_superuser", sa.Boolean(), nullable=False, server_default=sa.false()))
-    op.add_column("users", sa.Column("is_admin", sa.Boolean(), nullable=False, server_default=sa.false()))
+    op.add_column(
+        "users", sa.Column("is_superuser", sa.Boolean(), nullable=False, server_default=sa.false())
+    )
+    op.add_column(
+        "users", sa.Column("is_admin", sa.Boolean(), nullable=False, server_default=sa.false())
+    )
     op.execute(
         """
         UPDATE users

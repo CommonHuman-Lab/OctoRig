@@ -6,6 +6,7 @@ Call configure_logging() once at process startup (main.py, celery_app.py).
 All subsequent logging.getLogger(...).info(...) calls emit JSON lines with
 consistent fields: timestamp, level, logger, message, plus any extra kwargs.
 """
+
 import logging
 import sys
 

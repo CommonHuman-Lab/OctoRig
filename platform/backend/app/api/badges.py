@@ -17,6 +17,7 @@ router = APIRouter(prefix="/badges", tags=["badges"])
 
 # ── Schemas ───────────────────────────────────────────────────────────────────
 
+
 class BadgeSummary(BaseModel):
     id: int
     slug: str
@@ -38,6 +39,7 @@ class ManualAwardRequest(BaseModel):
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
+
 def _from_user_badge(ub: UserBadge) -> BadgeSummary:
     return BadgeSummary(
         id=ub.badge.id,
@@ -53,6 +55,7 @@ def _from_user_badge(ub: UserBadge) -> BadgeSummary:
 
 
 # ── Endpoints ─────────────────────────────────────────────────────────────────
+
 
 @router.get("/", response_model=list[BadgeSummary])
 def list_badges(
@@ -133,6 +136,7 @@ def manual_award(
     badge = db.query(BadgeDefinition).filter(BadgeDefinition.slug == badge_slug).first()
     if badge is None:
         from app.core.exceptions import not_found
+
         raise not_found("Badge")
     ub = award_badge(db, body.user_id, badge, awarded_by_id=current_user.id, note=body.note)
     if ub is None:

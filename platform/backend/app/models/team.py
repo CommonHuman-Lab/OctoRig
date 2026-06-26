@@ -37,9 +37,15 @@ class Team(Base):
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
     )
 
-    created_by: Mapped["User"] = relationship(foreign_keys=[created_by_id], back_populates="created_teams")
-    members: Mapped[list["TeamMember"]] = relationship(back_populates="team", cascade="all, delete-orphan")
-    invitations: Mapped[list["TeamInvitation"]] = relationship(back_populates="team", cascade="all, delete-orphan")
+    created_by: Mapped["User"] = relationship(
+        foreign_keys=[created_by_id], back_populates="created_teams"
+    )
+    members: Mapped[list["TeamMember"]] = relationship(
+        back_populates="team", cascade="all, delete-orphan"
+    )
+    invitations: Mapped[list["TeamInvitation"]] = relationship(
+        back_populates="team", cascade="all, delete-orphan"
+    )
     deployments: Mapped[list["Deployment"]] = relationship(back_populates="team")
     scheduled_actions: Mapped[list["ScheduledAction"]] = relationship(back_populates="team")
 

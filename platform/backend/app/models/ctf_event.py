@@ -63,7 +63,9 @@ class CtfEvent(Base):
     scoring_mode: Mapped[EventScoringMode] = mapped_column(
         SQLEnum(EventScoringMode), nullable=False, default=EventScoringMode.STATIC
     )
-    freeze_scoreboard_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    freeze_scoreboard_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
     created_by_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
@@ -80,9 +82,7 @@ class CtfEvent(Base):
 
 class EventChallengeMap(Base):
     __tablename__ = "event_challenge_map"
-    __table_args__ = (
-        UniqueConstraint("event_id", "challenge_id", name="uq_event_challenge_map"),
-    )
+    __table_args__ = (UniqueConstraint("event_id", "challenge_id", name="uq_event_challenge_map"),)
 
     id: Mapped[int] = mapped_column(primary_key=True)
     event_id: Mapped[int] = mapped_column(ForeignKey("ctf_events.id"), nullable=False, index=True)
@@ -96,14 +96,14 @@ class EventChallengeMap(Base):
 
 class EventRegistration(Base):
     __tablename__ = "event_registrations"
-    __table_args__ = (
-        UniqueConstraint("event_id", "team_id", name="uq_event_registrations"),
-    )
+    __table_args__ = (UniqueConstraint("event_id", "team_id", name="uq_event_registrations"),)
 
     id: Mapped[int] = mapped_column(primary_key=True)
     event_id: Mapped[int] = mapped_column(ForeignKey("ctf_events.id"), nullable=False, index=True)
     team_id: Mapped[int] = mapped_column(ForeignKey("teams.id"), nullable=False)
-    registered_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    registered_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
 
     event: Mapped["CtfEvent"] = relationship(back_populates="registrations")
     team: Mapped["Team"] = relationship()

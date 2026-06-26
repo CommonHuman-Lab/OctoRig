@@ -27,14 +27,21 @@ def discover_plugins() -> list[dict[str, Any]]:
             if not isinstance(instance, OctoPlugin):
                 logger.warning("Plugin %s does not satisfy OctoPlugin protocol", ep.name)
                 continue
-            _registry.append({
-                "name": instance.name,
-                "version": instance.version,
-                "plugin_type": instance.plugin_type,
-                "entry_point": ep.name,
-                "_instance": instance,
-            })
-            logger.info("Discovered plugin: %s v%s (%s)", instance.name, instance.version, instance.plugin_type)
+            _registry.append(
+                {
+                    "name": instance.name,
+                    "version": instance.version,
+                    "plugin_type": instance.plugin_type,
+                    "entry_point": ep.name,
+                    "_instance": instance,
+                }
+            )
+            logger.info(
+                "Discovered plugin: %s v%s (%s)",
+                instance.name,
+                instance.version,
+                instance.plugin_type,
+            )
         except Exception:
             logger.exception("Failed to load plugin: %s", ep.name)
     return _registry

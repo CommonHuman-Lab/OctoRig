@@ -47,10 +47,14 @@ def _get_user_from_api_key(raw_key: str, db: Session) -> User | None:
     if not raw_key.startswith("oktor_"):
         return None
     prefix = raw_key[6:14]  # 8 chars after "oktor_"
-    keys = db.query(ApiKey).filter(
-        ApiKey.key_prefix == prefix,
-        ApiKey.is_active.is_(True),
-    ).all()
+    keys = (
+        db.query(ApiKey)
+        .filter(
+            ApiKey.key_prefix == prefix,
+            ApiKey.is_active.is_(True),
+        )
+        .all()
+    )
 
     now = datetime.now(UTC)
     for key in keys:

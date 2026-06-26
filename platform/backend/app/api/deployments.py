@@ -82,6 +82,7 @@ def list_deployments(
             for m in db.query(TeamMember).filter(TeamMember.user_id == current_user.id).all()
         ]
         from sqlalchemy import or_
+
         q = q.filter(
             or_(
                 Deployment.started_by_id == current_user.id,
@@ -156,10 +157,7 @@ def create_deployment(
 
     # Locked for the transaction so concurrent deployment requests serialize past the conflict check
     template = (
-        db.query(LabTemplate)
-        .filter(LabTemplate.id == lab_template_id)
-        .with_for_update()
-        .first()
+        db.query(LabTemplate).filter(LabTemplate.id == lab_template_id).with_for_update().first()
     )
     if template is None:
         raise not_found("Lab template")
@@ -189,15 +187,21 @@ def create_deployment(
             .first()
         )
         if existing is not None:
-            raise conflict(f"You already have an active instance for this challenge (id={existing.id})")
+            raise conflict(
+                f"You already have an active instance for this challenge (id={existing.id})"
+            )
     elif payload.team_id is not None:
         existing = lab_service.get_active_deployment(db, template.id, team_id=payload.team_id)
         if existing is not None:
-            raise conflict(f"Your team already has an active deployment of '{template.name}' (id={existing.id})")
+            raise conflict(
+                f"Your team already has an active deployment of '{template.name}' (id={existing.id})"
+            )
     else:
         existing = lab_service.get_active_deployment(db, template.id, started_by_id=current_user.id)
         if existing is not None:
-            raise conflict(f"You already have an active deployment of '{template.name}' (id={existing.id})")
+            raise conflict(
+                f"You already have an active deployment of '{template.name}' (id={existing.id})"
+            )
 
     deployment = prepare_deployment(
         db,
@@ -225,13 +229,19 @@ def destroy_deployment(
     current_user: User = Depends(get_current_user_or_api_key),
 ) -> DeploymentWithTemplate:
     membership = _get_membership(db, current_user, d.team_id)
-    if d.started_by_id != current_user.id and membership is None and not is_privileged(current_user, db):
+    if (
+        d.started_by_id != current_user.id
+        and membership is None
+        and not is_privileged(current_user, db)
+    ):
         raise not_found("Deployment")
     if not can_destroy_deployment(current_user, db, d, membership):
         raise forbidden_exception
 
     if d.status not in (DeploymentStatus.RUNNING, DeploymentStatus.ERROR):
-        raise bad_request(f"Deployment is {d.status.value} — can only stop running or errored deployments")
+        raise bad_request(
+            f"Deployment is {d.status.value} — can only stop running or errored deployments"
+        )
 
     d.status = DeploymentStatus.STOPPING
     db.commit()
@@ -248,13 +258,19 @@ def start_deployment(
     current_user: User = Depends(get_current_user_or_api_key),
 ) -> DeploymentWithTemplate:
     membership = _get_membership(db, current_user, d.team_id)
-    if d.started_by_id != current_user.id and membership is None and not is_privileged(current_user, db):
+    if (
+        d.started_by_id != current_user.id
+        and membership is None
+        and not is_privileged(current_user, db)
+    ):
         raise not_found("Deployment")
     if not can_destroy_deployment(current_user, db, d, membership):
         raise forbidden_exception
 
     if d.status not in (DeploymentStatus.STOPPED, DeploymentStatus.ERROR):
-        raise bad_request(f"Deployment is {d.status.value} — can only start stopped or errored deployments")
+        raise bad_request(
+            f"Deployment is {d.status.value} — can only start stopped or errored deployments"
+        )
 
     d.status = DeploymentStatus.STARTING
     d.error_message = None
@@ -271,13 +287,19 @@ def purge_deployment(
     current_user: User = Depends(get_current_user_or_api_key),
 ) -> None:
     membership = _get_membership(db, current_user, d.team_id)
-    if d.started_by_id != current_user.id and membership is None and not is_privileged(current_user, db):
+    if (
+        d.started_by_id != current_user.id
+        and membership is None
+        and not is_privileged(current_user, db)
+    ):
         raise not_found("Deployment")
     if not can_destroy_deployment(current_user, db, d, membership):
         raise forbidden_exception
 
     if d.status not in (DeploymentStatus.STOPPED, DeploymentStatus.ERROR):
-        raise bad_request(f"Deployment is {d.status.value} — can only remove stopped or errored deployments")
+        raise bad_request(
+            f"Deployment is {d.status.value} — can only remove stopped or errored deployments"
+        )
 
     lab_service.purge_deployment(db, d.id, current_user.id)
 
@@ -290,8 +312,13 @@ def set_visibility(
     current_user: User = Depends(get_current_user_or_api_key),
 ) -> DeploymentWithTemplate:
     from app.models.deployment import DeploymentVisibility
+
     membership = _get_membership(db, current_user, d.team_id)
-    if d.started_by_id != current_user.id and membership is None and not is_privileged(current_user, db):
+    if (
+        d.started_by_id != current_user.id
+        and membership is None
+        and not is_privileged(current_user, db)
+    ):
         raise not_found("Deployment")
     if not can_destroy_deployment(current_user, db, d, membership):  # same permission as mutate
         raise forbidden_exception
@@ -308,7 +335,11 @@ def reset_deployment(
     current_user: User = Depends(get_current_user_or_api_key),
 ) -> DeploymentWithTemplate:
     membership = _get_membership(db, current_user, d.team_id)
-    if d.started_by_id != current_user.id and membership is None and not is_privileged(current_user, db):
+    if (
+        d.started_by_id != current_user.id
+        and membership is None
+        and not is_privileged(current_user, db)
+    ):
         raise not_found("Deployment")
     if not can_destroy_deployment(current_user, db, d, membership):
         raise forbidden_exception

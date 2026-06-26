@@ -5,6 +5,7 @@
 Revision ID: add_notes
 Revises: add_assessment_completed_at
 """
+
 import sqlalchemy as sa
 
 from alembic import op
@@ -25,12 +26,17 @@ def upgrade() -> None:
         sa.Column("title", sa.String(255), nullable=False),
         sa.Column("content", sa.Text(), nullable=False, server_default=""),
         sa.Column("tags", sa.JSON(), nullable=False, server_default="[]"),
-        sa.Column("lab_template_id", sa.Integer(), sa.ForeignKey("lab_templates.id"), nullable=True),
+        sa.Column(
+            "lab_template_id", sa.Integer(), sa.ForeignKey("lab_templates.id"), nullable=True
+        ),
         sa.Column("challenge_id", sa.Integer(), sa.ForeignKey("challenges.id"), nullable=True),
         sa.Column("visibility", notevisibility, nullable=False, server_default="private"),
         sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.func.now()),
         sa.Column(
-            "updated_at", sa.DateTime(timezone=True), server_default=sa.func.now(), onupdate=sa.func.now()
+            "updated_at",
+            sa.DateTime(timezone=True),
+            server_default=sa.func.now(),
+            onupdate=sa.func.now(),
         ),
     )
     op.create_index("ix_notes_owner_id", "notes", ["owner_id"])

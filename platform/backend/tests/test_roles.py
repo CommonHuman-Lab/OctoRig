@@ -6,6 +6,7 @@ on /api/v1/admin/users/{id} — the configurable RBAC system that replaced the
 old is_admin/is_superuser flags. No real DB, no real network — see
 tests/conftest.py.
 """
+
 import os
 
 ADMIN_USERNAME = os.environ["ADMIN_USERNAME"]
@@ -40,6 +41,7 @@ def _user_id(client, token):
 
 # ── access control ───────────────────────────────────────────────────────────
 
+
 def test_roles_endpoints_require_admin(client):
     player_token = _register_and_login(client, "alice")
     cases = [
@@ -61,6 +63,7 @@ def test_roles_endpoints_require_authentication(client):
 
 # ── seeded system roles ──────────────────────────────────────────────────────
 
+
 def test_seeded_system_roles_present(client):
     token = _admin_token(client)
     resp = client.get("/api/v1/admin/roles/", headers=_auth(token))
@@ -74,6 +77,7 @@ def test_seeded_system_roles_present(client):
 
 
 # ── CRUD ─────────────────────────────────────────────────────────────────────
+
 
 def test_create_custom_role(client):
     token = _admin_token(client)
@@ -159,9 +163,10 @@ def test_cannot_edit_admin_role(client):
         headers=_auth(token),
     )
     assert resp.status_code == 400
-    assert "admin.panel" in client.get(
-        "/api/v1/admin/roles/admin", headers=_auth(token)
-    ).json()["permissions"]
+    assert (
+        "admin.panel"
+        in client.get("/api/v1/admin/roles/admin", headers=_auth(token)).json()["permissions"]
+    )
 
 
 def test_delete_unknown_role_404(client):
@@ -171,6 +176,7 @@ def test_delete_unknown_role_404(client):
 
 
 # ── assigning roles to users (PATCH /admin/users/{id}) ─────────────────────
+
 
 def test_admin_can_assign_roles_to_user(client):
     admin_token = _admin_token(client)

@@ -59,12 +59,7 @@ def list_ranks(
     db: Session = Depends(get_db),
     _: User = Depends(get_current_user),
 ) -> list[RankResponse]:
-    ranks = (
-        db.query(Rank)
-        .filter(Rank.is_active.is_(True))
-        .order_by(Rank.min_points.asc())
-        .all()
-    )
+    ranks = db.query(Rank).filter(Rank.is_active.is_(True)).order_by(Rank.min_points.asc()).all()
     return [RankResponse.model_validate(r) for r in ranks]
 
 

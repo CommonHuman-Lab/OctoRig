@@ -7,6 +7,7 @@ but that alone does not stop credential-stuffing against a single account from
 many different IPs. This tracks failed attempts per-account and locks it out
 with exponential backoff, regardless of where the requests come from.
 """
+
 from datetime import UTC, datetime, timedelta
 
 from app.core.db_types import ensure_aware

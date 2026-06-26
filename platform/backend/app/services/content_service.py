@@ -30,6 +30,7 @@ from app.services import audit_service
 
 # ── Slug helpers ─────────────────────────────────────────────────────────────
 
+
 def _slugify(text: str) -> str:
     slug = re.sub(r"[^a-z0-9]+", "-", text.lower().strip()).strip("-")
     return slug[:50]
@@ -45,6 +46,7 @@ def _unique_challenge_slug(db: Session, base: str) -> str:
 
 
 # ── Body validation ───────────────────────────────────────────────────────────
+
 
 def validate_challenge_body(body: dict) -> list[str]:
     errors = []
@@ -72,6 +74,7 @@ def validate_challenge_body(body: dict) -> list[str]:
 
 # ── Platform role guard ───────────────────────────────────────────────────────
 
+
 def require_platform_role(role: str):
     def dependency(
         current_user: User = Depends(get_current_user),
@@ -83,10 +86,12 @@ def require_platform_role(role: str):
         if role not in roles and not is_privileged(current_user, db):
             raise forbidden_exception
         return current_user
+
     return dependency
 
 
 # ── CRUD ──────────────────────────────────────────────────────────────────────
+
 
 def create_submission(
     db: Session,
@@ -104,7 +109,12 @@ def create_submission(
     db.add(sub)
     db.commit()
     db.refresh(sub)
-    audit_service.write_audit(db, audit_service.CONTENT_SUBMITTED, user_id=author_id, detail={"id": sub.id, "title": title})
+    audit_service.write_audit(
+        db,
+        audit_service.CONTENT_SUBMITTED,
+        user_id=author_id,
+        detail={"id": sub.id, "title": title},
+    )
     return sub
 
 
@@ -165,6 +175,7 @@ def submit_for_review(db: Session, submission: ContentSubmission) -> ContentSubm
 
 # ── Review workflow ───────────────────────────────────────────────────────────
 
+
 def claim_review(db: Session, submission: ContentSubmission, reviewer_id: int) -> ContentSubmission:
     if submission.status != ContentStatus.PENDING_REVIEW:
         raise bad_request("Submission is not pending review")
@@ -198,7 +209,9 @@ def record_review(
         submission.status = ContentStatus.APPROVED
     elif verdict == ReviewVerdict.REJECTED:
         submission.status = ContentStatus.REJECTED
-        audit_service.write_audit(db, audit_service.CONTENT_REJECTED, user_id=reviewer_id, detail={"id": submission.id})
+        audit_service.write_audit(
+            db, audit_service.CONTENT_REJECTED, user_id=reviewer_id, detail={"id": submission.id}
+        )
     elif verdict == ReviewVerdict.NEEDS_CHANGES:
         submission.status = ContentStatus.DRAFT
 
@@ -208,7 +221,9 @@ def record_review(
     return review
 
 
-def publish_submission(db: Session, submission: ContentSubmission, publisher_id: int) -> ContentSubmission:
+def publish_submission(
+    db: Session, submission: ContentSubmission, publisher_id: int
+) -> ContentSubmission:
     if submission.status != ContentStatus.APPROVED:
         raise bad_request("Only approved submissions can be published")
 
@@ -242,7 +257,9 @@ def publish_submission(db: Session, submission: ContentSubmission, publisher_id:
             skills=[],
             author_id=submission.author_id,
             points=int(body.get("points", 100)),
-            estimated_minutes=int(body["estimated_minutes"]) if body.get("estimated_minutes") else None,
+            estimated_minutes=int(body["estimated_minutes"])
+            if body.get("estimated_minutes")
+            else None,
             content=ch_content,
             is_active=True,
             is_archived=False,
@@ -252,25 +269,33 @@ def publish_submission(db: Session, submission: ContentSubmission, publisher_id:
         db.flush()
 
         for flag_data in body.get("flags", []):
-            db.add(ChallengeFlag(
-                challenge_id=challenge.id,
-                flag_type=FlagType(flag_data.get("flag_type", "static")),
-                value=str(flag_data["value"]).strip(),
-                case_sensitive=bool(flag_data.get("case_sensitive", True)),
-            ))
+            db.add(
+                ChallengeFlag(
+                    challenge_id=challenge.id,
+                    flag_type=FlagType(flag_data.get("flag_type", "static")),
+                    value=str(flag_data["value"]).strip(),
+                    case_sensitive=bool(flag_data.get("case_sensitive", True)),
+                )
+            )
 
         for hint_data in body.get("hints", []):
-            db.add(ChallengeHint(
-                challenge_id=challenge.id,
-                order_num=int(hint_data["order_num"]),
-                content=str(hint_data["content"]),
-                cost=int(hint_data.get("cost", 0)),
-            ))
+            db.add(
+                ChallengeHint(
+                    challenge_id=challenge.id,
+                    order_num=int(hint_data["order_num"]),
+                    content=str(hint_data["content"]),
+                    cost=int(hint_data.get("cost", 0)),
+                )
+            )
 
     submission.status = ContentStatus.PUBLISHED
     submission.updated_at = datetime.now(UTC)
     db.commit()
-    audit_service.write_audit(db, audit_service.CONTENT_PUBLISHED, user_id=publisher_id,
-                              detail={"id": submission.id, "slug": slug})
+    audit_service.write_audit(
+        db,
+        audit_service.CONTENT_PUBLISHED,
+        user_id=publisher_id,
+        detail={"id": submission.id, "slug": slug},
+    )
     db.refresh(submission)
     return submission

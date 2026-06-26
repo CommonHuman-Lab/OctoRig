@@ -80,6 +80,7 @@ def get_user_score(db: Session, user_id: int, event_id: int | None = None) -> in
 
 def get_global_scoreboard(db: Session, limit: int = 100) -> list[dict[str, Any]]:
     from app.services.settings_service import get_settings
+
     site = get_settings(db)
     freeze_at = site.scoreboard_frozen_at
     now = datetime.now(UTC)
@@ -90,14 +91,11 @@ def get_global_scoreboard(db: Session, limit: int = 100) -> list[dict[str, Any]]
     if cached:
         return json.loads(cached)
 
-    q = (
-        db.query(
-            ScoreTransaction.user_id,
-            func.sum(ScoreTransaction.points).label("total"),
-            func.max(ScoreTransaction.created_at).label("last_tx"),
-        )
-        .filter(ScoreTransaction.event_id.is_(None))
-    )
+    q = db.query(
+        ScoreTransaction.user_id,
+        func.sum(ScoreTransaction.points).label("total"),
+        func.max(ScoreTransaction.created_at).label("last_tx"),
+    ).filter(ScoreTransaction.event_id.is_(None))
     if frozen:
         q = q.filter(ScoreTransaction.created_at <= freeze_at)
     score_rows = (
@@ -113,8 +111,7 @@ def get_global_scoreboard(db: Session, limit: int = 100) -> list[dict[str, Any]]
     user_ids = [r.user_id for r in score_rows]
 
     usernames: dict[int, str] = {
-        u.id: u.username
-        for u in db.query(User).filter(User.id.in_(user_ids)).all()
+        u.id: u.username for u in db.query(User).filter(User.id.in_(user_ids)).all()
     }
     solve_counts: dict[int, int] = {
         row[0]: int(row[1])
@@ -157,9 +154,7 @@ def get_global_scoreboard(db: Session, limit: int = 100) -> list[dict[str, Any]]
     return result
 
 
-def get_event_scoreboard(
-    db: Session, event_id: int, limit: int = 100
-) -> list[dict[str, Any]]:
+def get_event_scoreboard(db: Session, event_id: int, limit: int = 100) -> list[dict[str, Any]]:
     cache_key = f"scoreboard:event:{event_id}"
     cached = _get_redis().get(cache_key)
     if cached:

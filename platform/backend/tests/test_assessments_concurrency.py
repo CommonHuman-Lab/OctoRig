@@ -7,6 +7,7 @@ deployment conflict check, so concurrent candidates used to force-kill each
 other's containers). Docker is mocked by the autouse `no_docker` fixture in
 conftest.py.
 """
+
 import os
 
 ADMIN_USERNAME = os.environ["ADMIN_USERNAME"]
@@ -65,7 +66,9 @@ def test_two_candidates_on_the_same_lab_get_isolated_deployments(client, db_sess
     assessment = _create_assessment(client, admin_token, [lab_slug])
 
     moe_token = _invite_and_accept(client, admin_token, assessment["id"], "moe@example.com", "moe")
-    larry_token = _invite_and_accept(client, admin_token, assessment["id"], "larry@example.com", "larry")
+    larry_token = _invite_and_accept(
+        client, admin_token, assessment["id"], "larry@example.com", "larry"
+    )
 
     moe_resp = client.post("/api/v1/assessments/me/start", headers=_auth(moe_token))
     assert moe_resp.status_code == 200, moe_resp.text

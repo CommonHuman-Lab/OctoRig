@@ -13,6 +13,7 @@ Flags:
     --reset     Delete all existing firerange challenges before importing.
     --lab       Only import one lab: breachsql | stingxss | vaultgate
 """
+
 from __future__ import annotations
 
 import argparse
@@ -27,8 +28,8 @@ _HERE = Path(__file__).resolve().parent
 _BACKEND = _HERE.parent
 _REPO_ROOT = _BACKEND.parent.parent  # OctoRig/
 
-sys.path.insert(0, str(_BACKEND))         # app.* imports
-sys.path.insert(0, str(_REPO_ROOT))       # labs.* imports (used below as direct path import)
+sys.path.insert(0, str(_BACKEND))  # app.* imports
+sys.path.insert(0, str(_REPO_ROOT))  # labs.* imports (used below as direct path import)
 
 # ── Registry imports (absolute path, no package __init__ needed) ──────────────
 import importlib.util as _ilu  # noqa: E402
@@ -50,13 +51,13 @@ _BREACHSQL_DIFF: dict[int, str] = {
     3: "medium",
     4: "medium",
     5: "hard",
-    6: "medium",   # PG tier-6 basics
-    7: "medium",   # PG tier-7 intermediate
-    8: "hard",     # PG tier-8 advanced
-    9: "hard",     # PG tier-9 legend
+    6: "medium",  # PG tier-6 basics
+    7: "medium",  # PG tier-7 intermediate
+    8: "hard",  # PG tier-8 advanced
+    9: "hard",  # PG tier-9 legend
     10: "medium",  # SQLite tier-10 basics
     11: "medium",  # SQLite tier-11 intermediate
-    12: "hard",    # SQLite tier-12 legend
+    12: "hard",  # SQLite tier-12 legend
 }
 
 _STINGXSS_DIFF: dict[int, str] = {
@@ -66,11 +67,11 @@ _STINGXSS_DIFF: dict[int, str] = {
     4: "medium",
     5: "hard",
     6: "hard",
-    7: "insane",   # CSP bypass
-    8: "insane",   # SSTI → XSS
-    9: "hard",     # GraphQL XSS
-    10: "hard",    # WebSocket XSS
-    11: "hard",    # DOM advanced
+    7: "insane",  # CSP bypass
+    8: "insane",  # SSTI → XSS
+    9: "hard",  # GraphQL XSS
+    10: "hard",  # WebSocket XSS
+    11: "hard",  # DOM advanced
 }
 
 _VAULTGATE_DIFF: dict[int, str] = {
@@ -81,7 +82,7 @@ _VAULTGATE_DIFF: dict[int, str] = {
     5: "hard",
     6: "hard",
     7: "hard",
-    8: "insane",   # JWT tampering
+    8: "insane",  # JWT tampering
 }
 
 
@@ -110,6 +111,7 @@ def _build_tags(technique: str, extra: list[str]) -> list[str]:
 
 # ── Per-lab builders ──────────────────────────────────────────────────────────
 
+
 def build_breachsql(raw: list[dict]) -> list[dict]:
     records = []
     for ch in raw:
@@ -118,7 +120,9 @@ def build_breachsql(raw: list[dict]) -> list[dict]:
         technique = ch.get("technique", "")
 
         # derive sub-category tag from id prefix
-        sub = "mysql" if cid.startswith("my") else "postgresql" if cid.startswith("pg") else "sqlite"
+        sub = (
+            "mysql" if cid.startswith("my") else "postgresql" if cid.startswith("pg") else "sqlite"
+        )
 
         rec: dict[str, Any] = {
             "slug": _slugify("breachsql", cid),
@@ -243,6 +247,7 @@ def build_vaultgate(raw: list[dict]) -> list[dict]:
 
 # ── Database insertion ────────────────────────────────────────────────────────
 
+
 def _import_to_db(records: list[dict], dry_run: bool, reset_prefix: str | None) -> None:
     from app.database import SessionLocal
     from app.models.challenge import (
@@ -257,11 +262,7 @@ def _import_to_db(records: list[dict], dry_run: bool, reset_prefix: str | None) 
     db = SessionLocal()
     try:
         if reset_prefix:
-            deleted = (
-                db.query(Challenge)
-                .filter(Challenge.slug.like(f"{reset_prefix}-%"))
-                .all()
-            )
+            deleted = db.query(Challenge).filter(Challenge.slug.like(f"{reset_prefix}-%")).all()
             if deleted:
                 print(f"  Deleting {len(deleted)} existing '{reset_prefix}' challenges…")
                 if not dry_run:
@@ -333,15 +334,21 @@ def _import_to_db(records: list[dict], dry_run: bool, reset_prefix: str | None) 
 
 LABS = {
     "breachsql": ("labs/firerange/core/registry.py", build_breachsql),
-    "stingxss":  ("labs/stingxss/core/registry.py",  build_stingxss),
-    "vaultgate": ("labs/vaultgate/core/registry.py",  build_vaultgate),
+    "stingxss": ("labs/stingxss/core/registry.py", build_stingxss),
+    "vaultgate": ("labs/vaultgate/core/registry.py", build_vaultgate),
 }
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--dry-run", action="store_true", help="Print actions without writing to DB")
-    parser.add_argument("--reset", action="store_true", help="Delete existing firerange challenges before import")
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument(
+        "--dry-run", action="store_true", help="Print actions without writing to DB"
+    )
+    parser.add_argument(
+        "--reset", action="store_true", help="Delete existing firerange challenges before import"
+    )
     parser.add_argument("--lab", choices=list(LABS), help="Import only one specific lab")
     args = parser.parse_args()
 

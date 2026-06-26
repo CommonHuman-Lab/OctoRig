@@ -55,10 +55,7 @@ def revoke_api_key(db: Session, user: User, key_id: int) -> None:
 
 def list_api_keys(db: Session, user: User) -> list[ApiKey]:
     return (
-        db.query(ApiKey)
-        .filter(ApiKey.user_id == user.id)
-        .order_by(ApiKey.created_at.desc())
-        .all()
+        db.query(ApiKey).filter(ApiKey.user_id == user.id).order_by(ApiKey.created_at.desc()).all()
     )
 
 
@@ -66,12 +63,16 @@ def verify_api_key(db: Session, raw_key: str) -> User | None:
     """Verify a raw key against stored hashes. Returns the owning User or None."""
     if not raw_key.startswith(_PREFIX):
         return None
-    prefix = raw_key[len(_PREFIX):len(_PREFIX) + 8]
+    prefix = raw_key[len(_PREFIX) : len(_PREFIX) + 8]
 
-    candidates = db.query(ApiKey).filter(
-        ApiKey.key_prefix == prefix,
-        ApiKey.is_active.is_(True),
-    ).all()
+    candidates = (
+        db.query(ApiKey)
+        .filter(
+            ApiKey.key_prefix == prefix,
+            ApiKey.is_active.is_(True),
+        )
+        .all()
+    )
 
     now = datetime.now(UTC)
     for key in candidates:

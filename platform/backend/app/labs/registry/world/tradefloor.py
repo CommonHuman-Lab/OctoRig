@@ -37,11 +37,23 @@ TRADEFLOOR_LAB: LabDefinition = {
             "skills": ["passive recon", "broken access control"],
             "points": 50,
             "flags": [
-                {"value": "FLAG{tf_fund_manager_found}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{tf_fund_manager_found}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Web servers publish a list of paths they'd prefer crawlers ignored. That list is public.", "cost": 0},
-                {"order_num": 2, "content": "Some of the restricted paths don't actually enforce authentication.", "cost": 50},
+                {
+                    "order_num": 1,
+                    "content": "Web servers publish a list of paths they'd prefer crawlers ignored. That list is public.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Some of the restricted paths don't actually enforce authentication.",
+                    "cost": 50,
+                },
             ],
         },
         {
@@ -60,12 +72,28 @@ TRADEFLOOR_LAB: LabDefinition = {
             "skills": ["UNION SELECT", "SQLite schema enumeration", "column-count detection"],
             "points": 300,
             "flags": [
-                {"value": "FLAG{tf_union_select_from_flags}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{tf_union_select_from_flags}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Enter an unusual character in the ticker search and observe the response.", "cost": 0},
-                {"order_num": 2, "content": "Column count must match before extending a query. Use ORDER BY to determine it.", "cost": 25},
-                {"order_num": 3, "content": "SELECT name FROM sqlite_master WHERE type='table' reveals what else is stored.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "Enter an unusual character in the ticker search and observe the response.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Column count must match before extending a query. Use ORDER BY to determine it.",
+                    "cost": 25,
+                },
+                {
+                    "order_num": 3,
+                    "content": "SELECT name FROM sqlite_master WHERE type='table' reveals what else is stored.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -85,12 +113,28 @@ TRADEFLOOR_LAB: LabDefinition = {
             "skills": ["SQLi auth bypass", "JWT", "API testing"],
             "points": 100,
             "flags": [
-                {"value": "FLAG{tf_api_token_injected}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{tf_api_token_injected}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "The API token endpoint is at /api/token. Try a POST with unusual username values.", "cost": 0},
-                {"order_num": 2, "content": "What if the username contained a character that changes how the query is interpreted?", "cost": 50},
-                {"order_num": 3, "content": "Once you have an admin token, look for a privileged API endpoint that returns the flag.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "The API token endpoint is at /api/token. Try a POST with unusual username values.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "What if the username contained a character that changes how the query is interpreted?",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Once you have an admin token, look for a privileged API endpoint that returns the flag.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -109,12 +153,28 @@ TRADEFLOOR_LAB: LabDefinition = {
             "skills": ["UNION SELECT", "credential extraction"],
             "points": 200,
             "flags": [
-                {"value": "FLAG{tf_users_table_dumped}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{tf_users_table_dumped}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "You already have an injection point. What other tables exist?", "cost": 0},
-                {"order_num": 2, "content": "Enumerate with sqlite_master. Look for a users or members table.", "cost": 50},
-                {"order_num": 3, "content": "The _flags table has a row called sqli-creds containing the answer.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "You already have an injection point. What other tables exist?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Enumerate with sqlite_master. Look for a users or members table.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "The _flags table has a row called sqli-creds containing the answer.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -132,12 +192,28 @@ TRADEFLOOR_LAB: LabDefinition = {
             "skills": ["reflected XSS", "basic payload construction"],
             "points": 100,
             "flags": [
-                {"value": "FLAG{tf_reflected_xss_fired}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{tf_reflected_xss_fired}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Enter some HTML into the search field. Does the page reflect it back?", "cost": 0},
-                {"order_num": 2, "content": "If your HTML renders, can you go further? The flag is in the browser's cookie jar.", "cost": 50},
-                {"order_num": 3, "content": "A script that reads document.cookie will find it.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "Enter some HTML into the search field. Does the page reflect it back?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "If your HTML renders, can you go further? The flag is in the browser's cookie jar.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "A script that reads document.cookie will find it.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -155,12 +231,28 @@ TRADEFLOOR_LAB: LabDefinition = {
             "skills": ["IDOR", "sequential ID enumeration"],
             "points": 150,
             "flags": [
-                {"value": "FLAG{tf_idor_order_memo}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{tf_idor_order_memo}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Log in and find the order detail URL. The ID is in the path.", "cost": 0},
-                {"order_num": 2, "content": "Try other IDs. The server may hand back orders belonging to different users.", "cost": 50},
-                {"order_num": 3, "content": "Check the admin's orders. A memo field on one of them contains the flag.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "Log in and find the order detail URL. The ID is in the path.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Try other IDs. The server may hand back orders belonging to different users.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Check the admin's orders. A memo field on one of them contains the flag.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -179,12 +271,28 @@ TRADEFLOOR_LAB: LabDefinition = {
             "skills": ["broken access control", "URL enumeration"],
             "points": 200,
             "flags": [
-                {"value": "FLAG{tf_bac_admin_user_detail}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{tf_bac_admin_user_detail}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Admin routes are under /admin/. Log in as any user and explore.", "cost": 0},
-                {"order_num": 2, "content": "The user detail page takes an ID. User IDs are sequential integers.", "cost": 50},
-                {"order_num": 3, "content": "Try /admin/users/1 while logged in as alice.p.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "Admin routes are under /admin/. Log in as any user and explore.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The user detail page takes an ID. User IDs are sequential integers.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Try /admin/users/1 while logged in as alice.p.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -204,12 +312,28 @@ TRADEFLOOR_LAB: LabDefinition = {
             "skills": ["JWT internals", "algorithm confusion", "API testing"],
             "points": 450,
             "flags": [
-                {"value": "FLAG{tf_jwt_alg_none_bypassed}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{tf_jwt_alg_none_bypassed}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Decode your JWT (base64url). What's in the header? Pay attention to the alg field.", "cost": 0},
-                {"order_num": 2, "content": "The server reads the algorithm from the token itself. What happens if you change it?", "cost": 75},
-                {"order_num": 3, "content": "Set alg to 'none', drop the signature, add role: admin to the payload. Call GET /api/admin/report as Bearer.", "cost": 100},
+                {
+                    "order_num": 1,
+                    "content": "Decode your JWT (base64url). What's in the header? Pay attention to the alg field.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The server reads the algorithm from the token itself. What happens if you change it?",
+                    "cost": 75,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Set alg to 'none', drop the signature, add role: admin to the payload. Call GET /api/admin/report as Bearer.",
+                    "cost": 100,
+                },
             ],
         },
         {
@@ -228,14 +352,29 @@ TRADEFLOOR_LAB: LabDefinition = {
             "skills": ["requests", "session handling", "sequential enumeration"],
             "points": 200,
             "flags": [
-                {"value": "FLAG{tf_python_idor_swept}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{tf_python_idor_swept}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "A loop over sequential numbers can reveal what manual clicking cannot.", "cost": 0},
-                {"order_num": 2, "content": "The portfolio endpoint is under /api/. Authenticated requests return different data than anonymous ones.", "cost": 50},
-                {"order_num": 3, "content": "Log in first with requests.Session(), then iterate /api/portfolio/<id> and inspect each response.", "cost": 100},
+                {
+                    "order_num": 1,
+                    "content": "A loop over sequential numbers can reveal what manual clicking cannot.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The portfolio endpoint is under /api/. Authenticated requests return different data than anonymous ones.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Log in first with requests.Session(), then iterate /api/portfolio/<id> and inspect each response.",
+                    "cost": 100,
+                },
             ],
         },
     ],
 }
-

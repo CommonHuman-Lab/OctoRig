@@ -20,9 +20,7 @@ def upgrade() -> None:
     op.create_index("ix_deployments_started_by_id", "deployments", ["started_by_id"])
 
     # instance_for_user_id has no index; used in per-user challenge instance lookups.
-    op.create_index(
-        "ix_deployments_instance_for_user_id", "deployments", ["instance_for_user_id"]
-    )
+    op.create_index("ix_deployments_instance_for_user_id", "deployments", ["instance_for_user_id"])
 
     # Composite index for the auto-destroy sweep (status + auto_destroy_at every 60s).
     op.create_index(

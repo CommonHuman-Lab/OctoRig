@@ -7,6 +7,7 @@ production; the autouse `no_redis` fixture in conftest.py swaps it for an
 in-memory fake, so these tests never touch a real Redis instance. No real
 DB, no real network, no real Docker, no real Redis — see tests/conftest.py.
 """
+
 import os
 
 from app.models.challenge import (
@@ -64,6 +65,7 @@ def _make_challenge(db_session, slug="test-chal", points=100, flag="FLAG{test}",
 
 # ── listing / detail ─────────────────────────────────────────────────────────
 
+
 def test_list_challenges_requires_authentication(client):
     resp = client.get("/api/v1/challenges/")
     assert resp.status_code == 401
@@ -97,6 +99,7 @@ def test_get_unknown_challenge_404(client):
 
 # ── flag submission ──────────────────────────────────────────────────────────
 
+
 def test_correct_flag_awards_points(client, db_session):
     _make_challenge(db_session, points=150, flag="FLAG{correct}")
     token = _register_and_login(client, "alice")
@@ -128,7 +131,9 @@ def test_resubmitting_after_solve_reports_already_solved(client, db_session):
     _make_challenge(db_session, flag="FLAG{correct}")
     token = _register_and_login(client, "alice")
 
-    client.post("/api/v1/challenges/test-chal/submit", json={"flag": "FLAG{correct}"}, headers=_auth(token))
+    client.post(
+        "/api/v1/challenges/test-chal/submit", json={"flag": "FLAG{correct}"}, headers=_auth(token)
+    )
     second = client.post(
         "/api/v1/challenges/test-chal/submit", json={"flag": "FLAG{correct}"}, headers=_auth(token)
     )
@@ -143,9 +148,15 @@ def test_second_solver_does_not_get_first_blood(client, db_session):
     alice_token = _register_and_login(client, "alice")
     bob_token = _register_and_login(client, "bob")
 
-    client.post("/api/v1/challenges/test-chal/submit", json={"flag": "FLAG{correct}"}, headers=_auth(alice_token))
+    client.post(
+        "/api/v1/challenges/test-chal/submit",
+        json={"flag": "FLAG{correct}"},
+        headers=_auth(alice_token),
+    )
     resp = client.post(
-        "/api/v1/challenges/test-chal/submit", json={"flag": "FLAG{correct}"}, headers=_auth(bob_token)
+        "/api/v1/challenges/test-chal/submit",
+        json={"flag": "FLAG{correct}"},
+        headers=_auth(bob_token),
     )
     assert resp.status_code == 200
     assert resp.json()["first_blood"] is False
@@ -180,8 +191,12 @@ def test_max_flag_attempts_enforced_when_configured(client, db_session):
     )
 
     token = _register_and_login(client, "alice")
-    client.post("/api/v1/challenges/test-chal/submit", json={"flag": "wrong1"}, headers=_auth(token))
-    client.post("/api/v1/challenges/test-chal/submit", json={"flag": "wrong2"}, headers=_auth(token))
+    client.post(
+        "/api/v1/challenges/test-chal/submit", json={"flag": "wrong1"}, headers=_auth(token)
+    )
+    client.post(
+        "/api/v1/challenges/test-chal/submit", json={"flag": "wrong2"}, headers=_auth(token)
+    )
 
     third = client.post(
         "/api/v1/challenges/test-chal/submit", json={"flag": "wrong3"}, headers=_auth(token)
@@ -190,6 +205,7 @@ def test_max_flag_attempts_enforced_when_configured(client, db_session):
 
 
 # ── hints ────────────────────────────────────────────────────────────────────
+
 
 def test_unlock_free_hint(client, db_session):
     _make_challenge(db_session, hint_cost=0)
@@ -216,7 +232,9 @@ def test_unlock_hint_deducts_points(client, db_session):
     _make_challenge(db_session, points=200, flag="FLAG{correct}", hint_cost=20)
     token = _register_and_login(client, "alice")
 
-    client.post("/api/v1/challenges/test-chal/submit", json={"flag": "FLAG{correct}"}, headers=_auth(token))
+    client.post(
+        "/api/v1/challenges/test-chal/submit", json={"flag": "FLAG{correct}"}, headers=_auth(token)
+    )
 
     ch = db_session.query(Challenge).filter_by(slug="test-chal").first()
     hint_id = db_session.query(ChallengeHint).filter_by(challenge_id=ch.id).first().id
@@ -229,6 +247,7 @@ def test_unlock_hint_deducts_points(client, db_session):
 
 
 # ── admin-only management ───────────────────────────────────────────────────
+
 
 def test_admin_list_all_requires_admin(client, db_session):
     _make_challenge(db_session)
@@ -253,6 +272,8 @@ def test_player_cannot_deactivate_challenge(client, db_session):
     player_token = _register_and_login(client, "alice")
 
     resp = client.patch(
-        "/api/v1/challenges/test-chal/active", json={"is_active": False}, headers=_auth(player_token)
+        "/api/v1/challenges/test-chal/active",
+        json={"is_active": False},
+        headers=_auth(player_token),
     )
     assert resp.status_code == 403

@@ -3,6 +3,7 @@
 """
 Complete database schema initialization with all tables, enums, indexes, and constraints needed for the application.
 """
+
 from collections.abc import Sequence
 
 import sqlalchemy as sa
@@ -17,78 +18,131 @@ depends_on: str | Sequence[str] | None = None
 
 def upgrade() -> None:
     deploymentstatus = sa.Enum(
-        "starting", "running", "stopping", "stopped", "error",
+        "starting",
+        "running",
+        "stopping",
+        "stopped",
+        "error",
         name="deploymentstatus",
     )
     deploymentvisibility = sa.Enum(
-        "private", "team", "public",
+        "private",
+        "team",
+        "public",
         name="deploymentvisibility",
     )
     teamrole = sa.Enum(
-        "owner", "manager", "member", "viewer",
+        "owner",
+        "manager",
+        "member",
+        "viewer",
         name="teamrole",
     )
     scheduledactiontype = sa.Enum(
-        "deploy", "destroy",
+        "deploy",
+        "destroy",
         name="scheduledactiontype",
     )
     scheduledactionstatus = sa.Enum(
-        "pending", "executing", "completed", "failed", "cancelled",
+        "pending",
+        "executing",
+        "completed",
+        "failed",
+        "cancelled",
         name="scheduledactionstatus",
     )
 
     challengetype = sa.Enum(
-        "flag", "mcq", "short_answer", "file_upload",
-        "dynamic_flag", "api", "web", "container",
+        "flag",
+        "mcq",
+        "short_answer",
+        "file_upload",
+        "dynamic_flag",
+        "api",
+        "web",
+        "container",
         name="challengetype",
     )
     challengedifficulty = sa.Enum(
-        "easy", "medium", "hard", "insane",
+        "easy",
+        "medium",
+        "hard",
+        "insane",
         name="challengedifficulty",
     )
     flagtype = sa.Enum(
-        "static", "dynamic", "per_user", "per_team",
+        "static",
+        "dynamic",
+        "per_user",
+        "per_team",
         name="flagtype",
     )
     scoretransactionsource = sa.Enum(
-        "challenge_solve", "badge_award", "hint_cost", "manual_adjust", "penalty",
+        "challenge_solve",
+        "badge_award",
+        "hint_cost",
+        "manual_adjust",
+        "penalty",
         name="scoretransactionsource",
     )
     eventstatus = sa.Enum(
-        "draft", "published", "running", "ended", "archived",
+        "draft",
+        "published",
+        "running",
+        "ended",
+        "archived",
         name="eventstatus",
     )
     eventvisibility = sa.Enum(
-        "public", "private", "unlisted",
+        "public",
+        "private",
+        "unlisted",
         name="eventvisibility",
     )
     eventscoringmode = sa.Enum(
-        "static", "dynamic",
+        "static",
+        "dynamic",
         name="eventscoringmode",
     )
     achievementruletype = sa.Enum(
-        "solve_count", "first_blood", "streak_days",
-        "category_complete", "points_threshold", "manual",
+        "solve_count",
+        "first_blood",
+        "streak_days",
+        "category_complete",
+        "points_threshold",
+        "manual",
         name="achievementruletype",
     )
     privacylevel = sa.Enum(
-        "public", "team_only", "private",
+        "public",
+        "team_only",
+        "private",
         name="privacylevel",
     )
     contenttype = sa.Enum(
-        "challenge", "lab",
+        "challenge",
+        "lab",
         name="contenttype",
     )
     contentstatus = sa.Enum(
-        "draft", "pending_review", "in_review", "approved", "published", "rejected",
+        "draft",
+        "pending_review",
+        "in_review",
+        "approved",
+        "published",
+        "rejected",
         name="contentstatus",
     )
     reviewverdict = sa.Enum(
-        "approved", "rejected", "needs_changes",
+        "approved",
+        "rejected",
+        "needs_changes",
         name="reviewverdict",
     )
     packagetype = sa.Enum(
-        "lab_pack", "challenge_pack", "exercise",
+        "lab_pack",
+        "challenge_pack",
+        "exercise",
         name="packagetype",
     )
 
@@ -222,7 +276,9 @@ def upgrade() -> None:
     op.create_table(
         "deployments",
         sa.Column("id", sa.Integer(), primary_key=True),
-        sa.Column("lab_template_id", sa.Integer(), sa.ForeignKey("lab_templates.id"), nullable=False),
+        sa.Column(
+            "lab_template_id", sa.Integer(), sa.ForeignKey("lab_templates.id"), nullable=False
+        ),
         sa.Column("started_by_id", sa.Integer(), sa.ForeignKey("users.id"), nullable=False),
         sa.Column("team_id", sa.Integer(), sa.ForeignKey("teams.id"), nullable=True),
         sa.Column("challenge_id", sa.Integer(), sa.ForeignKey("challenges.id"), nullable=True),
@@ -279,7 +335,9 @@ def upgrade() -> None:
         sa.Column("id", sa.Integer(), primary_key=True),
         sa.Column("user_id", sa.Integer(), sa.ForeignKey("users.id"), nullable=False),
         sa.Column("team_id", sa.Integer(), sa.ForeignKey("teams.id"), nullable=True),
-        sa.Column("lab_template_id", sa.Integer(), sa.ForeignKey("lab_templates.id"), nullable=True),
+        sa.Column(
+            "lab_template_id", sa.Integer(), sa.ForeignKey("lab_templates.id"), nullable=True
+        ),
         sa.Column("deployment_id", sa.Integer(), sa.ForeignKey("deployments.id"), nullable=True),
         sa.Column("action", scheduledactiontype, nullable=False),
         sa.Column("scheduled_at", sa.DateTime(timezone=True), nullable=False),
@@ -295,7 +353,12 @@ def upgrade() -> None:
     op.create_table(
         "challenge_flags",
         sa.Column("id", sa.Integer(), primary_key=True),
-        sa.Column("challenge_id", sa.Integer(), sa.ForeignKey("challenges.id", ondelete="CASCADE"), nullable=False),
+        sa.Column(
+            "challenge_id",
+            sa.Integer(),
+            sa.ForeignKey("challenges.id", ondelete="CASCADE"),
+            nullable=False,
+        ),
         sa.Column("flag_type", flagtype, nullable=False, server_default="static"),
         sa.Column("value", sa.Text(), nullable=True),
         sa.Column("regex_pattern", sa.Text(), nullable=True),
@@ -308,7 +371,12 @@ def upgrade() -> None:
     op.create_table(
         "challenge_hints",
         sa.Column("id", sa.Integer(), primary_key=True),
-        sa.Column("challenge_id", sa.Integer(), sa.ForeignKey("challenges.id", ondelete="CASCADE"), nullable=False),
+        sa.Column(
+            "challenge_id",
+            sa.Integer(),
+            sa.ForeignKey("challenges.id", ondelete="CASCADE"),
+            nullable=False,
+        ),
         sa.Column("order_num", sa.Integer(), nullable=False),
         sa.Column("content", sa.Text(), nullable=False),
         sa.Column("cost", sa.Integer(), nullable=False, server_default="0"),
@@ -319,7 +387,12 @@ def upgrade() -> None:
     op.create_table(
         "challenge_files",
         sa.Column("id", sa.Integer(), primary_key=True),
-        sa.Column("challenge_id", sa.Integer(), sa.ForeignKey("challenges.id", ondelete="CASCADE"), nullable=False),
+        sa.Column(
+            "challenge_id",
+            sa.Integer(),
+            sa.ForeignKey("challenges.id", ondelete="CASCADE"),
+            nullable=False,
+        ),
         sa.Column("filename", sa.String(255), nullable=False),
         sa.Column("storage_path", sa.String(512), nullable=False),
         sa.Column("size_bytes", sa.BigInteger(), nullable=True),
@@ -341,10 +414,20 @@ def upgrade() -> None:
         sa.Column("ip_address", sa.String(64), nullable=True),
         sa.Column("submitted_at", sa.DateTime(timezone=True), server_default=sa.func.now()),
     )
-    op.create_index("ix_challenge_submissions_challenge_id", "challenge_submissions", ["challenge_id"])
+    op.create_index(
+        "ix_challenge_submissions_challenge_id", "challenge_submissions", ["challenge_id"]
+    )
     op.create_index("ix_challenge_submissions_user_id", "challenge_submissions", ["user_id"])
-    op.create_index("ix_challenge_submissions_event_id_team_id", "challenge_submissions", ["event_id", "team_id"])
-    op.create_index("ix_challenge_submissions_submitted_at", "challenge_submissions", ["challenge_id", "submitted_at"])
+    op.create_index(
+        "ix_challenge_submissions_event_id_team_id",
+        "challenge_submissions",
+        ["event_id", "team_id"],
+    )
+    op.create_index(
+        "ix_challenge_submissions_submitted_at",
+        "challenge_submissions",
+        ["challenge_id", "submitted_at"],
+    )
     op.create_index(
         "uq_challenge_submissions_correct",
         "challenge_submissions",
@@ -356,7 +439,12 @@ def upgrade() -> None:
     op.create_table(
         "hint_unlocks",
         sa.Column("id", sa.Integer(), primary_key=True),
-        sa.Column("hint_id", sa.Integer(), sa.ForeignKey("challenge_hints.id", ondelete="CASCADE"), nullable=False),
+        sa.Column(
+            "hint_id",
+            sa.Integer(),
+            sa.ForeignKey("challenge_hints.id", ondelete="CASCADE"),
+            nullable=False,
+        ),
         sa.Column("user_id", sa.Integer(), sa.ForeignKey("users.id"), nullable=False),
         sa.Column("unlocked_at", sa.DateTime(timezone=True), server_default=sa.func.now()),
         sa.UniqueConstraint("hint_id", "user_id", name="uq_hint_unlocks_hint_user"),
@@ -374,8 +462,12 @@ def upgrade() -> None:
         sa.Column("points", sa.Integer(), nullable=False),
         sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.func.now()),
     )
-    op.create_index("ix_score_transactions_user_id_event", "score_transactions", ["user_id", "event_id"])
-    op.create_index("ix_score_transactions_team_id_event", "score_transactions", ["team_id", "event_id"])
+    op.create_index(
+        "ix_score_transactions_user_id_event", "score_transactions", ["user_id", "event_id"]
+    )
+    op.create_index(
+        "ix_score_transactions_team_id_event", "score_transactions", ["team_id", "event_id"]
+    )
     op.create_index("ix_score_transactions_created_at", "score_transactions", ["created_at"])
 
     op.create_table(
@@ -493,7 +585,9 @@ def upgrade() -> None:
     op.create_table(
         "content_reviews",
         sa.Column("id", sa.Integer(), primary_key=True),
-        sa.Column("submission_id", sa.Integer(), sa.ForeignKey("content_submissions.id"), nullable=False),
+        sa.Column(
+            "submission_id", sa.Integer(), sa.ForeignKey("content_submissions.id"), nullable=False
+        ),
         sa.Column("reviewer_id", sa.Integer(), sa.ForeignKey("users.id"), nullable=False),
         sa.Column("verdict", reviewverdict, nullable=False),
         sa.Column("comment", sa.Text(), nullable=True),
@@ -520,7 +614,9 @@ def upgrade() -> None:
     op.create_table(
         "package_installations",
         sa.Column("id", sa.Integer(), primary_key=True),
-        sa.Column("package_id", sa.Integer(), sa.ForeignKey("marketplace_packages.id"), nullable=False),
+        sa.Column(
+            "package_id", sa.Integer(), sa.ForeignKey("marketplace_packages.id"), nullable=False
+        ),
         sa.Column("installed_by", sa.Integer(), sa.ForeignKey("users.id"), nullable=False),
         sa.Column("installed_at", sa.DateTime(timezone=True), server_default=sa.func.now()),
     )

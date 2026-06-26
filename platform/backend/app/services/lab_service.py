@@ -6,6 +6,7 @@ LabService — orchestrates the lab registry, Docker runtime, and database.
 start_lab() and stop_lab() are called from BackgroundTasks so they run
 after the HTTP response has been sent. They must open their own DB session.
 """
+
 import os
 import time
 import uuid
@@ -25,6 +26,7 @@ from app.services.docker_runtime import docker_service
 from app.ws.manager import emit as ws_emit
 
 # --- Registry sync ---
+
 
 def sync_registry(db: Session) -> None:
     """
@@ -92,20 +94,24 @@ def sync_registry(db: Session) -> None:
                 db.flush()
 
                 for f in ch_def.get("flags", []):
-                    db.add(ChallengeFlag(
-                        challenge_id=ch.id,
-                        value=f["value"],
-                        flag_type=f.get("flag_type", "static"),
-                        case_sensitive=f.get("case_sensitive", False),
-                    ))
+                    db.add(
+                        ChallengeFlag(
+                            challenge_id=ch.id,
+                            value=f["value"],
+                            flag_type=f.get("flag_type", "static"),
+                            case_sensitive=f.get("case_sensitive", False),
+                        )
+                    )
 
                 for h in ch_def.get("hints", []):
-                    db.add(ChallengeHint(
-                        challenge_id=ch.id,
-                        order_num=h["order_num"],
-                        content=h["content"],
-                        cost=h.get("cost", 0),
-                    ))
+                    db.add(
+                        ChallengeHint(
+                            challenge_id=ch.id,
+                            order_num=h["order_num"],
+                            content=h["content"],
+                            cost=h.get("cost", 0),
+                        )
+                    )
             else:
                 lab_name_tag = lab_def["name"]
                 raw_tags = [t for t in ch_def.get("tags", ch.tags) if t != lab_name_tag]
@@ -139,19 +145,25 @@ def sync_registry(db: Session) -> None:
             db.add(ch)
             db.flush()
             for f in ch_def.get("flags", []):
-                db.add(ChallengeFlag(
-                    challenge_id=ch.id,
-                    value=f["value"],
-                    flag_type=f.get("flag_type", "static"),
-                    case_sensitive=f.get("case_sensitive", False),  # CTF default: case-insensitive
-                ))
+                db.add(
+                    ChallengeFlag(
+                        challenge_id=ch.id,
+                        value=f["value"],
+                        flag_type=f.get("flag_type", "static"),
+                        case_sensitive=f.get(
+                            "case_sensitive", False
+                        ),  # CTF default: case-insensitive
+                    )
+                )
             for h in ch_def.get("hints", []):
-                db.add(ChallengeHint(
-                    challenge_id=ch.id,
-                    order_num=h["order_num"],
-                    content=h["content"],
-                    cost=h.get("cost", 0),
-                ))
+                db.add(
+                    ChallengeHint(
+                        challenge_id=ch.id,
+                        order_num=h["order_num"],
+                        content=h["content"],
+                        cost=h.get("cost", 0),
+                    )
+                )
         else:
             ch.title = ch_def["title"]
             ch.description = ch_def["description"]
@@ -164,6 +176,7 @@ def sync_registry(db: Session) -> None:
 
 
 # --- Active deployment lookup ---
+
 
 def get_active_deployment(
     db: Session,
@@ -190,6 +203,7 @@ def get_active_deployment(
 
 
 # --- Lab lifecycle — called as BackgroundTasks ---
+
 
 def start_lab(deployment_id: int, user_id: int) -> None:
     """
@@ -227,7 +241,9 @@ def start_lab(deployment_id: int, user_id: int) -> None:
         db.close()
 
 
-def _do_start(db: Session, deployment: Deployment, template: LabTemplate, lab_def: LabDefinition) -> None:
+def _do_start(
+    db: Session, deployment: Deployment, template: LabTemplate, lab_def: LabDefinition
+) -> None:
     # 1. Build images for roles that have a build context
     repo_root = os.path.dirname(settings.labs_root)  # /octorig
     for role, rel_path in lab_def["build_contexts"].items():
@@ -295,7 +311,9 @@ def _do_start(db: Session, deployment: Deployment, template: LabTemplate, lab_de
     # 6. Wait for all containers to report 'running'
     deadline = time.time() + 120
     while time.time() < deadline:
-        if all(docker_service.get_container_status(n) == "running" for n in deployment.container_names):
+        if all(
+            docker_service.get_container_status(n) == "running" for n in deployment.container_names
+        ):
             break
         time.sleep(2)
 
@@ -305,7 +323,9 @@ def _do_start(db: Session, deployment: Deployment, template: LabTemplate, lab_de
 
     # 8. VulnAD post-start exec
     if template.slug == "vulnad":
-        docker_service.exec_in_container(_container_name_for_role(deployment, lab_def, "app"), "/usr/local/bin/_populate_ad")
+        docker_service.exec_in_container(
+            _container_name_for_role(deployment, lab_def, "app"), "/usr/local/bin/_populate_ad"
+        )
 
     # 9. Mark running
     deployment.status = DeploymentStatus.RUNNING
@@ -313,12 +333,15 @@ def _do_start(db: Session, deployment: Deployment, template: LabTemplate, lab_de
     deployment.started_at = datetime.now(UTC)
     db.commit()
 
-    ws_emit("deployment.update", {
-        "id": deployment.id,
-        "lab_template_id": template.id,
-        "lab_name": template.name,
-        "status": "running",
-    })
+    ws_emit(
+        "deployment.update",
+        {
+            "id": deployment.id,
+            "lab_template_id": template.id,
+            "lab_name": template.name,
+            "status": "running",
+        },
+    )
 
     write_audit(
         db,
@@ -358,12 +381,15 @@ def stop_lab(deployment_id: int, user_id: int, remove_volumes: bool = False) -> 
         deployment.stopped_at = datetime.now(UTC)
         db.commit()
 
-        ws_emit("deployment.update", {
-            "id": deployment.id,
-            "lab_template_id": template.id if template else None,
-            "lab_name": template.name if template else None,
-            "status": "stopped",
-        })
+        ws_emit(
+            "deployment.update",
+            {
+                "id": deployment.id,
+                "lab_template_id": template.id if template else None,
+                "lab_name": template.name if template else None,
+                "status": "stopped",
+            },
+        )
 
         write_audit(
             db,
@@ -422,11 +448,14 @@ def purge_deployment(db: Session, deployment_id: int, user_id: int) -> None:
     db.delete(deployment)
     db.commit()
 
-    ws_emit("deployment.update", {
-        "id": deployment_id,
-        "lab_template_id": template.id if template else None,
-        "status": "removed",
-    })
+    ws_emit(
+        "deployment.update",
+        {
+            "id": deployment_id,
+            "lab_template_id": template.id if template else None,
+            "status": "removed",
+        },
+    )
 
 
 def reset_lab(deployment_id: int, user_id: int) -> None:
@@ -476,8 +505,10 @@ def reset_lab(deployment_id: int, user_id: int) -> None:
 
 # --- Helpers ---
 
+
 def _get_challenge_slug(db: Session, challenge_id: int) -> str:
     from app.models.challenge import Challenge
+
     ch = db.get(Challenge, challenge_id)
     return ch.slug if ch else str(challenge_id)
 
@@ -486,12 +517,15 @@ def _fail(db: Session, deployment: Deployment, message: str) -> None:
     deployment.status = DeploymentStatus.ERROR
     deployment.error_message = message
     db.commit()
-    ws_emit("deployment.update", {
-        "id": deployment.id,
-        "lab_template_id": deployment.lab_template_id,
-        "status": "error",
-        "error_message": message,
-    })
+    ws_emit(
+        "deployment.update",
+        {
+            "id": deployment.id,
+            "lab_template_id": deployment.lab_template_id,
+            "status": "error",
+            "error_message": message,
+        },
+    )
 
 
 def _container_name_for_role(deployment: Deployment, lab_def: LabDefinition, role: str) -> str:
@@ -504,7 +538,9 @@ def _container_name_for_role(deployment: Deployment, lab_def: LabDefinition, rol
     return names[idx]
 
 
-def _volumes_for_role(deployment: Deployment, lab_def: LabDefinition, role: str) -> dict[str, dict[str, str]]:
+def _volumes_for_role(
+    deployment: Deployment, lab_def: LabDefinition, role: str
+) -> dict[str, dict[str, str]]:
     """Mount score volumes only on the app container."""
     if role != "app":
         return {}

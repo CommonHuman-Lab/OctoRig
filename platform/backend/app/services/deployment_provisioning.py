@@ -8,6 +8,7 @@ Used by app/api/deployments.py, app/api/assessments.py, and
 app/worker/tasks.py — each previously built the Deployment row inline with
 slightly different (and collision-prone) logic.
 """
+
 import copy
 from datetime import datetime
 from typing import Any

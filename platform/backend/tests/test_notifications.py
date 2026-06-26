@@ -5,6 +5,7 @@ Tests for /api/v1/notifications/* — listing, read/unread state, ownership
 boundaries on delete, and preference-based suppression. No real DB, no real
 network — see tests/conftest.py.
 """
+
 from app.models.notification import Notification
 
 PASSWORD = "StrongPassw0rd!"
@@ -37,12 +38,14 @@ def _add_notification(db_session, user_id, type_="generic", title="Hello"):
 
 # ── access control ───────────────────────────────────────────────────────────
 
+
 def test_notifications_require_authentication(client):
     assert client.get("/api/v1/notifications/").status_code == 401
     assert client.get("/api/v1/notifications/unread-count").status_code == 401
 
 
 # ── listing ──────────────────────────────────────────────────────────────────
+
 
 def test_list_returns_only_own_notifications(client, db_session):
     alice_token = _register_and_login(client, "alice")
@@ -81,6 +84,7 @@ def test_unread_count(client, db_session):
 
 
 # ── read state ───────────────────────────────────────────────────────────────
+
 
 def test_mark_single_notification_read(client, db_session):
     token = _register_and_login(client, "alice")
@@ -124,6 +128,7 @@ def test_mark_all_read_only_affects_caller(client, db_session):
 
 # ── delete / ownership ──────────────────────────────────────────────────────
 
+
 def test_delete_own_notification(client, db_session):
     token = _register_and_login(client, "alice")
     n = _add_notification(db_session, _user_id(client, token))
@@ -145,6 +150,7 @@ def test_cannot_delete_someone_elses_notification(client, db_session):
 
 
 # ── preferences ──────────────────────────────────────────────────────────────
+
 
 def test_get_preferences_creates_sane_defaults(client):
     token = _register_and_login(client, "alice")
@@ -173,7 +179,9 @@ def test_disabling_in_app_suppresses_new_notifications(client):
     """End-to-end via the real notification-producing path (team invites),
     not a direct DB insert — proves the preference actually gates delivery."""
     owner_token = _register_and_login(client, "alice")
-    team = client.post("/api/v1/teams/", json={"name": "Red Team"}, headers=_auth(owner_token)).json()
+    team = client.post(
+        "/api/v1/teams/", json={"name": "Red Team"}, headers=_auth(owner_token)
+    ).json()
 
     member_token = _register_and_login(client, "bob")
     client.patch(
@@ -193,7 +201,9 @@ def test_disabling_in_app_suppresses_new_notifications(client):
 
 def test_event_filter_suppresses_specific_notification_type(client):
     owner_token = _register_and_login(client, "alice")
-    team = client.post("/api/v1/teams/", json={"name": "Red Team"}, headers=_auth(owner_token)).json()
+    team = client.post(
+        "/api/v1/teams/", json={"name": "Red Team"}, headers=_auth(owner_token)
+    ).json()
 
     member_token = _register_and_login(client, "bob")
     client.patch(

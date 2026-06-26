@@ -4,6 +4,7 @@
 placeholder substitution used in challenge text and access_info, since the
 registry no longer hardcodes a lab's IP (each deployment gets its own).
 """
+
 from app.models.deployment import Deployment, DeploymentStatus
 from app.models.lab_template import LabTemplate
 from app.models.user import User
@@ -36,14 +37,16 @@ def test_render_target_text_not_running_drops_backticks_and_links_to_lab(client,
 def test_render_target_text_running_substitutes_real_ip_and_keeps_path(client, db_session):
     user = _user(db_session)
     template = _template(db_session)
-    db_session.add(Deployment(
-        lab_template_id=template.id,
-        started_by_id=user.id,
-        status=DeploymentStatus.RUNNING,
-        container_names=[],
-        subnet="10.90.5.0/24",
-        app_ip="10.90.5.2",
-    ))
+    db_session.add(
+        Deployment(
+            lab_template_id=template.id,
+            started_by_id=user.id,
+            status=DeploymentStatus.RUNNING,
+            container_names=[],
+            subnet="10.90.5.0/24",
+            app_ip="10.90.5.2",
+        )
+    )
     db_session.commit()
 
     text = "**Target:** `http://{container_ip}/login`"

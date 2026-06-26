@@ -36,8 +36,16 @@ GOLDENACE_LAB: LabDefinition = {
             "skills": [],
             "flags": [],
             "hints": [
-                {"order_num": 1, "content": "Web servers publish a list of paths they'd prefer crawlers ignored. That list is itself public.", "cost": 0},
-                {"order_num": 2, "content": "Some of the restricted paths don't actually require authentication. Try each one.", "cost": 25},
+                {
+                    "order_num": 1,
+                    "content": "Web servers publish a list of paths they'd prefer crawlers ignored. That list is itself public.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Some of the restricted paths don't actually require authentication. Try each one.",
+                    "cost": 25,
+                },
             ],
         },
         {
@@ -56,9 +64,21 @@ GOLDENACE_LAB: LabDefinition = {
             "skills": [],
             "flags": [],
             "hints": [
-                {"order_num": 1, "content": "What happens when you put special characters in the promo code field?", "cost": 0},
-                {"order_num": 2, "content": "The injection takes you to the database. Use sqlite_master to see what tables exist.", "cost": 50},
-                {"order_num": 3, "content": "UNION SELECT against a hidden table. Column count must match the original query.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "What happens when you put special characters in the promo code field?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The injection takes you to the database. Use sqlite_master to see what tables exist.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "UNION SELECT against a hidden table. Column count must match the original query.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -77,9 +97,21 @@ GOLDENACE_LAB: LabDefinition = {
             "skills": [],
             "flags": [],
             "hints": [
-                {"order_num": 1, "content": "Enter an unusual character in the search. What does the response tell you about how it's processed?", "cost": 0},
-                {"order_num": 2, "content": "The query uses a LIKE clause. What happens when you close it early?", "cost": 50},
-                {"order_num": 3, "content": "UNION SELECT to pivot into a hidden table. Match the column count of the users query.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "Enter an unusual character in the search. What does the response tell you about how it's processed?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The query uses a LIKE clause. What happens when you close it early?",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "UNION SELECT to pivot into a hidden table. Match the column count of the users query.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -98,9 +130,21 @@ GOLDENACE_LAB: LabDefinition = {
             "skills": [],
             "flags": [],
             "hints": [
-                {"order_num": 1, "content": "Post a message with some HTML in it. Does the chat render it?", "cost": 0},
-                {"order_num": 2, "content": "If HTML renders, so does JavaScript. The page sets a cookie when it loads.", "cost": 50},
-                {"order_num": 3, "content": "Not all cookies have the HttpOnly flag. Some are readable from JavaScript.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "Post a message with some HTML in it. Does the chat render it?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "If HTML renders, so does JavaScript. The page sets a cookie when it loads.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Not all cookies have the HttpOnly flag. Some are readable from JavaScript.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -119,8 +163,16 @@ GOLDENACE_LAB: LabDefinition = {
             "skills": [],
             "flags": [],
             "hints": [
-                {"order_num": 1, "content": "Room numbers are sequential integers in the URL.", "cost": 0},
-                {"order_num": 2, "content": "Start from room 1. Game history memos sometimes contain more than scores.", "cost": 50},
+                {
+                    "order_num": 1,
+                    "content": "Room numbers are sequential integers in the URL.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Start from room 1. Game history memos sometimes contain more than scores.",
+                    "cost": 50,
+                },
             ],
         },
         {
@@ -139,8 +191,16 @@ GOLDENACE_LAB: LabDefinition = {
             "skills": [],
             "flags": [],
             "hints": [
-                {"order_num": 1, "content": "Intercept the bet submission. What fields are in the POST body?", "cost": 0},
-                {"order_num": 2, "content": "The bet field accepts numbers. Explore its boundaries — in both directions.", "cost": 50},
+                {
+                    "order_num": 1,
+                    "content": "Intercept the bet submission. What fields are in the POST body?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The bet field accepts numbers. Explore its boundaries — in both directions.",
+                    "cost": 50,
+                },
             ],
         },
         {
@@ -159,8 +219,16 @@ GOLDENACE_LAB: LabDefinition = {
             "skills": [],
             "flags": [],
             "hints": [
-                {"order_num": 1, "content": "Register a regular account and navigate to /admin.", "cost": 0},
-                {"order_num": 2, "content": "The flag is displayed on the admin panel page.", "cost": 25},
+                {
+                    "order_num": 1,
+                    "content": "Register a regular account and navigate to /admin.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The flag is displayed on the admin panel page.",
+                    "cost": 25,
+                },
             ],
         },
         {
@@ -179,8 +247,16 @@ GOLDENACE_LAB: LabDefinition = {
             "skills": [],
             "flags": [],
             "hints": [
-                {"order_num": 1, "content": "The path to the VIP area is listed in a file crawlers are told to avoid.", "cost": 0},
-                {"order_num": 2, "content": "Log in as any user and request the path directly.", "cost": 25},
+                {
+                    "order_num": 1,
+                    "content": "The path to the VIP area is listed in a file crawlers are told to avoid.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Log in as any user and request the path directly.",
+                    "cost": 25,
+                },
             ],
         },
         {
@@ -199,8 +275,16 @@ GOLDENACE_LAB: LabDefinition = {
             "skills": [],
             "flags": [],
             "hints": [
-                {"order_num": 1, "content": "Redeem a valid promo code. Now try redeeming it again with the same account.", "cost": 0},
-                {"order_num": 2, "content": "The system tracks total redemptions across all users, but not per-user redemptions.", "cost": 50},
+                {
+                    "order_num": 1,
+                    "content": "Redeem a valid promo code. Now try redeeming it again with the same account.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The system tracks total redemptions across all users, but not per-user redemptions.",
+                    "cost": 50,
+                },
             ],
         },
         {
@@ -220,14 +304,29 @@ GOLDENACE_LAB: LabDefinition = {
             "skills": ["requests", "session handling", "concurrency", "state manipulation"],
             "points": 200,
             "flags": [
-                {"value": "FLAG{ga_python_logic_edge}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{ga_python_logic_edge}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Two actions that should be mutually exclusive can both succeed if they arrive close enough together.", "cost": 0},
-                {"order_num": 2, "content": "Look at the bet and withdraw endpoints. What happens if both fire before the balance updates?", "cost": 50},
-                {"order_num": 3, "content": "Use threading.Thread or concurrent.futures to send requests in parallel within the same session.", "cost": 100},
+                {
+                    "order_num": 1,
+                    "content": "Two actions that should be mutually exclusive can both succeed if they arrive close enough together.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Look at the bet and withdraw endpoints. What happens if both fire before the balance updates?",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Use threading.Thread or concurrent.futures to send requests in parallel within the same session.",
+                    "cost": 100,
+                },
             ],
         },
     ],
 }
-

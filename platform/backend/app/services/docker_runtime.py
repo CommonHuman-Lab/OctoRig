@@ -14,6 +14,7 @@ Each public method has a direct counterpart in labs/_common.sh:
   wait_for_port    ↔  wait_for_port()
   stream_logs      ↔  docker logs -f
 """
+
 import asyncio
 import socket
 import time
@@ -63,9 +64,7 @@ class DockerRuntimeService:
             name,
             driver="bridge",
             internal=internal,
-            ipam=docker.types.IPAMConfig(
-                pool_configs=[docker.types.IPAMPool(subnet=subnet)]
-            ),
+            ipam=docker.types.IPAMConfig(pool_configs=[docker.types.IPAMPool(subnet=subnet)]),
         )
 
     def remove_network(self, name: str) -> None:
@@ -127,7 +126,7 @@ class DockerRuntimeService:
     _DEFAULT_LIMITS: dict = {
         "mem_limit": "512m",
         "memswap_limit": "512m",  # equal to mem_limit disables swap
-        "cpu_quota": 50_000,      # 50% of one CPU core (cpu_period defaults to 100 000)
+        "cpu_quota": 50_000,  # 50% of one CPU core (cpu_period defaults to 100 000)
         "pids_limit": 256,
     }
 
@@ -152,9 +151,9 @@ class DockerRuntimeService:
 
         networking_config = None
         if ip:
-            networking_config = self._get_client().api.create_networking_config({
-                network: self._get_client().api.create_endpoint_config(ipv4_address=ip)
-            })
+            networking_config = self._get_client().api.create_networking_config(
+                {network: self._get_client().api.create_endpoint_config(ipv4_address=ip)}
+            )
 
         limits = {**self._DEFAULT_LIMITS, **(resource_limits or {})}
 
@@ -218,12 +217,14 @@ class DockerRuntimeService:
         containers = self._get_client().containers.list(all=True, filters={"name": "octorig-"})
         result = []
         for c in containers:
-            result.append({
-                "name": c.name,
-                "status": c.status,
-                "image": c.image.tags[0] if c.image.tags else c.image.short_id,
-                "created": c.attrs.get("Created", ""),
-            })
+            result.append(
+                {
+                    "name": c.name,
+                    "status": c.status,
+                    "image": c.image.tags[0] if c.image.tags else c.image.short_id,
+                    "created": c.attrs.get("Created", ""),
+                }
+            )
         return result
 
     # --- Port polling ---

@@ -10,6 +10,7 @@ from app.schemas.base import ORMModel
 
 # --- Assessment ---
 
+
 class AssessmentCreate(BaseModel):
     name: str = Field(..., min_length=1, max_length=255)
     slug: str | None = Field(None, max_length=128)
@@ -94,8 +95,10 @@ class AssessmentInviteWithProgress(AssessmentInviteResponse):
 
 # --- Candidate-facing ---
 
+
 class InviteLandingResponse(BaseModel):
     """Public info shown on the invite landing page — no internal slugs exposed."""
+
     assessment_name: str
     company_name: str | None
     company_logo_url: str | None
@@ -130,6 +133,7 @@ class CandidateAssessmentStatus(BaseModel):
 
 # --- Report ---
 
+
 class ReportSubmit(BaseModel):
     content: str = Field(..., min_length=1)
 
@@ -141,6 +145,7 @@ class ReportResponse(ORMModel):
 
 
 # --- Invite accept (registration flow) ---
+
 
 class InviteAcceptRegister(BaseModel):
     username: str = Field(..., min_length=3, max_length=64)

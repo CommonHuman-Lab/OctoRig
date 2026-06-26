@@ -36,8 +36,16 @@ LIMELIGHT_LAB: LabDefinition = {
             "skills": [],
             "flags": [],
             "hints": [
-                {"order_num": 1, "content": "Every web server's first secret lives at a well-known path in the root.", "cost": 0},
-                {"order_num": 2, "content": "One of the disallowed paths responds to authenticated users with internal status information and something extra.", "cost": 25},
+                {
+                    "order_num": 1,
+                    "content": "Every web server's first secret lives at a well-known path in the root.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "One of the disallowed paths responds to authenticated users with internal status information and something extra.",
+                    "cost": 25,
+                },
             ],
         },
         {
@@ -56,9 +64,21 @@ LIMELIGHT_LAB: LabDefinition = {
             "skills": [],
             "flags": [],
             "hints": [
-                {"order_num": 1, "content": "Try unusual characters in the search. Does the error reveal how your input is being used?", "cost": 0},
-                {"order_num": 2, "content": "The search wraps your input in a string comparison. Closing that string lets you append your own query.", "cost": 50},
-                {"order_num": 3, "content": "Use UNION SELECT — match the column count of the movies query and pivot to the schema tables.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "Try unusual characters in the search. Does the error reveal how your input is being used?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The search wraps your input in a string comparison. Closing that string lets you append your own query.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Use UNION SELECT — match the column count of the movies query and pivot to the schema tables.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -77,9 +97,21 @@ LIMELIGHT_LAB: LabDefinition = {
             "skills": [],
             "flags": [],
             "hints": [
-                {"order_num": 1, "content": "Try putting a special character in the gift code field. What does the response look like?", "cost": 0},
-                {"order_num": 2, "content": "The code field goes straight into a WHERE clause. Enumerate the database schema to find what other tables exist.", "cost": 50},
-                {"order_num": 3, "content": "UNION SELECT into a hidden table. Match the column count of the gift card query.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "Try putting a special character in the gift code field. What does the response look like?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The code field goes straight into a WHERE clause. Enumerate the database schema to find what other tables exist.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "UNION SELECT into a hidden table. Match the column count of the gift card query.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -98,8 +130,16 @@ LIMELIGHT_LAB: LabDefinition = {
             "skills": [],
             "flags": [],
             "hints": [
-                {"order_num": 1, "content": "Check /openapi.json — the spec lists every available route including newer v1 endpoints.", "cost": 0},
-                {"order_num": 2, "content": "The review endpoint uses an f-string SQL query. The path parameter is the injection point.", "cost": 50},
+                {
+                    "order_num": 1,
+                    "content": "Check /openapi.json — the spec lists every available route including newer v1 endpoints.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The review endpoint uses an f-string SQL query. The path parameter is the injection point.",
+                    "cost": 50,
+                },
             ],
         },
         {
@@ -118,8 +158,16 @@ LIMELIGHT_LAB: LabDefinition = {
             "skills": [],
             "flags": [],
             "hints": [
-                {"order_num": 1, "content": "Review text is rendered with no output encoding. A script tag in a review runs for every visitor.", "cost": 0},
-                {"order_num": 2, "content": "Check what cookies are present when the movie page loads. Not all of them carry the HttpOnly flag.", "cost": 25},
+                {
+                    "order_num": 1,
+                    "content": "Review text is rendered with no output encoding. A script tag in a review runs for every visitor.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Check what cookies are present when the movie page loads. Not all of them carry the HttpOnly flag.",
+                    "cost": 25,
+                },
             ],
         },
         {
@@ -138,8 +186,16 @@ LIMELIGHT_LAB: LabDefinition = {
             "skills": [],
             "flags": [],
             "hints": [
-                {"order_num": 1, "content": "Booking IDs are sequential integers. Start from 1.", "cost": 0},
-                {"order_num": 2, "content": "The confirmation code field on the first booking contains something unusual.", "cost": 25},
+                {
+                    "order_num": 1,
+                    "content": "Booking IDs are sequential integers. Start from 1.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The confirmation code field on the first booking contains something unusual.",
+                    "cost": 25,
+                },
             ],
         },
         {
@@ -158,7 +214,11 @@ LIMELIGHT_LAB: LabDefinition = {
             "skills": [],
             "flags": [],
             "hints": [
-                {"order_num": 1, "content": "Register a regular account and navigate to the path listed in robots.txt.", "cost": 0},
+                {
+                    "order_num": 1,
+                    "content": "Register a regular account and navigate to the path listed in robots.txt.",
+                    "cost": 0,
+                },
             ],
         },
         {
@@ -177,8 +237,16 @@ LIMELIGHT_LAB: LabDefinition = {
             "skills": [],
             "flags": [],
             "hints": [
-                {"order_num": 1, "content": "Try submitting `{{ 7*7 }}` in the preview body. If you see 49, the server is evaluating your input.", "cost": 0},
-                {"order_num": 2, "content": "The server-side context exposes internal application state. What objects are available in the template?", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "Try submitting `{{ 7*7 }}` in the preview body. If you see 49, the server is evaluating your input.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The server-side context exposes internal application state. What objects are available in the template?",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -197,8 +265,16 @@ LIMELIGHT_LAB: LabDefinition = {
             "skills": [],
             "flags": [],
             "hints": [
-                {"order_num": 1, "content": "The profile form shows display_name, email, and password — but the endpoint accepts every user column.", "cost": 0},
-                {"order_num": 2, "content": "After updating your own profile with extra fields, an authenticated API endpoint will unlock. Check /api/v1/.", "cost": 50},
+                {
+                    "order_num": 1,
+                    "content": "The profile form shows display_name, email, and password — but the endpoint accepts every user column.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "After updating your own profile with extra fields, an authenticated API endpoint will unlock. Check /api/v1/.",
+                    "cost": 50,
+                },
             ],
         },
         {
@@ -217,7 +293,11 @@ LIMELIGHT_LAB: LabDefinition = {
             "skills": [],
             "flags": [],
             "hints": [
-                {"order_num": 1, "content": "robots.txt lists several disallowed paths. One of them needs no credentials at all.", "cost": 0},
+                {
+                    "order_num": 1,
+                    "content": "robots.txt lists several disallowed paths. One of them needs no credentials at all.",
+                    "cost": 0,
+                },
             ],
         },
         {
@@ -236,14 +316,29 @@ LIMELIGHT_LAB: LabDefinition = {
             "skills": ["requests", "threading", "session handling", "race condition exploitation"],
             "points": 300,
             "flags": [
-                {"value": "FLAG{ll_python_race_booked}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{ll_python_race_booked}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "The seat limit is checked at read time. What if two writes land before either check completes?", "cost": 0},
-                {"order_num": 2, "content": "The booking endpoint is POST /api/bookings. The seat_count check happens in the request handler, not a transaction.", "cost": 50},
-                {"order_num": 3, "content": "Fire 10+ booking requests for the same fully-booked show in parallel threads sharing one session. Inspect the responses — one may carry the flag.", "cost": 100},
+                {
+                    "order_num": 1,
+                    "content": "The seat limit is checked at read time. What if two writes land before either check completes?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The booking endpoint is POST /api/bookings. The seat_count check happens in the request handler, not a transaction.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Fire 10+ booking requests for the same fully-booked show in parallel threads sharing one session. Inspect the responses — one may carry the flag.",
+                    "cost": 100,
+                },
             ],
         },
     ],
 }
-

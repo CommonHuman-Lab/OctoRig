@@ -37,12 +37,28 @@ SMARTGRIDOPS_LAB: LabDefinition = {
             "skills": ["anonymous FTP", "config harvesting"],
             "points": 50,
             "flags": [
-                {"value": "FLAG{sgo_recon_ftp_config_leak}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{sgo_recon_ftp_config_leak}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "The FTP service is on port 21. Try connecting anonymously — no credentials required.", "cost": 0},
-                {"order_num": 2, "content": "Browse the pub/ directory. There is more than firmware in there.", "cost": 25},
-                {"order_num": 3, "content": "Download scada_config.txt. Read it carefully — all the way to the end.", "cost": 50},
+                {
+                    "order_num": 1,
+                    "content": "The FTP service is on port 21. Try connecting anonymously — no credentials required.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Browse the pub/ directory. There is more than firmware in there.",
+                    "cost": 25,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Download scada_config.txt. Read it carefully — all the way to the end.",
+                    "cost": 50,
+                },
             ],
         },
         {
@@ -63,12 +79,28 @@ SMARTGRIDOPS_LAB: LabDefinition = {
             "skills": ["SQL injection", "auth bypass"],
             "points": 100,
             "flags": [
-                {"value": "FLAG{sgo_sqli_login_bypassed}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{sgo_sqli_login_bypassed}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Try a special character in the username field. Does the server behave differently?", "cost": 0},
-                {"order_num": 2, "content": "A single quote breaks the query. A comment character after the username silences the password check.", "cost": 50},
-                {"order_num": 3, "content": "Username: admin'-- with any password. After logging in, inspect the response headers on /admin.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "Try a special character in the username field. Does the server behave differently?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "A single quote breaks the query. A comment character after the username silences the password check.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Username: admin'-- with any password. After logging in, inspect the response headers on /admin.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -89,12 +121,28 @@ SMARTGRIDOPS_LAB: LabDefinition = {
             "skills": ["IDOR", "object-level access control"],
             "points": 100,
             "flags": [
-                {"value": "FLAG{sgo_idor_zone_secret_note}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{sgo_idor_zone_secret_note}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Log in as any operator. Navigate to the Zones section and look at the URL structure.", "cost": 0},
-                {"order_num": 2, "content": "Zone IDs are sequential integers. Your account's zone may not be zone 4.", "cost": 25},
-                {"order_num": 3, "content": "Browse to /zones/4. The restricted notes field contains the flag.", "cost": 50},
+                {
+                    "order_num": 1,
+                    "content": "Log in as any operator. Navigate to the Zones section and look at the URL structure.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Zone IDs are sequential integers. Your account's zone may not be zone 4.",
+                    "cost": 25,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Browse to /zones/4. The restricted notes field contains the flag.",
+                    "cost": 50,
+                },
             ],
         },
         {
@@ -114,12 +162,28 @@ SMARTGRIDOPS_LAB: LabDefinition = {
             "skills": ["API token reuse", "operator enumeration"],
             "points": 200,
             "flags": [
-                {"value": "FLAG{sgo_idor_operator_token_exposed}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{sgo_idor_operator_token_exposed}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "The FTP config file contains two API tokens. One is for field devices, one is for admin.", "cost": 0},
-                {"order_num": 2, "content": "The admin API endpoint is /api/admin/operators. It requires an X-Device-Token header or ?token= query param.", "cost": 50},
-                {"order_num": 3, "content": "Call GET /api/admin/operators?token=<admin_token>. Look at the notes field of operator ID 1.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "The FTP config file contains two API tokens. One is for field devices, one is for admin.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The admin API endpoint is /api/admin/operators. It requires an X-Device-Token header or ?token= query param.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Call GET /api/admin/operators?token=<admin_token>. Look at the notes field of operator ID 1.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -139,12 +203,28 @@ SMARTGRIDOPS_LAB: LabDefinition = {
             "skills": ["SSRF", "internal endpoint discovery"],
             "points": 250,
             "flags": [
-                {"value": "FLAG{sgo_ssrf_internal_fetch}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{sgo_ssrf_internal_fetch}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "The poller at /devices/poll accepts any URL and fetches it server-side. Try pointing it at http://127.0.0.1/.", "cost": 0},
-                {"order_num": 2, "content": "There is an internal-only endpoint under /api/internal/ that refuses connections from outside.", "cost": 75},
-                {"order_num": 3, "content": "Fetch http://127.0.0.1/api/internal/ssrf-flag via the poller. The JSON response contains the flag.", "cost": 100},
+                {
+                    "order_num": 1,
+                    "content": "The poller at /devices/poll accepts any URL and fetches it server-side. Try pointing it at http://127.0.0.1/.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "There is an internal-only endpoint under /api/internal/ that refuses connections from outside.",
+                    "cost": 75,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Fetch http://127.0.0.1/api/internal/ssrf-flag via the poller. The JSON response contains the flag.",
+                    "cost": 100,
+                },
             ],
         },
         {
@@ -164,12 +244,28 @@ SMARTGRIDOPS_LAB: LabDefinition = {
             "skills": ["command injection", "shell metacharacters"],
             "points": 350,
             "flags": [
-                {"value": "FLAG{sgo_cmdi_device_reboot_rce}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{sgo_cmdi_device_reboot_rce}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Open any device detail page. The Reboot form has a target address field. Try adding shell separator characters.", "cost": 0},
-                {"order_num": 2, "content": "The target is passed to: ping -c 1 -W 1 <target> && echo ... — you can chain commands after the ping.", "cost": 75},
-                {"order_num": 3, "content": "Set target to: 127.0.0.1; cat /flag_cmdi.txt — the command output appears in the response.", "cost": 100},
+                {
+                    "order_num": 1,
+                    "content": "Open any device detail page. The Reboot form has a target address field. Try adding shell separator characters.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The target is passed to: ping -c 1 -W 1 <target> && echo ... — you can chain commands after the ping.",
+                    "cost": 75,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Set target to: 127.0.0.1; cat /flag_cmdi.txt — the command output appears in the response.",
+                    "cost": 100,
+                },
             ],
         },
         {
@@ -189,12 +285,28 @@ SMARTGRIDOPS_LAB: LabDefinition = {
             "skills": ["business logic abuse", "negative value injection"],
             "points": 200,
             "flags": [
-                {"value": "FLAG{sgo_business_logic_credit_overflow}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{sgo_business_logic_credit_overflow}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Log in and go to /credits. Try transferring credits to another operator. Now think about the amount field.", "cost": 0},
-                {"order_num": 2, "content": "The amount is a floating-point number. Explore both ends of its range.", "cost": 50},
-                {"order_num": 3, "content": "Transfer a large negative amount to any operator. Your balance grows. Once it exceeds 1,000,000 the flag appears.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "Log in and go to /credits. Try transferring credits to another operator. Now think about the amount field.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The amount is a floating-point number. Explore both ends of its range.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Transfer a large negative amount to any operator. Your balance grows. Once it exceeds 1,000,000 the flag appears.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -214,12 +326,28 @@ SMARTGRIDOPS_LAB: LabDefinition = {
             "skills": ["IoT command injection", "MQTT topic manipulation"],
             "points": 150,
             "flags": [
-                {"value": "FLAG{sgo_mqtt_topic_injection}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{sgo_mqtt_topic_injection}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Log in and go to /mqtt. The topic field is pre-filled with your zone. Try changing it.", "cost": 0},
-                {"order_num": 2, "content": "Publishing to another zone's command topic trips the broker ACL audit. Wildcards do the same.", "cost": 25},
-                {"order_num": 3, "content": "Change the topic to grid/zone/1/cmd (if you're not zone 1) and publish any payload. The flag appears on submission.", "cost": 50},
+                {
+                    "order_num": 1,
+                    "content": "Log in and go to /mqtt. The topic field is pre-filled with your zone. Try changing it.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Publishing to another zone's command topic trips the broker ACL audit. Wildcards do the same.",
+                    "cost": 25,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Change the topic to grid/zone/1/cmd (if you're not zone 1) and publish any payload. The flag appears on submission.",
+                    "cost": 50,
+                },
             ],
         },
         {
@@ -240,14 +368,29 @@ SMARTGRIDOPS_LAB: LabDefinition = {
             "skills": ["requests", "session handling", "command injection", "shell metacharacters"],
             "points": 250,
             "flags": [
-                {"value": "FLAG{sgo_python_cmdi_automated}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{sgo_python_cmdi_automated}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Log in via POST /login with requests.Session(). Then POST to /devices/<id>/reboot with a crafted target field.", "cost": 0},
-                {"order_num": 2, "content": "The target field is inserted into a shell ping command. A semicolon lets you append a second command.", "cost": 50},
-                {"order_num": 3, "content": "Set target to '127.0.0.1; cat /flag_py_cmdi.txt' in your POST body. The output appears in the rendered page.", "cost": 100},
+                {
+                    "order_num": 1,
+                    "content": "Log in via POST /login with requests.Session(). Then POST to /devices/<id>/reboot with a crafted target field.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The target field is inserted into a shell ping command. A semicolon lets you append a second command.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Set target to '127.0.0.1; cat /flag_py_cmdi.txt' in your POST body. The output appears in the rendered page.",
+                    "cost": 100,
+                },
             ],
         },
     ],
 }
-

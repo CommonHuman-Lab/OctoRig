@@ -33,6 +33,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     from app.ws.manager import manager
+
     manager.set_loop(asyncio.get_running_loop())
     # Migrations run in the 'migrate' init container; calling alembic here races in multi-replica deployments
     _seed_admin()
@@ -171,7 +172,7 @@ def create_app() -> FastAPI:
     from app.api.teams import invitations_router
     from app.api.teams import router as teams_router
 
-    app.include_router(ws_router)          # /ws/events (no prefix — raw WS path)
+    app.include_router(ws_router)  # /ws/events (no prefix — raw WS path)
     prefix = "/api/v1"
     app.include_router(auth_router, prefix=prefix)
     app.include_router(labs_router, prefix=prefix)

@@ -43,9 +43,14 @@ PERM_PLATFORM_DEPLOYMENTS = "platform.deployments"
 PERM_PLATFORM_TEAMS = "platform.teams"
 
 ALL_PLATFORM_PERMS = [
-    PERM_PLATFORM_DASHBOARD, PERM_PLATFORM_CHALLENGES, PERM_PLATFORM_EVENTS,
-    PERM_PLATFORM_SCOREBOARD, PERM_PLATFORM_BADGES, PERM_PLATFORM_LABS,
-    PERM_PLATFORM_DEPLOYMENTS, PERM_PLATFORM_TEAMS,
+    PERM_PLATFORM_DASHBOARD,
+    PERM_PLATFORM_CHALLENGES,
+    PERM_PLATFORM_EVENTS,
+    PERM_PLATFORM_SCOREBOARD,
+    PERM_PLATFORM_BADGES,
+    PERM_PLATFORM_LABS,
+    PERM_PLATFORM_DEPLOYMENTS,
+    PERM_PLATFORM_TEAMS,
 ]
 
 PERM_ADMIN_PANEL = "admin.panel"
@@ -64,11 +69,20 @@ PERM_ADMIN_CONTENT_MANAGE = "admin.content.manage"
 PERM_ADMIN_SETTINGS_MANAGE = "admin.settings.manage"
 
 ALL_ADMIN_PERMS = [
-    PERM_ADMIN_PANEL, PERM_ADMIN_USERS_VIEW, PERM_ADMIN_USERS_MANAGE,
-    PERM_ADMIN_TEAMS_VIEW, PERM_ADMIN_DEPLOYMENTS_VIEW, PERM_ADMIN_DEPLOYMENTS_MANAGE,
-    PERM_ADMIN_AUDIT_VIEW, PERM_ADMIN_CHALLENGES_MANAGE, PERM_ADMIN_EVENTS_MANAGE,
-    PERM_ADMIN_API_KEYS_VIEW, PERM_ADMIN_RANKS_MANAGE, PERM_ADMIN_ASSESSMENTS_MANAGE,
-    PERM_ADMIN_CONTENT_MANAGE, PERM_ADMIN_SETTINGS_MANAGE,
+    PERM_ADMIN_PANEL,
+    PERM_ADMIN_USERS_VIEW,
+    PERM_ADMIN_USERS_MANAGE,
+    PERM_ADMIN_TEAMS_VIEW,
+    PERM_ADMIN_DEPLOYMENTS_VIEW,
+    PERM_ADMIN_DEPLOYMENTS_MANAGE,
+    PERM_ADMIN_AUDIT_VIEW,
+    PERM_ADMIN_CHALLENGES_MANAGE,
+    PERM_ADMIN_EVENTS_MANAGE,
+    PERM_ADMIN_API_KEYS_VIEW,
+    PERM_ADMIN_RANKS_MANAGE,
+    PERM_ADMIN_ASSESSMENTS_MANAGE,
+    PERM_ADMIN_CONTENT_MANAGE,
+    PERM_ADMIN_SETTINGS_MANAGE,
 ]
 
 PERM_CREATOR_ACCESS = "creator.access"
@@ -96,6 +110,7 @@ def is_privileged(user: User, db: Session) -> bool:
 
 
 # ── Deployment checks ────────────────────────────────────────────────────────
+
 
 def can_deploy(user: User, db: Session, membership: TeamMember | None = None) -> bool:
     if is_privileged(user, db):
@@ -135,6 +150,7 @@ def can_view_logs(
 
 
 # ── Team checks ──────────────────────────────────────────────────────────────
+
 
 def can_manage_team(user: User, db: Session, membership: TeamMember | None = None) -> bool:
     """Update name/description, manage settings."""
@@ -180,6 +196,7 @@ def can_view_team_audit(user: User, db: Session, membership: TeamMember | None =
 
 
 # ── Admin checks ─────────────────────────────────────────────────────────────
+
 
 def can_manage_templates(user: User, db: Session) -> bool:
     return is_privileged(user, db)

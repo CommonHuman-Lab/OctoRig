@@ -8,6 +8,7 @@ here actually serializes concurrent allocations. The partial unique index
 on deployments.subnet (see alembic/versions/add_deployment_network_isolation.py)
 is the second line of defence in Postgres.
 """
+
 import ipaddress
 
 from sqlalchemy.orm import Session

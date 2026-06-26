@@ -5,6 +5,7 @@
 Revision ID: add_refresh_tokens
 Revises: hardening_indexes
 """
+
 import sqlalchemy as sa
 
 from alembic import op
@@ -19,7 +20,9 @@ def upgrade() -> None:
     op.create_table(
         "refresh_tokens",
         sa.Column("id", sa.Integer(), primary_key=True),
-        sa.Column("user_id", sa.Integer(), sa.ForeignKey("users.id", ondelete="CASCADE"), nullable=False),
+        sa.Column(
+            "user_id", sa.Integer(), sa.ForeignKey("users.id", ondelete="CASCADE"), nullable=False
+        ),
         sa.Column("token_hash", sa.String(64), nullable=False, unique=True),
         sa.Column("expires_at", sa.DateTime(timezone=True), nullable=False),
         sa.Column("revoked", sa.Boolean(), nullable=False, server_default="false"),

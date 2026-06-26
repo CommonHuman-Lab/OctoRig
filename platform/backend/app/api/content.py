@@ -28,6 +28,7 @@ router = APIRouter(prefix="/content", tags=["content"])
 
 # ── Schemas ───────────────────────────────────────────────────────────────────
 
+
 class SubmissionOut(BaseModel):
     id: int
     author_id: int
@@ -76,13 +77,16 @@ class ReviewRequest(BaseModel):
 
 # ── Creator endpoints ─────────────────────────────────────────────────────────
 
+
 @router.post("/", response_model=SubmissionOut)
 def create_endpoint(
     body: CreateRequest,
     db: Session = Depends(get_db),
     current_user: User = Depends(require_platform_role("creator")),
 ) -> SubmissionOut:
-    return _sub_out(create_submission(db, current_user.id, body.content_type, body.title, body.body))
+    return _sub_out(
+        create_submission(db, current_user.id, body.content_type, body.title, body.body)
+    )
 
 
 @router.get("/mine", response_model=list[SubmissionOut])
@@ -105,6 +109,7 @@ def get_endpoint(
         roles: list[str] = current_user.platform_roles or []
         if "reviewer" not in roles and "publisher" not in roles:
             from app.core.exceptions import not_found
+
             raise not_found("Submission")
     return _sub_out(sub)
 
@@ -119,6 +124,7 @@ def update_endpoint(
     sub = get_submission_or_404(db, submission_id)
     if sub.author_id != current_user.id:
         from app.core.exceptions import not_found
+
         raise not_found("Submission")
     return _sub_out(update_submission(db, sub, body.title, body.body))
 
@@ -132,11 +138,13 @@ def submit_endpoint(
     sub = get_submission_or_404(db, submission_id)
     if sub.author_id != current_user.id:
         from app.core.exceptions import not_found
+
         raise not_found("Submission")
     return _sub_out(submit_for_review(db, sub))
 
 
 # ── Reviewer endpoints ────────────────────────────────────────────────────────
+
 
 @router.get("/queue/pending", response_model=list[SubmissionOut])
 def pending_queue(
@@ -173,6 +181,7 @@ def review_endpoint(
 
 
 # ── Publisher endpoints ───────────────────────────────────────────────────────
+
 
 @router.get("/queue/approved", response_model=list[SubmissionOut])
 def approved_queue(

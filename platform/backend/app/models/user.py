@@ -56,7 +56,9 @@ class User(Base):
         foreign_keys="UserBadge.user_id", back_populates="user"
     )
     notifications: Mapped[list["Notification"]] = relationship(back_populates="user")
-    notification_preferences: Mapped[Optional["NotificationPreference"]] = relationship(back_populates="user")
+    notification_preferences: Mapped[Optional["NotificationPreference"]] = relationship(
+        back_populates="user"
+    )
     profile: Mapped[Optional["UserProfile"]] = relationship(back_populates="user")
     notes: Mapped[list["Note"]] = relationship(back_populates="owner")
     refresh_tokens: Mapped[list["RefreshToken"]] = relationship(

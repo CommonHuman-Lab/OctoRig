@@ -40,7 +40,8 @@ def list_notes(
     query = db.query(Note).filter(
         or_(
             Note.owner_id == user.id,
-            (Note.visibility == NoteVisibility.TEAM) & Note.team_id.in_(_user_team_ids(db, user.id)),
+            (Note.visibility == NoteVisibility.TEAM)
+            & Note.team_id.in_(_user_team_ids(db, user.id)),
         )
     )
     if lab_template_id is not None:
@@ -131,7 +132,9 @@ def update_note(
     if visibility is not None:
         resolved_visibility = NoteVisibility(visibility)
         note.visibility = resolved_visibility
-        note.team_id = _resolve_team_id(db, user, resolved_visibility, team_id if team_id is not None else note.team_id)
+        note.team_id = _resolve_team_id(
+            db, user, resolved_visibility, team_id if team_id is not None else note.team_id
+        )
     elif team_id is not None:
         note.team_id = _resolve_team_id(db, user, note.visibility, team_id)
     note.updated_at = datetime.now(UTC)

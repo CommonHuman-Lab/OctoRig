@@ -46,6 +46,7 @@ router = APIRouter(prefix="/admin", tags=["admin"])
 
 # ── Stats ────────────────────────────────────────────────────────────────────
 
+
 @router.get("/stats", response_model=SystemStats)
 def get_stats(
     _: User = Depends(require_admin),
@@ -55,21 +56,26 @@ def get_stats(
     return SystemStats(
         user_count=db.query(User).count(),
         team_count=db.query(Team).filter(Team.is_personal.is_(False)).count(),
-        active_deployments=db.query(Deployment).filter(Deployment.status.in_(active_statuses)).count(),
+        active_deployments=db.query(Deployment)
+        .filter(Deployment.status.in_(active_statuses))
+        .count(),
         total_deployments=db.query(Deployment).count(),
         api_key_count=db.query(ApiKey).filter(ApiKey.is_active.is_(True)).count(),
         pending_scheduled_actions=db.query(ScheduledAction)
-            .filter(ScheduledAction.status == ScheduledActionStatus.PENDING)
-            .count(),
+        .filter(ScheduledAction.status == ScheduledActionStatus.PENDING)
+        .count(),
     )
 
 
 # ── Users ────────────────────────────────────────────────────────────────────
 
+
 def _enrich_user(user: User, db: Session) -> AdminUserResponse:
     team_count = db.query(TeamMember).filter(TeamMember.user_id == user.id).count()
     deployment_count = db.query(Deployment).filter(Deployment.started_by_id == user.id).count()
-    api_key_count = db.query(ApiKey).filter(ApiKey.user_id == user.id, ApiKey.is_active.is_(True)).count()
+    api_key_count = (
+        db.query(ApiKey).filter(ApiKey.user_id == user.id, ApiKey.is_active.is_(True)).count()
+    )
     return AdminUserResponse(
         id=user.id,
         username=user.username,
@@ -109,7 +115,9 @@ def create_user(
     db: Session = Depends(get_db),
     ip: str | None = Depends(get_client_ip),
 ) -> AdminUserResponse:
-    raise_if_exists(db, User, f"Username '{payload.username}' is already taken", username=payload.username)
+    raise_if_exists(
+        db, User, f"Username '{payload.username}' is already taken", username=payload.username
+    )
     raise_if_exists(db, User, f"Email '{payload.email}' is already registered", email=payload.email)
 
     from app.models.role import PlatformRole
@@ -131,10 +139,13 @@ def create_user(
     db.refresh(user)
 
     from app.services.team_service import ensure_personal_team
+
     ensure_personal_team(db, user)
 
     audit_service.write_audit(
-        db, action=audit_service.ADMIN_USER_CREATED, user_id=actor.id,
+        db,
+        action=audit_service.ADMIN_USER_CREATED,
+        user_id=actor.id,
         detail={"created_username": payload.username},
         ip=ip,
     )
@@ -168,9 +179,7 @@ def update_user(
         raise bad_request("The owner's roles cannot be changed")
     if payload.is_active is False and "admin" in (user.platform_roles or []):
         other_active_admins = (
-            db.query(User)
-            .filter(User.id != user.id, User.is_active.is_(True))
-            .all()
+            db.query(User).filter(User.id != user.id, User.is_active.is_(True)).all()
         )
         if not any("admin" in (u.platform_roles or []) for u in other_active_admins):
             raise bad_request("Cannot deactivate the last remaining admin")
@@ -196,7 +205,9 @@ def update_user(
 
     db.commit()
     audit_service.write_audit(
-        db, action=audit_service.ADMIN_ROLE_CHANGED, user_id=actor.id,
+        db,
+        action=audit_service.ADMIN_ROLE_CHANGED,
+        user_id=actor.id,
         detail={"target_user_id": user.id, "changes": changes},
         ip=ip,
     )
@@ -214,7 +225,9 @@ def reset_password(
     user.hashed_password = hash_password(payload.new_password)
     db.commit()
     audit_service.write_audit(
-        db, action="admin.password_reset", user_id=actor.id,
+        db,
+        action="admin.password_reset",
+        user_id=actor.id,
         detail={"target_user_id": user.id},
         ip=ip,
     )
@@ -232,7 +245,9 @@ def reset_user_points(
     db.query(HintUnlock).filter(HintUnlock.user_id == user.id).delete()
     db.commit()
     audit_service.write_audit(
-        db, action="admin.reset_points", user_id=actor.id,
+        db,
+        action="admin.reset_points",
+        user_id=actor.id,
         detail={"target_user_id": user.id},
         ip=ip,
     )
@@ -260,13 +275,16 @@ def reset_database(
     db.query(AuditLog).delete()
     db.commit()
     audit_service.write_audit(
-        db, action="admin.reset_db", user_id=actor.id,
+        db,
+        action="admin.reset_db",
+        user_id=actor.id,
         detail={"triggered_by": actor.username},
         ip=ip,
     )
 
 
 # ── Teams ────────────────────────────────────────────────────────────────────
+
 
 @router.get("/teams/", response_model=list[AdminTeamResponse])
 def list_teams(
@@ -304,6 +322,7 @@ def list_teams(
 
 # ── Labs ─────────────────────────────────────────────────────────────────────
 
+
 class AdminLabResponse(BaseModel):
     id: int
     slug: str
@@ -327,10 +346,14 @@ class AdminLabUpdate(BaseModel):
 
 
 def _enrich_admin_lab(template: LabTemplate, db: Session) -> AdminLabResponse:
-    active_count = db.query(Deployment).filter(
-        Deployment.lab_template_id == template.id,
-        Deployment.status.in_([DeploymentStatus.STARTING, DeploymentStatus.RUNNING]),
-    ).count()
+    active_count = (
+        db.query(Deployment)
+        .filter(
+            Deployment.lab_template_id == template.id,
+            Deployment.status.in_([DeploymentStatus.STARTING, DeploymentStatus.RUNNING]),
+        )
+        .count()
+    )
     total_count = db.query(Deployment).filter(Deployment.lab_template_id == template.id).count()
     return AdminLabResponse(
         id=template.id,
@@ -378,7 +401,9 @@ def update_admin_lab(
         db.commit()
         db.refresh(template)
         audit_service.write_audit(
-            db, action=audit_service.ADMIN_LAB_TOGGLED, user_id=actor.id,
+            db,
+            action=audit_service.ADMIN_LAB_TOGGLED,
+            user_id=actor.id,
             detail={"lab_id": lab_id, "lab_slug": template.slug, "is_active": body.is_active},
             ip=ip,
         )
@@ -386,6 +411,7 @@ def update_admin_lab(
 
 
 # ── Deployments (all) ────────────────────────────────────────────────────────
+
 
 @router.get("/deployments/", response_model=list[dict])
 def list_all_deployments(
@@ -398,6 +424,7 @@ def list_all_deployments(
     db: Session = Depends(get_db),
 ) -> list[dict]:
     from app.api.deployments import _to_response
+
     q = db.query(Deployment)
     if status:
         q = q.filter(Deployment.status == status)
@@ -417,9 +444,11 @@ def stop_all_deployments(
     ip: str | None = Depends(get_client_ip),
 ) -> None:
     """Stop every running or starting deployment across all users."""
-    active = db.query(Deployment).filter(
-        Deployment.status.in_([DeploymentStatus.RUNNING, DeploymentStatus.STARTING])
-    ).all()
+    active = (
+        db.query(Deployment)
+        .filter(Deployment.status.in_([DeploymentStatus.RUNNING, DeploymentStatus.STARTING]))
+        .all()
+    )
 
     for d in active:
         d.status = DeploymentStatus.STOPPING
@@ -429,7 +458,9 @@ def stop_all_deployments(
         background_tasks.add_task(lab_service.stop_lab, d.id, actor.id)
 
     audit_service.write_audit(
-        db, action="admin.stop_all_deployments", user_id=actor.id,
+        db,
+        action="admin.stop_all_deployments",
+        user_id=actor.id,
         detail={"count": len(active), "triggered_by": actor.username},
         ip=ip,
     )
@@ -459,9 +490,11 @@ def restart_platform(
     """Stop every active lab deployment, then restart the platform's own
     service containers (api/worker/beat/ui). The response is sent before
     any container actually restarts — including this one."""
-    active = db.query(Deployment).filter(
-        Deployment.status.in_([DeploymentStatus.RUNNING, DeploymentStatus.STARTING])
-    ).all()
+    active = (
+        db.query(Deployment)
+        .filter(Deployment.status.in_([DeploymentStatus.RUNNING, DeploymentStatus.STARTING]))
+        .all()
+    )
 
     for d in active:
         d.status = DeploymentStatus.STOPPING
@@ -471,7 +504,9 @@ def restart_platform(
         background_tasks.add_task(lab_service.stop_lab, d.id, actor.id)
 
     audit_service.write_audit(
-        db, action="admin.restart_platform", user_id=actor.id,
+        db,
+        action="admin.restart_platform",
+        user_id=actor.id,
         detail={"stopped_deployments": len(active), "triggered_by": actor.username},
         ip=ip,
     )
@@ -480,6 +515,7 @@ def restart_platform(
 
 
 # ── Audit logs ───────────────────────────────────────────────────────────────
+
 
 @router.get("/audit-logs/", response_model=list[AdminAuditLogResponse])
 def list_audit_logs(
@@ -494,6 +530,7 @@ def list_audit_logs(
     db: Session = Depends(get_db),
 ) -> list[AdminAuditLogResponse]:
     from datetime import datetime
+
     q = db.query(AuditLog)
     if action:
         q = q.filter(AuditLog.action.ilike(f"%{action}%"))
@@ -531,6 +568,7 @@ def list_audit_logs(
 
 # ── API Keys (all) ───────────────────────────────────────────────────────────
 
+
 @router.get("/api-keys/", response_model=list[AdminApiKeyResponse])
 def list_all_api_keys(
     user_id: int | None = Query(None),
@@ -567,6 +605,7 @@ def list_all_api_keys(
 
 
 # ── Ranks ─────────────────────────────────────────────────────────────────────
+
 
 class AdminRankResponse(BaseModel):
     id: int
@@ -641,9 +680,9 @@ def update_rank(
             raise conflict("A rank with that name already exists")
         rank.name = body.name
     if body.min_points is not None:
-        existing = db.query(Rank).filter(
-            Rank.min_points == body.min_points, Rank.id != rank_id
-        ).first()
+        existing = (
+            db.query(Rank).filter(Rank.min_points == body.min_points, Rank.id != rank_id).first()
+        )
         if existing:
             raise conflict("A rank with that min_points value already exists")
         rank.min_points = body.min_points
@@ -674,6 +713,7 @@ def delete_rank(
 
 # ── Site settings ─────────────────────────────────────────────────────────────
 
+
 @router.get("/settings", response_model=SiteSettingsResponse)
 def get_site_settings(
     _: User = Depends(require_admin),
@@ -699,7 +739,9 @@ def update_site_settings(
         db.commit()
         db.refresh(row)
         audit_service.write_audit(
-            db, action="admin.settings_updated", user_id=actor.id,
+            db,
+            action="admin.settings_updated",
+            user_id=actor.id,
             detail=changed,
             ip=ip,
         )
@@ -707,6 +749,7 @@ def update_site_settings(
 
 
 # ── API Keys admin revoke ─────────────────────────────────────────────────────
+
 
 @router.delete("/api-keys/{key_id}", status_code=204)
 def admin_revoke_api_key(
@@ -717,7 +760,9 @@ def admin_revoke_api_key(
 ) -> None:
     api_key_service.revoke_api_key(db, actor, key_id)
     audit_service.write_audit(
-        db, action="admin.api_key_revoked", user_id=actor.id,
+        db,
+        action="admin.api_key_revoked",
+        user_id=actor.id,
         detail={"key_id": key_id},
         ip=ip,
     )

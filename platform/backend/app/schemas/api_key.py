@@ -24,4 +24,5 @@ class ApiKeyResponse(ORMModel):
 
 class ApiKeyCreated(ApiKeyResponse):
     """Returned only at creation time — includes the raw key shown once."""
+
     raw_key: str

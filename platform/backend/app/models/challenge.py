@@ -75,7 +75,9 @@ class Challenge(Base):
     is_archived: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     version: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
     content: Mapped[dict[str, Any]] = mapped_column(JSON, nullable=False, default=dict)
-    lab_template_id: Mapped[int | None] = mapped_column(ForeignKey("lab_templates.id"), nullable=True, index=True)
+    lab_template_id: Mapped[int | None] = mapped_column(
+        ForeignKey("lab_templates.id"), nullable=True, index=True
+    )
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
@@ -100,7 +102,9 @@ class ChallengeFlag(Base):
     challenge_id: Mapped[int] = mapped_column(
         ForeignKey("challenges.id", ondelete="CASCADE"), nullable=False, index=True
     )
-    flag_type: Mapped[FlagType] = mapped_column(SQLEnum(FlagType), nullable=False, default=FlagType.STATIC)
+    flag_type: Mapped[FlagType] = mapped_column(
+        SQLEnum(FlagType), nullable=False, default=FlagType.STATIC
+    )
     value: Mapped[str | None] = mapped_column(Text, nullable=True)
     regex_pattern: Mapped[str | None] = mapped_column(Text, nullable=True)
     hash_type: Mapped[str | None] = mapped_column(String(16), nullable=True)
@@ -125,7 +129,9 @@ class ChallengeHint(Base):
     cost: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
 
     challenge: Mapped["Challenge"] = relationship(back_populates="hints")
-    unlocks: Mapped[list["HintUnlock"]] = relationship(back_populates="hint", cascade="all, delete-orphan")
+    unlocks: Mapped[list["HintUnlock"]] = relationship(
+        back_populates="hint", cascade="all, delete-orphan"
+    )
 
 
 class ChallengeFile(Base):
@@ -147,7 +153,9 @@ class ChallengeSubmission(Base):
     __tablename__ = "challenge_submissions"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    challenge_id: Mapped[int] = mapped_column(ForeignKey("challenges.id"), nullable=False, index=True)
+    challenge_id: Mapped[int] = mapped_column(
+        ForeignKey("challenges.id"), nullable=False, index=True
+    )
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
     team_id: Mapped[int | None] = mapped_column(ForeignKey("teams.id"), nullable=True)
     event_id: Mapped[int | None] = mapped_column(ForeignKey("ctf_events.id"), nullable=True)
@@ -156,7 +164,9 @@ class ChallengeSubmission(Base):
     is_first_blood: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     points_awarded: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     ip_address: Mapped[str | None] = mapped_column(String(64), nullable=True)
-    submitted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    submitted_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
 
     challenge: Mapped["Challenge"] = relationship(back_populates="submissions")
     user: Mapped["User"] = relationship(back_populates="challenge_submissions")
@@ -166,15 +176,15 @@ class ChallengeSubmission(Base):
 
 class HintUnlock(Base):
     __tablename__ = "hint_unlocks"
-    __table_args__ = (
-        UniqueConstraint("hint_id", "user_id", name="uq_hint_unlocks_hint_user"),
-    )
+    __table_args__ = (UniqueConstraint("hint_id", "user_id", name="uq_hint_unlocks_hint_user"),)
 
     id: Mapped[int] = mapped_column(primary_key=True)
     hint_id: Mapped[int] = mapped_column(
         ForeignKey("challenge_hints.id", ondelete="CASCADE"), nullable=False
     )
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
-    unlocked_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    unlocked_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
 
     hint: Mapped["ChallengeHint"] = relationship(back_populates="unlocks")

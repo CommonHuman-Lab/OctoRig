@@ -62,6 +62,7 @@ def _check_submit_rate_limit(user_id: int, challenge_id: int) -> None:
 
 # ── Schemas ───────────────────────────────────────────────────────────────────
 
+
 class HintResponse(BaseModel):
     id: int
     order_num: int
@@ -143,6 +144,7 @@ class HintUnlockResponse(BaseModel):
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
+
 def _serialize_hint(
     hint, unlocked_ids: set[int], db: Session, current_user: User, lab_template_id: int | None
 ) -> HintResponse:
@@ -161,15 +163,13 @@ def _serialize_hint(
 
 def _get_team_id(db: Session, user: User) -> int | None:
     from app.models.team import TeamMember
-    membership = (
-        db.query(TeamMember)
-        .filter(TeamMember.user_id == user.id)
-        .first()
-    )
+
+    membership = db.query(TeamMember).filter(TeamMember.user_id == user.id).first()
     return membership.team_id if membership else None
 
 
 # ── Endpoints ─────────────────────────────────────────────────────────────────
+
 
 @router.get("/", response_model=list[ChallengeListItem])
 def list_challenges_endpoint(
@@ -183,10 +183,15 @@ def list_challenges_endpoint(
     current_user: User = Depends(get_current_user),
 ) -> list[ChallengeListItem]:
     from app.services.challenge_service import check_already_solved
+
     challenges = list_challenges(
-        db, category=category, difficulty=difficulty,
-        search=search, tag=tag,
-        lab_category=lab_category, lab_slug=lab_slug,
+        db,
+        category=category,
+        difficulty=difficulty,
+        search=search,
+        tag=tag,
+        lab_category=lab_category,
+        lab_slug=lab_slug,
     )
     items = []
     for ch in challenges:
@@ -220,6 +225,7 @@ def get_challenge_endpoint(
     current_user: User = Depends(get_current_user),
 ) -> ChallengeDetail:
     from app.services.challenge_service import check_already_solved
+
     ch = get_challenge_by_slug_or_404(db, slug)
     unlocked_ids = get_unlocked_hint_ids(db, current_user.id, ch.id)
     lab = ch.lab_template
@@ -252,7 +258,9 @@ def get_challenge_endpoint(
         challenge_type=ch.challenge_type,
         estimated_minutes=ch.estimated_minutes,
         content=ch.content,
-        hints=[_serialize_hint(h, unlocked_ids, db, current_user, ch.lab_template_id) for h in ch.hints],
+        hints=[
+            _serialize_hint(h, unlocked_ids, db, current_user, ch.lab_template_id) for h in ch.hints
+        ],
         files=[{"id": f.id, "filename": f.filename, "size_bytes": f.size_bytes} for f in ch.files],
         solve_count=get_solve_count(db, ch.id),
         solved_by_me=check_already_solved(db, ch.id, current_user.id),
@@ -309,8 +317,11 @@ def submit_flag_endpoint(
 
     if result.already_solved:
         return FlagSubmitResponse(
-            correct=True, already_solved=True, first_blood=False,
-            points_awarded=0, message="Already solved.",
+            correct=True,
+            already_solved=True,
+            first_blood=False,
+            points_awarded=0,
+            message="Already solved.",
         )
 
     audit_service.write_audit(
@@ -355,15 +366,19 @@ def submit_flag_endpoint(
         msg = "First blood! " if result.first_blood else ""
         msg += f"Correct! +{points} points."
         return FlagSubmitResponse(
-            correct=True, already_solved=False,
+            correct=True,
+            already_solved=False,
             first_blood=result.first_blood,
             points_awarded=points,
             message=msg,
         )
 
     return FlagSubmitResponse(
-        correct=False, already_solved=False, first_blood=False,
-        points_awarded=0, message="Incorrect flag.",
+        correct=False,
+        already_solved=False,
+        first_blood=False,
+        points_awarded=0,
+        message="Incorrect flag.",
     )
 
 
@@ -386,7 +401,10 @@ def unlock_hint_endpoint(
             raise bad_request(f"Not enough points — hint costs {hint.cost} but you have {balance}.")
         team_id = _get_team_id(db, current_user)
         from app.services.scoring_service import deduct_hint_cost
-        deduct_hint_cost(db, user_id=current_user.id, cost=hint.cost, hint_id=hint_id, team_id=team_id)
+
+        deduct_hint_cost(
+            db, user_id=current_user.id, cost=hint.cost, hint_id=hint_id, team_id=team_id
+        )
 
     content = render_target_text(hint.content, db, current_user, ch.lab_template_id)
     return HintUnlockResponse(hint_id=hint.id, content=content, cost=hint.cost)
@@ -394,39 +412,39 @@ def unlock_hint_endpoint(
 
 # ── Admin endpoints ───────────────────────────────────────────────────────────
 
+
 @router.get("/admin/all", response_model=list[ChallengeListItem])
 def admin_list_challenges(
     db: Session = Depends(get_db),
     _: User = Depends(require_admin),
 ) -> list[ChallengeListItem]:
     from app.models.challenge import Challenge as Ch
-    challenges = (
-        db.query(Ch)
-        .filter(Ch.is_archived.is_(False))
-        .order_by(Ch.created_at.desc())
-        .all()
-    )
+
+    challenges = db.query(Ch).filter(Ch.is_archived.is_(False)).order_by(Ch.created_at.desc()).all()
     from app.services.challenge_service import get_solve_count
+
     items = []
     for ch in challenges:
         lab = ch.lab_template
-        items.append(ChallengeListItem(
-            id=ch.id,
-            slug=ch.slug,
-            title=ch.title,
-            difficulty=ch.difficulty,
-            category=ch.category,
-            tags=ch.tags,
-            points=ch.points,
-            challenge_type=ch.challenge_type,
-            estimated_minutes=ch.estimated_minutes,
-            solve_count=get_solve_count(db, ch.id),
-            solved_by_me=False,
-            is_active=ch.is_active,
-            lab_slug=lab.slug if lab else None,
-            lab_name=lab.name if lab else None,
-            lab_category=lab.category if lab else None,
-        ))
+        items.append(
+            ChallengeListItem(
+                id=ch.id,
+                slug=ch.slug,
+                title=ch.title,
+                difficulty=ch.difficulty,
+                category=ch.category,
+                tags=ch.tags,
+                points=ch.points,
+                challenge_type=ch.challenge_type,
+                estimated_minutes=ch.estimated_minutes,
+                solve_count=get_solve_count(db, ch.id),
+                solved_by_me=False,
+                is_active=ch.is_active,
+                lab_slug=lab.slug if lab else None,
+                lab_name=lab.name if lab else None,
+                lab_category=lab.category if lab else None,
+            )
+        )
     return items
 
 
@@ -438,6 +456,7 @@ def set_challenge_active(
     _: User = Depends(require_admin),
 ) -> dict:
     from app.models.challenge import Challenge as Ch
+
     ch = db.query(Ch).filter(Ch.slug == slug).first()
     if ch is None:
         raise not_found("Challenge")

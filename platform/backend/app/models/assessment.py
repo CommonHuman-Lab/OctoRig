@@ -60,7 +60,9 @@ class AssessmentInvite(Base):
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    assessment_id: Mapped[int] = mapped_column(ForeignKey("assessments.id"), nullable=False, index=True)
+    assessment_id: Mapped[int] = mapped_column(
+        ForeignKey("assessments.id"), nullable=False, index=True
+    )
     email: Mapped[str] = mapped_column(String(255), nullable=False)
     candidate_name: Mapped[str | None] = mapped_column(String(255), nullable=True)
 
@@ -68,9 +70,7 @@ class AssessmentInvite(Base):
     token: Mapped[str] = mapped_column(String(128), unique=True, nullable=False, index=True)
 
     # Null until candidate accepts the invite
-    user_id: Mapped[int | None] = mapped_column(
-        ForeignKey("users.id"), nullable=True, unique=True
-    )
+    user_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True, unique=True)
 
     accepted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)

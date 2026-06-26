@@ -28,7 +28,8 @@ ROLE_SEED = [
         "slug": "creator",
         "display_name": "Creator",
         "description": "Platform access plus challenge/event creation.",
-        "permissions": ALL_PLATFORM_PERMS + [
+        "permissions": ALL_PLATFORM_PERMS
+        + [
             PERM_CREATOR_ACCESS,
             PERM_ADMIN_PANEL,
             PERM_ADMIN_CHALLENGES_MANAGE,

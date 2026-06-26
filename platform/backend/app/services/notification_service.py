@@ -71,18 +71,18 @@ def mark_all_read(db: Session, user_id: int) -> int:
 
 def unread_count(db: Session, user_id: int) -> int:
     from sqlalchemy import func
+
     return (
         db.query(func.count(Notification.id))
         .filter(Notification.user_id == user_id, Notification.read_at.is_(None))
-        .scalar() or 0
+        .scalar()
+        or 0
     )
 
 
 def _get_prefs(db: Session, user_id: int) -> NotificationPreference:
     prefs = (
-        db.query(NotificationPreference)
-        .filter(NotificationPreference.user_id == user_id)
-        .first()
+        db.query(NotificationPreference).filter(NotificationPreference.user_id == user_id).first()
     )
     if prefs is None:
         prefs = NotificationPreference(user_id=user_id)

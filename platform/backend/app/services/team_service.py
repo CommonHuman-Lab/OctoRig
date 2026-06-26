@@ -51,10 +51,14 @@ def create_team(db: Session, user: User, name: str, description: str | None = No
 
 def ensure_personal_team(db: Session, user: User) -> Team:
     """Idempotent — creates a personal team for `user` if one doesn't exist."""
-    existing = db.query(Team).filter(
-        Team.created_by_id == user.id,
-        Team.is_personal.is_(True),
-    ).first()
+    existing = (
+        db.query(Team)
+        .filter(
+            Team.created_by_id == user.id,
+            Team.is_personal.is_(True),
+        )
+        .first()
+    )
     if existing:
         return existing
 
@@ -126,6 +130,7 @@ def update_team(db: Session, team: Team, name: str | None, description: str | No
 
 def delete_team(db: Session, team: Team, db_session: Session) -> None:
     from app.models.deployment import Deployment, DeploymentStatus
+
     running = (
         db.query(Deployment)
         .filter(
@@ -260,7 +265,9 @@ def remove_member(db: Session, team: Team, target_user_id: int) -> None:
     db.commit()
 
 
-def change_member_role(db: Session, team: Team, target_user_id: int, new_role: TeamRole) -> TeamMember:
+def change_member_role(
+    db: Session, team: Team, target_user_id: int, new_role: TeamRole
+) -> TeamMember:
     membership = (
         db.query(TeamMember)
         .filter(TeamMember.team_id == team.id, TeamMember.user_id == target_user_id)

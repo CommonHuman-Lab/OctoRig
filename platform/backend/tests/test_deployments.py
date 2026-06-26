@@ -8,6 +8,7 @@ so deployments stay in their initial DB state ("starting") for the duration
 of a test. No real DB, no real network, no real Docker — see
 tests/conftest.py.
 """
+
 import os
 
 from app.models.deployment import Deployment, DeploymentStatus
@@ -43,7 +44,9 @@ def _any_lab_template_id(client, token):
 
 
 def _firerange_lab_template_id(client, token):
-    labs = client.get("/api/v1/labs/", params={"category": "firerange"}, headers=_auth(token)).json()
+    labs = client.get(
+        "/api/v1/labs/", params={"category": "firerange"}, headers=_auth(token)
+    ).json()
     assert labs, "no firerange lab templates were seeded at startup"
     return labs[0]["id"]
 
@@ -63,6 +66,7 @@ def _force_running(db_session, deployment_id):
 
 # ── guard: prove Docker is never actually touched ───────────────────────────
 
+
 def test_deployment_creation_never_calls_real_docker(client):
     """Asserts the autouse no_docker mock actually intercepted the
     BackgroundTask call — not just that nothing crashed. If this ever starts
@@ -79,6 +83,7 @@ def test_deployment_creation_never_calls_real_docker(client):
 
 # ── create ───────────────────────────────────────────────────────────────────
 
+
 def test_create_deployment_success(client):
     token = _register_and_login(client, "alice")
     template_id = _any_lab_template_id(client, token)
@@ -92,7 +97,9 @@ def test_create_deployment_success(client):
 
 def test_create_deployment_to_foreign_team_rejected(client):
     owner_token = _register_and_login(client, "alice")
-    team = client.post("/api/v1/teams/", json={"name": "Red Team"}, headers=_auth(owner_token)).json()
+    team = client.post(
+        "/api/v1/teams/", json={"name": "Red Team"}, headers=_auth(owner_token)
+    ).json()
 
     outsider_token = _register_and_login(client, "bob")
     template_id = _any_lab_template_id(client, outsider_token)
@@ -126,6 +133,7 @@ def test_create_deployment_requires_template_or_challenge(client):
 
 # ── visibility / get ─────────────────────────────────────────────────────────
 
+
 def test_owner_can_view_own_deployment(client):
     token = _register_and_login(client, "alice")
     body = _deploy(client, token, lab_template_id=_any_lab_template_id(client, token))
@@ -155,7 +163,9 @@ def test_public_deployment_visible_to_anyone_authenticated(client):
 
 def test_team_visible_deployment_requires_membership(client):
     owner_token = _register_and_login(client, "alice")
-    team = client.post("/api/v1/teams/", json={"name": "Red Team"}, headers=_auth(owner_token)).json()
+    team = client.post(
+        "/api/v1/teams/", json={"name": "Red Team"}, headers=_auth(owner_token)
+    ).json()
     template_id = _any_lab_template_id(client, owner_token)
     body = _deploy(
         client, owner_token, lab_template_id=template_id, team_id=team["id"], visibility="team"
@@ -207,6 +217,7 @@ def test_list_deployments_admin_sees_everything(client):
 
 # ── destroy / visibility-change / reset ─────────────────────────────────────
 
+
 def test_owner_can_destroy_own_running_deployment(client, db_session):
     token = _register_and_login(client, "alice")
     body = _deploy(client, token, lab_template_id=_any_lab_template_id(client, token))
@@ -228,7 +239,9 @@ def test_unrelated_user_cannot_destroy_deployment(client, db_session):
 
 def test_team_manager_can_destroy_member_deployment(client, db_session):
     owner_token = _register_and_login(client, "alice")
-    team = client.post("/api/v1/teams/", json={"name": "Red Team"}, headers=_auth(owner_token)).json()
+    team = client.post(
+        "/api/v1/teams/", json={"name": "Red Team"}, headers=_auth(owner_token)
+    ).json()
 
     member_token = _register_and_login(client, "bob")
     invite = client.post(
@@ -324,6 +337,7 @@ def test_unrelated_user_cannot_reset_deployment(client, db_session):
 
 # ── per-deployment network isolation / concurrency ──────────────────────────
 
+
 def test_deployment_gets_a_subnet_and_per_deployment_container_names(client):
     token = _register_and_login(client, "alice")
     template_id = _any_lab_template_id(client, token)
@@ -360,12 +374,16 @@ def test_same_user_double_starting_same_lab_is_rejected(client):
 
 def test_different_teams_can_run_the_same_lab_concurrently(client):
     alice_token = _register_and_login(client, "alice")
-    red_team = client.post("/api/v1/teams/", json={"name": "Red Team"}, headers=_auth(alice_token)).json()
+    red_team = client.post(
+        "/api/v1/teams/", json={"name": "Red Team"}, headers=_auth(alice_token)
+    ).json()
     template_id = _any_lab_template_id(client, alice_token)
     red_dep = _deploy(client, alice_token, lab_template_id=template_id, team_id=red_team["id"])
 
     bob_token = _register_and_login(client, "bob")
-    blue_team = client.post("/api/v1/teams/", json={"name": "Blue Team"}, headers=_auth(bob_token)).json()
+    blue_team = client.post(
+        "/api/v1/teams/", json={"name": "Blue Team"}, headers=_auth(bob_token)
+    ).json()
     blue_dep = _deploy(client, bob_token, lab_template_id=template_id, team_id=blue_team["id"])
 
     assert red_dep["subnet"] != blue_dep["subnet"]

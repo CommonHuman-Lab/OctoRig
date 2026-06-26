@@ -37,11 +37,23 @@ MEDIHUMAN_LAB: LabDefinition = {
             "points": 50,
             "estimated_minutes": 10,
             "flags": [
-                {"value": "FLAG{mh_recon_openapi_exposed}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{mh_recon_openapi_exposed}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Most REST APIs publish their schema at a well-known path. No authentication needed.", "cost": 0},
-                {"order_num": 2, "content": "Scan the JSON for any non-standard extension fields — keys that start with `x-`.", "cost": 25},
+                {
+                    "order_num": 1,
+                    "content": "Most REST APIs publish their schema at a well-known path. No authentication needed.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Scan the JSON for any non-standard extension fields — keys that start with `x-`.",
+                    "cost": 25,
+                },
             ],
         },
         {
@@ -63,12 +75,28 @@ MEDIHUMAN_LAB: LabDefinition = {
             "points": 100,
             "estimated_minutes": 15,
             "flags": [
-                {"value": "FLAG{mh_sqli_login_bypassed}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{mh_sqli_login_bypassed}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Try unusual characters in the username field. Notice any difference in how the server responds?", "cost": 0},
-                {"order_num": 2, "content": "A quote character breaks the query. A comment character after the username silences the rest.", "cost": 50},
-                {"order_num": 3, "content": "Username: `admin'--`, any password. After logging in, check the HTTP response headers on `/admin`.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "Try unusual characters in the username field. Notice any difference in how the server responds?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "A quote character breaks the query. A comment character after the username silences the rest.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Username: `admin'--`, any password. After logging in, check the HTTP response headers on `/admin`.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -88,12 +116,28 @@ MEDIHUMAN_LAB: LabDefinition = {
             "points": 250,
             "estimated_minutes": 25,
             "flags": [
-                {"value": "FLAG{mh_sqli_patient_search_union}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{mh_sqli_patient_search_union}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Put a special character in the search. Does the error tell you how the query is structured?", "cost": 0},
-                {"order_num": 2, "content": "The database schema is readable if you know where to look. What tables does SQLite expose by default?", "cost": 50},
-                {"order_num": 3, "content": "UNION SELECT into a hidden table. The original query returns 9 columns — match that count.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "Put a special character in the search. Does the error tell you how the query is structured?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The database schema is readable if you know where to look. What tables does SQLite expose by default?",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "UNION SELECT into a hidden table. The original query returns 9 columns — match that count.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -115,11 +159,23 @@ MEDIHUMAN_LAB: LabDefinition = {
             "points": 100,
             "estimated_minutes": 10,
             "flags": [
-                {"value": "FLAG{mh_idor_lab_result_exposed}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{mh_idor_lab_result_exposed}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Log in as any user. Browse lab result IDs. Does the system restrict which records you can see?", "cost": 0},
-                {"order_num": 2, "content": "There are more results in the database than are shown in your patient dashboard.", "cost": 25},
+                {
+                    "order_num": 1,
+                    "content": "Log in as any user. Browse lab result IDs. Does the system restrict which records you can see?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "There are more results in the database than are shown in your patient dashboard.",
+                    "cost": 25,
+                },
             ],
         },
         {
@@ -141,11 +197,23 @@ MEDIHUMAN_LAB: LabDefinition = {
             "points": 100,
             "estimated_minutes": 10,
             "flags": [
-                {"value": "FLAG{mh_idor_prescription_read}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{mh_idor_prescription_read}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Log in as any user. Try accessing prescriptions by their ID number.", "cost": 0},
-                {"order_num": 2, "content": "Your own prescription might not be ID 1. Try IDs you weren't assigned.", "cost": 25},
+                {
+                    "order_num": 1,
+                    "content": "Log in as any user. Try accessing prescriptions by their ID number.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Your own prescription might not be ID 1. Try IDs you weren't assigned.",
+                    "cost": 25,
+                },
             ],
         },
         {
@@ -165,11 +233,23 @@ MEDIHUMAN_LAB: LabDefinition = {
             "points": 150,
             "estimated_minutes": 15,
             "flags": [
-                {"value": "FLAG{mh_bac_admin_export_bypass}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{mh_bac_admin_export_bypass}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "The API spec lists admin paths. Try calling one while logged in as a regular patient.", "cost": 0},
-                {"order_num": 2, "content": "The export endpoint returns JSON with all patient records — and one extra field.", "cost": 25},
+                {
+                    "order_num": 1,
+                    "content": "The API spec lists admin paths. Try calling one while logged in as a regular patient.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The export endpoint returns JSON with all patient records — and one extra field.",
+                    "cost": 25,
+                },
             ],
         },
         {
@@ -190,11 +270,23 @@ MEDIHUMAN_LAB: LabDefinition = {
             "points": 100,
             "estimated_minutes": 10,
             "flags": [
-                {"value": "FLAG{mh_bac_staff_detail_exposed}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{mh_bac_staff_detail_exposed}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Log in as any user. Look for an admin staff path — the API spec will list it.", "cost": 0},
-                {"order_num": 2, "content": "Request staff ID 1. The profile data includes a field that shouldn't be visible to patients.", "cost": 25},
+                {
+                    "order_num": 1,
+                    "content": "Log in as any user. Look for an admin staff path — the API spec will list it.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Request staff ID 1. The profile data includes a field that shouldn't be visible to patients.",
+                    "cost": 25,
+                },
             ],
         },
         {
@@ -214,12 +306,28 @@ MEDIHUMAN_LAB: LabDefinition = {
             "points": 150,
             "estimated_minutes": 20,
             "flags": [
-                {"value": "FLAG{mh_xss_reflected_patients}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{mh_xss_reflected_patients}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Try putting some HTML in the search field. Does the page render it?", "cost": 0},
-                {"order_num": 2, "content": "If HTML renders, JavaScript runs too. The page sets a session cookie that isn't flagged HttpOnly.", "cost": 50},
-                {"order_num": 3, "content": "Read `document.cookie` from your script. The session cookie value is the flag.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "Try putting some HTML in the search field. Does the page render it?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "If HTML renders, JavaScript runs too. The page sets a session cookie that isn't flagged HttpOnly.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Read `document.cookie` from your script. The session cookie value is the flag.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -241,12 +349,28 @@ MEDIHUMAN_LAB: LabDefinition = {
             "points": 300,
             "estimated_minutes": 30,
             "flags": [
-                {"value": "FLAG{mh_mass_assign_escalated}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{mh_mass_assign_escalated}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Intercept a PUT request to the appointments endpoint. What fields does the server actually accept?", "cost": 0},
-                {"order_num": 2, "content": "Try adding fields that control who the appointment is assigned to — fields not present in the patient-facing form.", "cost": 50},
-                {"order_num": 3, "content": "Including `doctor_id` or `patient_id` in the PUT body triggers the flag in the JSON response.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "Intercept a PUT request to the appointments endpoint. What fields does the server actually accept?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Try adding fields that control who the appointment is assigned to — fields not present in the patient-facing form.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Including `doctor_id` or `patient_id` in the PUT body triggers the flag in the JSON response.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -265,14 +389,29 @@ MEDIHUMAN_LAB: LabDefinition = {
             "skills": ["requests", "session handling", "sequential enumeration", "JSON parsing"],
             "points": 200,
             "flags": [
-                {"value": "FLAG{mh_python_idor_scraped}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{mh_python_idor_scraped}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "An authenticated user can only view their own records — in theory.", "cost": 0},
-                {"order_num": 2, "content": "The lab results endpoint accepts a record ID in the URL path. Try a range of IDs.", "cost": 50},
-                {"order_num": 3, "content": "GET /api/records/<id> with your session cookie. The flag appears in the JSON body of a record that isn't yours.", "cost": 100},
+                {
+                    "order_num": 1,
+                    "content": "An authenticated user can only view their own records — in theory.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The lab results endpoint accepts a record ID in the URL path. Try a range of IDs.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "GET /api/records/<id> with your session cookie. The flag appears in the JSON body of a record that isn't yours.",
+                    "cost": 100,
+                },
             ],
         },
     ],
 }
-

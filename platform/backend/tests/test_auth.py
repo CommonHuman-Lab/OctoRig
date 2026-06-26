@@ -5,6 +5,7 @@ Tests for /api/v1/auth/* — login, register, refresh, logout, /me,
 change-password, and the brute-force lockout added alongside the role
 system. No real DB, no real network — see tests/conftest.py.
 """
+
 import os
 
 ADMIN_USERNAME = os.environ["ADMIN_USERNAME"]
@@ -15,7 +16,9 @@ def _login(client, username, password):
     return client.post("/api/v1/auth/login", json={"username": username, "password": password})
 
 
-def _register(client, username="newplayer", email="newplayer@example.com", password="StrongPassw0rd!"):
+def _register(
+    client, username="newplayer", email="newplayer@example.com", password="StrongPassw0rd!"
+):
     return client.post(
         "/api/v1/auth/register",
         json={"username": username, "email": email, "password": password},
@@ -23,6 +26,7 @@ def _register(client, username="newplayer", email="newplayer@example.com", passw
 
 
 # ── register ─────────────────────────────────────────────────────────────────
+
 
 def test_register_success_returns_token_and_default_role(client):
     resp = _register(client)
@@ -71,6 +75,7 @@ def test_register_blocked_when_registration_closed(client):
 
 # ── login ────────────────────────────────────────────────────────────────────
 
+
 def test_login_success_with_seeded_admin(client):
     resp = _login(client, ADMIN_USERNAME, ADMIN_PASSWORD)
     assert resp.status_code == 200
@@ -94,13 +99,15 @@ def test_login_inactive_user_rejected(client):
     _register(client, username="tobedeactivated", email="deact@example.com")
 
     users = client.get(
-        "/api/v1/admin/users/", params={"search": "tobedeactivated"},
+        "/api/v1/admin/users/",
+        params={"search": "tobedeactivated"},
         headers={"Authorization": f"Bearer {admin_token}"},
     ).json()
     user_id = users[0]["id"]
 
     deactivate = client.patch(
-        f"/api/v1/admin/users/{user_id}", json={"is_active": False},
+        f"/api/v1/admin/users/{user_id}",
+        json={"is_active": False},
         headers={"Authorization": f"Bearer {admin_token}"},
     )
     assert deactivate.status_code == 200
@@ -144,14 +151,16 @@ def test_admin_can_unlock_a_locked_account(client):
     assert _login(client, "lockme", "StrongPassw0rd!").status_code == 429
 
     users = client.get(
-        "/api/v1/admin/users/", params={"search": "lockme"},
+        "/api/v1/admin/users/",
+        params={"search": "lockme"},
         headers={"Authorization": f"Bearer {admin_token}"},
     ).json()
     user_id = users[0]["id"]
     assert users[0]["locked_until"] is not None
 
     unlock = client.patch(
-        f"/api/v1/admin/users/{user_id}", json={"unlock": True},
+        f"/api/v1/admin/users/{user_id}",
+        json={"unlock": True},
         headers={"Authorization": f"Bearer {admin_token}"},
     )
     assert unlock.status_code == 200
@@ -169,6 +178,7 @@ def test_login_rate_limited_per_ip(rate_limited_client):
 
 
 # ── refresh / logout ─────────────────────────────────────────────────────────
+
 
 def test_refresh_issues_new_access_token_and_rotates_cookie(client):
     login_resp = _login(client, ADMIN_USERNAME, ADMIN_PASSWORD)
@@ -214,6 +224,7 @@ def test_logout_revokes_refresh_token(client):
 
 # ── /me ──────────────────────────────────────────────────────────────────────
 
+
 def test_me_requires_authentication(client):
     resp = client.get("/api/v1/auth/me")
     assert resp.status_code == 401
@@ -230,6 +241,7 @@ def test_me_resolves_admin_permissions(client):
 
 
 # ── change-password ─────────────────────────────────────────────────────────
+
 
 def test_change_password_success(client):
     token = _login(client, ADMIN_USERNAME, ADMIN_PASSWORD).json()["access_token"]
@@ -265,6 +277,7 @@ def test_change_password_rejects_weak_new_password(client):
 
 
 # ── public settings ──────────────────────────────────────────────────────────
+
 
 def test_public_settings_requires_no_auth(client):
     resp = client.get("/api/v1/auth/settings/public")

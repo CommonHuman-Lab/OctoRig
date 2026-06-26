@@ -19,6 +19,7 @@ from app.services.scoring_service import compute_dynamic_points
 
 # ── Read ──────────────────────────────────────────────────────────────────────
 
+
 def get_event_or_404(db: Session, event_id: int) -> CtfEvent:
     ev = db.get(CtfEvent, event_id)
     if ev is None:
@@ -71,11 +72,11 @@ def list_events(
 # ── Lifecycle ─────────────────────────────────────────────────────────────────
 
 _VALID_TRANSITIONS: dict[EventStatus, list[EventStatus]] = {
-    EventStatus.DRAFT:      [EventStatus.PUBLISHED],
-    EventStatus.PUBLISHED:  [EventStatus.RUNNING, EventStatus.DRAFT],
-    EventStatus.RUNNING:    [EventStatus.ENDED],
-    EventStatus.ENDED:      [EventStatus.ARCHIVED],
-    EventStatus.ARCHIVED:   [],
+    EventStatus.DRAFT: [EventStatus.PUBLISHED],
+    EventStatus.PUBLISHED: [EventStatus.RUNNING, EventStatus.DRAFT],
+    EventStatus.RUNNING: [EventStatus.ENDED],
+    EventStatus.ENDED: [EventStatus.ARCHIVED],
+    EventStatus.ARCHIVED: [],
 }
 
 
@@ -93,6 +94,7 @@ def transition_status(db: Session, event: CtfEvent, new_status: EventStatus) -> 
 
 
 # ── Challenge management ──────────────────────────────────────────────────────
+
 
 def add_challenge(
     db: Session,
@@ -149,9 +151,7 @@ def get_event_challenges(
     user_id: int | None = None,
 ) -> list[dict]:
     now = datetime.now(UTC)
-    maps = db.query(EventChallengeMap).filter(
-        EventChallengeMap.event_id == event.id
-    ).all()
+    maps = db.query(EventChallengeMap).filter(EventChallengeMap.event_id == event.id).all()
 
     solved_ids: set[int] = set()
     if user_id is not None:
@@ -178,7 +178,8 @@ def get_event_challenges(
                 ChallengeSubmission.event_id == event.id,
                 ChallengeSubmission.is_correct.is_(True),
             )
-            .scalar() or 0
+            .scalar()
+            or 0
         )
         base_pts = ecm.points_override or ch.points
         if event.scoring_mode.value == "dynamic":
@@ -186,23 +187,26 @@ def get_event_challenges(
         else:
             pts = base_pts
 
-        result.append({
-            "id": ch.id,
-            "slug": ch.slug,
-            "title": ch.title,
-            "category": ch.category,
-            "difficulty": ch.difficulty.value,
-            "points": pts,
-            "tags": ch.tags,
-            "solve_count": solve_count,
-            "solved_by_me": ch.id in solved_ids,
-            "released_at": ecm.released_at.isoformat() if ecm.released_at else None,
-        })
+        result.append(
+            {
+                "id": ch.id,
+                "slug": ch.slug,
+                "title": ch.title,
+                "category": ch.category,
+                "difficulty": ch.difficulty.value,
+                "points": pts,
+                "tags": ch.tags,
+                "solve_count": solve_count,
+                "solved_by_me": ch.id in solved_ids,
+                "released_at": ecm.released_at.isoformat() if ecm.released_at else None,
+            }
+        )
 
     return result
 
 
 # ── Registration ──────────────────────────────────────────────────────────────
+
 
 def register_team(db: Session, event: CtfEvent, team_id: int) -> EventRegistration:
     if event.status not in (EventStatus.PUBLISHED, EventStatus.RUNNING):
@@ -214,9 +218,7 @@ def register_team(db: Session, event: CtfEvent, team_id: int) -> EventRegistrati
 
     if event.max_team_size:
         member_count = (
-            db.query(func.count(TeamMember.id))
-            .filter(TeamMember.team_id == team_id)
-            .scalar() or 0
+            db.query(func.count(TeamMember.id)).filter(TeamMember.team_id == team_id).scalar() or 0
         )
         if member_count > event.max_team_size:
             raise bad_request(
@@ -254,6 +256,7 @@ def unregister_team(db: Session, event: CtfEvent, team_id: int) -> None:
 
 
 # ── Scoreboard freeze ─────────────────────────────────────────────────────────
+
 
 def is_scoreboard_frozen(event: CtfEvent) -> bool:
     if event.freeze_scoreboard_at is None:

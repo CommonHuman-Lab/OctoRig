@@ -10,6 +10,7 @@ Environment variables that feed app.config.Settings' strict validators must
 be set before ANY `app.*` module is imported, since `Settings()` is
 instantiated at import time (app/config.py: `settings = Settings()`).
 """
+
 import os
 
 os.environ.setdefault("DATABASE_URL", "sqlite:///:memory:")
@@ -56,6 +57,7 @@ def client():
     limiter.enabled = False
 
     from app.main import create_app
+
     application = create_app()
 
     with TestClient(application) as c:

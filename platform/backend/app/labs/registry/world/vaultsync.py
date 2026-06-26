@@ -37,11 +37,23 @@ VAULTSYNC_LAB: LabDefinition = {
             "points": 50,
             "estimated_minutes": 10,
             "flags": [
-                {"value": "FLAG{vs_recon_ftp_backup_leak}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{vs_recon_ftp_backup_leak}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "The FTP service is on port 21. Try connecting anonymously — no credentials required.", "cost": 0},
-                {"order_num": 2, "content": "Browse the pub/ directory and read what's there in full.", "cost": 25},
+                {
+                    "order_num": 1,
+                    "content": "The FTP service is on port 21. Try connecting anonymously — no credentials required.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Browse the pub/ directory and read what's there in full.",
+                    "cost": 25,
+                },
             ],
         },
         {
@@ -64,12 +76,28 @@ VAULTSYNC_LAB: LabDefinition = {
             "points": 100,
             "estimated_minutes": 15,
             "flags": [
-                {"value": "FLAG{vs_sqli_login_bypassed}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{vs_sqli_login_bypassed}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Try a special character in the username field. Does the server behave differently?", "cost": 0},
-                {"order_num": 2, "content": "A single quote breaks the query. A comment character after the username silences the password check.", "cost": 50},
-                {"order_num": 3, "content": "Username: admin'-- with any password. After signing in, inspect the HTTP response headers on /admin.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "Try a special character in the username field. Does the server behave differently?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "A single quote breaks the query. A comment character after the username silences the password check.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Username: admin'-- with any password. After signing in, inspect the HTTP response headers on /admin.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -89,12 +117,28 @@ VAULTSYNC_LAB: LabDefinition = {
             "points": 250,
             "estimated_minutes": 25,
             "flags": [
-                {"value": "FLAG{vs_sqli_vault_search_union}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{vs_sqli_vault_search_union}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Try an unusual character in the search box. Does the error tell you how the query is built?", "cost": 0},
-                {"order_num": 2, "content": "The search wraps your input in a LIKE clause. Closing it early lets you append your own query — match the column count first.", "cost": 50},
-                {"order_num": 3, "content": "UNION SELECT into the _flags table. The original query returns 4 columns.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "Try an unusual character in the search box. Does the error tell you how the query is built?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The search wraps your input in a LIKE clause. Closing it early lets you append your own query — match the column count first.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "UNION SELECT into the _flags table. The original query returns 4 columns.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -113,11 +157,23 @@ VAULTSYNC_LAB: LabDefinition = {
             "points": 100,
             "estimated_minutes": 10,
             "flags": [
-                {"value": "FLAG{vs_idor_vault_item_exposed}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{vs_idor_vault_item_exposed}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Log in as any user. Try visiting /vaults/items/<id> for ids you don't own.", "cost": 0},
-                {"order_num": 2, "content": "Start from item id 1. The notes field on it contains more than a reminder.", "cost": 25},
+                {
+                    "order_num": 1,
+                    "content": "Log in as any user. Try visiting /vaults/items/<id> for ids you don't own.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Start from item id 1. The notes field on it contains more than a reminder.",
+                    "cost": 25,
+                },
             ],
         },
         {
@@ -137,11 +193,23 @@ VAULTSYNC_LAB: LabDefinition = {
             "points": 100,
             "estimated_minutes": 10,
             "flags": [
-                {"value": "FLAG{vs_idor_shared_vault_read}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{vs_idor_shared_vault_read}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Vault ids are sequential integers in the URL. Try ones that were never shared with you.", "cost": 0},
-                {"order_num": 2, "content": "Vault 8 (\"Shared Family Vault\") wasn't shared with your account. Visit /vaults/8 directly and open its items.", "cost": 25},
+                {
+                    "order_num": 1,
+                    "content": "Vault ids are sequential integers in the URL. Try ones that were never shared with you.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": 'Vault 8 ("Shared Family Vault") wasn\'t shared with your account. Visit /vaults/8 directly and open its items.',
+                    "cost": 25,
+                },
             ],
         },
         {
@@ -161,11 +229,23 @@ VAULTSYNC_LAB: LabDefinition = {
             "points": 150,
             "estimated_minutes": 15,
             "flags": [
-                {"value": "FLAG{vs_bac_admin_recovery_exposed}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{vs_bac_admin_recovery_exposed}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Register a regular account. The path is listed in robots.txt under Disallow.", "cost": 0},
-                {"order_num": 2, "content": "Visit /admin/recovery-codes directly while signed in as your regular account.", "cost": 25},
+                {
+                    "order_num": 1,
+                    "content": "Register a regular account. The path is listed in robots.txt under Disallow.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Visit /admin/recovery-codes directly while signed in as your regular account.",
+                    "cost": 25,
+                },
             ],
         },
         {
@@ -188,12 +268,28 @@ VAULTSYNC_LAB: LabDefinition = {
             "points": 200,
             "estimated_minutes": 20,
             "flags": [
-                {"value": "FLAG{vs_xss_admin_cookie_stolen}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{vs_xss_admin_cookie_stolen}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "The \"report this item\" form on any vault item submits a note. Try submitting HTML.", "cost": 0},
-                {"order_num": 2, "content": "The review queue doesn't escape notes when it renders them. You'll need an admin session to view the queue — there's a faster way to get one than waiting.", "cost": 50},
-                {"order_num": 3, "content": "Bypass login as admin (SQLi), submit a report containing a script that reads document.cookie, then visit /admin/review yourself.", "cost": 100},
+                {
+                    "order_num": 1,
+                    "content": 'The "report this item" form on any vault item submits a note. Try submitting HTML.',
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The review queue doesn't escape notes when it renders them. You'll need an admin session to view the queue — there's a faster way to get one than waiting.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Bypass login as admin (SQLi), submit a report containing a script that reads document.cookie, then visit /admin/review yourself.",
+                    "cost": 100,
+                },
             ],
         },
         {
@@ -213,19 +309,35 @@ VAULTSYNC_LAB: LabDefinition = {
             "points": 300,
             "estimated_minutes": 25,
             "flags": [
-                {"value": "FLAG{vs_mass_assign_admin_escalated}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{vs_mass_assign_admin_escalated}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Intercept the profile update request. Are there fields the server accepts that the HTML form never shows?", "cost": 0},
-                {"order_num": 2, "content": "Try sending a JSON body to /profile instead of a form post. Include fields related to account role or plan.", "cost": 50},
-                {"order_num": 3, "content": "POST {\"role\": \"admin\"} as JSON to /profile, then visit /admin — the X-Admin-Flag header confirms escalation.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "Intercept the profile update request. Are there fields the server accepts that the HTML form never shows?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Try sending a JSON body to /profile instead of a form post. Include fields related to account role or plan.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": 'POST {"role": "admin"} as JSON to /profile, then visit /admin — the X-Admin-Flag header confirms escalation.',
+                    "cost": 75,
+                },
             ],
         },
         {
             "slug": "vs-ssrf-breach-check",
             "title": "Check Yourself",
             "description": (
-                "Admins can run a \"breach check\" against any URL to confirm "
+                'Admins can run a "breach check" against any URL to confirm '
                 "a credential hasn't leaked. The server fetches whatever URL "
                 "it's given and shows you the response — including responses "
                 "from addresses your browser could never reach directly.\n\n"
@@ -239,12 +351,28 @@ VAULTSYNC_LAB: LabDefinition = {
             "points": 350,
             "estimated_minutes": 30,
             "flags": [
-                {"value": "FLAG{vs_ssrf_internal_vault_export}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{vs_ssrf_internal_vault_export}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "The breach-check feature is admin-only. You'll need admin access before you can reach it.", "cost": 0},
-                {"order_num": 2, "content": "POST to /api/breach-check with a url field pointing at http://127.0.0.1/. There's an internal-only export endpoint under /api/internal/.", "cost": 75},
-                {"order_num": 3, "content": "Point the breach check at http://127.0.0.1/api/internal/vault-export?format=json and read the JSON it reflects back.", "cost": 100},
+                {
+                    "order_num": 1,
+                    "content": "The breach-check feature is admin-only. You'll need admin access before you can reach it.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "POST to /api/breach-check with a url field pointing at http://127.0.0.1/. There's an internal-only export endpoint under /api/internal/.",
+                    "cost": 75,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Point the breach check at http://127.0.0.1/api/internal/vault-export?format=json and read the JSON it reflects back.",
+                    "cost": 100,
+                },
             ],
         },
         {
@@ -263,12 +391,28 @@ VAULTSYNC_LAB: LabDefinition = {
             "skills": ["requests", "session handling", "sequential enumeration", "JSON parsing"],
             "points": 200,
             "flags": [
-                {"value": "FLAG{vs_python_idor_vault_swept}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{vs_python_idor_vault_swept}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Log in with requests.Session(), then GET /api/v1/vaults/<id>/items for a small range of ids.", "cost": 0},
-                {"order_num": 2, "content": "The endpoint doesn't check that the vault belongs to you. One vault's items include a notes field worth reading.", "cost": 50},
-                {"order_num": 3, "content": "Sweep vault ids 1 through 8. Vault 6's items include a notes field with the flag.", "cost": 100},
+                {
+                    "order_num": 1,
+                    "content": "Log in with requests.Session(), then GET /api/v1/vaults/<id>/items for a small range of ids.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The endpoint doesn't check that the vault belongs to you. One vault's items include a notes field worth reading.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Sweep vault ids 1 through 8. Vault 6's items include a notes field with the flag.",
+                    "cost": 100,
+                },
             ],
         },
         {
@@ -292,12 +436,28 @@ VAULTSYNC_LAB: LabDefinition = {
             "points": 300,
             "estimated_minutes": 30,
             "flags": [
-                {"value": "FLAG{vs_credential_reuse_pivot}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{vs_credential_reuse_pivot}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "You've already found vault items by guessing sequential ids. Keep going past the ones you've already seen.", "cost": 0},
-                {"order_num": 2, "content": "One item beyond the ones you've already found isn't for a made-up site — it's for a bank you may have already broken into once before.", "cost": 50},
-                {"order_num": 3, "content": "Start HumanBank (./octorig.sh start 4) alongside VaultSync. /vaults/items/11 has a username and password — log into HumanBank with them directly and check the account's profile page.", "cost": 100},
+                {
+                    "order_num": 1,
+                    "content": "You've already found vault items by guessing sequential ids. Keep going past the ones you've already seen.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "One item beyond the ones you've already found isn't for a made-up site — it's for a bank you may have already broken into once before.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Start HumanBank (./octorig.sh start 4) alongside VaultSync. /vaults/items/11 has a username and password — log into HumanBank with them directly and check the account's profile page.",
+                    "cost": 100,
+                },
             ],
         },
         {
@@ -317,12 +477,19 @@ VAULTSYNC_LAB: LabDefinition = {
             "points": 700,
             "estimated_minutes": 60,
             "flags": [
-                {"value": "FLAG{vs_insane_chained_rce}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{vs_insane_chained_rce}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Nothing here is exploitable alone. Look at what each vulnerability hands the next one.", "cost": 0},
+                {
+                    "order_num": 1,
+                    "content": "Nothing here is exploitable alone. Look at what each vulnerability hands the next one.",
+                    "cost": 0,
+                },
             ],
         },
     ],
 }
-

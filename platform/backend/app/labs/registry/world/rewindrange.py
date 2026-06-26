@@ -36,12 +36,28 @@ REWINDRANGE_LAB: LabDefinition = {
             "skills": ["passive recon", "directory enumeration"],
             "points": 50,
             "flags": [
-                {"value": "FLAG{rw_manager_office_found}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{rw_manager_office_found}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Search engines are told what to ignore — that instruction list is itself public.", "cost": 0},
-                {"order_num": 2, "content": "The file lives at a standard path in the web root. Follow each path it lists.", "cost": 25},
-                {"order_num": 3, "content": "Visit /robots.txt, then browse to each Disallow path as a logged-in user.", "cost": 50},
+                {
+                    "order_num": 1,
+                    "content": "Search engines are told what to ignore — that instruction list is itself public.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The file lives at a standard path in the web root. Follow each path it lists.",
+                    "cost": 25,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Visit /robots.txt, then browse to each Disallow path as a logged-in user.",
+                    "cost": 50,
+                },
             ],
         },
         {
@@ -61,12 +77,28 @@ REWINDRANGE_LAB: LabDefinition = {
             "skills": ["UNION SELECT", "SQLite schema enumeration", "column-count detection"],
             "points": 300,
             "flags": [
-                {"value": "FLAG{rw_union_select_from_flags}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{rw_union_select_from_flags}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "The category or genre filter on the browse page is worth inspecting. Try an unusual character.", "cost": 0},
-                {"order_num": 2, "content": "Column count matters. Use ORDER BY to count them before extending the query.", "cost": 25},
-                {"order_num": 3, "content": "SELECT name FROM sqlite_master WHERE type='table' lists all tables in the database.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "The category or genre filter on the browse page is worth inspecting. Try an unusual character.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Column count matters. Use ORDER BY to count them before extending the query.",
+                    "cost": 25,
+                },
+                {
+                    "order_num": 3,
+                    "content": "SELECT name FROM sqlite_master WHERE type='table' lists all tables in the database.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -84,12 +116,28 @@ REWINDRANGE_LAB: LabDefinition = {
             "skills": ["SQLi auth bypass", "tautology injection"],
             "points": 100,
             "flags": [
-                {"value": "FLAG{rw_admin_login_bypassed}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{rw_admin_login_bypassed}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "What does the server do when you put a quote character in the username field?", "cost": 0},
-                {"order_num": 2, "content": "SQL comment sequences can neutralise parts of a query.", "cost": 50},
-                {"order_num": 3, "content": "Try username: admin'-- with any password.", "cost": 100},
+                {
+                    "order_num": 1,
+                    "content": "What does the server do when you put a quote character in the username field?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "SQL comment sequences can neutralise parts of a query.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Try username: admin'-- with any password.",
+                    "cost": 100,
+                },
             ],
         },
         {
@@ -109,13 +157,23 @@ REWINDRANGE_LAB: LabDefinition = {
             "tags": ["sql-injection", "sqlite"],
             "skills": ["UNION SELECT", "credential extraction"],
             "points": 250,
-            "flags": [
-                {"value": "FLAG{123456789}", "flag_type": "static", "case_sensitive": False}
-            ],
+            "flags": [{"value": "FLAG{123456789}", "flag_type": "static", "case_sensitive": False}],
             "hints": [
-                {"order_num": 1, "content": "You already found an injection point. What other tables exist in this database?", "cost": 0},
-                {"order_num": 2, "content": "There is a users table. Columns include username and password.", "cost": 50},
-                {"order_num": 3, "content": "The admin's password is stored in plaintext. Extract it and wrap it in FLAG{}.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "You already found an injection point. What other tables exist in this database?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "There is a users table. Columns include username and password.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "The admin's password is stored in plaintext. Extract it and wrap it in FLAG{}.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -133,12 +191,28 @@ REWINDRANGE_LAB: LabDefinition = {
             "skills": ["reflected XSS", "basic payload construction"],
             "points": 100,
             "flags": [
-                {"value": "FLAG{rw_reflected_xss_fired}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{rw_reflected_xss_fired}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Does the search input appear verbatim on the results page? Try some HTML.", "cost": 0},
-                {"order_num": 2, "content": "HTML tags in the query — do they render, or get escaped?", "cost": 50},
-                {"order_num": 3, "content": "Try: /search?q=<script>alert(1)</script> — the flag will appear in the page.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "Does the search input appear verbatim on the results page? Try some HTML.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "HTML tags in the query — do they render, or get escaped?",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Try: /search?q=<script>alert(1)</script> — the flag will appear in the page.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -158,12 +232,28 @@ REWINDRANGE_LAB: LabDefinition = {
             "skills": ["stored XSS", "cookie exfiltration", "session hijacking"],
             "points": 350,
             "flags": [
-                {"value": "FLAG{rw_stored_xss_admin_pwned}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{rw_stored_xss_admin_pwned}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "There is a feedback form. Submit something unusual and think about who reads it and how.", "cost": 0},
-                {"order_num": 2, "content": "If the admin's browser renders your submission, and the admin has a cookie you want...", "cost": 50},
-                {"order_num": 3, "content": "The admin reviews feedback at /admin/feedback. Their session cookie is not HttpOnly.", "cost": 100},
+                {
+                    "order_num": 1,
+                    "content": "There is a feedback form. Submit something unusual and think about who reads it and how.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "If the admin's browser renders your submission, and the admin has a cookie you want...",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "The admin reviews feedback at /admin/feedback. Their session cookie is not HttpOnly.",
+                    "cost": 100,
+                },
             ],
         },
         {
@@ -182,12 +272,28 @@ REWINDRANGE_LAB: LabDefinition = {
             "skills": ["IDOR", "sequential ID enumeration"],
             "points": 150,
             "flags": [
-                {"value": "FLAG{rw_idor_inbox_read}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{rw_idor_inbox_read}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Log in and find the inbox URL. The message ID is in the path.", "cost": 0},
-                {"order_num": 2, "content": "Try different message IDs. The server may not check who the message belongs to.", "cost": 50},
-                {"order_num": 3, "content": "Log in as alice (password: iloveyou). Try /inbox/1, /inbox/7 and nearby IDs.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "Log in and find the inbox URL. The message ID is in the path.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Try different message IDs. The server may not check who the message belongs to.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Log in as alice (password: iloveyou). Try /inbox/1, /inbox/7 and nearby IDs.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -206,12 +312,28 @@ REWINDRANGE_LAB: LabDefinition = {
             "skills": ["API IDOR", "Burp Intruder / ffuf", "JSON parsing"],
             "points": 250,
             "flags": [
-                {"value": "FLAG{rw_api_idor_rentals}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{rw_api_idor_rentals}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Authenticate and look for a rental orders endpoint in the API.", "cost": 0},
-                {"order_num": 2, "content": "Try different order IDs. Does the API only return your own?", "cost": 50},
-                {"order_num": 3, "content": "GET /api/v1/rentals/<id> as any logged-in user. Check a few IDs for a memo field.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "Authenticate and look for a rental orders endpoint in the API.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Try different order IDs. Does the API only return your own?",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "GET /api/v1/rentals/<id> as any logged-in user. Check a few IDs for a memo field.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -232,12 +354,28 @@ REWINDRANGE_LAB: LabDefinition = {
             "skills": ["Flask session internals", "itsdangerous", "cookie signing"],
             "points": 500,
             "flags": [
-                {"value": "FLAG{rw_session_forged_as_admin}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{rw_session_forged_as_admin}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Flask session cookies are signed with a SECRET_KEY. What if you could find it?", "cost": 0},
-                {"order_num": 2, "content": "The source code is available in the lab. Look for the secret key in app.py.", "cost": 75},
-                {"order_num": 3, "content": "Use flask-unsign: --sign --cookie '{\"user_id\": 1}' --secret '<key>'", "cost": 100},
+                {
+                    "order_num": 1,
+                    "content": "Flask session cookies are signed with a SECRET_KEY. What if you could find it?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The source code is available in the lab. Look for the secret key in app.py.",
+                    "cost": 75,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Use flask-unsign: --sign --cookie '{\"user_id\": 1}' --secret '<key>'",
+                    "cost": 100,
+                },
             ],
         },
         {
@@ -257,14 +395,29 @@ REWINDRANGE_LAB: LabDefinition = {
             "skills": ["requests", "HTTP parameter injection", "response parsing"],
             "points": 200,
             "flags": [
-                {"value": "FLAG{rw_python_sqli_automated}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{rw_python_sqli_automated}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "A script that loops and changes one parameter per request can cover ground no human can match.", "cost": 0},
-                {"order_num": 2, "content": "The browse page accepts a filter parameter in the query string. Send your requests there.", "cost": 50},
-                {"order_num": 3, "content": "Try appending to the filter value and watch what the response body contains.", "cost": 100},
+                {
+                    "order_num": 1,
+                    "content": "A script that loops and changes one parameter per request can cover ground no human can match.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The browse page accepts a filter parameter in the query string. Send your requests there.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Try appending to the filter value and watch what the response body contains.",
+                    "cost": 100,
+                },
             ],
         },
     ],
 }
-

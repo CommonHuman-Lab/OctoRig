@@ -35,8 +35,16 @@ SUBVERSE_LAB: LabDefinition = {
             "skills": [],
             "flags": [],
             "hints": [
-                {"order_num": 1, "content": "Check the standard file that web crawlers are expected to read before indexing a site.", "cost": 0},
-                {"order_num": 2, "content": "One of the disallowed paths is a community that isn't linked from anywhere. Visit it and read the announcements.", "cost": 25},
+                {
+                    "order_num": 1,
+                    "content": "Check the standard file that web crawlers are expected to read before indexing a site.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "One of the disallowed paths is a community that isn't linked from anywhere. Visit it and read the announcements.",
+                    "cost": 25,
+                },
             ],
         },
         {
@@ -54,9 +62,21 @@ SUBVERSE_LAB: LabDefinition = {
             "skills": [],
             "flags": [],
             "hints": [
-                {"order_num": 1, "content": "Try entering a special character in the username. What does the server respond with?", "cost": 0},
-                {"order_num": 2, "content": "A quote character breaks the authentication query. A comment character ends the query before the password check.", "cost": 50},
-                {"order_num": 3, "content": "After gaining access as admin, inspect the HTTP response headers on the admin panel.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "Try entering a special character in the username. What does the server respond with?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "A quote character breaks the authentication query. A comment character ends the query before the password check.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "After gaining access as admin, inspect the HTTP response headers on the admin panel.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -74,9 +94,21 @@ SUBVERSE_LAB: LabDefinition = {
             "skills": [],
             "flags": [],
             "hints": [
-                {"order_num": 1, "content": "Try unusual characters in the search box. Does the error reveal anything about how the query works?", "cost": 0},
-                {"order_num": 2, "content": "The database has internal tables not visible through the UI. You can enumerate them.", "cost": 50},
-                {"order_num": 3, "content": "UNION SELECT — determine the column count, then target the internal flags table.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "Try unusual characters in the search box. Does the error reveal anything about how the query works?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The database has internal tables not visible through the UI. You can enumerate them.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "UNION SELECT — determine the column count, then target the internal flags table.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -94,8 +126,16 @@ SUBVERSE_LAB: LabDefinition = {
             "skills": [],
             "flags": [],
             "hints": [
-                {"order_num": 1, "content": "Browse to the messages endpoint. Try IDs you didn't send or receive.", "cost": 0},
-                {"order_num": 2, "content": "Early messages in the system were sent between admin accounts. Low IDs may contain sensitive information.", "cost": 25},
+                {
+                    "order_num": 1,
+                    "content": "Browse to the messages endpoint. Try IDs you didn't send or receive.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Early messages in the system were sent between admin accounts. Low IDs may contain sensitive information.",
+                    "cost": 25,
+                },
             ],
         },
         {
@@ -113,8 +153,16 @@ SUBVERSE_LAB: LabDefinition = {
             "skills": [],
             "flags": [],
             "hints": [
-                {"order_num": 1, "content": "Draft posts have their own URL pattern. Log in and explore the post path — there may be a draft sub-path.", "cost": 0},
-                {"order_num": 2, "content": "Try iterating post IDs on the draft path. Some posts were never published but are still accessible.", "cost": 25},
+                {
+                    "order_num": 1,
+                    "content": "Draft posts have their own URL pattern. Log in and explore the post path — there may be a draft sub-path.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Try iterating post IDs on the draft path. Some posts were never published but are still accessible.",
+                    "cost": 25,
+                },
             ],
         },
         {
@@ -132,9 +180,21 @@ SUBVERSE_LAB: LabDefinition = {
             "skills": [],
             "flags": [],
             "hints": [
-                {"order_num": 1, "content": "Intercept the profile update request. Are there fields the server accepts that aren't in the HTML form?", "cost": 0},
-                {"order_num": 2, "content": "Try including fields related to account standing or permissions in the POST body.", "cost": 50},
-                {"order_num": 3, "content": "Including `role=admin` in the profile edit POST escalates your account. Then visit the admin secret endpoint.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "Intercept the profile update request. Are there fields the server accepts that aren't in the HTML form?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "Try including fields related to account standing or permissions in the POST body.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "Including `role=admin` in the profile edit POST escalates your account. Then visit the admin secret endpoint.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -152,9 +212,21 @@ SUBVERSE_LAB: LabDefinition = {
             "skills": [],
             "flags": [],
             "hints": [
-                {"order_num": 1, "content": "Try submitting `{{ 7*7 }}` in the announcement preview. If the response shows 49, the server evaluates your input.", "cost": 0},
-                {"order_num": 2, "content": "The preview endpoint checks login but not role. Any registered user can submit a preview.", "cost": 50},
-                {"order_num": 3, "content": "The server exposes its application config in the template context. The flag is stored there.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "Try submitting `{{ 7*7 }}` in the announcement preview. If the response shows 49, the server evaluates your input.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The preview endpoint checks login but not role. Any registered user can submit a preview.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "The server exposes its application config in the template context. The flag is stored there.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -172,9 +244,21 @@ SUBVERSE_LAB: LabDefinition = {
             "skills": [],
             "flags": [],
             "hints": [
-                {"order_num": 1, "content": "Try submitting a URL with shell metacharacters in it. What does the server return?", "cost": 0},
-                {"order_num": 2, "content": "The URL is passed to a shell command. Characters that separate shell commands can break out of the URL argument.", "cost": 50},
-                {"order_num": 3, "content": "The flag is in a file at the root of the server filesystem. Use a command to read it.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "Try submitting a URL with shell metacharacters in it. What does the server return?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The URL is passed to a shell command. Characters that separate shell commands can break out of the URL argument.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "The flag is in a file at the root of the server filesystem. Use a command to read it.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -192,9 +276,21 @@ SUBVERSE_LAB: LabDefinition = {
             "skills": [],
             "flags": [],
             "hints": [
-                {"order_num": 1, "content": "Edit your profile bio. Try including some HTML. Does your profile page render it?", "cost": 0},
-                {"order_num": 2, "content": "If HTML renders in the bio, JavaScript does too. The profile page sets a session cookie.", "cost": 50},
-                {"order_num": 3, "content": "The session cookie on this page is not HttpOnly — JavaScript can read it with `document.cookie`.", "cost": 75},
+                {
+                    "order_num": 1,
+                    "content": "Edit your profile bio. Try including some HTML. Does your profile page render it?",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "If HTML renders in the bio, JavaScript does too. The profile page sets a session cookie.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "The session cookie on this page is not HttpOnly — JavaScript can read it with `document.cookie`.",
+                    "cost": 75,
+                },
             ],
         },
         {
@@ -214,14 +310,29 @@ SUBVERSE_LAB: LabDefinition = {
             "skills": ["requests", "session handling", "command injection", "shell metacharacters"],
             "points": 300,
             "flags": [
-                {"value": "FLAG{sv_python_cmdi_droned}", "flag_type": "static", "case_sensitive": False}
+                {
+                    "value": "FLAG{sv_python_cmdi_droned}",
+                    "flag_type": "static",
+                    "case_sensitive": False,
+                }
             ],
             "hints": [
-                {"order_num": 1, "content": "Find a feature that sends data off-server on your behalf. The value you supply may reach a shell.", "cost": 0},
-                {"order_num": 2, "content": "The link-preview endpoint passes your URL into a system call. Shell separators can append a second command.", "cost": 50},
-                {"order_num": 3, "content": "POST to /api/posts with a crafted url field. Add a separator and a read command. The flag lives at /flag.txt on the host.", "cost": 100},
+                {
+                    "order_num": 1,
+                    "content": "Find a feature that sends data off-server on your behalf. The value you supply may reach a shell.",
+                    "cost": 0,
+                },
+                {
+                    "order_num": 2,
+                    "content": "The link-preview endpoint passes your URL into a system call. Shell separators can append a second command.",
+                    "cost": 50,
+                },
+                {
+                    "order_num": 3,
+                    "content": "POST to /api/posts with a crafted url field. Add a separator and a read command. The flag lives at /flag.txt on the host.",
+                    "cost": 100,
+                },
             ],
         },
     ],
 }
-

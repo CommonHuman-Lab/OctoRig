@@ -6,6 +6,7 @@ Revision ID: add_challenge_lab_tmpl
 Revises: db_init
 Create Date: 2026-06-14
 """
+
 from collections.abc import Sequence
 
 import sqlalchemy as sa
@@ -21,7 +22,9 @@ depends_on: str | Sequence[str] | None = None
 def upgrade() -> None:
     op.add_column(
         "challenges",
-        sa.Column("lab_template_id", sa.Integer(), sa.ForeignKey("lab_templates.id"), nullable=True)
+        sa.Column(
+            "lab_template_id", sa.Integer(), sa.ForeignKey("lab_templates.id"), nullable=True
+        ),
     )
     op.create_index("ix_challenges_lab_template_id", "challenges", ["lab_template_id"])
 

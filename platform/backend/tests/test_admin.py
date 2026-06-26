@@ -6,6 +6,7 @@ across all users, audit logs, API keys, stats, and the destructive
 reset-points / reset-db endpoints. No real DB, no real network, no real
 Docker — see tests/conftest.py.
 """
+
 import os
 
 from app.models.deployment import Deployment, DeploymentStatus
@@ -44,6 +45,7 @@ def _admin_id(client, admin_token):
 
 # ── access control ───────────────────────────────────────────────────────────
 
+
 def test_admin_endpoints_require_admin(client):
     player_token = _register_and_login(client, "alice")
     cases = [
@@ -61,6 +63,7 @@ def test_admin_endpoints_require_admin(client):
 
 # ── stats ────────────────────────────────────────────────────────────────────
 
+
 def test_stats_reflects_seeded_admin(client):
     token = _admin_token(client)
     resp = client.get("/api/v1/admin/stats", headers=_auth(token))
@@ -69,6 +72,7 @@ def test_stats_reflects_seeded_admin(client):
 
 
 # ── user management ──────────────────────────────────────────────────────────
+
 
 def test_admin_create_user_success(client):
     token = _admin_token(client)
@@ -221,9 +225,7 @@ def test_admin_reset_password_takes_effect(client):
     )
     assert resp.status_code == 204
 
-    old_login = client.post(
-        "/api/v1/auth/login", json={"username": "alice", "password": PASSWORD}
-    )
+    old_login = client.post("/api/v1/auth/login", json={"username": "alice", "password": PASSWORD})
     assert old_login.status_code == 401
 
     new_login = client.post(
@@ -240,7 +242,9 @@ def test_admin_reset_points_clears_submissions(client, db_session):
     user_id = _user_id(client, player_token)
 
     db_session.add(
-        ScoreTransaction(user_id=user_id, points=100, source_type=ScoreTransactionSource.CHALLENGE_SOLVE)
+        ScoreTransaction(
+            user_id=user_id, points=100, source_type=ScoreTransactionSource.CHALLENGE_SOLVE
+        )
     )
     db_session.commit()
     assert db_session.query(ScoreTransaction).filter_by(user_id=user_id).count() == 1
@@ -258,6 +262,7 @@ def test_get_unknown_user_404(client):
 
 # ── reset-db ─────────────────────────────────────────────────────────────────
 
+
 def test_reset_db_wipes_activity_but_keeps_accounts(client, db_session):
     admin_token = _admin_token(client)
     player_token = _register_and_login(client, "alice")
@@ -274,12 +279,16 @@ def test_reset_db_wipes_activity_but_keeps_accounts(client, db_session):
 
     assert db_session.query(Deployment).count() == 0
     # accounts survive
-    assert client.post(
-        "/api/v1/auth/login", json={"username": "alice", "password": PASSWORD}
-    ).status_code == 200
+    assert (
+        client.post(
+            "/api/v1/auth/login", json={"username": "alice", "password": PASSWORD}
+        ).status_code
+        == 200
+    )
 
 
 # ── teams / deployments (cross-user visibility) ─────────────────────────────
+
 
 def test_admin_lists_all_teams_including_personal(client):
     token = _admin_token(client)
@@ -358,6 +367,7 @@ def test_restart_platform_requires_admin(client):
 
 # ── audit logs ───────────────────────────────────────────────────────────────
 
+
 def test_audit_logs_record_login_events(client):
     admin_token = _admin_token(client)
     resp = client.get(
@@ -382,13 +392,12 @@ def test_audit_logs_filter_by_user_id(client):
 
 # ── api keys ─────────────────────────────────────────────────────────────────
 
+
 def test_admin_lists_and_revokes_api_keys(client):
     admin_token = _admin_token(client)
     player_token = _register_and_login(client, "alice")
 
-    created = client.post(
-        "/api/v1/api-keys/", json={"name": "ci-key"}, headers=_auth(player_token)
-    )
+    created = client.post("/api/v1/api-keys/", json={"name": "ci-key"}, headers=_auth(player_token))
     assert created.status_code == 201
     key_id = created.json()["id"]
 

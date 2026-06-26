@@ -6,6 +6,7 @@ must target one specific team rather than "any of my teammates".
 Revision ID: add_note_team_id
 Revises: add_notes
 """
+
 import sqlalchemy as sa
 
 from alembic import op
@@ -17,7 +18,9 @@ depends_on = None
 
 
 def upgrade() -> None:
-    op.add_column("notes", sa.Column("team_id", sa.Integer(), sa.ForeignKey("teams.id"), nullable=True))
+    op.add_column(
+        "notes", sa.Column("team_id", sa.Integer(), sa.ForeignKey("teams.id"), nullable=True)
+    )
     op.create_index("ix_notes_team_id", "notes", ["team_id"])
 
 

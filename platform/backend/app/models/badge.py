@@ -56,8 +56,12 @@ class AchievementRule(Base):
     __tablename__ = "achievement_rules"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    badge_id: Mapped[int] = mapped_column(ForeignKey("badge_definitions.id"), nullable=False, index=True)
-    rule_type: Mapped[AchievementRuleType] = mapped_column(SQLEnum(AchievementRuleType), nullable=False)
+    badge_id: Mapped[int] = mapped_column(
+        ForeignKey("badge_definitions.id"), nullable=False, index=True
+    )
+    rule_type: Mapped[AchievementRuleType] = mapped_column(
+        SQLEnum(AchievementRuleType), nullable=False
+    )
     rule_config: Mapped[dict[str, Any]] = mapped_column(JSON, nullable=False, default=dict)
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
@@ -67,9 +71,7 @@ class AchievementRule(Base):
 
 class UserBadge(Base):
     __tablename__ = "user_badges"
-    __table_args__ = (
-        UniqueConstraint("user_id", "badge_id", name="uq_user_badges"),
-    )
+    __table_args__ = (UniqueConstraint("user_id", "badge_id", name="uq_user_badges"),)
 
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)

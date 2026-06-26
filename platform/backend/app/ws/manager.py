@@ -7,6 +7,7 @@ WebSocket connection manager.
 `emit()` is the thread-safe fire-and-forget helper used by sync code (lab_service,
 notification_service, etc.) to broadcast an event to all connected browser tabs.
 """
+
 import asyncio
 import json
 from typing import Any

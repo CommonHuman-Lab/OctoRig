@@ -52,7 +52,8 @@ def get_profile(db: Session, username: str, viewer_id: int | None = None) -> dic
     total_points = int(
         db.query(func.coalesce(func.sum(ScoreTransaction.points), 0))
         .filter(ScoreTransaction.user_id == user.id, ScoreTransaction.event_id.is_(None))
-        .scalar() or 0
+        .scalar()
+        or 0
     )
     solve_count = int(
         db.query(func.count(ChallengeSubmission.id))
@@ -60,7 +61,8 @@ def get_profile(db: Session, username: str, viewer_id: int | None = None) -> dic
             ChallengeSubmission.user_id == user.id,
             ChallengeSubmission.is_correct.is_(True),
         )
-        .scalar() or 0
+        .scalar()
+        or 0
     )
     first_bloods = int(
         db.query(func.count(ChallengeSubmission.id))
@@ -68,12 +70,11 @@ def get_profile(db: Session, username: str, viewer_id: int | None = None) -> dic
             ChallengeSubmission.user_id == user.id,
             ChallengeSubmission.is_first_blood.is_(True),
         )
-        .scalar() or 0
+        .scalar()
+        or 0
     )
     team_count = int(
-        db.query(func.count(TeamMember.id))
-        .filter(TeamMember.user_id == user.id)
-        .scalar() or 0
+        db.query(func.count(TeamMember.id)).filter(TeamMember.user_id == user.id).scalar() or 0
     )
 
     badges = (

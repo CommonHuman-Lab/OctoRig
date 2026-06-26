@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
 """Assessment Mode API — admin management + candidate-facing endpoints."""
+
 from datetime import UTC, datetime, timedelta
 
 from fastapi import APIRouter, BackgroundTasks, Depends, Response
@@ -50,6 +51,7 @@ _COOKIE_PATH = "/api/v1/auth"
 
 # --- Helpers ---
 
+
 def _compute_status(invite: AssessmentInvite) -> InviteStatus:
     if invite.is_revoked:
         return "revoked"
@@ -84,15 +86,19 @@ def _invite_response(invite: AssessmentInvite) -> AssessmentInviteResponse:
 
 
 def _assessment_response(assessment: Assessment, db: Session) -> AssessmentResponse:
-    total = db.query(AssessmentInvite).filter(
-        AssessmentInvite.assessment_id == assessment.id
-    ).count()
-    active = db.query(AssessmentInvite).filter(
-        AssessmentInvite.assessment_id == assessment.id,
-        AssessmentInvite.is_revoked.is_(False),
-        AssessmentInvite.started_at.isnot(None),
-        AssessmentInvite.expires_at > datetime.now(UTC),
-    ).count()
+    total = (
+        db.query(AssessmentInvite).filter(AssessmentInvite.assessment_id == assessment.id).count()
+    )
+    active = (
+        db.query(AssessmentInvite)
+        .filter(
+            AssessmentInvite.assessment_id == assessment.id,
+            AssessmentInvite.is_revoked.is_(False),
+            AssessmentInvite.started_at.isnot(None),
+            AssessmentInvite.expires_at > datetime.now(UTC),
+        )
+        .count()
+    )
     return AssessmentResponse(
         id=assessment.id,
         name=assessment.name,
@@ -114,6 +120,7 @@ def _assessment_response(assessment: Assessment, db: Session) -> AssessmentRespo
 
 def _slugify(name: str) -> str:
     import re
+
     return re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
 
 
@@ -138,6 +145,7 @@ def _set_refresh_cookie(response: Response, token: str) -> None:
 
 
 # --- Admin — CRUD ---
+
 
 @admin_router.get("/", response_model=list[AssessmentResponse])
 def list_assessments(
@@ -227,12 +235,16 @@ def delete_assessment(
     if assessment is None:
         raise not_found("Assessment")
 
-    active_count = db.query(AssessmentInvite).filter(
-        AssessmentInvite.assessment_id == assessment_id,
-        AssessmentInvite.is_revoked.is_(False),
-        AssessmentInvite.started_at.isnot(None),
-        AssessmentInvite.expires_at > datetime.now(UTC),
-    ).count()
+    active_count = (
+        db.query(AssessmentInvite)
+        .filter(
+            AssessmentInvite.assessment_id == assessment_id,
+            AssessmentInvite.is_revoked.is_(False),
+            AssessmentInvite.started_at.isnot(None),
+            AssessmentInvite.expires_at > datetime.now(UTC),
+        )
+        .count()
+    )
     if active_count > 0:
         raise bad_request("Cannot delete an assessment with active candidates")
 
@@ -242,6 +254,7 @@ def delete_assessment(
 
 # --- Admin — Invites ---
 
+
 @admin_router.get("/{assessment_id}/invites", response_model=list[AssessmentInviteResponse])
 def list_invites(
     assessment_id: int,
@@ -250,9 +263,12 @@ def list_invites(
 ) -> list[AssessmentInviteResponse]:
     if db.get(Assessment, assessment_id) is None:
         raise not_found("Assessment")
-    invites = db.query(AssessmentInvite).filter(
-        AssessmentInvite.assessment_id == assessment_id
-    ).order_by(AssessmentInvite.id.desc()).all()
+    invites = (
+        db.query(AssessmentInvite)
+        .filter(AssessmentInvite.assessment_id == assessment_id)
+        .order_by(AssessmentInvite.id.desc())
+        .all()
+    )
     return [_invite_response(i) for i in invites]
 
 
@@ -266,9 +282,12 @@ def list_candidate_progress(
     if assessment is None:
         raise not_found("Assessment")
 
-    invites = db.query(AssessmentInvite).filter(
-        AssessmentInvite.assessment_id == assessment_id
-    ).order_by(AssessmentInvite.id.desc()).all()
+    invites = (
+        db.query(AssessmentInvite)
+        .filter(AssessmentInvite.assessment_id == assessment_id)
+        .order_by(AssessmentInvite.id.desc())
+        .all()
+    )
 
     from app.models.challenge import Challenge
 
@@ -287,28 +306,34 @@ def list_candidate_progress(
             .all()
         )
         for sub, ch in rows:
-            subs_by_user.setdefault(sub.user_id, []).append(FlagSolve(
-                challenge_slug=ch.slug,
-                challenge_title=ch.title,
-                points=ch.points,
-                solved_at=sub.submitted_at,
-            ))
+            subs_by_user.setdefault(sub.user_id, []).append(
+                FlagSolve(
+                    challenge_slug=ch.slug,
+                    challenge_title=ch.title,
+                    points=ch.points,
+                    solved_at=sub.submitted_at,
+                )
+            )
 
     results: list[AssessmentInviteWithProgress] = []
     for invite in invites:
         flags_solved = subs_by_user.get(invite.user_id, [])
         base = _invite_response(invite)
-        results.append(AssessmentInviteWithProgress(
-            **base.model_dump(),
-            flags_solved=flags_solved,
-            score=sum(f.points for f in flags_solved),
-            report_submitted=invite.report is not None,
-            report_content=invite.report.content if invite.report else None,
-        ))
+        results.append(
+            AssessmentInviteWithProgress(
+                **base.model_dump(),
+                flags_solved=flags_solved,
+                score=sum(f.points for f in flags_solved),
+                report_submitted=invite.report is not None,
+                report_content=invite.report.content if invite.report else None,
+            )
+        )
     return results
 
 
-@admin_router.post("/{assessment_id}/invites", response_model=AssessmentInviteResponse, status_code=201)
+@admin_router.post(
+    "/{assessment_id}/invites", response_model=AssessmentInviteResponse, status_code=201
+)
 def create_invite(
     assessment_id: int,
     payload: AssessmentInviteCreate,
@@ -321,10 +346,14 @@ def create_invite(
     if not assessment.is_active:
         raise bad_request("Assessment is not active")
 
-    existing = db.query(AssessmentInvite).filter(
-        AssessmentInvite.assessment_id == assessment_id,
-        AssessmentInvite.email == payload.email,
-    ).first()
+    existing = (
+        db.query(AssessmentInvite)
+        .filter(
+            AssessmentInvite.assessment_id == assessment_id,
+            AssessmentInvite.email == payload.email,
+        )
+        .first()
+    )
     if existing:
         raise conflict(f"An invite for '{payload.email}' already exists in this assessment")
 
@@ -347,10 +376,14 @@ def revoke_invite(
     _: User = Depends(require_admin),
     db: Session = Depends(get_db),
 ) -> None:
-    invite = db.query(AssessmentInvite).filter(
-        AssessmentInvite.id == invite_id,
-        AssessmentInvite.assessment_id == assessment_id,
-    ).first()
+    invite = (
+        db.query(AssessmentInvite)
+        .filter(
+            AssessmentInvite.id == invite_id,
+            AssessmentInvite.assessment_id == assessment_id,
+        )
+        .first()
+    )
     if invite is None:
         raise not_found("Invite")
     invite.is_revoked = True
@@ -367,10 +400,14 @@ def get_candidate_progress(
     _: User = Depends(require_admin),
     db: Session = Depends(get_db),
 ) -> AssessmentInviteWithProgress:
-    invite = db.query(AssessmentInvite).filter(
-        AssessmentInvite.id == invite_id,
-        AssessmentInvite.assessment_id == assessment_id,
-    ).first()
+    invite = (
+        db.query(AssessmentInvite)
+        .filter(
+            AssessmentInvite.id == invite_id,
+            AssessmentInvite.assessment_id == assessment_id,
+        )
+        .first()
+    )
     if invite is None:
         raise not_found("Invite")
 
@@ -394,12 +431,14 @@ def get_candidate_progress(
             .all()
         )
         for sub, ch in subs:
-            flags_solved.append(FlagSolve(
-                challenge_slug=ch.slug,
-                challenge_title=ch.title,
-                points=ch.points,
-                solved_at=sub.submitted_at,
-            ))
+            flags_solved.append(
+                FlagSolve(
+                    challenge_slug=ch.slug,
+                    challenge_title=ch.title,
+                    points=ch.points,
+                    solved_at=sub.submitted_at,
+                )
+            )
         score = sum(f.points for f in flags_solved)
 
     if invite.report is not None:
@@ -416,6 +455,7 @@ def get_candidate_progress(
 
 
 # --- Candidate — public invite landing ---
+
 
 @candidate_router.get("/invite/{token}", response_model=InviteLandingResponse)
 def get_invite_landing(
@@ -444,6 +484,7 @@ def get_invite_landing(
 
 
 # --- Candidate — accept invite (register or link existing account) ---
+
 
 @candidate_router.post("/invite/{token}/accept", response_model=TokenResponse, status_code=201)
 def accept_invite(
@@ -487,8 +528,13 @@ def accept_invite(
     db.commit()
     db.refresh(user)
 
-    write_audit(db, action="assessment.candidate_registered", user_id=user.id, ip=ip,
-                detail={"assessment_id": invite.assessment_id, "invite_id": invite.id})
+    write_audit(
+        db,
+        action="assessment.candidate_registered",
+        user_id=user.id,
+        ip=ip,
+        detail={"assessment_id": invite.assessment_id, "invite_id": invite.id},
+    )
 
     raw_refresh = _issue_refresh_token(db, user.id)
     _set_refresh_cookie(response, raw_refresh)
@@ -501,6 +547,7 @@ def accept_invite(
 
 # --- Candidate — start assessment (deploy labs, set timer) ---
 
+
 @candidate_router.post("/me/start", response_model=CandidateAssessmentStatus)
 def start_assessment(
     background_tasks: BackgroundTasks,
@@ -510,10 +557,14 @@ def start_assessment(
     if not current_user.is_candidate:
         raise forbidden_exception
 
-    invite = db.query(AssessmentInvite).filter(
-        AssessmentInvite.user_id == current_user.id,
-        AssessmentInvite.is_revoked.is_(False),
-    ).first()
+    invite = (
+        db.query(AssessmentInvite)
+        .filter(
+            AssessmentInvite.user_id == current_user.id,
+            AssessmentInvite.is_revoked.is_(False),
+        )
+        .first()
+    )
     if invite is None:
         raise not_found("Assessment invite")
     if invite.accepted_at is None:
@@ -530,7 +581,7 @@ def start_assessment(
     assessment = invite.assessment
     deployment_ids: list[int] = []
 
-    for slug in (assessment.lab_slugs or []):
+    for slug in assessment.lab_slugs or []:
         template = db.query(LabTemplate).filter(LabTemplate.slug == slug).first()
         if template is None:
             continue
@@ -554,13 +605,18 @@ def start_assessment(
     db.commit()
     db.refresh(invite)
 
-    write_audit(db, action="assessment.started", user_id=current_user.id,
-                detail={"assessment_id": assessment.id, "invite_id": invite.id})
+    write_audit(
+        db,
+        action="assessment.started",
+        user_id=current_user.id,
+        detail={"assessment_id": assessment.id, "invite_id": invite.id},
+    )
 
     return _build_candidate_status(invite, db)
 
 
 # --- Candidate — workspace status ---
+
 
 @candidate_router.get("/me", response_model=CandidateAssessmentStatus)
 def get_assessment_status(
@@ -570,10 +626,14 @@ def get_assessment_status(
     if not current_user.is_candidate:
         raise forbidden_exception
 
-    invite = db.query(AssessmentInvite).filter(
-        AssessmentInvite.user_id == current_user.id,
-        AssessmentInvite.is_revoked.is_(False),
-    ).first()
+    invite = (
+        db.query(AssessmentInvite)
+        .filter(
+            AssessmentInvite.user_id == current_user.id,
+            AssessmentInvite.is_revoked.is_(False),
+        )
+        .first()
+    )
     if invite is None:
         raise not_found("Assessment invite")
 
@@ -597,7 +657,9 @@ def _build_candidate_status(invite: AssessmentInvite, db: Session) -> CandidateA
     labs: list[CandidateLabInfo] = []
     for i, slug in enumerate(assessment.lab_slugs or []):
         display_name = display_names.get(slug) or slug.capitalize()
-        deployment_id = (invite.deployment_ids or [None])[i] if i < len(invite.deployment_ids or []) else None
+        deployment_id = (
+            (invite.deployment_ids or [None])[i] if i < len(invite.deployment_ids or []) else None
+        )
 
         dep_status = None
         access_info = []
@@ -612,13 +674,15 @@ def _build_candidate_status(invite: AssessmentInvite, db: Session) -> CandidateA
                         if template:
                             access_info = render_access_info(template.access_info or [])
 
-        labs.append(CandidateLabInfo(
-            display_name=display_name,
-            slug=slug,
-            deployment_id=deployment_id,
-            status=dep_status,
-            access_info=access_info,
-        ))
+        labs.append(
+            CandidateLabInfo(
+                display_name=display_name,
+                slug=slug,
+                deployment_id=deployment_id,
+                status=dep_status,
+                access_info=access_info,
+            )
+        )
 
     report = invite.report
     return CandidateAssessmentStatus(
@@ -638,6 +702,7 @@ def _build_candidate_status(invite: AssessmentInvite, db: Session) -> CandidateA
 
 # --- Candidate — report submission ---
 
+
 @candidate_router.post("/me/report", response_model=ReportResponse)
 def submit_report(
     payload: ReportSubmit,
@@ -647,10 +712,14 @@ def submit_report(
     if not current_user.is_candidate:
         raise forbidden_exception
 
-    invite = db.query(AssessmentInvite).filter(
-        AssessmentInvite.user_id == current_user.id,
-        AssessmentInvite.is_revoked.is_(False),
-    ).first()
+    invite = (
+        db.query(AssessmentInvite)
+        .filter(
+            AssessmentInvite.user_id == current_user.id,
+            AssessmentInvite.is_revoked.is_(False),
+        )
+        .first()
+    )
     if invite is None:
         raise not_found("Assessment invite")
     if invite.started_at is None:
@@ -679,6 +748,7 @@ def submit_report(
 
 # --- Candidate — finish early ---
 
+
 @candidate_router.post("/me/complete", response_model=CandidateAssessmentStatus)
 def complete_assessment(
     background_tasks: BackgroundTasks,
@@ -688,10 +758,14 @@ def complete_assessment(
     if not current_user.is_candidate:
         raise forbidden_exception
 
-    invite = db.query(AssessmentInvite).filter(
-        AssessmentInvite.user_id == current_user.id,
-        AssessmentInvite.is_revoked.is_(False),
-    ).first()
+    invite = (
+        db.query(AssessmentInvite)
+        .filter(
+            AssessmentInvite.user_id == current_user.id,
+            AssessmentInvite.is_revoked.is_(False),
+        )
+        .first()
+    )
     if invite is None:
         raise not_found("Assessment invite")
     if invite.started_at is None:
@@ -705,10 +779,14 @@ def complete_assessment(
         db.commit()
         db.refresh(invite)
 
-        for deployment_id in (invite.deployment_ids or []):
+        for deployment_id in invite.deployment_ids or []:
             background_tasks.add_task(stop_lab, deployment_id, current_user.id)
 
-        write_audit(db, action="assessment.completed", user_id=current_user.id,
-                    detail={"assessment_id": invite.assessment_id, "invite_id": invite.id})
+        write_audit(
+            db,
+            action="assessment.completed",
+            user_id=current_user.id,
+            detail={"assessment_id": invite.assessment_id, "invite_id": invite.id},
+        )
 
     return _build_candidate_status(invite, db)

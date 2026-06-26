@@ -12,6 +12,7 @@ Worker invocation:
   celery -A app.worker.celery_app worker -Q lab_ops --concurrency=4
   celery -A app.worker.celery_app worker -Q scheduler --concurrency=2 --beat
 """
+
 from datetime import UTC, datetime, timedelta
 
 from app.worker.celery_app import celery_app
@@ -82,7 +83,7 @@ def execute_destroy(self, scheduled_action_id: int) -> None:
             )
         except Exception as exc:
             try:
-                raise self.retry(exc=exc, countdown=30 * (2 ** self.request.retries))
+                raise self.retry(exc=exc, countdown=30 * (2**self.request.retries))
             except self.MaxRetriesExceededError:
                 action.status = ScheduledActionStatus.FAILED
                 action.error_message = str(exc)
@@ -128,11 +129,17 @@ def execute_deploy(self, scheduled_action_id: int) -> None:
                 raise ValueError("Lab definition missing from registry")
 
             if action.team_id is not None:
-                existing = lab_service.get_active_deployment(db, template.id, team_id=action.team_id)
+                existing = lab_service.get_active_deployment(
+                    db, template.id, team_id=action.team_id
+                )
             else:
-                existing = lab_service.get_active_deployment(db, template.id, started_by_id=action.user_id)
+                existing = lab_service.get_active_deployment(
+                    db, template.id, started_by_id=action.user_id
+                )
             if existing:
-                raise ValueError(f"You already have an active deployment of this lab (id={existing.id})")
+                raise ValueError(
+                    f"You already have an active deployment of this lab (id={existing.id})"
+                )
 
             deployment = prepare_deployment(
                 db,
@@ -161,7 +168,7 @@ def execute_deploy(self, scheduled_action_id: int) -> None:
             )
         except Exception as exc:
             try:
-                raise self.retry(exc=exc, countdown=30 * (2 ** self.request.retries))
+                raise self.retry(exc=exc, countdown=30 * (2**self.request.retries))
             except self.MaxRetriesExceededError:
                 action.status = ScheduledActionStatus.FAILED
                 action.error_message = str(exc)
@@ -223,11 +230,14 @@ def cleanup_stale_deployments() -> None:
             deployment.status = DeploymentStatus.ERROR
             deployment.error_message = "Deployment timed out in STARTING state (orphan cleanup)"
             db.commit()
-            ws_emit("deployment.update", {
-                "id": deployment.id,
-                "lab_template_id": deployment.lab_template_id,
-                "status": "error",
-                "error_message": deployment.error_message,
-            })
+            ws_emit(
+                "deployment.update",
+                {
+                    "id": deployment.id,
+                    "lab_template_id": deployment.lab_template_id,
+                    "status": "error",
+                    "error_message": deployment.error_message,
+                },
+            )
     finally:
         db.close()

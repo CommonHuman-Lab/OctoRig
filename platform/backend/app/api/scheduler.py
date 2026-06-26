@@ -51,13 +51,18 @@ def create_scheduled(
         if d is None:
             raise not_found("Deployment")
         membership = _get_membership(db, current_user, d.team_id)
-        if d.started_by_id != current_user.id and membership is None and not is_privileged(current_user, db):
+        if (
+            d.started_by_id != current_user.id
+            and membership is None
+            and not is_privileged(current_user, db)
+        ):
             raise not_found("Deployment")
         if not can_destroy_deployment(current_user, db, d, membership):
             raise forbidden_exception
 
     if payload.team_id is not None:
         from app.models.team import TeamMember
+
         member = (
             db.query(TeamMember)
             .filter(TeamMember.team_id == payload.team_id, TeamMember.user_id == current_user.id)

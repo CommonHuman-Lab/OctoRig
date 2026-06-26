@@ -84,21 +84,30 @@ def login(
     ip = get_client_ip(request)
 
     if user is not None and login_lockout_service.is_locked(user):
-        write_audit(db, action=audit_service.AUTH_LOGIN_FAILED,
-                    detail={"username": payload.username, "reason": "locked"}, ip=ip)
+        write_audit(
+            db,
+            action=audit_service.AUTH_LOGIN_FAILED,
+            detail={"username": payload.username, "reason": "locked"},
+            ip=ip,
+        )
         raise too_many_requests("Account temporarily locked due to repeated failed login attempts")
 
     if user is None or not verify_password(payload.password, user.hashed_password):
         if user is not None:
             login_lockout_service.record_failed_attempt(user)
             db.commit()
-        write_audit(db, action=audit_service.AUTH_LOGIN_FAILED,
-                    detail={"username": payload.username}, ip=ip)
+        write_audit(
+            db, action=audit_service.AUTH_LOGIN_FAILED, detail={"username": payload.username}, ip=ip
+        )
         raise credentials_exception
 
     if not user.is_active:
-        write_audit(db, action=audit_service.AUTH_LOGIN_FAILED,
-                    detail={"username": payload.username, "reason": "inactive"}, ip=ip)
+        write_audit(
+            db,
+            action=audit_service.AUTH_LOGIN_FAILED,
+            detail={"username": payload.username, "reason": "inactive"},
+            ip=ip,
+        )
         raise credentials_exception
 
     login_lockout_service.reset(user)
@@ -108,6 +117,7 @@ def login(
     write_audit(db, action=audit_service.AUTH_LOGIN, user_id=user.id, ip=ip)
 
     from app.services.team_service import ensure_personal_team
+
     ensure_personal_team(db, user)
 
     _purge_expired(db, user.id)
@@ -169,9 +179,11 @@ def logout(
 ) -> dict:
     raw = request.cookies.get(_COOKIE_NAME)
     if raw:
-        rt = db.query(RefreshToken).filter_by(
-            token_hash=hash_token(raw), user_id=current_user.id
-        ).first()
+        rt = (
+            db.query(RefreshToken)
+            .filter_by(token_hash=hash_token(raw), user_id=current_user.id)
+            .first()
+        )
         if rt:
             rt.revoked = True
             db.commit()
@@ -241,12 +253,16 @@ def register(
 
     if len(payload.password) < 8:
         raise bad_request("Password must be at least 8 characters")
-    raise_if_exists(db, User, f"Username '{payload.username}' is already taken", username=payload.username)
+    raise_if_exists(
+        db, User, f"Username '{payload.username}' is already taken", username=payload.username
+    )
     raise_if_exists(db, User, f"Email '{payload.email}' is already registered", email=payload.email)
 
     from app.models.role import PlatformRole
 
-    default_slugs = [r.slug for r in db.query(PlatformRole.slug).filter(PlatformRole.is_default.is_(True)).all()]
+    default_slugs = [
+        r.slug for r in db.query(PlatformRole.slug).filter(PlatformRole.is_default.is_(True)).all()
+    ]
 
     user = User(
         username=payload.username,
@@ -260,6 +276,7 @@ def register(
     db.refresh(user)
 
     from app.services.team_service import ensure_personal_team
+
     ensure_personal_team(db, user)
 
     write_audit(db, action="auth.registered", user_id=user.id, ip=ip)

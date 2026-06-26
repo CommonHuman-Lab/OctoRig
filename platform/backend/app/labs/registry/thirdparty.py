@@ -60,7 +60,12 @@ THIRDPARTY_LABS: list[LabDefinition] = [  # type: ignore[assignment]
         "volume_names": [],
         "env_vars": {},
         "requires_privileged": True,
-        "resource_limits": {"mem_limit": "1g", "memswap_limit": "1g", "cpu_quota": 100_000, "pids_limit": 512},
+        "resource_limits": {
+            "mem_limit": "1g",
+            "memswap_limit": "1g",
+            "cpu_quota": 100_000,
+            "pids_limit": 512,
+        },
         "challenges": [],
     },
     {
@@ -102,7 +107,12 @@ THIRDPARTY_LABS: list[LabDefinition] = [  # type: ignore[assignment]
         "env_vars": {},
         "requires_privileged": True,
         # Samba4 AD DC (built from source) needs significant memory and CPU headroom
-        "resource_limits": {"mem_limit": "2g", "memswap_limit": "2g", "cpu_quota": 100_000, "pids_limit": 512},
+        "resource_limits": {
+            "mem_limit": "2g",
+            "memswap_limit": "2g",
+            "cpu_quota": 100_000,
+            "pids_limit": 512,
+        },
         "challenges": [],
     },
 ]

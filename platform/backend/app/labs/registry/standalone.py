@@ -38,7 +38,11 @@ STANDALONE_CHALLENGES: list[ChallengeDef] = [  # type: ignore[assignment]
         },
         "flags": [{"value": "14", "flag_type": "static", "case_sensitive": False}],
         "hints": [
-            {"order_num": 1, "content": "range(1, 4) produces the integers 1, 2, and 3.", "cost": 0},
+            {
+                "order_num": 1,
+                "content": "range(1, 4) produces the integers 1, 2, and 3.",
+                "cost": 0,
+            },
         ],
     },
     {
@@ -57,7 +61,11 @@ STANDALONE_CHALLENGES: list[ChallengeDef] = [  # type: ignore[assignment]
         },
         "flags": [{"value": "8", "flag_type": "static", "case_sensitive": False}],
         "hints": [
-            {"order_num": 1, "content": "The & operator keeps only bits that are 1 in both operands.", "cost": 0},
+            {
+                "order_num": 1,
+                "content": "The & operator keeps only bits that are 1 in both operands.",
+                "cost": 0,
+            },
             {"order_num": 2, "content": "0b1000 in decimal is 8.", "cost": 25},
         ],
     },
@@ -77,7 +85,11 @@ STANDALONE_CHALLENGES: list[ChallengeDef] = [  # type: ignore[assignment]
         },
         "flags": [{"value": "15", "flag_type": "static", "case_sensitive": False}],
         "hints": [
-            {"order_num": 1, "content": "range(1, 6) produces five values. nums[-1] is the last one.", "cost": 0},
+            {
+                "order_num": 1,
+                "content": "range(1, 6) produces five values. nums[-1] is the last one.",
+                "cost": 0,
+            },
         ],
     },
     {
@@ -96,7 +108,11 @@ STANDALONE_CHALLENGES: list[ChallengeDef] = [  # type: ignore[assignment]
         },
         "flags": [{"value": "hello_world", "flag_type": "static", "case_sensitive": True}],
         "hints": [
-            {"order_num": 1, "content": "strip() removes leading/trailing whitespace. replace() handles the rest.", "cost": 0},
+            {
+                "order_num": 1,
+                "content": "strip() removes leading/trailing whitespace. replace() handles the rest.",
+                "cost": 0,
+            },
         ],
     },
     {
@@ -134,8 +150,16 @@ STANDALONE_CHALLENGES: list[ChallengeDef] = [  # type: ignore[assignment]
         },
         "flags": [{"value": "3", "flag_type": "static", "case_sensitive": False}],
         "hints": [
-            {"order_num": 1, "content": "set() removes duplicates. sorted() returns them in ascending order. Indexing is zero-based.", "cost": 0},
-            {"order_num": 2, "content": "After dedup and sort: [1, 2, 3, 4, 5, 6, 9]. Index 2 is the third element.", "cost": 25},
+            {
+                "order_num": 1,
+                "content": "set() removes duplicates. sorted() returns them in ascending order. Indexing is zero-based.",
+                "cost": 0,
+            },
+            {
+                "order_num": 2,
+                "content": "After dedup and sort: [1, 2, 3, 4, 5, 6, 9]. Index 2 is the third element.",
+                "cost": 25,
+            },
         ],
     },
     {
@@ -154,7 +178,11 @@ STANDALONE_CHALLENGES: list[ChallengeDef] = [  # type: ignore[assignment]
         },
         "flags": [{"value": "20", "flag_type": "static", "case_sensitive": False}],
         "hints": [
-            {"order_num": 1, "content": "zip() pairs each key with the value at the same position.", "cost": 0},
+            {
+                "order_num": 1,
+                "content": "zip() pairs each key with the value at the same position.",
+                "cost": 0,
+            },
         ],
     },
     {
@@ -176,16 +204,23 @@ STANDALONE_CHALLENGES: list[ChallengeDef] = [  # type: ignore[assignment]
         },
         "flags": [{"value": "OctoRig", "flag_type": "static", "case_sensitive": True}],
         "hints": [
-            {"order_num": 1, "content": "The standard library has a module built for exactly this encoding scheme.", "cost": 0},
-            {"order_num": 2, "content": "The result is a bytes object — decode it to a plain string.", "cost": 25},
+            {
+                "order_num": 1,
+                "content": "The standard library has a module built for exactly this encoding scheme.",
+                "cost": 0,
+            },
+            {
+                "order_num": 2,
+                "content": "The result is a bytes object — decode it to a plain string.",
+                "cost": 25,
+            },
         ],
     },
     {
         "slug": "py-hex-parse",
         "title": "Hex Dump",
         "description": (
-            "The message arrived as a string of hex digits. Each pair is one byte. "
-            "Reassemble it."
+            "The message arrived as a string of hex digits. Each pair is one byte. Reassemble it."
         ),
         "challenge_type": "short_answer",
         "difficulty": "easy",
@@ -200,7 +235,11 @@ STANDALONE_CHALLENGES: list[ChallengeDef] = [  # type: ignore[assignment]
         "flags": [{"value": "Octa", "flag_type": "static", "case_sensitive": True}],
         "hints": [
             {"order_num": 1, "content": "Two hex digits map to one ASCII character.", "cost": 0},
-            {"order_num": 2, "content": "bytes has a class method that parses hex strings directly.", "cost": 25},
+            {
+                "order_num": 2,
+                "content": "bytes has a class method that parses hex strings directly.",
+                "cost": 25,
+            },
         ],
     },
     {
@@ -223,9 +262,21 @@ STANDALONE_CHALLENGES: list[ChallengeDef] = [  # type: ignore[assignment]
         },
         "flags": [{"value": "Python", "flag_type": "static", "case_sensitive": False}],
         "hints": [
-            {"order_num": 1, "content": "Try every shift value in a loop and print each candidate.", "cost": 0},
-            {"order_num": 2, "content": "chr() and ord() let you shift individual characters; preserve case.", "cost": 25},
-            {"order_num": 3, "content": "There are 25 possible shifts. One of them is particularly well-known.", "cost": 50},
+            {
+                "order_num": 1,
+                "content": "Try every shift value in a loop and print each candidate.",
+                "cost": 0,
+            },
+            {
+                "order_num": 2,
+                "content": "chr() and ord() let you shift individual characters; preserve case.",
+                "cost": 25,
+            },
+            {
+                "order_num": 3,
+                "content": "There are 25 possible shifts. One of them is particularly well-known.",
+                "cost": 50,
+            },
         ],
     },
     {
@@ -249,10 +300,24 @@ STANDALONE_CHALLENGES: list[ChallengeDef] = [  # type: ignore[assignment]
             ),
             "language": "python",
         },
-        "flags": [{"value": "['[ALPHA]', '[BRAVO]', '[CHARLIE]']", "flag_type": "static", "case_sensitive": True}],
+        "flags": [
+            {
+                "value": "['[ALPHA]', '[BRAVO]', '[CHARLIE]']",
+                "flag_type": "static",
+                "case_sensitive": True,
+            }
+        ],
         "hints": [
-            {"order_num": 1, "content": "re.findall returns all non-overlapping matches as a list.", "cost": 0},
-            {"order_num": 2, "content": "The pattern requires uppercase only; {5,7} sets the length range.", "cost": 25},
+            {
+                "order_num": 1,
+                "content": "re.findall returns all non-overlapping matches as a list.",
+                "cost": 0,
+            },
+            {
+                "order_num": 2,
+                "content": "The pattern requires uppercase only; {5,7} sets the length range.",
+                "cost": 25,
+            },
         ],
     },
     {
@@ -284,16 +349,23 @@ STANDALONE_CHALLENGES: list[ChallengeDef] = [  # type: ignore[assignment]
         },
         "flags": [{"value": "caught\ndone", "flag_type": "static", "case_sensitive": True}],
         "hints": [
-            {"order_num": 1, "content": "The else branch only runs when no exception was raised.", "cost": 0},
-            {"order_num": 2, "content": "finally always runs — whether or not an exception occurred.", "cost": 25},
+            {
+                "order_num": 1,
+                "content": "The else branch only runs when no exception was raised.",
+                "cost": 0,
+            },
+            {
+                "order_num": 2,
+                "content": "finally always runs — whether or not an exception occurred.",
+                "cost": 25,
+            },
         ],
     },
     {
         "slug": "py-generator-sum",
         "title": "Lazy Accumulator",
         "description": (
-            "A generator filters and transforms a range before summing it. "
-            "What is the total?"
+            "A generator filters and transforms a range before summing it. What is the total?"
         ),
         "challenge_type": "short_answer",
         "difficulty": "medium",
@@ -307,8 +379,16 @@ STANDALONE_CHALLENGES: list[ChallengeDef] = [  # type: ignore[assignment]
         },
         "flags": [{"value": "36", "flag_type": "static", "case_sensitive": False}],
         "hints": [
-            {"order_num": 1, "content": "Identify which values in range(10) satisfy the condition first.", "cost": 0},
-            {"order_num": 2, "content": "The qualifying values are 0, 3, 6, 9 — each doubled before summing.", "cost": 25},
+            {
+                "order_num": 1,
+                "content": "Identify which values in range(10) satisfy the condition first.",
+                "cost": 0,
+            },
+            {
+                "order_num": 2,
+                "content": "The qualifying values are 0, 3, 6, 9 — each doubled before summing.",
+                "cost": 25,
+            },
         ],
     },
     {
@@ -343,8 +423,16 @@ STANDALONE_CHALLENGES: list[ChallengeDef] = [  # type: ignore[assignment]
         },
         "flags": [{"value": "A\nB\nC", "flag_type": "static", "case_sensitive": True}],
         "hints": [
-            {"order_num": 1, "content": "super() follows the MRO — C → B → A. Each call completes before the print below it runs.", "cost": 0},
-            {"order_num": 2, "content": "Think of it as a call stack: C's super() enters B, B's super() enters A, then A prints, then B prints, then C prints.", "cost": 25},
+            {
+                "order_num": 1,
+                "content": "super() follows the MRO — C → B → A. Each call completes before the print below it runs.",
+                "cost": 0,
+            },
+            {
+                "order_num": 2,
+                "content": "Think of it as a call stack: C's super() enters B, B's super() enters A, then A prints, then B prints, then C prints.",
+                "cost": 25,
+            },
         ],
     },
 ]

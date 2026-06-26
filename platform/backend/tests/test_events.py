@@ -6,6 +6,7 @@ visibility/listing rules, and the team-registration IDOR fix (a non-member
 must not be able to register or unregister someone else's team). No real
 DB, no real network — see tests/conftest.py.
 """
+
 import os
 
 ADMIN_USERNAME = os.environ["ADMIN_USERNAME"]
@@ -61,6 +62,7 @@ def _create_team(client, token, name="Red Team"):
 
 # ── admin-only gating ────────────────────────────────────────────────────────
 
+
 def test_create_event_requires_admin(client):
     player_token = _register_and_login(client, "alice")
     resp = client.post(
@@ -97,6 +99,7 @@ def test_add_challenge_to_event_requires_admin(client):
 
 # ── visibility / listing ─────────────────────────────────────────────────────
 
+
 def test_private_event_hidden_from_regular_user_listing(client):
     admin_token = _admin_token(client)
     _create_event(client, admin_token, slug="secret-event", visibility="private")
@@ -132,6 +135,7 @@ def test_get_unknown_event_404(client):
 
 # ── status transitions ──────────────────────────────────────────────────────
 
+
 def test_draft_event_can_transition_to_published(client):
     admin_token = _admin_token(client)
     _create_event(client, admin_token)
@@ -154,6 +158,7 @@ def test_invalid_status_transition_rejected(client):
 
 
 # ── registration IDOR boundary ──────────────────────────────────────────────
+
 
 def test_register_team_requires_membership(client):
     admin_token = _admin_token(client)
@@ -212,7 +217,9 @@ def test_unregister_team_requires_manager_role_not_just_membership(client):
     owner_token = _register_and_login(client, "alice")
     team = _create_team(client, owner_token)
     client.post(
-        "/api/v1/events/test-event/register", json={"team_id": team["id"]}, headers=_auth(owner_token)
+        "/api/v1/events/test-event/register",
+        json={"team_id": team["id"]},
+        headers=_auth(owner_token),
     )
 
     member_token = _register_and_login(client, "bob")
@@ -237,7 +244,9 @@ def test_unregister_team_allowed_for_owner(client):
     owner_token = _register_and_login(client, "alice")
     team = _create_team(client, owner_token)
     client.post(
-        "/api/v1/events/test-event/register", json={"team_id": team["id"]}, headers=_auth(owner_token)
+        "/api/v1/events/test-event/register",
+        json={"team_id": team["id"]},
+        headers=_auth(owner_token),
     )
 
     resp = client.delete(
@@ -256,7 +265,9 @@ def test_unrelated_user_cannot_unregister_someone_elses_team(client):
     owner_token = _register_and_login(client, "alice")
     team = _create_team(client, owner_token)
     client.post(
-        "/api/v1/events/test-event/register", json={"team_id": team["id"]}, headers=_auth(owner_token)
+        "/api/v1/events/test-event/register",
+        json={"team_id": team["id"]},
+        headers=_auth(owner_token),
     )
 
     outsider_token = _register_and_login(client, "bob")
@@ -275,7 +286,9 @@ def test_admin_can_register_and_unregister_any_team(client):
     team = _create_team(client, owner_token)
 
     reg = client.post(
-        "/api/v1/events/test-event/register", json={"team_id": team["id"]}, headers=_auth(admin_token)
+        "/api/v1/events/test-event/register",
+        json={"team_id": team["id"]},
+        headers=_auth(admin_token),
     )
     assert reg.status_code == 200
 

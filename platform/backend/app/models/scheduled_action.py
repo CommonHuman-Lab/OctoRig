@@ -36,10 +36,16 @@ class ScheduledAction(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
     team_id: Mapped[int | None] = mapped_column(ForeignKey("teams.id"), nullable=True, index=True)
-    lab_template_id: Mapped[int | None] = mapped_column(ForeignKey("lab_templates.id"), nullable=True)
+    lab_template_id: Mapped[int | None] = mapped_column(
+        ForeignKey("lab_templates.id"), nullable=True
+    )
     deployment_id: Mapped[int | None] = mapped_column(ForeignKey("deployments.id"), nullable=True)
-    action: Mapped[ScheduledActionType] = mapped_column(SQLEnum(ScheduledActionType), nullable=False)
-    scheduled_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, index=True)
+    action: Mapped[ScheduledActionType] = mapped_column(
+        SQLEnum(ScheduledActionType), nullable=False
+    )
+    scheduled_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, index=True
+    )
     executed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     status: Mapped[ScheduledActionStatus] = mapped_column(
         SQLEnum(ScheduledActionStatus), nullable=False, default=ScheduledActionStatus.PENDING

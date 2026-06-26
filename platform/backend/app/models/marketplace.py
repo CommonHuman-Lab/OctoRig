@@ -49,7 +49,9 @@ class PackageInstallation(Base):
         ForeignKey("marketplace_packages.id"), nullable=False, index=True
     )
     installed_by: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
-    installed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    installed_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
 
     package: Mapped["MarketplacePackage"] = relationship(back_populates="installations")
     installer: Mapped["User"] = relationship()

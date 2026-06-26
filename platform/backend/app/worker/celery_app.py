@@ -46,7 +46,7 @@ celery_app.conf.update(
         },
         "cleanup-stale-deployments": {
             "task": "app.worker.tasks.cleanup_stale_deployments",
-            "schedule": 300.0,   # every 5 minutes
+            "schedule": 300.0,  # every 5 minutes
             "options": {"queue": "lab_ops"},
         },
     },

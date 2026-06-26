@@ -6,6 +6,7 @@ role-hierarchy authorization boundaries (viewer < member < manager < owner),
 including the platform-admin bypass. No real DB, no real network — see
 tests/conftest.py.
 """
+
 import os
 
 ADMIN_USERNAME = os.environ["ADMIN_USERNAME"]
@@ -64,6 +65,7 @@ def _add_member(client, owner_token, member_token, team_id, username, role="memb
 
 # ── create / list ────────────────────────────────────────────────────────────
 
+
 def test_create_team_makes_caller_owner(client):
     token = _register_and_login(client, "alice")
     team = _create_team(client, token)
@@ -97,6 +99,7 @@ def test_list_teams_includes_personal_and_created_teams(client):
 
 # ── get / membership visibility ─────────────────────────────────────────────
 
+
 def test_get_team_denied_for_non_member(client):
     owner_token = _register_and_login(client, "alice")
     team = _create_team(client, owner_token)
@@ -125,6 +128,7 @@ def test_list_members_denied_for_non_member(client):
 
 
 # ── update / delete (manager+/owner boundary) ───────────────────────────────
+
 
 def test_update_team_requires_manager_or_above(client):
     owner_token = _register_and_login(client, "alice")
@@ -167,6 +171,7 @@ def test_cannot_delete_personal_team(client):
 
 
 # ── invitations ──────────────────────────────────────────────────────────────
+
 
 def test_member_cannot_invite_others(client):
     owner_token = _register_and_login(client, "alice")
@@ -235,6 +240,7 @@ def test_decline_invitation_prevents_later_acceptance(client):
 
 
 # ── remove member / change role / transfer ownership ───────────────────────
+
 
 def test_member_can_remove_self_without_manager_role(client):
     owner_token = _register_and_login(client, "alice")

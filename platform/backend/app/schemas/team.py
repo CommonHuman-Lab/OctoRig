@@ -38,6 +38,7 @@ class TeamResponse(ORMModel):
 
 class TeamWithRole(TeamResponse):
     """Team enriched with the caller's membership role."""
+
     my_role: TeamRole
     member_count: int
 
@@ -70,6 +71,7 @@ class InvitationResponse(ORMModel):
 
 class InvitationDetail(BaseModel):
     """Public-facing invitation info (no sensitive data)."""
+
     team_name: str
     team_slug: str
     role: TeamRole
