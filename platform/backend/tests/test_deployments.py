@@ -101,7 +101,7 @@ def test_create_deployment_to_foreign_team_rejected(client):
         json={"lab_template_id": template_id, "team_id": team["id"]},
         headers=_auth(outsider_token),
     )
-    assert resp.status_code == 403
+    assert resp.status_code == 404
 
 
 def test_create_deployment_to_own_team_succeeds(client):
@@ -223,7 +223,7 @@ def test_unrelated_user_cannot_destroy_deployment(client, db_session):
 
     outsider_token = _register_and_login(client, "bob")
     resp = client.delete(f"/api/v1/deployments/{body['id']}", headers=_auth(outsider_token))
-    assert resp.status_code == 403
+    assert resp.status_code == 404
 
 
 def test_team_manager_can_destroy_member_deployment(client, db_session):
@@ -285,7 +285,7 @@ def test_unrelated_user_cannot_change_visibility(client):
         params={"visibility": "public"},
         headers=_auth(outsider_token),
     )
-    assert resp.status_code == 403
+    assert resp.status_code == 404
 
 
 def test_reset_rejected_for_non_firerange_lab(client, db_session):
@@ -319,7 +319,7 @@ def test_unrelated_user_cannot_reset_deployment(client, db_session):
 
     outsider_token = _register_and_login(client, "bob")
     resp = client.post(f"/api/v1/deployments/{body['id']}/reset", headers=_auth(outsider_token))
-    assert resp.status_code == 403
+    assert resp.status_code == 404
 
 
 # ── per-deployment network isolation / concurrency ──────────────────────────

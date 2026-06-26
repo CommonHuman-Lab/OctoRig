@@ -8,7 +8,7 @@ from pydantic import BaseModel, field_validator
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user, get_db, require_admin
-from app.core.exceptions import forbidden_exception
+from app.core.exceptions import forbidden_exception, not_found
 from app.core.pagination import WideLimit
 from app.core.permissions import is_privileged, role_gte
 from app.models.ctf_event import EventScoringMode, EventStatus, EventVisibility
@@ -17,8 +17,9 @@ from app.models.user import User
 from app.services import audit_service
 from app.services.event_service import (
     add_challenge, get_event_by_slug_or_404, get_event_challenges,
-    get_event_or_404, is_scoreboard_frozen, list_events,
-    register_team, remove_challenge, transition_status, unregister_team,
+    get_visible_event_or_404, is_scoreboard_frozen,
+    list_events, register_team, remove_challenge, transition_status,
+    unregister_team,
 )
 from app.services.scoring_service import get_event_scoreboard
 
@@ -124,9 +125,9 @@ def list_events_endpoint(
 def get_event_endpoint(
     slug: str,
     db: Session = Depends(get_db),
-    _: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
 ) -> EventSummary:
-    ev = get_event_by_slug_or_404(db, slug)
+    ev = get_visible_event_or_404(db, slug, current_user)
     return _serialize(ev)
 
 
@@ -136,7 +137,7 @@ def get_event_challenges_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> list[dict[str, Any]]:
-    ev = get_event_by_slug_or_404(db, slug)
+    ev = get_visible_event_or_404(db, slug, current_user)
     return get_event_challenges(db, ev, user_id=current_user.id)
 
 
@@ -145,9 +146,9 @@ def event_scoreboard_endpoint(
     slug: str,
     limit: WideLimit = 100,
     db: Session = Depends(get_db),
-    _: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
 ) -> list[ScoreboardEntry]:
-    ev = get_event_by_slug_or_404(db, slug)
+    ev = get_visible_event_or_404(db, slug, current_user)
     rows = get_event_scoreboard(db, event_id=ev.id, limit=limit)
     return [ScoreboardEntry(**r) for r in rows]
 
@@ -169,6 +170,8 @@ def register_endpoint(
 ) -> dict[str, Any]:
     ev = get_event_by_slug_or_404(db, slug)
     membership = _get_membership(db, current_user, body.team_id)
+    if membership is None and not is_privileged(current_user, db):
+        raise not_found("Team")
     if not role_gte(membership, TeamRole.MEMBER) and not is_privileged(current_user, db):
         raise forbidden_exception
     reg = register_team(db, ev, body.team_id)
@@ -184,6 +187,8 @@ def unregister_endpoint(
 ) -> None:
     ev = get_event_by_slug_or_404(db, slug)
     membership = _get_membership(db, current_user, team_id)
+    if membership is None and not is_privileged(current_user, db):
+        raise not_found("Team")
     if not role_gte(membership, TeamRole.MANAGER) and not is_privileged(current_user, db):
         raise forbidden_exception
     unregister_team(db, ev, team_id)

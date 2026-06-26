@@ -171,7 +171,7 @@ def create_deployment(
             raise not_found("Team")
         membership = _get_membership(db, current_user, payload.team_id)
         if membership is None and not is_privileged(current_user, db):
-            raise forbidden_exception
+            raise not_found("Team")
 
     lab_def = REGISTRY_BY_ID.get(template.id)
     if lab_def is None:
@@ -226,6 +226,8 @@ def destroy_deployment(
     current_user: User = Depends(get_current_user_or_api_key),
 ) -> DeploymentWithTemplate:
     membership = _get_membership(db, current_user, d.team_id)
+    if d.started_by_id != current_user.id and membership is None and not is_privileged(current_user, db):
+        raise not_found("Deployment")
     if not can_destroy_deployment(current_user, db, d, membership):
         raise forbidden_exception
 
@@ -247,6 +249,8 @@ def start_deployment(
     current_user: User = Depends(get_current_user_or_api_key),
 ) -> DeploymentWithTemplate:
     membership = _get_membership(db, current_user, d.team_id)
+    if d.started_by_id != current_user.id and membership is None and not is_privileged(current_user, db):
+        raise not_found("Deployment")
     if not can_destroy_deployment(current_user, db, d, membership):
         raise forbidden_exception
 
@@ -268,6 +272,8 @@ def purge_deployment(
     current_user: User = Depends(get_current_user_or_api_key),
 ) -> None:
     membership = _get_membership(db, current_user, d.team_id)
+    if d.started_by_id != current_user.id and membership is None and not is_privileged(current_user, db):
+        raise not_found("Deployment")
     if not can_destroy_deployment(current_user, db, d, membership):
         raise forbidden_exception
 
@@ -286,6 +292,8 @@ def set_visibility(
 ) -> DeploymentWithTemplate:
     from app.models.deployment import DeploymentVisibility
     membership = _get_membership(db, current_user, d.team_id)
+    if d.started_by_id != current_user.id and membership is None and not is_privileged(current_user, db):
+        raise not_found("Deployment")
     if not can_destroy_deployment(current_user, db, d, membership):  # same permission as mutate
         raise forbidden_exception
     d.visibility = DeploymentVisibility(visibility)
@@ -301,6 +309,8 @@ def reset_deployment(
     current_user: User = Depends(get_current_user_or_api_key),
 ) -> DeploymentWithTemplate:
     membership = _get_membership(db, current_user, d.team_id)
+    if d.started_by_id != current_user.id and membership is None and not is_privileged(current_user, db):
+        raise not_found("Deployment")
     if not can_destroy_deployment(current_user, db, d, membership):
         raise forbidden_exception
 

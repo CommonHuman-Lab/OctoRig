@@ -169,7 +169,7 @@ def test_register_team_requires_membership(client):
         json={"team_id": team["id"]},
         headers=_auth(outsider_token),
     )
-    assert resp.status_code == 403
+    assert resp.status_code == 404
 
 
 def test_register_own_team_succeeds(client):
@@ -263,7 +263,7 @@ def test_unrelated_user_cannot_unregister_someone_elses_team(client):
     resp = client.delete(
         f"/api/v1/events/test-event/register/{team['id']}", headers=_auth(outsider_token)
     )
-    assert resp.status_code == 403
+    assert resp.status_code == 404
 
 
 def test_admin_can_register_and_unregister_any_team(client):

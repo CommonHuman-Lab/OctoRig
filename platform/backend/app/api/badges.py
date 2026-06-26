@@ -11,6 +11,7 @@ from app.api.deps import get_current_user, get_db, require_admin
 from app.models.badge import BadgeDefinition, UserBadge
 from app.models.user import User
 from app.services.achievement_service import award_badge, evaluate_achievements
+from app.services.profile_service import ensure_profile_visible
 
 router = APIRouter(prefix="/badges", tags=["badges"])
 
@@ -103,8 +104,9 @@ def my_badges(
 def user_badges_endpoint(
     user_id: int,
     db: Session = Depends(get_db),
-    _: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
 ) -> list[BadgeSummary]:
+    ensure_profile_visible(db, current_user.id, user_id)
     user_badges = (
         db.query(UserBadge)
         .filter(UserBadge.user_id == user_id)

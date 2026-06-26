@@ -13,7 +13,7 @@ from app.api.deps import (
     get_team_or_404,
     require_team_role,
 )
-from app.core.exceptions import forbidden_exception
+from app.core.exceptions import forbidden_exception, not_found
 from app.core.permissions import (
     can_change_member_role,
     can_delete_team,
@@ -92,7 +92,7 @@ def get_team(
     membership: Optional[TeamMember] = Depends(get_team_membership),
 ) -> TeamWithRole:
     if membership is None and not is_privileged(current_user, db):
-        raise forbidden_exception
+        raise not_found("Team")
     member_count = db.query(TeamMember).filter(TeamMember.team_id == team.id).count()
     role = membership.role if membership else TeamRole.VIEWER
     return TeamWithRole(
@@ -111,6 +111,8 @@ def update_team(
     membership: Optional[TeamMember] = Depends(get_team_membership),
     ip: Optional[str] = Depends(get_client_ip),
 ) -> TeamResponse:
+    if membership is None and not is_privileged(current_user, db):
+        raise not_found("Team")
     if not can_manage_team(current_user, db, membership):
         raise forbidden_exception
     team = team_service.update_team(db, team, payload.name, payload.description)
@@ -129,6 +131,8 @@ def delete_team(
     membership: Optional[TeamMember] = Depends(get_team_membership),
     ip: Optional[str] = Depends(get_client_ip),
 ) -> None:
+    if membership is None and not is_privileged(current_user, db):
+        raise not_found("Team")
     if not can_delete_team(current_user, db, membership):
         raise forbidden_exception
     if team.is_personal:
@@ -149,7 +153,7 @@ def list_members(
     membership: Optional[TeamMember] = Depends(get_team_membership),
 ) -> list[MemberResponse]:
     if membership is None and not is_privileged(current_user, db):
-        raise forbidden_exception
+        raise not_found("Team")
     rows = team_service.get_team_members(db, team.id)
     return [MemberResponse(**r) for r in rows]
 
@@ -163,6 +167,8 @@ def invite_member(
     membership: Optional[TeamMember] = Depends(get_team_membership),
     ip: Optional[str] = Depends(get_client_ip),
 ) -> InvitationResponse:
+    if membership is None and not is_privileged(current_user, db):
+        raise not_found("Team")
     if not can_invite_members(current_user, db, membership):
         raise forbidden_exception
     inv = team_service.invite_member(db, current_user, team, payload.username, payload.role)
@@ -184,8 +190,11 @@ def remove_member(
     ip: Optional[str] = Depends(get_client_ip),
 ) -> None:
     # A user can remove themselves regardless of role
-    if user_id != current_user.id and not can_remove_member(current_user, db, membership):
-        raise forbidden_exception
+    if user_id != current_user.id:
+        if membership is None and not is_privileged(current_user, db):
+            raise not_found("Team")
+        if not can_remove_member(current_user, db, membership):
+            raise forbidden_exception
     team_service.remove_member(db, team, user_id)
     audit_service.write_audit(
         db, action="team.member_removed", user_id=current_user.id, team_id=team.id,
@@ -204,6 +213,8 @@ def change_member_role(
     membership: Optional[TeamMember] = Depends(get_team_membership),
     ip: Optional[str] = Depends(get_client_ip),
 ) -> MemberResponse:
+    if membership is None and not is_privileged(current_user, db):
+        raise not_found("Team")
     if not can_change_member_role(current_user, db, membership):
         raise forbidden_exception
     updated = team_service.change_member_role(db, team, user_id, payload.role)
@@ -229,6 +240,8 @@ def transfer_ownership(
     membership: Optional[TeamMember] = Depends(get_team_membership),
     ip: Optional[str] = Depends(get_client_ip),
 ) -> None:
+    if membership is None and not is_privileged(current_user, db):
+        raise not_found("Team")
     if not can_transfer_ownership(current_user, db, membership):
         raise forbidden_exception
     team_service.transfer_ownership(db, team, current_user, payload.new_owner_id)

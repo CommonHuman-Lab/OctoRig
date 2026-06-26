@@ -6,7 +6,7 @@ from typing import Optional
 
 from sqlalchemy.orm import Session
 
-from app.core.exceptions import forbidden_exception, not_found
+from app.core.exceptions import not_found
 from app.core.security import hash_password, verify_password
 from app.models.api_key import ApiKey
 from app.models.user import User
@@ -49,7 +49,7 @@ def revoke_api_key(db: Session, user: User, key_id: int) -> None:
     from app.core.permissions import is_privileged
 
     if key.user_id != user.id and not is_privileged(user, db):
-        raise forbidden_exception
+        raise not_found("API key")
     key.is_active = False
     db.commit()
 

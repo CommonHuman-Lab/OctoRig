@@ -25,6 +25,19 @@ def _ensure_profile(db: Session, user_id: int) -> UserProfile:
     return profile
 
 
+def ensure_profile_visible(db: Session, viewer_id: int, target_user_id: int) -> None:
+    """Raise not_found if target_user_id's profile is PRIVATE and viewer isn't the owner.
+
+    Mirrors the privacy check in get_profile() so badge/rank/score lookups by user_id
+    can't be used as a side door around a private profile.
+    """
+    if viewer_id == target_user_id:
+        return
+    profile = _ensure_profile(db, target_user_id)
+    if profile.privacy_level == PrivacyLevel.PRIVATE:
+        raise not_found("User")
+
+
 def get_profile(db: Session, username: str, viewer_id: Optional[int] = None) -> dict[str, Any]:
     user = db.query(User).filter(User.username == username, User.is_active.is_(True)).first()
     if user is None:

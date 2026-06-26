@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 from app.api.deps import get_current_user, get_db
 from app.models.rank import Rank
 from app.models.user import User
+from app.services.profile_service import ensure_profile_visible
 from app.services.rank_service import get_next_rank, get_rank_for_points
 from app.services.scoring_service import get_user_score
 
@@ -80,6 +81,7 @@ def my_rank(
 def user_rank(
     user_id: int = Path(...),
     db: Session = Depends(get_db),
-    _: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
 ) -> UserRankResponse:
+    ensure_profile_visible(db, current_user.id, user_id)
     return _build_user_rank(db, user_id)

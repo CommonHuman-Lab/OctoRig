@@ -32,6 +32,25 @@ def get_event_by_slug_or_404(db: Session, slug: str) -> CtfEvent:
     return ev
 
 
+def check_event_visible(ev: CtfEvent, user, db: Session) -> None:
+    """Raise not_found if a non-privileged user shouldn't be able to see this event.
+
+    Mirrors the filtering list_events() applies, but for a single already-loaded event.
+    """
+    from app.core.permissions import is_privileged
+
+    if is_privileged(user, db):
+        return
+    if ev.status == EventStatus.ARCHIVED or ev.visibility == EventVisibility.PRIVATE:
+        raise not_found("Event")
+
+
+def get_visible_event_or_404(db: Session, slug: str, user) -> CtfEvent:
+    ev = get_event_by_slug_or_404(db, slug)
+    check_event_visible(ev, user, db)
+    return ev
+
+
 def list_events(
     db: Session,
     status: Optional[str] = None,

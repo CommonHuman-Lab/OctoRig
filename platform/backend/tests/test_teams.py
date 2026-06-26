@@ -103,7 +103,7 @@ def test_get_team_denied_for_non_member(client):
 
     outsider_token = _register_and_login(client, "bob")
     resp = client.get(f"/api/v1/teams/{team['id']}", headers=_auth(outsider_token))
-    assert resp.status_code == 403
+    assert resp.status_code == 404
 
 
 def test_get_team_allowed_for_platform_admin_without_membership(client):
@@ -121,7 +121,7 @@ def test_list_members_denied_for_non_member(client):
 
     outsider_token = _register_and_login(client, "bob")
     resp = client.get(f"/api/v1/teams/{team['id']}/members", headers=_auth(outsider_token))
-    assert resp.status_code == 403
+    assert resp.status_code == 404
 
 
 # ── update / delete (manager+/owner boundary) ───────────────────────────────

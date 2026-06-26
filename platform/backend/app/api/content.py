@@ -98,8 +98,8 @@ def get_endpoint(
     if sub.author_id != current_user.id and not is_privileged(current_user, db):
         roles: list[str] = current_user.platform_roles or []
         if "reviewer" not in roles and "publisher" not in roles:
-            from app.core.exceptions import forbidden_exception
-            raise forbidden_exception
+            from app.core.exceptions import not_found
+            raise not_found("Submission")
     return _sub_out(sub)
 
 
@@ -112,8 +112,8 @@ def update_endpoint(
 ) -> SubmissionOut:
     sub = get_submission_or_404(db, submission_id)
     if sub.author_id != current_user.id:
-        from app.core.exceptions import forbidden_exception
-        raise forbidden_exception
+        from app.core.exceptions import not_found
+        raise not_found("Submission")
     return _sub_out(update_submission(db, sub, body.title, body.body))
 
 
@@ -125,8 +125,8 @@ def submit_endpoint(
 ) -> SubmissionOut:
     sub = get_submission_or_404(db, submission_id)
     if sub.author_id != current_user.id:
-        from app.core.exceptions import forbidden_exception
-        raise forbidden_exception
+        from app.core.exceptions import not_found
+        raise not_found("Submission")
     return _sub_out(submit_for_review(db, sub))
 
 

@@ -53,6 +53,8 @@ def create_scheduled(
         if d is None:
             raise not_found("Deployment")
         membership = _get_membership(db, current_user, d.team_id)
+        if d.started_by_id != current_user.id and membership is None and not is_privileged(current_user, db):
+            raise not_found("Deployment")
         if not can_destroy_deployment(current_user, db, d, membership):
             raise forbidden_exception
 
@@ -64,7 +66,7 @@ def create_scheduled(
             .first()
         )
         if member is None and not is_privileged(current_user, db):
-            raise forbidden_exception
+            raise not_found("Team")
 
     action = ScheduledAction(
         user_id=current_user.id,
@@ -104,7 +106,7 @@ def cancel_scheduled(
     if action is None:
         raise not_found("Scheduled action")
     if action.user_id != current_user.id and not is_privileged(current_user, db):
-        raise forbidden_exception
+        raise not_found("Scheduled action")
     if action.status != ScheduledActionStatus.PENDING:
         raise bad_request(f"Cannot cancel action with status '{action.status.value}'")
 
