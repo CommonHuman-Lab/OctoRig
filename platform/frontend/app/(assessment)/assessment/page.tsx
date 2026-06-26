@@ -4,6 +4,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { useApiMutation } from "@/hooks/useApiMutation";
 import { Shield, Clock, AlertTriangle, Play, Lock, CheckCircle2 } from "lucide-react";
 import {
@@ -22,6 +23,7 @@ import { WorkspaceSidebar, type SectionId } from "@/components/assessment/Worksp
 import { Button } from "@/components/ui/Button";
 
 export default function AssessmentWorkspacePage() {
+  const t = useTranslations("assessment");
   const { accessToken, user, _hasHydrated, isRestoringToken } = useUserStore();
   const { push } = useNotificationsStore();
   const { confirm } = useConfirmStore();
@@ -53,25 +55,25 @@ export default function AssessmentWorkspacePage() {
   const startMutation = useApiMutation<CandidateAssessmentStatus, void>({
     mutationFn: startAssessment,
     invalidateKeys: [["assessment-status"]],
-    successMessage: "Assessment started! Labs are booting…",
-    errorMessage: (err: any) => err?.response?.data?.detail ?? "Failed to start assessment",
+    successMessage: t("startedToast"),
+    errorMessage: (err: any) => err?.response?.data?.detail ?? t("startError"),
   });
 
   const completeMutation = useMutation({
     mutationFn: completeAssessment,
     onSuccess: (data) => {
       qc.setQueryData(["assessment-status"], data);
-      push("success", "Assessment completed — your labs have been shut down.");
+      push("success", t("completedToast"));
     },
     onError: (err: any) =>
-      push("error", err?.response?.data?.detail ?? "Failed to complete assessment"),
+      push("error", err?.response?.data?.detail ?? t("completeError")),
   });
 
   function confirmComplete() {
     confirm({
-      title: "Complete the assessment?",
-      body: "This locks in your report and immediately shuts down your labs. You won't be able to make further changes — only do this once you're done.",
-      confirmLabel: "Complete Assessment",
+      title: t("completeConfirmTitle"),
+      body: t("completeConfirmBody"),
+      confirmLabel: t("completeAssessment"),
       dangerous: true,
       onConfirm: () => completeMutation.mutate(),
     });
@@ -82,7 +84,7 @@ export default function AssessmentWorkspacePage() {
   if (isLoading) {
     return (
       <div style={outerStyle}>
-        <p style={{ color: "var(--g-text-muted)" }}>Loading your assessment…</p>
+        <p style={{ color: "var(--g-text-muted)" }}>{t("loadingAssessment")}</p>
       </div>
     );
   }
@@ -92,10 +94,8 @@ export default function AssessmentWorkspacePage() {
       <div style={outerStyle}>
         <div style={{ textAlign: "center" }}>
           <AlertTriangle size={40} style={{ color: "var(--g-warning)", marginBottom: 12 }} />
-          <h2 style={{ color: "var(--g-text)", marginBottom: 8 }}>No Active Assessment</h2>
-          <p style={{ color: "var(--g-text-muted)" }}>
-            Your invite could not be found. Please check that you used the correct link.
-          </p>
+          <h2 style={{ color: "var(--g-text)", marginBottom: 8 }}>{t("noActiveAssessment")}</h2>
+          <p style={{ color: "var(--g-text-muted)" }}>{t("inviteNotFoundBody")}</p>
         </div>
       </div>
     );
@@ -141,11 +141,11 @@ export default function AssessmentWorkspacePage() {
           {completedByChoice ? (
             <span style={{ display: "flex", alignItems: "center", gap: 6, fontSize: "0.75rem", color: "var(--g-success, #22c55e)", fontFamily: "var(--font-mono, monospace)" }}>
               <CheckCircle2 size={14} />
-              COMPLETED
+              {t("completedBadge")}
             </span>
           ) : expired && (
             <span style={{ fontSize: "0.75rem", color: "var(--g-danger)", fontFamily: "var(--font-mono, monospace)" }}>
-              ASSESSMENT ENDED
+              {t("endedBadge")}
             </span>
           )}
           {!notStarted && !expired && <CountdownDisplay expiresAt={status.expires_at} />}
@@ -202,13 +202,14 @@ export default function AssessmentWorkspacePage() {
                   }}
                 >
                   <Clock size={36} style={{ color: "var(--g-accent)", marginBottom: 12 }} />
-                  <h2 style={{ color: "var(--g-text)", marginBottom: 8 }}>Ready to Begin?</h2>
+                  <h2 style={{ color: "var(--g-text)", marginBottom: 8 }}>{t("readyToBegin")}</h2>
                   <p style={{ color: "var(--g-text-muted)", marginBottom: 20, maxWidth: 400, margin: "0 auto 20px" }}>
-                    Once you start, {status.labs.length} lab{status.labs.length !== 1 ? "s" : ""} will be
-                    deployed for you and the <strong>{status.assessment_name}</strong> timer will begin.
-                    You have <strong>{Math.floor(
-                      (/* duration */ status.time_remaining_seconds ?? 0) / 3600 || 48
-                    )}h</strong> to complete the assessment.
+                    {t.rich("readyToBeginBody", {
+                      count: status.labs.length,
+                      name: status.assessment_name,
+                      hours: Math.floor((/* duration */ status.time_remaining_seconds ?? 0) / 3600 || 48),
+                      b: (chunks) => <strong>{chunks}</strong>,
+                    })}
                   </p>
                   <Button
                     variant="primary"
@@ -216,7 +217,7 @@ export default function AssessmentWorkspacePage() {
                     onClick={() => startMutation.mutate()}
                     leftIcon={<Play size={15} />}
                   >
-                    {startMutation.isPending ? "Starting…" : "Start Assessment"}
+                    {startMutation.isPending ? t("starting") : t("startAssessment")}
                   </Button>
                 </div>
               )}
@@ -233,10 +234,10 @@ export default function AssessmentWorkspacePage() {
                   }}
                 >
                   {completedByChoice
-                    ? "You marked this assessment complete. Your labs have been shut down and your report is final."
+                    ? t("completedSummary")
                     : expired
-                      ? "This assessment has ended. Your labs have been shut down and your report is final."
-                      : `${status.labs.length} target machine${status.labs.length !== 1 ? "s" : ""} deployed — see the Labs tab for access details, and the Report tab to write up your findings.`}
+                      ? t("expiredSummary")
+                      : t("deployedSummary", { count: status.labs.length })}
                 </div>
               )}
 
@@ -257,10 +258,10 @@ export default function AssessmentWorkspacePage() {
                   <div>
                     <div style={{ display: "flex", alignItems: "center", gap: 8, fontWeight: 600, color: "var(--g-text)", marginBottom: 4 }}>
                       <Lock size={14} style={{ color: "var(--g-text-muted)" }} />
-                      Done early?
+                      {t("doneEarly")}
                     </div>
                     <p style={{ color: "var(--g-text-muted)", fontSize: "0.8rem", margin: 0 }}>
-                      Finalize your report and shut down your labs now, instead of waiting for the timer to run out.
+                      {t("doneEarlyBody")}
                     </p>
                   </div>
                   <Button
@@ -271,7 +272,7 @@ export default function AssessmentWorkspacePage() {
                     onClick={confirmComplete}
                     leftIcon={<CheckCircle2 size={13} />}
                   >
-                    {completeMutation.isPending ? "Completing…" : "Complete Assessment"}
+                    {completeMutation.isPending ? t("completing") : t("completeAssessment")}
                   </Button>
                 </div>
               )}
@@ -282,7 +283,7 @@ export default function AssessmentWorkspacePage() {
             <>
               {notStarted ? (
                 <p style={{ color: "var(--g-text-muted)", fontSize: "0.85rem" }}>
-                  Start the assessment from the Overview tab to deploy target machines.
+                  {t("startFromOverviewLabs")}
                 </p>
               ) : (
                 <>
@@ -295,7 +296,7 @@ export default function AssessmentWorkspacePage() {
                       marginBottom: 12,
                     }}
                   >
-                    Target Machines ({status.labs.length})
+                    {t("targetMachines", { count: status.labs.length })}
                   </h2>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 16, marginBottom: 8 }}>
                     {status.labs.map((lab) => (
@@ -311,7 +312,7 @@ export default function AssessmentWorkspacePage() {
             <>
               {notStarted ? (
                 <p style={{ color: "var(--g-text-muted)", fontSize: "0.85rem" }}>
-                  Start the assessment from the Overview tab to unlock the report.
+                  {t("startFromOverviewReport")}
                 </p>
               ) : (
                 <ReportSection

@@ -5,11 +5,13 @@ import "./login.css";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { login, getMe } from "@/lib/api/auth";
 import { useUserStore } from "@/stores/user.store";
 import { Button } from "@/components/ui/Button";
 
 export default function LoginPage() {
+  const t = useTranslations("login");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -34,9 +36,9 @@ export default function LoginPage() {
     } catch (err: any) {
       const status = err?.response?.status;
       if (status === 429) {
-        setError(err?.response?.data?.detail ?? "Too many attempts. Please try again later.");
+        setError(err?.response?.data?.detail ?? t("tooManyAttempts"));
       } else {
-        setError("Invalid username or password");
+        setError(t("invalidCredentials"));
       }
     } finally {
       setLoading(false);
@@ -55,7 +57,7 @@ export default function LoginPage() {
           <input
             className="g-input"
             type="text"
-            placeholder="Username"
+            placeholder={t("usernamePlaceholder")}
             autoComplete="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
@@ -64,7 +66,7 @@ export default function LoginPage() {
           <input
             className="g-input"
             type="password"
-            placeholder="Password"
+            placeholder={t("passwordPlaceholder")}
             autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -72,7 +74,7 @@ export default function LoginPage() {
           />
           {error && <p className="text-danger text-11">{error}</p>}
           <Button variant="primary" className="w-full" type="submit" disabled={loading}>
-            {loading ? "Signing in…" : "Sign in"}
+            {loading ? t("signingIn") : t("signIn")}
           </Button>
         </form>
       </div>
@@ -94,7 +96,7 @@ export default function LoginPage() {
           opacity: 0.55,
         }}
       >
-        By CommonHuman
+        {t("by")} CommonHuman
       </a>
     </div>
   );

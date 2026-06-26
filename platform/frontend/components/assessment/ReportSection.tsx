@@ -3,6 +3,7 @@
 // Copyright (c) 2026 CommonHuman-Lab
 import { useEffect, useRef, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { Shield, Send } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -13,14 +14,14 @@ import { MarkdownEditor } from "@/components/ui/MarkdownEditor";
 import { Button } from "@/components/ui/Button";
 import { TIMING } from "@/lib/config";
 
-function timeAgo(date: Date, now: number): string {
+function timeAgo(date: Date, now: number, t: ReturnType<typeof useTranslations>, tn: ReturnType<typeof useTranslations>): string {
   const s = Math.max(0, Math.floor((now - date.getTime()) / 1000));
-  if (s < 5) return "just now";
-  if (s < 60) return `${s}s ago`;
+  if (s < 5) return tn("justNow");
+  if (s < 60) return t("secondsAgo", { count: s });
   const m = Math.floor(s / 60);
-  if (m < 60) return `${m}m ago`;
+  if (m < 60) return tn("minutesAgo", { count: m });
   const h = Math.floor(m / 60);
-  return `${h}h ago`;
+  return tn("hoursAgo", { count: h });
 }
 
 export function ReportSection({
@@ -32,6 +33,9 @@ export function ReportSection({
   onChange: (value: string) => void;
   expired: boolean;
 }) {
+  const t = useTranslations("assessment");
+  const tc = useTranslations("common");
+  const tn = useTranslations("notifications");
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [autosaving, setAutosaving] = useState(false);
   const [now, setNow] = useState(() => Date.now());
@@ -65,8 +69,8 @@ export function ReportSection({
 
   function saveNow() {
     saveMutation.mutate(content, {
-      onSuccess: () => push("success", "Report saved"),
-      onError: () => push("error", "Failed to save report"),
+      onSuccess: () => push("success", t("saveReportSuccess")),
+      onError: () => push("error", t("saveReportError")),
     });
   }
 
@@ -87,9 +91,9 @@ export function ReportSection({
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <Shield size={16} style={{ color: "var(--g-accent)" }} />
-          <span style={{ fontWeight: 600, color: "var(--g-text)" }}>Pentest Report</span>
+          <span style={{ fontWeight: 600, color: "var(--g-text)" }}>{t("reportTitle")}</span>
           {expired && (
-            <span className="role-pill role-pill--on" style={{ fontSize: "0.7rem" }}>Locked</span>
+            <span className="role-pill role-pill--on" style={{ fontSize: "0.7rem" }}>{t("lockedBadge")}</span>
           )}
         </div>
         {!expired && (
@@ -111,10 +115,10 @@ export function ReportSection({
               />
             )}
             {autosaving
-              ? "Saving…"
+              ? tc("saving")
               : lastSaved
-                ? `Saved ${timeAgo(lastSaved, now)} (${formatTime(lastSaved)})`
-                : "Not saved yet"}
+                ? t("savedAt", { time: timeAgo(lastSaved, now, t, tn), clock: formatTime(lastSaved) })
+                : t("notSavedYet")}
           </span>
         )}
       </div>
@@ -127,7 +131,7 @@ export function ReportSection({
           {content ? (
             <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
           ) : (
-            <p className="md-preview-empty">No report was submitted.</p>
+            <p className="md-preview-empty">{t("noReportSubmitted")}</p>
           )}
         </div>
       ) : (
@@ -136,7 +140,7 @@ export function ReportSection({
           onChange={onChange}
           minHeight={520}
           fill
-          placeholder={`# Pentest Report\n\n## Executive Summary\n...\n\n## Findings\n### Finding 1\n- **Severity**: High\n- **Location**: ...\n- **Description**: ...\n- **Proof of Concept**: ...\n- **Remediation**: ...\n\n## Flags Captured\n- FLAG{...} — ...`}
+          placeholder={t("reportPlaceholder")}
         />
       )}
 
@@ -149,10 +153,10 @@ export function ReportSection({
             onClick={saveNow}
             leftIcon={<Send size={13} />}
           >
-            {saveMutation.isPending ? "Saving…" : "Save Report"}
+            {saveMutation.isPending ? tc("saving") : t("saveReport")}
           </Button>
           <span style={{ fontSize: "0.75rem", color: "var(--g-text-muted)" }}>
-            Autosaves a couple seconds after you stop typing.
+            {t("autosaveHint")}
           </span>
         </div>
       )}

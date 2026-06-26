@@ -4,6 +4,7 @@
 
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { useThemeStore } from "@/stores/theme.store";
 import { useLocaleStore } from "@/stores/locale.store";
 import { getPublicSettings } from "@/lib/api/settings";
@@ -12,6 +13,7 @@ import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { STALE_TIME } from "@/lib/config";
 
 export default function AssessmentLayout({ children }: { children: React.ReactNode }) {
+  const t = useTranslations("login");
   const { theme, applyPlatformDefault } = useThemeStore();
   const { applyPlatformDefault: applyLocalePlatformDefault } = useLocaleStore();
 
@@ -58,7 +60,7 @@ export default function AssessmentLayout({ children }: { children: React.ReactNo
             opacity: 0.6,
           }}
         >
-          By CommonHuman
+          {t("by")} CommonHuman
         </a>
       </footer>
       <Notifications />

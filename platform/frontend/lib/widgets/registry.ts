@@ -68,11 +68,11 @@ export const WIDGET_REGISTRY: Record<WidgetType, WidgetRegistryEntry> = {
   },
   panel_active_deployments: {
     label: "Active Deployments", description: "Your running labs, with quick stop actions.",
-    icon: Server, category: "panel", defaultSpan: 8, defaultHeight: "md", component: ActiveDeploymentsWidget,
+    icon: Server, category: "panel", defaultSpan: 4, defaultHeight: "md", component: ActiveDeploymentsWidget,
   },
   panel_external_containers: {
     label: "Externally Managed", description: "Containers started via the CLI, outside the platform.",
-    icon: Boxes, category: "panel", defaultSpan: 8, defaultHeight: "md", component: ExternalContainersWidget,
+    icon: Boxes, category: "panel", defaultSpan: 4, defaultHeight: "md", component: ExternalContainersWidget,
   },
   panel_scoreboard: {
     label: "Global Scoreboard", description: "Top-ranked players across the platform.",

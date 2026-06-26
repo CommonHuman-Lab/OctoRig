@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Clock } from "lucide-react";
 import { TIMING } from "@/lib/config";
 
@@ -23,6 +24,7 @@ function useCountdown(expiresAt: string | null) {
 }
 
 export function CountdownDisplay({ expiresAt }: { expiresAt: string | null }) {
+  const t = useTranslations("assessment");
   const remaining = useCountdown(expiresAt);
 
   if (remaining === null) return null;
@@ -46,7 +48,7 @@ export function CountdownDisplay({ expiresAt }: { expiresAt: string | null }) {
       }}
     >
       <Clock size={18} />
-      {expired ? "EXPIRED" : formatted}
+      {expired ? t("expiredBadge") : formatted}
     </div>
   );
 }

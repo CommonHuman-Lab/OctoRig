@@ -3,6 +3,7 @@
 // Copyright (c) 2026 CommonHuman-Lab
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { Server, Flag, CheckCircle, XCircle } from "lucide-react";
 import { type CandidateLabInfo } from "@/lib/api/assessments";
 import { getChallenges, submitFlag, type ChallengeListItem } from "@/lib/api/challenges";
@@ -17,7 +18,16 @@ const STATUS_COLORS: Record<string, string> = {
   error: "var(--g-danger)",
 };
 
+const STATUS_LABEL_KEY: Record<string, string> = {
+  starting: "statusStarting",
+  stopping: "statusStopping",
+  stopped: "statusStopped",
+  error: "statusError",
+};
+
 function ChallengeFlagItem({ challenge }: { challenge: ChallengeListItem }) {
+  const t = useTranslations("assessment");
+  const tcr = useTranslations("creator");
   const [flag, setFlag] = useState("");
   const [result, setResult] = useState<{ correct: boolean; message: string } | null>(null);
   const qc = useQueryClient();
@@ -31,7 +41,7 @@ function ChallengeFlagItem({ challenge }: { challenge: ChallengeListItem }) {
         qc.invalidateQueries({ queryKey: ["candidate-challenges"] });
       }
     },
-    onError: () => setResult({ correct: false, message: "Failed to submit flag." }),
+    onError: () => setResult({ correct: false, message: t("failedToSubmitFlag") }),
   });
 
   const solved = challenge.solved_by_me;
@@ -69,7 +79,7 @@ function ChallengeFlagItem({ challenge }: { challenge: ChallengeListItem }) {
           <input
             className="g-input font-mono"
             style={{ fontSize: "0.75rem", padding: "5px 8px" }}
-            placeholder="FLAG{...}"
+            placeholder={tcr("flagValuePlaceholderFlag")}
             value={flag}
             onChange={(e) => setFlag(e.target.value)}
             disabled={submitMutation.isPending}
@@ -82,7 +92,7 @@ function ChallengeFlagItem({ challenge }: { challenge: ChallengeListItem }) {
             size="sm"
             disabled={submitMutation.isPending || !flag.trim()}
           >
-            {submitMutation.isPending ? "…" : "Submit"}
+            {submitMutation.isPending ? "…" : t("submit")}
           </Button>
         </form>
       )}
@@ -106,20 +116,21 @@ function ChallengeFlagItem({ challenge }: { challenge: ChallengeListItem }) {
 }
 
 function LabChallenges({ labSlug }: { labSlug: string }) {
+  const t = useTranslations("assessment");
   const { data: challenges = [], isLoading } = useQuery<ChallengeListItem[]>({
     queryKey: ["candidate-challenges", labSlug],
     queryFn: () => getChallenges({ lab_slug: labSlug }),
   });
 
   if (isLoading) {
-    return <p style={{ color: "var(--g-text-muted)", fontSize: "0.78rem", margin: "10px 0 0" }}>Loading flags…</p>;
+    return <p style={{ color: "var(--g-text-muted)", fontSize: "0.78rem", margin: "10px 0 0" }}>{t("loadingFlags")}</p>;
   }
   if (challenges.length === 0) return null;
 
   return (
     <div style={{ marginTop: 12 }}>
       <div style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--g-text-muted)", marginBottom: 4 }}>
-        Flags ({challenges.filter((c) => c.solved_by_me).length}/{challenges.length})
+        {t("flagsProgress", { solved: challenges.filter((c) => c.solved_by_me).length, total: challenges.length })}
       </div>
       {challenges.map((ch) => (
         <ChallengeFlagItem key={ch.slug} challenge={ch} />
@@ -129,6 +140,9 @@ function LabChallenges({ labSlug }: { labSlug: string }) {
 }
 
 export function LabCard({ lab, expired }: { lab: CandidateLabInfo; expired: boolean }) {
+  const t = useTranslations("assessment");
+  const tc = useTranslations("common");
+  const td = useTranslations("deployments");
   return (
     <div
       style={{
@@ -157,7 +171,7 @@ export function LabCard({ lab, expired }: { lab: CandidateLabInfo; expired: bool
               letterSpacing: "0.04em",
             }}
           >
-            {lab.status}
+            {lab.status === "running" ? tc("running") : STATUS_LABEL_KEY[lab.status] ? td(STATUS_LABEL_KEY[lab.status] as any) : lab.status}
           </span>
         )}
       </div>
@@ -198,19 +212,19 @@ export function LabCard({ lab, expired }: { lab: CandidateLabInfo; expired: bool
 
       {lab.status === "starting" && (
         <p style={{ color: "var(--g-text-muted)", fontSize: "0.8rem", margin: 0 }}>
-          Container is starting up — this may take a minute…
+          {t("containerStarting")}
         </p>
       )}
 
       {!lab.status && !expired && (
         <p style={{ color: "var(--g-text-muted)", fontSize: "0.8rem", margin: 0 }}>
-          Not started yet.
+          {t("notStartedYet")}
         </p>
       )}
 
       {expired && (
         <p style={{ color: "var(--g-danger)", fontSize: "0.8rem", margin: 0 }}>
-          Assessment expired — lab has been shut down.
+          {t("labExpiredShutdown")}
         </p>
       )}
     </div>

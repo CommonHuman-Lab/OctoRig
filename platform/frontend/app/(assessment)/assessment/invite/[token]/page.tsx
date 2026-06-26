@@ -4,6 +4,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { Shield, Clock, Server, AlertTriangle } from "lucide-react";
 import { getInviteLanding, acceptInvite } from "@/lib/api/assessments";
 import { login, getMe } from "@/lib/api/auth";
@@ -12,6 +13,9 @@ import { useNotificationsStore } from "@/stores/notifications.store";
 import { Button } from "@/components/ui/Button";
 
 export default function InviteLandingPage() {
+  const t = useTranslations("assessment");
+  const tl = useTranslations("login");
+  const ts = useTranslations("settings");
   const { token } = useParams<{ token: string }>();
   const router = useRouter();
   const { push } = useNotificationsStore();
@@ -42,11 +46,11 @@ export default function InviteLandingPage() {
       const { getMe } = await import("@/lib/api/auth");
       const me = await getMe();
       setSession(me, data.access_token);
-      push("success", "Welcome! Your assessment has been set up.");
+      push("success", t("welcomeToast"));
       router.replace("/assessment");
     },
     onError: (err: any) =>
-      push("error", err?.response?.data?.detail ?? "Registration failed"),
+      push("error", err?.response?.data?.detail ?? t("registrationFailed")),
   });
 
   const loginMutation = useMutation({
@@ -56,17 +60,17 @@ export default function InviteLandingPage() {
       setSession(me, data.access_token);
       router.replace("/assessment");
     },
-    onError: () => push("error", "Invalid username or password"),
+    onError: () => push("error", tl("invalidCredentials")),
   });
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (password !== confirm) {
-      push("error", "Passwords do not match");
+      push("error", t("passwordsDontMatch"));
       return;
     }
     if (password.length < 8) {
-      push("error", "Password must be at least 8 characters");
+      push("error", t("passwordTooShort"));
       return;
     }
     acceptMutation.mutate();
@@ -75,7 +79,7 @@ export default function InviteLandingPage() {
   if (isLoading) {
     return (
       <div style={outerStyle}>
-        <p style={{ color: "var(--g-text-muted)" }}>Loading invite…</p>
+        <p style={{ color: "var(--g-text-muted)" }}>{t("loadingInvite")}</p>
       </div>
     );
   }
@@ -85,10 +89,9 @@ export default function InviteLandingPage() {
       <div style={outerStyle}>
         <div style={cardStyle}>
           <AlertTriangle size={36} style={{ color: "var(--g-danger)", marginBottom: 12 }} />
-          <h1 style={headingStyle}>Invite Not Found</h1>
+          <h1 style={headingStyle}>{t("inviteNotFoundTitle")}</h1>
           <p style={{ color: "var(--g-text-muted)", textAlign: "center", maxWidth: 360 }}>
-            This invite link is invalid, has expired, or has already been revoked.
-            Please contact the person who sent you this link.
+            {t("inviteNotFoundLinkBody")}
           </p>
         </div>
       </div>
@@ -100,11 +103,11 @@ export default function InviteLandingPage() {
       <div style={outerStyle}>
         <div style={cardStyle}>
           <AlertTriangle size={36} style={{ color: "var(--g-danger)", marginBottom: 12 }} />
-          <h1 style={headingStyle}>Invite {landing.status === "revoked" ? "Revoked" : "Expired"}</h1>
+          <h1 style={headingStyle}>
+            {landing.status === "revoked" ? t("inviteRevokedTitle") : t("inviteExpiredTitle")}
+          </h1>
           <p style={{ color: "var(--g-text-muted)", textAlign: "center", maxWidth: 360 }}>
-            {landing.status === "revoked"
-              ? "This invite has been revoked. Please contact the recruiter."
-              : "The deadline for this assessment has passed."}
+            {landing.status === "revoked" ? t("inviteRevokedBody") : t("inviteExpiredBody")}
           </p>
         </div>
       </div>
@@ -133,7 +136,7 @@ export default function InviteLandingPage() {
           <h1 style={{ ...headingStyle, fontSize: "1.4rem" }}>{landing.assessment_name}</h1>
           {landing.candidate_name && (
             <p style={{ color: "var(--g-text-muted)", fontSize: "0.875rem", marginTop: 4 }}>
-              Hi, {landing.candidate_name}!
+              {t("greeting", { name: landing.candidate_name })}
             </p>
           )}
         </div>
@@ -142,11 +145,11 @@ export default function InviteLandingPage() {
         <div style={{ display: "flex", gap: 24, justifyContent: "center", marginBottom: 24 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 6, color: "var(--g-text-muted)", fontSize: "0.8rem" }}>
             <Server size={14} />
-            {landing.lab_count} lab{landing.lab_count !== 1 ? "s" : ""}
+            {t("labCount", { count: landing.lab_count })}
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 6, color: "var(--g-text-muted)", fontSize: "0.8rem" }}>
             <Clock size={14} />
-            {landing.duration_hours}h window
+            {t("durationWindow", { hours: landing.duration_hours })}
           </div>
         </div>
 
@@ -172,16 +175,16 @@ export default function InviteLandingPage() {
         {/* Registration form */}
         {landing.status === "pending" && !accessToken && (
           <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            <div style={dividerStyle}>Create your account to begin</div>
+            <div style={dividerStyle}>{t("createAccountDivider")}</div>
 
             <div className="ev-field">
-              <label className="ev-label">Username</label>
+              <label className="ev-label">{ts("usernameLabel")}</label>
               <input
                 className="g-input"
                 required
                 minLength={3}
                 maxLength={64}
-                placeholder="Choose a username"
+                placeholder={t("chooseUsernamePlaceholder")}
                 value={username}
                 autoComplete="username"
                 onChange={(e) => setUsername(e.target.value)}
@@ -189,13 +192,13 @@ export default function InviteLandingPage() {
             </div>
 
             <div className="ev-field">
-              <label className="ev-label">Password</label>
+              <label className="ev-label">{t("passwordLabel")}</label>
               <input
                 className="g-input"
                 type="password"
                 required
                 minLength={8}
-                placeholder="At least 8 characters"
+                placeholder={t("atLeast8CharsPlaceholder")}
                 value={password}
                 autoComplete="new-password"
                 onChange={(e) => setPassword(e.target.value)}
@@ -203,13 +206,13 @@ export default function InviteLandingPage() {
             </div>
 
             <div className="ev-field">
-              <label className="ev-label">Confirm Password</label>
+              <label className="ev-label">{t("confirmPasswordLabel")}</label>
               <input
                 className="g-input"
                 type="password"
                 required
                 minLength={8}
-                placeholder="Repeat your password"
+                placeholder={t("repeatPasswordPlaceholder")}
                 value={confirm}
                 autoComplete="new-password"
                 onChange={(e) => setConfirm(e.target.value)}
@@ -222,11 +225,11 @@ export default function InviteLandingPage() {
               disabled={acceptMutation.isPending || !username || !password}
               style={{ marginTop: 4 }}
             >
-              {acceptMutation.isPending ? "Setting up…" : "Accept Invite & Begin Assessment"}
+              {acceptMutation.isPending ? t("settingUp") : t("acceptAndBegin")}
             </Button>
 
             <p style={{ fontSize: "0.75rem", color: "var(--g-text-muted)", textAlign: "center", margin: 0 }}>
-              The timer starts when you click <strong>Start Assessment</strong> on the next page.
+              {t.rich("timerStartsNote", { b: (chunks) => <strong>{chunks}</strong> })}
             </p>
           </form>
         )}
@@ -235,14 +238,14 @@ export default function InviteLandingPage() {
         {landing.status === "pending" && accessToken && (
           <div style={{ textAlign: "center" }}>
             <p style={{ color: "var(--g-text-muted)", fontSize: "0.875rem", marginBottom: 16 }}>
-              You are signed in as <strong>{user?.username}</strong>.
+              {t.rich("signedInAs", { username: user?.username ?? "", b: (chunks) => <strong>{chunks}</strong> })}
             </p>
             <Button
               variant="primary"
               disabled={acceptMutation.isPending}
               onClick={() => acceptMutation.mutate()}
             >
-              {acceptMutation.isPending ? "Linking…" : "Accept Invite & Go to Assessment"}
+              {acceptMutation.isPending ? t("linking") : t("acceptAndGoToAssessment")}
             </Button>
           </div>
         )}
@@ -253,25 +256,25 @@ export default function InviteLandingPage() {
             onSubmit={(e) => { e.preventDefault(); loginMutation.mutate(); }}
             style={{ display: "flex", flexDirection: "column", gap: 14, width: "100%" }}
           >
-            <div style={dividerStyle}>Sign in to continue your assessment</div>
+            <div style={dividerStyle}>{t("signInToContinueDivider")}</div>
             <div className="ev-field">
-              <label className="ev-label">Username</label>
+              <label className="ev-label">{ts("usernameLabel")}</label>
               <input
                 className="g-input"
                 required
-                placeholder="Your username"
+                placeholder={t("yourUsernamePlaceholder")}
                 value={loginUsername}
                 autoComplete="username"
                 onChange={(e) => setLoginUsername(e.target.value)}
               />
             </div>
             <div className="ev-field">
-              <label className="ev-label">Password</label>
+              <label className="ev-label">{t("passwordLabel")}</label>
               <input
                 className="g-input"
                 type="password"
                 required
-                placeholder="Your password"
+                placeholder={t("yourPasswordPlaceholder")}
                 value={loginPassword}
                 autoComplete="current-password"
                 onChange={(e) => setLoginPassword(e.target.value)}
@@ -282,7 +285,7 @@ export default function InviteLandingPage() {
               variant="primary"
               disabled={loginMutation.isPending || !loginUsername || !loginPassword}
             >
-              {loginMutation.isPending ? "Signing in…" : "Sign In & Go to Assessment"}
+              {loginMutation.isPending ? tl("signingIn") : t("signInAndGoToAssessment")}
             </Button>
           </form>
         )}
@@ -291,10 +294,10 @@ export default function InviteLandingPage() {
         {landing.status === "accepted" && accessToken && (
           <div style={{ textAlign: "center" }}>
             <p style={{ color: "var(--g-text-muted)", marginBottom: 16 }}>
-              You have already accepted this invite. Go to your workspace to start the clock.
+              {t("alreadyAcceptedBody")}
             </p>
             <Button variant="primary" onClick={() => router.replace("/assessment")}>
-              Go to Assessment
+              {t("goToAssessment")}
             </Button>
           </div>
         )}
