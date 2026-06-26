@@ -15,11 +15,11 @@ Sub-modules:
   standalone  — standalone challenges with no Docker lab (Python coding challenges)
 """
 
-from ._types import FlagDef, HintDef, ChallengeDef, LabDefinition
-from .world import WORLD_LABS
+from ._types import ChallengeDef, FlagDef, HintDef, LabDefinition
 from .firerange import FIRERANGE_LABS
-from .thirdparty import THIRDPARTY_LABS
 from .standalone import STANDALONE_CHALLENGES
+from .thirdparty import THIRDPARTY_LABS
+from .world import WORLD_LABS
 
 LAB_REGISTRY: list[LabDefinition] = WORLD_LABS + FIRERANGE_LABS + THIRDPARTY_LABS
 

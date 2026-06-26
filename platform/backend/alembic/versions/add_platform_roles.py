@@ -6,13 +6,13 @@ Revision ID: add_platform_roles
 Revises: add_theme_settings
 Create Date: 2026-06-18
 """
-from typing import Union
 
 import sqlalchemy as sa
+
 from alembic import op
 
 revision: str = "add_platform_roles"
-down_revision: Union[str, None] = "add_theme_settings"
+down_revision: str | None = "add_theme_settings"
 branch_labels = None
 depends_on = None
 

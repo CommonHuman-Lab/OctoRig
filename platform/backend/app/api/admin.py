@@ -1,11 +1,9 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
 from datetime import datetime
-from typing import Optional
 
 from fastapi import APIRouter, BackgroundTasks, Depends, Query
 from pydantic import BaseModel
-from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_client_ip, get_db, get_user_or_404, require_admin
@@ -90,7 +88,7 @@ def _enrich_user(user: User, db: Session) -> AdminUserResponse:
 
 @router.get("/users/", response_model=list[AdminUserResponse])
 def list_users(
-    search: Optional[str] = Query(None),
+    search: str | None = Query(None),
     limit: int = Query(50, le=200),
     offset: int = Query(0, ge=0),
     actor: User = Depends(require_admin),
@@ -109,7 +107,7 @@ def create_user(
     payload: AdminUserCreate,
     actor: User = Depends(require_admin),
     db: Session = Depends(get_db),
-    ip: Optional[str] = Depends(get_client_ip),
+    ip: str | None = Depends(get_client_ip),
 ) -> AdminUserResponse:
     raise_if_exists(db, User, f"Username '{payload.username}' is already taken", username=payload.username)
     raise_if_exists(db, User, f"Email '{payload.email}' is already registered", email=payload.email)
@@ -158,7 +156,7 @@ def update_user(
     user: User = Depends(get_user_or_404),
     actor: User = Depends(require_admin),
     db: Session = Depends(get_db),
-    ip: Optional[str] = Depends(get_client_ip),
+    ip: str | None = Depends(get_client_ip),
 ) -> AdminUserResponse:
     if user.id == actor.id and payload.is_active is False:
         raise bad_request("Cannot deactivate your own account")
@@ -211,7 +209,7 @@ def reset_password(
     user: User = Depends(get_user_or_404),
     actor: User = Depends(require_admin),
     db: Session = Depends(get_db),
-    ip: Optional[str] = Depends(get_client_ip),
+    ip: str | None = Depends(get_client_ip),
 ) -> None:
     user.hashed_password = hash_password(payload.new_password)
     db.commit()
@@ -227,7 +225,7 @@ def reset_user_points(
     user: User = Depends(get_user_or_404),
     actor: User = Depends(require_admin),
     db: Session = Depends(get_db),
-    ip: Optional[str] = Depends(get_client_ip),
+    ip: str | None = Depends(get_client_ip),
 ) -> None:
     db.query(ScoreTransaction).filter(ScoreTransaction.user_id == user.id).delete()
     db.query(ChallengeSubmission).filter(ChallengeSubmission.user_id == user.id).delete()
@@ -244,7 +242,7 @@ def reset_user_points(
 def reset_database(
     actor: User = Depends(require_admin),
     db: Session = Depends(get_db),
-    ip: Optional[str] = Depends(get_client_ip),
+    ip: str | None = Depends(get_client_ip),
 ) -> None:
     """Wipe all user-generated activity, keeping accounts, teams, labs, challenges and assessment config."""
     # Child tables first (FK constraints)
@@ -272,7 +270,7 @@ def reset_database(
 
 @router.get("/teams/", response_model=list[AdminTeamResponse])
 def list_teams(
-    search: Optional[str] = Query(None),
+    search: str | None = Query(None),
     limit: int = Query(50, le=200),
     offset: int = Query(0, ge=0),
     _: User = Depends(require_admin),
@@ -353,7 +351,7 @@ def _enrich_admin_lab(template: LabTemplate, db: Session) -> AdminLabResponse:
 
 @router.get("/labs/", response_model=list[AdminLabResponse])
 def list_admin_labs(
-    category: Optional[str] = Query(None),
+    category: str | None = Query(None),
     _: User = Depends(require_admin),
     db: Session = Depends(get_db),
 ) -> list[AdminLabResponse]:
@@ -370,7 +368,7 @@ def update_admin_lab(
     body: AdminLabUpdate,
     actor: User = Depends(require_admin),
     db: Session = Depends(get_db),
-    ip: Optional[str] = Depends(get_client_ip),
+    ip: str | None = Depends(get_client_ip),
 ) -> AdminLabResponse:
     template = db.get(LabTemplate, lab_id)
     if template is None:
@@ -391,9 +389,9 @@ def update_admin_lab(
 
 @router.get("/deployments/", response_model=list[dict])
 def list_all_deployments(
-    status: Optional[str] = Query(None),
-    user_id: Optional[int] = Query(None),
-    team_id: Optional[int] = Query(None),
+    status: str | None = Query(None),
+    user_id: int | None = Query(None),
+    team_id: int | None = Query(None),
     limit: int = Query(50, le=200),
     offset: int = Query(0, ge=0),
     _: User = Depends(require_admin),
@@ -416,7 +414,7 @@ def stop_all_deployments(
     background_tasks: BackgroundTasks,
     actor: User = Depends(require_admin),
     db: Session = Depends(get_db),
-    ip: Optional[str] = Depends(get_client_ip),
+    ip: str | None = Depends(get_client_ip),
 ) -> None:
     """Stop every running or starting deployment across all users."""
     active = db.query(Deployment).filter(
@@ -456,7 +454,7 @@ def restart_platform(
     background_tasks: BackgroundTasks,
     actor: User = Depends(require_admin),
     db: Session = Depends(get_db),
-    ip: Optional[str] = Depends(get_client_ip),
+    ip: str | None = Depends(get_client_ip),
 ) -> None:
     """Stop every active lab deployment, then restart the platform's own
     service containers (api/worker/beat/ui). The response is sent before
@@ -485,11 +483,11 @@ def restart_platform(
 
 @router.get("/audit-logs/", response_model=list[AdminAuditLogResponse])
 def list_audit_logs(
-    action: Optional[str] = Query(None),
-    user_id: Optional[int] = Query(None),
-    team_id: Optional[int] = Query(None),
-    from_dt: Optional[str] = Query(None, alias="from"),
-    to_dt: Optional[str] = Query(None, alias="to"),
+    action: str | None = Query(None),
+    user_id: int | None = Query(None),
+    team_id: int | None = Query(None),
+    from_dt: str | None = Query(None, alias="from"),
+    to_dt: str | None = Query(None, alias="to"),
     limit: int = Query(100, le=500),
     offset: int = Query(0, ge=0),
     _: User = Depends(require_admin),
@@ -535,7 +533,7 @@ def list_audit_logs(
 
 @router.get("/api-keys/", response_model=list[AdminApiKeyResponse])
 def list_all_api_keys(
-    user_id: Optional[int] = Query(None),
+    user_id: int | None = Query(None),
     active_only: bool = Query(True),
     limit: int = Query(100, le=500),
     offset: int = Query(0, ge=0),
@@ -574,8 +572,8 @@ class AdminRankResponse(BaseModel):
     id: int
     name: str
     min_points: int
-    icon: Optional[str]
-    color: Optional[str]
+    icon: str | None
+    color: str | None
     is_active: bool
 
     model_config = {"from_attributes": True}
@@ -584,16 +582,16 @@ class AdminRankResponse(BaseModel):
 class AdminRankCreate(BaseModel):
     name: str
     min_points: int
-    icon: Optional[str] = None
-    color: Optional[str] = None
+    icon: str | None = None
+    color: str | None = None
 
 
 class AdminRankUpdate(BaseModel):
-    name: Optional[str] = None
-    min_points: Optional[int] = None
-    icon: Optional[str] = None
-    color: Optional[str] = None
-    is_active: Optional[bool] = None
+    name: str | None = None
+    min_points: int | None = None
+    icon: str | None = None
+    color: str | None = None
+    is_active: bool | None = None
 
 
 @router.get("/ranks/", response_model=list[AdminRankResponse])
@@ -689,7 +687,7 @@ def update_site_settings(
     body: SiteSettingsUpdate,
     actor: User = Depends(require_admin),
     db: Session = Depends(get_db),
-    ip: Optional[str] = Depends(get_client_ip),
+    ip: str | None = Depends(get_client_ip),
 ) -> SiteSettingsResponse:
     row = get_settings(db)
     changed: dict = {}
@@ -715,7 +713,7 @@ def admin_revoke_api_key(
     key_id: int,
     actor: User = Depends(require_admin),
     db: Session = Depends(get_db),
-    ip: Optional[str] = Depends(get_client_ip),
+    ip: str | None = Depends(get_client_ip),
 ) -> None:
     api_key_service.revoke_api_key(db, actor, key_id)
     audit_service.write_audit(

@@ -4,10 +4,10 @@ import enum
 from datetime import datetime
 from typing import TYPE_CHECKING, Any, Optional
 
-from sqlalchemy import DateTime, ForeignKey, JSON, String, Text, func
-from app.core.db_types import EnumCol as SQLEnum
+from sqlalchemy import JSON, DateTime, ForeignKey, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from app.core.db_types import EnumCol as SQLEnum
 from app.database import Base
 
 if TYPE_CHECKING:
@@ -45,7 +45,7 @@ class ContentSubmission(Base):
     status: Mapped[ContentStatus] = mapped_column(
         SQLEnum(ContentStatus), nullable=False, default=ContentStatus.DRAFT, index=True
     )
-    reviewer_id: Mapped[Optional[int]] = mapped_column(ForeignKey("users.id"), nullable=True)
+    reviewer_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
@@ -65,7 +65,7 @@ class ContentReview(Base):
     )
     reviewer_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
     verdict: Mapped[ReviewVerdict] = mapped_column(SQLEnum(ReviewVerdict), nullable=False)
-    comment: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    comment: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     submission: Mapped["ContentSubmission"] = relationship(back_populates="reviews")

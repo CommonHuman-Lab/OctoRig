@@ -1,8 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
 import secrets
-from datetime import datetime, timezone
-from typing import Optional
+from datetime import UTC, datetime
 
 from sqlalchemy.orm import Session
 
@@ -19,7 +18,7 @@ def create_api_key(
     db: Session,
     user: User,
     name: str,
-    expires_at: Optional[datetime] = None,
+    expires_at: datetime | None = None,
 ) -> tuple[ApiKey, str]:
     """
     Returns (ApiKey, raw_key). The raw_key is shown ONCE to the caller.
@@ -63,7 +62,7 @@ def list_api_keys(db: Session, user: User) -> list[ApiKey]:
     )
 
 
-def verify_api_key(db: Session, raw_key: str) -> Optional[User]:
+def verify_api_key(db: Session, raw_key: str) -> User | None:
     """Verify a raw key against stored hashes. Returns the owning User or None."""
     if not raw_key.startswith(_PREFIX):
         return None
@@ -74,9 +73,9 @@ def verify_api_key(db: Session, raw_key: str) -> Optional[User]:
         ApiKey.is_active.is_(True),
     ).all()
 
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     for key in candidates:
-        if key.expires_at and key.expires_at.replace(tzinfo=timezone.utc) < now:
+        if key.expires_at and key.expires_at.replace(tzinfo=UTC) < now:
             continue
         if verify_password(raw_key, key.hashed_key):
             key.last_used_at = now

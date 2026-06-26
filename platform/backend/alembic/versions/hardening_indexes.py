@@ -5,12 +5,11 @@
 Revision ID: hardening_indexes
 Revises: add_challenge_lab_tmpl
 """
-from typing import Union
 
 from alembic import op
 
 revision: str = "hardening_indexes"
-down_revision: Union[str, None] = "add_challenge_lab_tmpl"
+down_revision: str | None = "add_challenge_lab_tmpl"
 branch_labels = None
 depends_on = None
 

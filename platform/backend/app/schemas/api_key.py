@@ -1,7 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
 from datetime import datetime
-from typing import Optional
 
 from pydantic import BaseModel
 
@@ -10,15 +9,15 @@ from app.schemas.base import ORMModel
 
 class ApiKeyCreate(BaseModel):
     name: str
-    expires_at: Optional[datetime] = None
+    expires_at: datetime | None = None
 
 
 class ApiKeyResponse(ORMModel):
     id: int
     name: str
     key_prefix: str
-    expires_at: Optional[datetime]
-    last_used_at: Optional[datetime]
+    expires_at: datetime | None
+    last_used_at: datetime | None
     is_active: bool
     created_at: datetime
 

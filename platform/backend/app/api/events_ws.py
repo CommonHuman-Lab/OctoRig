@@ -29,7 +29,7 @@ async def events_ws(websocket: WebSocket, db: Session = Depends(get_db)) -> None
         if current_user is None or not current_user.is_active:
             await websocket.close(code=4001)
             return
-    except (asyncio.TimeoutError, JWTError, Exception):
+    except (TimeoutError, JWTError, Exception):
         await websocket.close(code=4001)
         return
 

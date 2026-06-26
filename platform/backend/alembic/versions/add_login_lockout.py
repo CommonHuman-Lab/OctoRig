@@ -6,13 +6,13 @@ Revision ID: add_login_lockout
 Revises: drop_admin_superuser_flags
 Create Date: 2026-06-18
 """
-from typing import Union
 
 import sqlalchemy as sa
+
 from alembic import op
 
 revision: str = "add_login_lockout"
-down_revision: Union[str, None] = "drop_admin_superuser_flags"
+down_revision: str | None = "drop_admin_superuser_flags"
 branch_labels = None
 depends_on = None
 

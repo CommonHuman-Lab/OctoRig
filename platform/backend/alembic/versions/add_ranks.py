@@ -5,13 +5,13 @@
 Revision ID: add_ranks
 Revises: hardening_indexes
 """
-from typing import Union
 
 import sqlalchemy as sa
+
 from alembic import op
 
 revision: str = "add_ranks"
-down_revision: Union[str, None] = "add_refresh_tokens"
+down_revision: str | None = "add_refresh_tokens"
 branch_labels = None
 depends_on = None
 

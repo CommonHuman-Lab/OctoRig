@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
-from typing import Callable, Literal, Protocol, runtime_checkable
+from collections.abc import Callable
+from typing import Literal, Protocol, runtime_checkable
 
 from fastapi import FastAPI
 

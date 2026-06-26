@@ -2,12 +2,12 @@
 # Copyright (c) 2026 CommonHuman-Lab
 import enum
 from datetime import datetime
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from sqlalchemy import Boolean, DateTime, ForeignKey, String, Text, func
-from app.core.db_types import EnumCol as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from app.core.db_types import EnumCol as SQLEnum
 from app.database import Base
 
 if TYPE_CHECKING:
@@ -33,8 +33,8 @@ class UserProfile(Base):
         SQLEnum(PrivacyLevel), nullable=False, default=PrivacyLevel.PUBLIC
     )
     show_activity: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
-    theme: Mapped[Optional[str]] = mapped_column(String(32), nullable=True)
-    locale: Mapped[Optional[str]] = mapped_column(String(8), nullable=True)
+    theme: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    locale: Mapped[str | None] = mapped_column(String(8), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 

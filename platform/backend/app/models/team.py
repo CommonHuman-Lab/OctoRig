@@ -5,9 +5,9 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Optional
 
 from sqlalchemy import Boolean, DateTime, ForeignKey, String, Text, UniqueConstraint, func
-from app.core.db_types import EnumCol as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from app.core.db_types import EnumCol as SQLEnum
 from app.database import Base
 
 if TYPE_CHECKING:
@@ -29,7 +29,7 @@ class Team(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(128), nullable=False, unique=True)
     slug: Mapped[str] = mapped_column(String(64), nullable=False, unique=True, index=True)
-    description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
     is_personal: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     created_by_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
@@ -52,7 +52,7 @@ class TeamMember(Base):
     team_id: Mapped[int] = mapped_column(ForeignKey("teams.id"), nullable=False, index=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
     role: Mapped[TeamRole] = mapped_column(SQLEnum(TeamRole), nullable=False)
-    invited_by_id: Mapped[Optional[int]] = mapped_column(ForeignKey("users.id"), nullable=True)
+    invited_by_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
     joined_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     team: Mapped["Team"] = relationship(back_populates="members")
@@ -70,7 +70,7 @@ class TeamInvitation(Base):
     role: Mapped[TeamRole] = mapped_column(SQLEnum(TeamRole), nullable=False)
     invited_by_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
-    accepted_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    accepted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     team: Mapped["Team"] = relationship(back_populates="invitations")

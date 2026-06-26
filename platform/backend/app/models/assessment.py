@@ -4,7 +4,17 @@ import secrets
 from datetime import datetime
 from typing import TYPE_CHECKING, Any, Optional
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, JSON, String, Text, UniqueConstraint, func
+from sqlalchemy import (
+    JSON,
+    Boolean,
+    DateTime,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+    UniqueConstraint,
+    func,
+)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
@@ -21,11 +31,11 @@ class Assessment(Base):
     slug: Mapped[str] = mapped_column(String(128), unique=True, nullable=False, index=True)
 
     # Company branding — overrides global SiteSettings for this assessment
-    company_name: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
-    company_logo_url: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    company_name: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    company_logo_url: Mapped[str | None] = mapped_column(Text, nullable=True)
 
-    description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    candidate_instructions: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    candidate_instructions: Mapped[str | None] = mapped_column(Text, nullable=True)
     duration_hours: Mapped[int] = mapped_column(Integer, nullable=False, default=48)
 
     # Lab config — list of lab slugs, e.g. ["humanbank", "subverse"]
@@ -52,20 +62,20 @@ class AssessmentInvite(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     assessment_id: Mapped[int] = mapped_column(ForeignKey("assessments.id"), nullable=False, index=True)
     email: Mapped[str] = mapped_column(String(255), nullable=False)
-    candidate_name: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    candidate_name: Mapped[str | None] = mapped_column(String(255), nullable=True)
 
     # secrets.token_urlsafe(32) on creation
     token: Mapped[str] = mapped_column(String(128), unique=True, nullable=False, index=True)
 
     # Null until candidate accepts the invite
-    user_id: Mapped[Optional[int]] = mapped_column(
+    user_id: Mapped[int | None] = mapped_column(
         ForeignKey("users.id"), nullable=True, unique=True
     )
 
-    accepted_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
-    started_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
-    expires_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
-    completed_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    accepted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
     # IDs of Deployment rows created for this candidate
     deployment_ids: Mapped[list[Any]] = mapped_column(JSON, nullable=False, default=list)

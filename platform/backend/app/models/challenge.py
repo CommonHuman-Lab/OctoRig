@@ -5,12 +5,20 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Any, Optional
 
 from sqlalchemy import (
-    BigInteger, Boolean, DateTime,
-    ForeignKey, Integer, JSON, String, Text, UniqueConstraint, func,
+    JSON,
+    BigInteger,
+    Boolean,
+    DateTime,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+    UniqueConstraint,
+    func,
 )
-from app.core.db_types import EnumCol as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from app.core.db_types import EnumCol as SQLEnum
 from app.database import Base
 
 if TYPE_CHECKING:
@@ -60,14 +68,14 @@ class Challenge(Base):
     category: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
     tags: Mapped[list[Any]] = mapped_column(JSON, nullable=False, default=list)
     skills: Mapped[list[Any]] = mapped_column(JSON, nullable=False, default=list)
-    author_id: Mapped[Optional[int]] = mapped_column(ForeignKey("users.id"), nullable=True)
-    estimated_minutes: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    author_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    estimated_minutes: Mapped[int | None] = mapped_column(Integer, nullable=True)
     points: Mapped[int] = mapped_column(Integer, nullable=False, default=100)
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     is_archived: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     version: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
     content: Mapped[dict[str, Any]] = mapped_column(JSON, nullable=False, default=dict)
-    lab_template_id: Mapped[Optional[int]] = mapped_column(ForeignKey("lab_templates.id"), nullable=True, index=True)
+    lab_template_id: Mapped[int | None] = mapped_column(ForeignKey("lab_templates.id"), nullable=True, index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
@@ -93,10 +101,10 @@ class ChallengeFlag(Base):
         ForeignKey("challenges.id", ondelete="CASCADE"), nullable=False, index=True
     )
     flag_type: Mapped[FlagType] = mapped_column(SQLEnum(FlagType), nullable=False, default=FlagType.STATIC)
-    value: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    regex_pattern: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    hash_type: Mapped[Optional[str]] = mapped_column(String(16), nullable=True)
-    validation_script: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    value: Mapped[str | None] = mapped_column(Text, nullable=True)
+    regex_pattern: Mapped[str | None] = mapped_column(Text, nullable=True)
+    hash_type: Mapped[str | None] = mapped_column(String(16), nullable=True)
+    validation_script: Mapped[str | None] = mapped_column(Text, nullable=True)
     case_sensitive: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
 
     challenge: Mapped["Challenge"] = relationship(back_populates="flags")
@@ -129,8 +137,8 @@ class ChallengeFile(Base):
     )
     filename: Mapped[str] = mapped_column(String(255), nullable=False)
     storage_path: Mapped[str] = mapped_column(String(512), nullable=False)
-    size_bytes: Mapped[Optional[int]] = mapped_column(BigInteger, nullable=True)
-    checksum: Mapped[Optional[str]] = mapped_column(String(64), nullable=True)
+    size_bytes: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
+    checksum: Mapped[str | None] = mapped_column(String(64), nullable=True)
 
     challenge: Mapped["Challenge"] = relationship(back_populates="files")
 
@@ -141,13 +149,13 @@ class ChallengeSubmission(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     challenge_id: Mapped[int] = mapped_column(ForeignKey("challenges.id"), nullable=False, index=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
-    team_id: Mapped[Optional[int]] = mapped_column(ForeignKey("teams.id"), nullable=True)
-    event_id: Mapped[Optional[int]] = mapped_column(ForeignKey("ctf_events.id"), nullable=True)
+    team_id: Mapped[int | None] = mapped_column(ForeignKey("teams.id"), nullable=True)
+    event_id: Mapped[int | None] = mapped_column(ForeignKey("ctf_events.id"), nullable=True)
     submitted_value: Mapped[str] = mapped_column(Text, nullable=False)
     is_correct: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     is_first_blood: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     points_awarded: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
-    ip_address: Mapped[Optional[str]] = mapped_column(String(64), nullable=True)
+    ip_address: Mapped[str | None] = mapped_column(String(64), nullable=True)
     submitted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     challenge: Mapped["Challenge"] = relationship(back_populates="submissions")

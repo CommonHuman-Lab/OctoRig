@@ -1,6 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
-from typing import Any, Optional
 
 from fastapi import APIRouter, Depends, Query
 from pydantic import BaseModel
@@ -12,7 +11,9 @@ from app.models.user import User
 from app.services.event_service import check_event_visible, get_event_or_404
 from app.services.profile_service import ensure_profile_visible
 from app.services.scoring_service import (
-    get_event_scoreboard, get_global_scoreboard, get_user_score,
+    get_event_scoreboard,
+    get_global_scoreboard,
+    get_user_score,
 )
 
 router = APIRouter(prefix="/scoreboards", tags=["scoreboards"])
@@ -20,19 +21,19 @@ router = APIRouter(prefix="/scoreboards", tags=["scoreboards"])
 
 class ScoreboardEntry(BaseModel):
     rank: int
-    user_id: Optional[int] = None
-    username: Optional[str] = None
-    team_id: Optional[int] = None
+    user_id: int | None = None
+    username: str | None = None
+    team_id: int | None = None
     total: int
     solve_count: int = 0
     badge_count: int = 0
-    last_tx: Optional[str] = None
+    last_tx: str | None = None
 
 
 class UserScoreResponse(BaseModel):
     user_id: int
     total: int
-    event_id: Optional[int] = None
+    event_id: int | None = None
 
 
 @router.get("/global", response_model=list[ScoreboardEntry])
@@ -61,7 +62,7 @@ def event_scoreboard(
 @router.get("/users/{user_id}", response_model=UserScoreResponse)
 def user_score(
     user_id: int,
-    event_id: Optional[int] = Query(None),
+    event_id: int | None = Query(None),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> UserScoreResponse:

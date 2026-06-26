@@ -8,7 +8,6 @@ live deployment IP, or a "not live" message linking to the lab if they
 haven't started it.
 """
 import re
-from typing import Optional
 
 from sqlalchemy.orm import Session
 
@@ -21,11 +20,11 @@ _TARGET_SPAN = re.compile(r"`([^`]*)" + re.escape(_PLACEHOLDER) + r"([^`]*)`")
 
 
 def render_target_text(
-    text: Optional[str],
+    text: str | None,
     db: Session,
     current_user: User,
-    lab_template_id: Optional[int],
-) -> Optional[str]:
+    lab_template_id: int | None,
+) -> str | None:
     if text is None or _PLACEHOLDER not in text or lab_template_id is None:
         return text
 
@@ -47,7 +46,7 @@ def render_target_text(
 
 
 def render_access_info(
-    access_info: list[dict[str, str]], app_ip: Optional[str] = None
+    access_info: list[dict[str, str]], app_ip: str | None = None
 ) -> list[dict[str, str]]:
     if app_ip:
         return [

@@ -291,7 +291,7 @@ def test_unrelated_user_cannot_change_visibility(client):
 def test_reset_rejected_for_non_firerange_lab(client, db_session):
     token = _register_and_login(client, "alice")
     labs = client.get("/api/v1/labs/", headers=_auth(token)).json()
-    non_firerange = next(l for l in labs if l["category"] != "firerange")
+    non_firerange = next(lab for lab in labs if lab["category"] != "firerange")
 
     body = _deploy(client, token, lab_template_id=non_firerange["id"])
     _force_running(db_session, body["id"])

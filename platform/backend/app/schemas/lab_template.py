@@ -1,7 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
 from datetime import datetime
-from typing import Optional
 
 from app.schemas.base import ORMModel
 
@@ -9,9 +8,9 @@ from app.schemas.base import ORMModel
 class DeploymentSummary(ORMModel):
     id: int
     status: str
-    started_at: Optional[datetime]
-    subnet: Optional[str] = None
-    app_ip: Optional[str] = None
+    started_at: datetime | None
+    subnet: str | None = None
+    app_ip: str | None = None
     container_names: list[str] = []
     access_info: list[dict[str, str]] = []
 
@@ -31,4 +30,4 @@ class LabTemplateResponse(ORMModel):
     volume_names: list[str]
     requires_privileged: bool
     is_active: bool
-    current_deployment: Optional[DeploymentSummary] = None
+    current_deployment: DeploymentSummary | None = None

@@ -6,13 +6,13 @@ Also adds is_candidate to users and company branding columns to site_settings.
 Revision ID: add_assessments
 Revises: add_python_editor_toggle
 """
-from typing import Union
 
 import sqlalchemy as sa
+
 from alembic import op
 
 revision: str = "add_assessments"
-down_revision: Union[str, None] = "add_python_editor_toggle"
+down_revision: str | None = "add_python_editor_toggle"
 branch_labels = None
 depends_on = None
 

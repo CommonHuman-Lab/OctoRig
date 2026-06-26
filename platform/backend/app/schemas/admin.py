@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -24,9 +24,9 @@ class AdminUserResponse(ORMModel):
     is_active: bool
     is_owner: bool = False
     platform_roles: list[str] = []
-    locked_until: Optional[datetime] = None
+    locked_until: datetime | None = None
     created_at: datetime
-    last_login_at: Optional[datetime]
+    last_login_at: datetime | None
     team_count: int
     deployment_count: int
     api_key_count: int
@@ -40,9 +40,9 @@ class AdminUserCreate(BaseModel):
 
 
 class AdminUserUpdate(BaseModel):
-    is_active: Optional[bool] = None
-    platform_roles: Optional[list[str]] = None
-    unlock: Optional[bool] = None
+    is_active: bool | None = None
+    platform_roles: list[str] | None = None
+    unlock: bool | None = None
 
 
 class AdminResetPassword(BaseModel):
@@ -53,7 +53,7 @@ class PlatformRoleResponse(ORMModel):
     id: int
     slug: str
     display_name: str
-    description: Optional[str]
+    description: str | None
     permissions: list[str]
     is_system: bool
     is_default: bool
@@ -63,16 +63,16 @@ class PlatformRoleResponse(ORMModel):
 class PlatformRoleCreate(BaseModel):
     slug: str = Field(..., pattern=r"^[a-z0-9_-]+$", max_length=64)
     display_name: str = Field(..., max_length=128)
-    description: Optional[str] = None
+    description: str | None = None
     permissions: list[str] = []
     is_default: bool = False
 
 
 class PlatformRoleUpdate(BaseModel):
-    display_name: Optional[str] = Field(None, max_length=128)
-    description: Optional[str] = None
-    permissions: Optional[list[str]] = None
-    is_default: Optional[bool] = None
+    display_name: str | None = Field(None, max_length=128)
+    description: str | None = None
+    permissions: list[str] | None = None
+    is_default: bool | None = None
 
 
 class AdminTeamResponse(ORMModel):
@@ -89,14 +89,14 @@ class AdminTeamResponse(ORMModel):
 
 class AdminAuditLogResponse(ORMModel):
     id: int
-    user_id: Optional[int]
-    username: Optional[str]
-    team_id: Optional[int]
-    team_name: Optional[str]
-    deployment_id: Optional[int]
+    user_id: int | None
+    username: str | None
+    team_id: int | None
+    team_name: str | None
+    deployment_id: int | None
     action: str
     detail: dict[str, Any]
-    ip_address: Optional[str]
+    ip_address: str | None
     created_at: datetime
 
 
@@ -106,8 +106,8 @@ class AdminApiKeyResponse(BaseModel):
     username: str
     name: str
     key_prefix: str
-    expires_at: Optional[datetime]
-    last_used_at: Optional[datetime]
+    expires_at: datetime | None
+    last_used_at: datetime | None
     is_active: bool
     created_at: datetime
 
@@ -115,47 +115,47 @@ class AdminApiKeyResponse(BaseModel):
 class SiteSettingsResponse(ORMModel):
     registration_open: bool
     maintenance_mode: bool
-    maintenance_message: Optional[str]
-    max_flag_attempts: Optional[int]
+    maintenance_message: str | None
+    max_flag_attempts: int | None
     dynamic_scoring_enabled: bool
     dynamic_decay_factor: float
     dynamic_min_floor_pct: int
-    scoreboard_frozen_at: Optional[datetime]
+    scoreboard_frozen_at: datetime | None
     first_blood_enabled: bool
     python_editor_enabled: bool
     hide_lab_ports: bool
-    company_name: Optional[str]
-    company_logo_url: Optional[str]
-    default_theme: Optional[str]
-    default_locale: Optional[str]
+    company_name: str | None
+    company_logo_url: str | None
+    default_theme: str | None
+    default_locale: str | None
     updated_at: datetime
 
 
 class SiteSettingsUpdate(BaseModel):
-    registration_open: Optional[bool] = None
-    maintenance_mode: Optional[bool] = None
-    maintenance_message: Optional[str] = None
-    max_flag_attempts: Optional[int] = Field(None, ge=1)
-    dynamic_scoring_enabled: Optional[bool] = None
-    dynamic_decay_factor: Optional[float] = Field(None, ge=0.0, le=1.0)
-    dynamic_min_floor_pct: Optional[int] = Field(None, ge=1, le=100)
-    scoreboard_frozen_at: Optional[datetime] = None
-    first_blood_enabled: Optional[bool] = None
-    python_editor_enabled: Optional[bool] = None
-    hide_lab_ports: Optional[bool] = None
-    company_name: Optional[str] = None
-    company_logo_url: Optional[str] = None
-    default_theme: Optional[str] = None
-    default_locale: Optional[str] = None
+    registration_open: bool | None = None
+    maintenance_mode: bool | None = None
+    maintenance_message: str | None = None
+    max_flag_attempts: int | None = Field(None, ge=1)
+    dynamic_scoring_enabled: bool | None = None
+    dynamic_decay_factor: float | None = Field(None, ge=0.0, le=1.0)
+    dynamic_min_floor_pct: int | None = Field(None, ge=1, le=100)
+    scoreboard_frozen_at: datetime | None = None
+    first_blood_enabled: bool | None = None
+    python_editor_enabled: bool | None = None
+    hide_lab_ports: bool | None = None
+    company_name: str | None = None
+    company_logo_url: str | None = None
+    default_theme: str | None = None
+    default_locale: str | None = None
 
 
 class PublicSettingsResponse(BaseModel):
     registration_open: bool
     maintenance_mode: bool
-    maintenance_message: Optional[str]
+    maintenance_message: str | None
     first_blood_enabled: bool
     python_editor_enabled: bool
-    company_name: Optional[str]
-    company_logo_url: Optional[str]
-    default_theme: Optional[str]
-    default_locale: Optional[str]
+    company_name: str | None
+    company_logo_url: str | None
+    default_theme: str | None
+    default_locale: str | None

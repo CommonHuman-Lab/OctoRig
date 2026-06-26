@@ -1,7 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
-from collections.abc import Generator
-from typing import Optional
+from datetime import UTC
 
 from fastapi import Depends, Query, Request, Security
 from fastapi.security import APIKeyHeader, HTTPAuthorizationCredentials, HTTPBearer
@@ -39,11 +38,11 @@ def _get_user_from_token(token: str, db: Session) -> User:
     return user
 
 
-def _get_user_from_api_key(raw_key: str, db: Session) -> Optional[User]:
-    from datetime import datetime, timezone
+def _get_user_from_api_key(raw_key: str, db: Session) -> User | None:
+    from datetime import datetime
 
-    from app.models.api_key import ApiKey
     from app.core.security import verify_password
+    from app.models.api_key import ApiKey
 
     if not raw_key.startswith("oktor_"):
         return None
@@ -53,7 +52,7 @@ def _get_user_from_api_key(raw_key: str, db: Session) -> Optional[User]:
         ApiKey.is_active.is_(True),
     ).all()
 
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     for key in keys:
         if key.expires_at and key.expires_at < now:
             continue
@@ -137,7 +136,7 @@ def get_role_or_404(slug: str, db: Session = Depends(get_db)) -> PlatformRole:
     return role
 
 
-def get_client_ip(request: Request) -> Optional[str]:
+def get_client_ip(request: Request) -> str | None:
     return request.client.host if request.client else None
 
 
@@ -145,7 +144,7 @@ def get_team_membership(
     team_id: int,
     current_user: User = Depends(get_current_user_or_api_key),
     db: Session = Depends(get_db),
-) -> Optional[TeamMember]:
+) -> TeamMember | None:
     """Returns the current user's TeamMember row for the given team, or None."""
     return (
         db.query(TeamMember)
@@ -158,7 +157,7 @@ def require_team_role(minimum: TeamRole):
     """Dependency factory — requires the caller to have at least `minimum` role."""
 
     def _check(
-        membership: Optional[TeamMember] = Depends(get_team_membership),
+        membership: TeamMember | None = Depends(get_team_membership),
         current_user: User = Depends(get_current_user_or_api_key),
         db: Session = Depends(get_db),
     ) -> TeamMember:

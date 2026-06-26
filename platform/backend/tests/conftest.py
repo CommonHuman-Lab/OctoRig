@@ -21,7 +21,6 @@ os.environ.setdefault("DEBUG", "true")
 os.environ.setdefault("CORS_ORIGINS", "http://localhost:3000")
 os.environ.setdefault("MARKETPLACE_TRUSTED_KEYS", "")
 
-from typing import Optional
 
 import pytest
 from fastapi.testclient import TestClient
@@ -128,7 +127,7 @@ class _FakeRedis:
     def ttl(self, key: str) -> int:
         return self._expiry.get(key, 60)
 
-    def get(self, key: str) -> Optional[str]:
+    def get(self, key: str) -> str | None:
         return self._values.get(key)
 
     def setex(self, key: str, seconds: int, value: str) -> None:

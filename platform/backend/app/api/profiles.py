@@ -1,9 +1,9 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
-from typing import Any, Optional
+from typing import Any
 
 from fastapi import APIRouter, Depends, Query
-from pydantic import BaseModel, HttpUrl
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user, get_db
@@ -15,15 +15,15 @@ router = APIRouter(prefix="/profiles", tags=["profiles"])
 
 
 class ProfileUpdateRequest(BaseModel):
-    bio: Optional[str] = None
-    avatar_url: Optional[str] = None
-    website_url: Optional[str] = None
-    location: Optional[str] = None
-    github_handle: Optional[str] = None
-    privacy_level: Optional[str] = None
-    show_activity: Optional[bool] = None
-    theme: Optional[str] = None
-    locale: Optional[str] = None
+    bio: str | None = None
+    avatar_url: str | None = None
+    website_url: str | None = None
+    location: str | None = None
+    github_handle: str | None = None
+    privacy_level: str | None = None
+    show_activity: bool | None = None
+    theme: str | None = None
+    locale: str | None = None
 
 
 @router.get("/me", response_model=dict[str, Any])

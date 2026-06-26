@@ -2,15 +2,20 @@
 # Copyright (c) 2026 CommonHuman-Lab
 import enum
 from datetime import datetime
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from sqlalchemy import (
-    DateTime, ForeignKey, Integer, String, Text,
-    UniqueConstraint, func,
+    DateTime,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+    UniqueConstraint,
+    func,
 )
-from app.core.db_types import EnumCol as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from app.core.db_types import EnumCol as SQLEnum
 from app.database import Base
 
 if TYPE_CHECKING:
@@ -45,20 +50,20 @@ class CtfEvent(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     slug: Mapped[str] = mapped_column(String(64), unique=True, nullable=False, index=True)
     title: Mapped[str] = mapped_column(String(255), nullable=False)
-    description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    start_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
-    end_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    start_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    end_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     status: Mapped[EventStatus] = mapped_column(
         SQLEnum(EventStatus), nullable=False, default=EventStatus.DRAFT, index=True
     )
     visibility: Mapped[EventVisibility] = mapped_column(
         SQLEnum(EventVisibility), nullable=False, default=EventVisibility.PRIVATE
     )
-    max_team_size: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    max_team_size: Mapped[int | None] = mapped_column(Integer, nullable=True)
     scoring_mode: Mapped[EventScoringMode] = mapped_column(
         SQLEnum(EventScoringMode), nullable=False, default=EventScoringMode.STATIC
     )
-    freeze_scoreboard_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    freeze_scoreboard_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     created_by_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
@@ -82,8 +87,8 @@ class EventChallengeMap(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     event_id: Mapped[int] = mapped_column(ForeignKey("ctf_events.id"), nullable=False, index=True)
     challenge_id: Mapped[int] = mapped_column(ForeignKey("challenges.id"), nullable=False)
-    points_override: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
-    released_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    points_override: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    released_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
     event: Mapped["CtfEvent"] = relationship(back_populates="challenge_map")
     challenge: Mapped["Challenge"] = relationship()

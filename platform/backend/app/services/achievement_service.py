@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
-from typing import Any, Callable, Optional
+from collections.abc import Callable
+from typing import Any
 
 from sqlalchemy import func
 from sqlalchemy.orm import Session
@@ -11,7 +12,6 @@ from app.models.challenge import ChallengeSubmission
 from app.models.scoring import ScoreTransaction
 from app.services import audit_service
 from app.services.scoring_service import ScoreTransactionSource, award_points
-
 
 # ── Rule evaluators ───────────────────────────────────────────────────────────
 
@@ -115,9 +115,9 @@ def award_badge(
     db: Session,
     user_id: int,
     badge: BadgeDefinition,
-    awarded_by_id: Optional[int] = None,
-    note: Optional[str] = None,
-) -> Optional[UserBadge]:
+    awarded_by_id: int | None = None,
+    note: str | None = None,
+) -> UserBadge | None:
     if _already_earned(db, user_id, badge.id):
         return None
 

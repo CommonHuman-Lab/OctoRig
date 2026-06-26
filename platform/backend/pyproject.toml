@@ -54,7 +54,7 @@ target-version = "py312"
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "UP"]
-ignore = ["E501"]
+ignore = ["E501", "UP042"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["app"]

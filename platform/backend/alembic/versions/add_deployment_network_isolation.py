@@ -11,13 +11,13 @@ Revision ID: add_deployment_network_isolation
 Revises: add_owner_flag
 Create Date: 2026-06-19
 """
-from typing import Union
 
 import sqlalchemy as sa
+
 from alembic import op
 
 revision: str = "add_deployment_network_isolation"
-down_revision: Union[str, None] = "add_owner_flag"
+down_revision: str | None = "add_owner_flag"
 branch_labels = None
 depends_on = None
 

@@ -7,7 +7,6 @@ All access is driven by PlatformRole assignments on User.platform_roles —
 there are no standalone admin/superuser flags. The "admin" system role
 (seeded with every permission) is what makes a user platform-wide privileged.
 """
-from typing import Optional
 
 from sqlalchemy.orm import Session
 
@@ -25,7 +24,7 @@ _ROLE_RANK: dict[TeamRole, int] = {
 }
 
 
-def role_gte(membership: Optional[TeamMember], minimum: TeamRole) -> bool:
+def role_gte(membership: TeamMember | None, minimum: TeamRole) -> bool:
     """True if the membership role is >= the minimum required role."""
     if membership is None:
         return False
@@ -98,7 +97,7 @@ def is_privileged(user: User, db: Session) -> bool:
 
 # ── Deployment checks ────────────────────────────────────────────────────────
 
-def can_deploy(user: User, db: Session, membership: Optional[TeamMember] = None) -> bool:
+def can_deploy(user: User, db: Session, membership: TeamMember | None = None) -> bool:
     if is_privileged(user, db):
         return True
     if membership is None:
@@ -110,7 +109,7 @@ def can_destroy_deployment(
     user: User,
     db: Session,
     deployment: Deployment,
-    membership: Optional[TeamMember] = None,
+    membership: TeamMember | None = None,
 ) -> bool:
     if is_privileged(user, db):
         return True
@@ -122,7 +121,7 @@ def can_destroy_deployment(
 
 
 def can_view_logs(
-    user: User, db: Session, deployment: Deployment, membership: Optional[TeamMember] = None
+    user: User, db: Session, deployment: Deployment, membership: TeamMember | None = None
 ) -> bool:
     if is_privileged(user, db):
         return True
@@ -137,44 +136,44 @@ def can_view_logs(
 
 # ── Team checks ──────────────────────────────────────────────────────────────
 
-def can_manage_team(user: User, db: Session, membership: Optional[TeamMember] = None) -> bool:
+def can_manage_team(user: User, db: Session, membership: TeamMember | None = None) -> bool:
     """Update name/description, manage settings."""
     if is_privileged(user, db):
         return True
     return role_gte(membership, TeamRole.MANAGER)
 
 
-def can_delete_team(user: User, db: Session, membership: Optional[TeamMember] = None) -> bool:
+def can_delete_team(user: User, db: Session, membership: TeamMember | None = None) -> bool:
     if is_privileged(user, db):
         return True
     return role_gte(membership, TeamRole.OWNER)
 
 
-def can_invite_members(user: User, db: Session, membership: Optional[TeamMember] = None) -> bool:
+def can_invite_members(user: User, db: Session, membership: TeamMember | None = None) -> bool:
     if is_privileged(user, db):
         return True
     return role_gte(membership, TeamRole.MANAGER)
 
 
-def can_remove_member(user: User, db: Session, membership: Optional[TeamMember] = None) -> bool:
+def can_remove_member(user: User, db: Session, membership: TeamMember | None = None) -> bool:
     if is_privileged(user, db):
         return True
     return role_gte(membership, TeamRole.MANAGER)
 
 
-def can_change_member_role(user: User, db: Session, membership: Optional[TeamMember] = None) -> bool:
+def can_change_member_role(user: User, db: Session, membership: TeamMember | None = None) -> bool:
     if is_privileged(user, db):
         return True
     return role_gte(membership, TeamRole.MANAGER)
 
 
-def can_transfer_ownership(user: User, db: Session, membership: Optional[TeamMember] = None) -> bool:
+def can_transfer_ownership(user: User, db: Session, membership: TeamMember | None = None) -> bool:
     if is_privileged(user, db):
         return True
     return role_gte(membership, TeamRole.OWNER)
 
 
-def can_view_team_audit(user: User, db: Session, membership: Optional[TeamMember] = None) -> bool:
+def can_view_team_audit(user: User, db: Session, membership: TeamMember | None = None) -> bool:
     if is_privileged(user, db):
         return True
     return role_gte(membership, TeamRole.MANAGER)
@@ -194,7 +193,7 @@ def can_view_all_audit_logs(user: User, db: Session) -> bool:
     return is_privileged(user, db)
 
 
-def can_schedule(user: User, db: Session, membership: Optional[TeamMember] = None) -> bool:
+def can_schedule(user: User, db: Session, membership: TeamMember | None = None) -> bool:
     if is_privileged(user, db):
         return True
     if membership is None:

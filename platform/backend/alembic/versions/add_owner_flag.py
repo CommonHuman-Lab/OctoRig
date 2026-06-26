@@ -6,13 +6,13 @@ Revision ID: add_owner_flag
 Revises: add_login_lockout
 Create Date: 2026-06-19
 """
-from typing import Union
 
 import sqlalchemy as sa
+
 from alembic import op
 
 revision: str = "add_owner_flag"
-down_revision: Union[str, None] = "add_login_lockout"
+down_revision: str | None = "add_login_lockout"
 branch_labels = None
 depends_on = None
 

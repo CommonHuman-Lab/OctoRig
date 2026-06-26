@@ -6,13 +6,13 @@ Revision ID: add_theme_settings
 Revises: add_assessments
 Create Date: 2026-06-17
 """
-from typing import Union
 
 import sqlalchemy as sa
+
 from alembic import op
 
 revision: str = "add_theme_settings"
-down_revision: Union[str, None] = "add_assessments"
+down_revision: str | None = "add_assessments"
 branch_labels = None
 depends_on = None
 

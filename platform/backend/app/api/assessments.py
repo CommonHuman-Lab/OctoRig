@@ -1,15 +1,14 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
 """Assessment Mode API — admin management + candidate-facing endpoints."""
-from datetime import datetime, timedelta, timezone
-from typing import Optional
+from datetime import UTC, datetime, timedelta
 
 from fastapi import APIRouter, BackgroundTasks, Depends, Response
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_client_ip, get_current_user, get_db, require_admin
 from app.config import settings
-from app.core.exceptions import bad_request, conflict, credentials_exception, forbidden_exception, not_found
+from app.core.exceptions import bad_request, conflict, forbidden_exception, not_found
 from app.core.security import create_access_token, generate_opaque_token, hash_password, hash_token
 from app.labs.registry import REGISTRY_BY_SLUG
 from app.models.assessment import Assessment, AssessmentInvite, AssessmentReport
@@ -35,7 +34,6 @@ from app.schemas.assessment import (
     ReportSubmit,
 )
 from app.schemas.auth import TokenResponse
-from app.services import audit_service
 from app.services.audit_service import write_audit
 from app.services.challenge_rendering import render_access_info
 from app.services.deployment_provisioning import prepare_deployment
@@ -61,8 +59,8 @@ def _compute_status(invite: AssessmentInvite) -> InviteStatus:
         return "accepted"
     if invite.completed_at is not None:
         return "completed"
-    now = datetime.now(timezone.utc)
-    if invite.expires_at and invite.expires_at.replace(tzinfo=timezone.utc) < now:
+    now = datetime.now(UTC)
+    if invite.expires_at and invite.expires_at.replace(tzinfo=UTC) < now:
         return "expired"
     return "active"
 
@@ -93,7 +91,7 @@ def _assessment_response(assessment: Assessment, db: Session) -> AssessmentRespo
         AssessmentInvite.assessment_id == assessment.id,
         AssessmentInvite.is_revoked.is_(False),
         AssessmentInvite.started_at.isnot(None),
-        AssessmentInvite.expires_at > datetime.now(timezone.utc),
+        AssessmentInvite.expires_at > datetime.now(UTC),
     ).count()
     return AssessmentResponse(
         id=assessment.id,
@@ -120,9 +118,8 @@ def _slugify(name: str) -> str:
 
 
 def _issue_refresh_token(db: Session, user_id: int) -> str:
-    from app.core.security import generate_opaque_token, hash_token
     raw = generate_opaque_token()
-    expires = datetime.now(timezone.utc) + timedelta(days=settings.refresh_token_expire_days)
+    expires = datetime.now(UTC) + timedelta(days=settings.refresh_token_expire_days)
     db.add(RefreshToken(user_id=user_id, token_hash=hash_token(raw), expires_at=expires))
     db.commit()
     return raw
@@ -234,7 +231,7 @@ def delete_assessment(
         AssessmentInvite.assessment_id == assessment_id,
         AssessmentInvite.is_revoked.is_(False),
         AssessmentInvite.started_at.isnot(None),
-        AssessmentInvite.expires_at > datetime.now(timezone.utc),
+        AssessmentInvite.expires_at > datetime.now(UTC),
     ).count()
     if active_count > 0:
         raise bad_request("Cannot delete an assessment with active candidates")
@@ -454,7 +451,7 @@ def accept_invite(
     payload: InviteAcceptRegister,
     response: Response,
     db: Session = Depends(get_db),
-    ip: Optional[str] = Depends(get_client_ip),
+    ip: str | None = Depends(get_client_ip),
 ) -> TokenResponse:
     """
     Register a new candidate account and link it to this invite.
@@ -486,7 +483,7 @@ def accept_invite(
     ensure_personal_team(db, user)
 
     invite.user_id = user.id
-    invite.accepted_at = datetime.now(timezone.utc)
+    invite.accepted_at = datetime.now(UTC)
     db.commit()
     db.refresh(user)
 
@@ -525,7 +522,7 @@ def start_assessment(
     if invite.started_at is not None:
         return _build_candidate_status(invite, db)
 
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     invite.started_at = now
     invite.expires_at = now + timedelta(hours=invite.assessment.duration_hours)
     db.flush()
@@ -589,10 +586,10 @@ def _build_candidate_status(invite: AssessmentInvite, db: Session) -> CandidateA
     company_name = assessment.company_name or site.company_name
     company_logo_url = assessment.company_logo_url or site.company_logo_url
 
-    now = datetime.now(timezone.utc)
-    time_remaining: Optional[int] = None
+    now = datetime.now(UTC)
+    time_remaining: int | None = None
     if invite.expires_at:
-        expires_aware = invite.expires_at.replace(tzinfo=timezone.utc)
+        expires_aware = invite.expires_at.replace(tzinfo=UTC)
         delta = (expires_aware - now).total_seconds()
         time_remaining = max(0, int(delta))
 
@@ -660,12 +657,12 @@ def submit_report(
         raise bad_request("Assessment has not been started")
     if invite.completed_at is not None:
         raise bad_request("Assessment is complete — the report is locked")
-    if invite.expires_at and invite.expires_at.replace(tzinfo=timezone.utc) <= datetime.now(timezone.utc):
+    if invite.expires_at and invite.expires_at.replace(tzinfo=UTC) <= datetime.now(UTC):
         raise bad_request("Assessment has expired — the report is locked")
 
     if invite.report is not None:
         invite.report.content = payload.content
-        invite.report.submitted_at = datetime.now(timezone.utc)
+        invite.report.submitted_at = datetime.now(UTC)
     else:
         report = AssessmentReport(invite_id=invite.id, content=payload.content)
         db.add(report)
@@ -701,9 +698,9 @@ def complete_assessment(
         raise bad_request("Assessment has not been started")
 
     if invite.completed_at is None:
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         invite.completed_at = now
-        if invite.expires_at is None or invite.expires_at.replace(tzinfo=timezone.utc) > now:
+        if invite.expires_at is None or invite.expires_at.replace(tzinfo=UTC) > now:
             invite.expires_at = now
         db.commit()
         db.refresh(invite)

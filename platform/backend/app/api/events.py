@@ -1,10 +1,10 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any
 
 from fastapi import APIRouter, Depends, Query
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user, get_db, require_admin
@@ -16,9 +16,15 @@ from app.models.team import TeamMember, TeamRole
 from app.models.user import User
 from app.services import audit_service
 from app.services.event_service import (
-    add_challenge, get_event_by_slug_or_404, get_event_challenges,
-    get_visible_event_or_404, is_scoreboard_frozen,
-    list_events, register_team, remove_challenge, transition_status,
+    add_challenge,
+    get_event_by_slug_or_404,
+    get_event_challenges,
+    get_visible_event_or_404,
+    is_scoreboard_frozen,
+    list_events,
+    register_team,
+    remove_challenge,
+    transition_status,
     unregister_team,
 )
 from app.services.scoring_service import get_event_scoreboard
@@ -32,14 +38,14 @@ class EventSummary(BaseModel):
     id: int
     slug: str
     title: str
-    description: Optional[str]
+    description: str | None
     status: EventStatus
     visibility: EventVisibility
     scoring_mode: EventScoringMode
-    start_at: Optional[datetime]
-    end_at: Optional[datetime]
-    max_team_size: Optional[int]
-    freeze_scoreboard_at: Optional[datetime]
+    start_at: datetime | None
+    end_at: datetime | None
+    max_team_size: int | None
+    freeze_scoreboard_at: datetime | None
     created_at: datetime
     scoreboard_frozen: bool = False
 
@@ -49,29 +55,29 @@ class EventSummary(BaseModel):
 class EventCreateRequest(BaseModel):
     slug: str
     title: str
-    description: Optional[str] = None
-    start_at: Optional[datetime] = None
-    end_at: Optional[datetime] = None
+    description: str | None = None
+    start_at: datetime | None = None
+    end_at: datetime | None = None
     visibility: EventVisibility = EventVisibility.PRIVATE
     scoring_mode: EventScoringMode = EventScoringMode.STATIC
-    max_team_size: Optional[int] = None
-    freeze_scoreboard_at: Optional[datetime] = None
+    max_team_size: int | None = None
+    freeze_scoreboard_at: datetime | None = None
 
 
 class EventUpdateRequest(BaseModel):
-    title: Optional[str] = None
-    description: Optional[str] = None
-    start_at: Optional[datetime] = None
-    end_at: Optional[datetime] = None
-    visibility: Optional[EventVisibility] = None
-    max_team_size: Optional[int] = None
-    freeze_scoreboard_at: Optional[datetime] = None
+    title: str | None = None
+    description: str | None = None
+    start_at: datetime | None = None
+    end_at: datetime | None = None
+    visibility: EventVisibility | None = None
+    max_team_size: int | None = None
+    freeze_scoreboard_at: datetime | None = None
 
 
 class AddChallengeRequest(BaseModel):
     challenge_id: int
-    points_override: Optional[int] = None
-    released_at: Optional[datetime] = None
+    points_override: int | None = None
+    released_at: datetime | None = None
 
 
 class RegisterTeamRequest(BaseModel):
@@ -84,10 +90,10 @@ class TransitionRequest(BaseModel):
 
 class ScoreboardEntry(BaseModel):
     rank: int
-    user_id: Optional[int] = None
-    team_id: Optional[int] = None
+    user_id: int | None = None
+    team_id: int | None = None
     total: int
-    last_tx: Optional[str] = None
+    last_tx: str | None = None
 
 
 def _serialize(ev) -> EventSummary:
@@ -112,7 +118,7 @@ def _serialize(ev) -> EventSummary:
 
 @router.get("/", response_model=list[EventSummary])
 def list_events_endpoint(
-    status: Optional[str] = Query(None),
+    status: str | None = Query(None),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> list[EventSummary]:
@@ -153,7 +159,7 @@ def event_scoreboard_endpoint(
     return [ScoreboardEntry(**r) for r in rows]
 
 
-def _get_membership(db: Session, user: User, team_id: int) -> Optional[TeamMember]:
+def _get_membership(db: Session, user: User, team_id: int) -> TeamMember | None:
     return (
         db.query(TeamMember)
         .filter(TeamMember.team_id == team_id, TeamMember.user_id == user.id)

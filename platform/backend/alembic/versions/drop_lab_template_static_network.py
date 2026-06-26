@@ -6,12 +6,11 @@ Revision ID: drop_lab_template_static_network
 Revises: add_hide_lab_ports
 Create Date: 2026-06-19
 """
-from typing import Union
 
 from alembic import op
 
 revision: str = "drop_lab_template_static_network"
-down_revision: Union[str, None] = "add_hide_lab_ports"
+down_revision: str | None = "add_hide_lab_ports"
 branch_labels = None
 depends_on = None
 

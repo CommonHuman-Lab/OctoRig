@@ -1,6 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
-from typing import Optional
 
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
@@ -8,7 +7,6 @@ from sqlalchemy.orm import Session
 from app.api.deps import get_current_user, get_db
 from app.core.exceptions import not_found
 from app.core.permissions import is_privileged
-from app.models.deployment import DeploymentStatus
 from app.models.lab_template import LabTemplate
 from app.models.user import User
 from app.schemas.lab_template import DeploymentSummary, LabTemplateResponse
@@ -33,7 +31,7 @@ def _enrich(template: LabTemplate, db: Session, current_user: User) -> LabTempla
 
 @router.get("/", response_model=list[LabTemplateResponse])
 def list_labs(
-    category: Optional[str] = Query(None, description="world | firerange | thirdparty"),
+    category: str | None = Query(None, description="world | firerange | thirdparty"),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> list[LabTemplateResponse]:

@@ -3,8 +3,9 @@
 import os
 from logging.config import fileConfig
 
-from alembic import context
 from sqlalchemy import engine_from_config, pool
+
+from alembic import context
 
 config = context.config
 
@@ -15,8 +16,8 @@ database_url = os.getenv("DATABASE_URL")
 if database_url:
     config.set_main_option("sqlalchemy.url", database_url)
 
-from app.database import Base
-import app.models  # noqa: F401 — ensures all models are registered
+import app.models  # noqa: E402,F401 — ensures all models are registered
+from app.database import Base  # noqa: E402
 
 target_metadata = Base.metadata
 

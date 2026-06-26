@@ -6,13 +6,13 @@ Revision ID: add_assessment_completed_at
 Revises: drop_profile_twitter_handle
 Create Date: 2026-06-19
 """
-from typing import Union
 
 import sqlalchemy as sa
+
 from alembic import op
 
 revision: str = "add_assessment_completed_at"
-down_revision: Union[str, None] = "drop_profile_twitter_handle"
+down_revision: str | None = "drop_profile_twitter_handle"
 branch_labels = None
 depends_on = None
 

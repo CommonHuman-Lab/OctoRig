@@ -113,7 +113,13 @@ def test_inactive_user_profile_hidden(client):
 # ── activity feed toggle ─────────────────────────────────────────────────────
 
 def test_recent_solves_hidden_when_show_activity_disabled(client, db_session):
-    from app.models.challenge import Challenge, ChallengeDifficulty, ChallengeFlag, ChallengeType, FlagType
+    from app.models.challenge import (
+        Challenge,
+        ChallengeDifficulty,
+        ChallengeFlag,
+        ChallengeType,
+        FlagType,
+    )
 
     ch = Challenge(
         slug="activity-test", title="Activity Test", description="x",
@@ -137,7 +143,13 @@ def test_recent_solves_hidden_when_show_activity_disabled(client, db_session):
 
 
 def test_recent_solves_always_visible_to_owner_even_if_hidden(client, db_session):
-    from app.models.challenge import Challenge, ChallengeDifficulty, ChallengeFlag, ChallengeType, FlagType
+    from app.models.challenge import (
+        Challenge,
+        ChallengeDifficulty,
+        ChallengeFlag,
+        ChallengeType,
+        FlagType,
+    )
 
     ch = Challenge(
         slug="activity-test2", title="Activity Test 2", description="x",

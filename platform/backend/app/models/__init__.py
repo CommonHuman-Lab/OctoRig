@@ -5,19 +5,44 @@ from app.models.assessment import Assessment, AssessmentInvite, AssessmentReport
 from app.models.audit_log import AuditLog
 from app.models.badge import AchievementRule, AchievementRuleType, BadgeDefinition, UserBadge
 from app.models.challenge import (
-    Challenge, ChallengeFile, ChallengeFlag, ChallengeHint,
-    ChallengeDifficulty, ChallengeSubmission, ChallengeType, FlagType, HintUnlock,
+    Challenge,
+    ChallengeDifficulty,
+    ChallengeFile,
+    ChallengeFlag,
+    ChallengeHint,
+    ChallengeSubmission,
+    ChallengeType,
+    FlagType,
+    HintUnlock,
 )
-from app.models.content import ContentReview, ContentStatus, ContentSubmission, ContentType, ReviewVerdict
-from app.models.ctf_event import CtfEvent, EventChallengeMap, EventRegistration, EventScoringMode, EventStatus, EventVisibility
-from app.models.deployment import Deployment, DeploymentStatus, DeploymentVisibility, NetworkAllocationLock
+from app.models.content import (
+    ContentReview,
+    ContentStatus,
+    ContentSubmission,
+    ContentType,
+    ReviewVerdict,
+)
+from app.models.ctf_event import (
+    CtfEvent,
+    EventChallengeMap,
+    EventRegistration,
+    EventScoringMode,
+    EventStatus,
+    EventVisibility,
+)
+from app.models.deployment import (
+    Deployment,
+    DeploymentStatus,
+    DeploymentVisibility,
+    NetworkAllocationLock,
+)
 from app.models.lab_template import LabTemplate
 from app.models.marketplace import MarketplacePackage, PackageInstallation, PackageType
 from app.models.note import Note, NoteVisibility
-from app.models.refresh_token import RefreshToken
 from app.models.notification import Notification, NotificationPreference
 from app.models.profile import PrivacyLevel, UserProfile
 from app.models.rank import Rank
+from app.models.refresh_token import RefreshToken
 from app.models.role import PlatformRole
 from app.models.scheduled_action import ScheduledAction, ScheduledActionStatus, ScheduledActionType
 from app.models.scoring import ScoreTransaction, ScoreTransactionSource

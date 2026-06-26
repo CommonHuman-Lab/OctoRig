@@ -2,13 +2,12 @@
 # Copyright (c) 2026 CommonHuman-Lab
 import re
 import secrets
-from datetime import datetime, timedelta, timezone
-from typing import Optional
+from datetime import UTC, datetime, timedelta
 
 from sqlalchemy.orm import Session
 
 from app.core.db_types import ensure_aware
-from app.core.exceptions import bad_request, conflict, forbidden_exception, not_found
+from app.core.exceptions import bad_request, conflict, not_found
 from app.models.team import Team, TeamInvitation, TeamMember, TeamRole
 from app.models.user import User
 
@@ -28,7 +27,7 @@ def _unique_slug(db: Session, base: str) -> str:
     return slug
 
 
-def create_team(db: Session, user: User, name: str, description: Optional[str] = None) -> Team:
+def create_team(db: Session, user: User, name: str, description: str | None = None) -> Team:
     if db.query(Team).filter(Team.name == name).first():
         raise conflict(f"A team named '{name}' already exists")
 
@@ -111,7 +110,7 @@ def get_team_members(db: Session, team_id: int) -> list[dict]:
     ]
 
 
-def update_team(db: Session, team: Team, name: Optional[str], description: Optional[str]) -> Team:
+def update_team(db: Session, team: Team, name: str | None, description: str | None) -> Team:
     if name is not None:
         if name.strip() != team.name:
             existing = db.query(Team).filter(Team.name == name.strip()).first()
@@ -126,12 +125,7 @@ def update_team(db: Session, team: Team, name: Optional[str], description: Optio
 
 
 def delete_team(db: Session, team: Team, db_session: Session) -> None:
-    from app.models.deployment import DeploymentStatus
-    active = (
-        db.query(team.__class__)
-        .filter()  # just a guard — actual check below
-    )
-    from app.models.deployment import Deployment
+    from app.models.deployment import Deployment, DeploymentStatus
     running = (
         db.query(Deployment)
         .filter(
@@ -169,7 +163,7 @@ def invite_member(
             TeamInvitation.team_id == team.id,
             TeamInvitation.email == target.email,
             TeamInvitation.accepted_at.is_(None),
-            TeamInvitation.expires_at > datetime.now(timezone.utc),
+            TeamInvitation.expires_at > datetime.now(UTC),
         )
         .first()
     )
@@ -183,7 +177,7 @@ def invite_member(
         token=token,
         role=role,
         invited_by_id=inviter.id,
-        expires_at=datetime.now(timezone.utc) + timedelta(hours=72),
+        expires_at=datetime.now(UTC) + timedelta(hours=72),
     )
     db.add(invitation)
     db.flush()
@@ -214,7 +208,7 @@ def get_invitation_by_token(db: Session, token: str) -> TeamInvitation:
         raise not_found("Invitation")
     if inv.accepted_at is not None:
         raise bad_request("Invitation has already been accepted")
-    if ensure_aware(inv.expires_at) < datetime.now(timezone.utc):
+    if ensure_aware(inv.expires_at) < datetime.now(UTC):
         raise bad_request("Invitation has expired")
     return inv
 
@@ -238,7 +232,7 @@ def accept_invitation(db: Session, token: str, user: User) -> TeamMember:
     )
     db.add(membership)
 
-    inv.accepted_at = datetime.now(timezone.utc)
+    inv.accepted_at = datetime.now(UTC)
     db.commit()
     db.refresh(membership)
     return membership

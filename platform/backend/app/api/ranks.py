@@ -1,6 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
-from typing import Optional
 
 from fastapi import APIRouter, Depends, Path
 from pydantic import BaseModel
@@ -20,8 +19,8 @@ class RankResponse(BaseModel):
     id: int
     name: str
     min_points: int
-    icon: Optional[str]
-    color: Optional[str]
+    icon: str | None
+    color: str | None
     is_active: bool
 
     model_config = {"from_attributes": True}
@@ -29,8 +28,8 @@ class RankResponse(BaseModel):
 
 class UserRankResponse(BaseModel):
     points: int
-    rank: Optional[RankResponse]
-    next_rank: Optional[RankResponse]
+    rank: RankResponse | None
+    next_rank: RankResponse | None
     progress_pct: float
 
 

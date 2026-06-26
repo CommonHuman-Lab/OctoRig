@@ -1,7 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
 from datetime import datetime
-from typing import Optional
 
 from fastapi import APIRouter, Depends, Path
 from pydantic import BaseModel
@@ -24,17 +23,17 @@ class BadgeSummary(BaseModel):
     name: str
     description: str
     icon: str
-    category: Optional[str]
+    category: str | None
     points_value: int
     earned: bool = False
-    earned_at: Optional[datetime] = None
+    earned_at: datetime | None = None
 
     model_config = {"from_attributes": True}
 
 
 class ManualAwardRequest(BaseModel):
     user_id: int
-    note: Optional[str] = None
+    note: str | None = None
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────

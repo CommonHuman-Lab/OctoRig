@@ -1,8 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
-from datetime import datetime, timezone
-
-from typing import Optional
+from datetime import UTC, datetime
 
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
@@ -39,15 +37,15 @@ def create_scheduled(
     payload: ScheduledActionCreate,
     current_user: User = Depends(get_current_user_or_api_key),
     db: Session = Depends(get_db),
-    ip: Optional[str] = Depends(get_client_ip),
+    ip: str | None = Depends(get_client_ip),
 ) -> ScheduledActionResponse:
-    if payload.scheduled_at.replace(tzinfo=timezone.utc) <= datetime.now(timezone.utc):
+    if payload.scheduled_at.replace(tzinfo=UTC) <= datetime.now(UTC):
         raise bad_request("scheduled_at must be in the future")
 
     if payload.action == ScheduledActionType.DESTROY and payload.deployment_id:
-        from app.models.deployment import Deployment
-        from app.core.permissions import can_destroy_deployment
         from app.api.deployments import _get_membership
+        from app.core.permissions import can_destroy_deployment
+        from app.models.deployment import Deployment
 
         d = db.get(Deployment, payload.deployment_id)
         if d is None:
@@ -100,7 +98,7 @@ def cancel_scheduled(
     action_id: int,
     current_user: User = Depends(get_current_user_or_api_key),
     db: Session = Depends(get_db),
-    ip: Optional[str] = Depends(get_client_ip),
+    ip: str | None = Depends(get_client_ip),
 ) -> None:
     action = db.get(ScheduledAction, action_id)
     if action is None:

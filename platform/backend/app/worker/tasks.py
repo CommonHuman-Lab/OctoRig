@@ -12,7 +12,7 @@ Worker invocation:
   celery -A app.worker.celery_app worker -Q lab_ops --concurrency=4
   celery -A app.worker.celery_app worker -Q scheduler --concurrency=2 --beat
 """
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 from app.worker.celery_app import celery_app
 
@@ -24,7 +24,7 @@ def dispatch_due_actions() -> None:
 
     db = SessionLocal()
     try:
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         due = (
             db.query(ScheduledAction)
             .filter(
@@ -66,7 +66,7 @@ def execute_destroy(self, scheduled_action_id: int) -> None:
         if action is None:
             return
 
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         try:
             lab_service.stop_lab(action.deployment_id, action.user_id)
             action.status = ScheduledActionStatus.COMPLETED
@@ -112,7 +112,7 @@ def execute_deploy(self, scheduled_action_id: int) -> None:
         if action is None:
             return
 
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         try:
             template = (
                 db.query(LabTemplate)
@@ -180,7 +180,7 @@ def auto_destroy_dynamic_labs() -> None:
 
     db = SessionLocal()
     try:
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         expired = (
             db.query(Deployment)
             .filter(
@@ -210,7 +210,7 @@ def cleanup_stale_deployments() -> None:
 
     db = SessionLocal()
     try:
-        cutoff = datetime.now(timezone.utc) - timedelta(minutes=15)
+        cutoff = datetime.now(UTC) - timedelta(minutes=15)
         stale = (
             db.query(Deployment)
             .filter(

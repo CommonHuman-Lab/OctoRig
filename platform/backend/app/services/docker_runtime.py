@@ -18,12 +18,12 @@ import asyncio
 import socket
 import time
 from collections.abc import AsyncGenerator
-from typing import Any, Optional
+from typing import Any
 
 import docker
 import docker.types
-from circuitbreaker import CircuitBreakerError, circuit
-from docker.errors import BuildError, DockerException, NotFound
+from circuitbreaker import circuit
+from docker.errors import DockerException, NotFound
 from docker.models.containers import Container
 from docker.models.networks import Network
 from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
@@ -137,12 +137,12 @@ class DockerRuntimeService:
         name: str,
         image: str,
         network: str,
-        ip: Optional[str] = None,
-        environment: Optional[dict[str, str]] = None,
-        volumes: Optional[dict[str, dict[str, str]]] = None,
+        ip: str | None = None,
+        environment: dict[str, str] | None = None,
+        volumes: dict[str, dict[str, str]] | None = None,
         privileged: bool = False,
-        command: Optional[str] = None,
-        resource_limits: Optional[dict] = None,
+        command: str | None = None,
+        resource_limits: dict | None = None,
     ) -> str:
         """
         Start a detached container with restart=unless-stopped.

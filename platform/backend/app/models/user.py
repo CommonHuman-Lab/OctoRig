@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from app.models.assessment import AssessmentInvite
     from app.models.audit_log import AuditLog
     from app.models.badge import UserBadge
-    from app.models.challenge import Challenge, ChallengeSubmission
+    from app.models.challenge import ChallengeSubmission
     from app.models.deployment import Deployment
     from app.models.note import Note
     from app.models.notification import Notification, NotificationPreference
@@ -35,9 +35,9 @@ class User(Base):
     is_owner: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     platform_roles: Mapped[list[Any]] = mapped_column(JSON, nullable=False, default=list)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
-    last_login_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    last_login_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     failed_login_attempts: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
-    locked_until: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    locked_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
     deployments: Mapped[list["Deployment"]] = relationship(
         foreign_keys="Deployment.started_by_id", back_populates="user"

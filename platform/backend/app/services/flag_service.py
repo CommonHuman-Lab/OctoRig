@@ -1,12 +1,9 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
 import hashlib
-import re
-import resource
 import subprocess
 import textwrap
 from dataclasses import dataclass
-from typing import Optional
 
 from sqlalchemy.orm import Session
 
@@ -17,9 +14,9 @@ from app.models.deployment import Deployment
 @dataclass
 class FlagContext:
     user_id: int
-    team_id: Optional[int]
-    event_id: Optional[int]
-    deployment: Optional[Deployment] = None
+    team_id: int | None
+    event_id: int | None
+    deployment: Deployment | None = None
 
 
 @dataclass
@@ -43,7 +40,7 @@ def check_already_solved(db: Session, challenge_id: int, user_id: int) -> bool:
     )
 
 
-def check_first_blood(db: Session, challenge_id: int, event_id: Optional[int]) -> bool:
+def check_first_blood(db: Session, challenge_id: int, event_id: int | None) -> bool:
     q = db.query(ChallengeSubmission).filter(
         ChallengeSubmission.challenge_id == challenge_id,
         ChallengeSubmission.is_correct.is_(True),

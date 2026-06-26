@@ -5,8 +5,9 @@
 Revision ID: add_refresh_tokens
 Revises: hardening_indexes
 """
-from alembic import op
 import sqlalchemy as sa
+
+from alembic import op
 
 revision: str = "add_refresh_tokens"
 down_revision: str = "hardening_indexes"

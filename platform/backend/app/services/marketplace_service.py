@@ -12,7 +12,6 @@ from app.core.exceptions import bad_request, conflict, not_found
 from app.models.marketplace import MarketplacePackage, PackageInstallation, PackageType
 from app.services import audit_service
 
-
 # ── Manifest schema (loose validation) ───────────────────────────────────────
 
 _REQUIRED_MANIFEST_FIELDS = ("name", "slug", "version", "type")
@@ -128,7 +127,12 @@ def install_package(
 
 def _import_challenges(db: Session, challenges: list[dict], pkg: MarketplacePackage) -> None:
     from app.models.challenge import (
-        Challenge, ChallengeFlag, ChallengeHint, ChallengeType, ChallengeDifficulty, FlagType,
+        Challenge,
+        ChallengeDifficulty,
+        ChallengeFlag,
+        ChallengeHint,
+        ChallengeType,
+        FlagType,
     )
     for ch_dict in challenges:
         slug = ch_dict.get("slug") or f"{pkg.slug}-{ch_dict.get('id', '')}"

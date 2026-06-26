@@ -5,8 +5,9 @@
 Revision ID: add_notes
 Revises: add_assessment_completed_at
 """
-from alembic import op
 import sqlalchemy as sa
+
+from alembic import op
 
 revision: str = "add_notes"
 down_revision: str = "add_assessment_completed_at"

@@ -6,8 +6,9 @@ import sys
 
 def migrate() -> None:
     """Run Alembic migrations to the latest revision."""
-    from alembic import command
     from alembic.config import Config
+
+    from alembic import command
 
     cfg = Config("alembic.ini")
     command.upgrade(cfg, "head")

@@ -6,13 +6,13 @@ Revision ID: add_hide_lab_ports
 Revises: add_deployment_network_isolation
 Create Date: 2026-06-19
 """
-from typing import Union
 
 import sqlalchemy as sa
+
 from alembic import op
 
 revision: str = "add_hide_lab_ports"
-down_revision: Union[str, None] = "add_deployment_network_isolation"
+down_revision: str | None = "add_deployment_network_isolation"
 branch_labels = None
 depends_on = None
 

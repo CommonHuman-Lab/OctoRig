@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
-from datetime import datetime, timezone
-from typing import Any, Optional
+from datetime import UTC, datetime
+from typing import Any
 
 from sqlalchemy import func
 from sqlalchemy.orm import Session
@@ -38,7 +38,7 @@ def ensure_profile_visible(db: Session, viewer_id: int, target_user_id: int) -> 
         raise not_found("User")
 
 
-def get_profile(db: Session, username: str, viewer_id: Optional[int] = None) -> dict[str, Any]:
+def get_profile(db: Session, username: str, viewer_id: int | None = None) -> dict[str, Any]:
     user = db.query(User).filter(User.username == username, User.is_active.is_(True)).first()
     if user is None:
         raise not_found("User")
@@ -141,15 +141,15 @@ def get_profile(db: Session, username: str, viewer_id: Optional[int] = None) -> 
 def update_profile(
     db: Session,
     user_id: int,
-    bio: Optional[str] = None,
-    avatar_url: Optional[str] = None,
-    website_url: Optional[str] = None,
-    location: Optional[str] = None,
-    github_handle: Optional[str] = None,
-    privacy_level: Optional[str] = None,
-    show_activity: Optional[bool] = None,
-    theme: Optional[str] = None,
-    locale: Optional[str] = None,
+    bio: str | None = None,
+    avatar_url: str | None = None,
+    website_url: str | None = None,
+    location: str | None = None,
+    github_handle: str | None = None,
+    privacy_level: str | None = None,
+    show_activity: bool | None = None,
+    theme: str | None = None,
+    locale: str | None = None,
 ) -> UserProfile:
     profile = _ensure_profile(db, user_id)
     if bio is not None:
@@ -170,7 +170,7 @@ def update_profile(
         profile.theme = theme
     if locale is not None:
         profile.locale = locale
-    profile.updated_at = datetime.now(timezone.utc)
+    profile.updated_at = datetime.now(UTC)
     db.commit()
     db.refresh(profile)
     return profile

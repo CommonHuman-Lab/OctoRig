@@ -2,12 +2,12 @@
 # Copyright (c) 2026 CommonHuman-Lab
 import enum
 from datetime import datetime
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, JSON, String, Text, func
-from app.core.db_types import EnumCol as SQLEnum
+from sqlalchemy import JSON, Boolean, DateTime, ForeignKey, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from app.core.db_types import EnumCol as SQLEnum
 from app.database import Base
 
 if TYPE_CHECKING:
@@ -29,10 +29,10 @@ class MarketplacePackage(Base):
     version: Mapped[str] = mapped_column(String(32), nullable=False)
     package_type: Mapped[PackageType] = mapped_column(SQLEnum(PackageType), nullable=False)
     manifest: Mapped[dict[str, Any]] = mapped_column(JSON, nullable=False, default=dict)
-    description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    author: Mapped[Optional[str]] = mapped_column(String(128), nullable=True)
-    signature: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    checksum: Mapped[Optional[str]] = mapped_column(String(64), nullable=True)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    author: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    signature: Mapped[str | None] = mapped_column(Text, nullable=True)
+    checksum: Mapped[str | None] = mapped_column(String(64), nullable=True)
     is_verified: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 

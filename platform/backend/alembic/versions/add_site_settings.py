@@ -5,13 +5,13 @@
 Revision ID: add_site_settings
 Revises: add_ranks
 """
-from typing import Union
 
 import sqlalchemy as sa
+
 from alembic import op
 
 revision: str = "add_site_settings"
-down_revision: Union[str, None] = "add_ranks"
+down_revision: str | None = "add_ranks"
 branch_labels = None
 depends_on = None
 

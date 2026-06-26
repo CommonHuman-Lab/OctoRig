@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any
 
 from fastapi import APIRouter, Depends, Query
 from pydantic import BaseModel
@@ -9,11 +9,15 @@ from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user, get_db
 from app.core.pagination import DefaultLimit
-from app.models.user import User
 from app.models.notification import Notification
+from app.models.user import User
 from app.services.notification_service import (
-    get_preferences, list_notifications, mark_all_read, mark_read,
-    unread_count, update_preferences,
+    get_preferences,
+    list_notifications,
+    mark_all_read,
+    mark_read,
+    unread_count,
+    update_preferences,
 )
 
 router = APIRouter(prefix="/notifications", tags=["notifications"])
@@ -23,9 +27,9 @@ class NotificationOut(BaseModel):
     id: int
     type: str
     title: str
-    body: Optional[str]
+    body: str | None
     data: dict[str, Any]
-    read_at: Optional[datetime]
+    read_at: datetime | None
     created_at: datetime
 
     model_config = {"from_attributes": True}
@@ -34,19 +38,19 @@ class NotificationOut(BaseModel):
 class PreferencesOut(BaseModel):
     in_app: bool
     email: bool
-    discord_webhook_url: Optional[str]
-    slack_webhook_url: Optional[str]
+    discord_webhook_url: str | None
+    slack_webhook_url: str | None
     event_filter: dict[str, Any]
 
     model_config = {"from_attributes": True}
 
 
 class PreferencesUpdateRequest(BaseModel):
-    in_app: Optional[bool] = None
-    email: Optional[bool] = None
-    discord_webhook_url: Optional[str] = None
-    slack_webhook_url: Optional[str] = None
-    event_filter: Optional[dict[str, Any]] = None
+    in_app: bool | None = None
+    email: bool | None = None
+    discord_webhook_url: str | None = None
+    slack_webhook_url: str | None = None
+    event_filter: dict[str, Any] | None = None
 
 
 class UnreadCountOut(BaseModel):

@@ -1,15 +1,14 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
-from typing import Optional
 
 from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
 
 from app.api.deps import get_client_ip, get_current_user_or_api_key
 from app.database import get_db
 from app.models.user import User
 from app.schemas.api_key import ApiKeyCreate, ApiKeyCreated, ApiKeyResponse
 from app.services import api_key_service, audit_service
-from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/api-keys", tags=["api-keys"])
 
@@ -28,7 +27,7 @@ def create_key(
     payload: ApiKeyCreate,
     current_user: User = Depends(get_current_user_or_api_key),
     db: Session = Depends(get_db),
-    ip: Optional[str] = Depends(get_client_ip),
+    ip: str | None = Depends(get_client_ip),
 ) -> ApiKeyCreated:
     key, raw_key = api_key_service.create_api_key(
         db, current_user, payload.name, payload.expires_at
@@ -48,7 +47,7 @@ def revoke_key(
     key_id: int,
     current_user: User = Depends(get_current_user_or_api_key),
     db: Session = Depends(get_db),
-    ip: Optional[str] = Depends(get_client_ip),
+    ip: str | None = Depends(get_client_ip),
 ) -> None:
     api_key_service.revoke_api_key(db, current_user, key_id)
     audit_service.write_audit(

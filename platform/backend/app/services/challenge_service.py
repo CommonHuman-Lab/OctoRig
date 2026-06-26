@@ -1,19 +1,24 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
-from datetime import datetime, timezone
-from typing import Optional
+from datetime import UTC, datetime
 
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from app.core.exceptions import bad_request, conflict, not_found
+from app.core.exceptions import not_found
 from app.models.challenge import (
-    Challenge, ChallengeFlag, ChallengeHint, ChallengeSubmission, HintUnlock,
+    Challenge,
+    ChallengeHint,
+    ChallengeSubmission,
+    HintUnlock,
 )
 from app.models.deployment import Deployment
 from app.services.flag_service import (
-    FlagContext, ValidationResult, check_already_solved,
-    check_first_blood, validate_flag,
+    FlagContext,
+    ValidationResult,
+    check_already_solved,
+    check_first_blood,
+    validate_flag,
 )
 
 
@@ -33,12 +38,12 @@ def get_challenge_by_slug_or_404(db: Session, slug: str) -> Challenge:
 
 def list_challenges(
     db: Session,
-    category: Optional[str] = None,
-    difficulty: Optional[str] = None,
-    search: Optional[str] = None,
-    tag: Optional[str] = None,
-    lab_category: Optional[str] = None,
-    lab_slug: Optional[str] = None,
+    category: str | None = None,
+    difficulty: str | None = None,
+    search: str | None = None,
+    tag: str | None = None,
+    lab_category: str | None = None,
+    lab_slug: str | None = None,
 ) -> list[Challenge]:
     from app.models.lab_template import LabTemplate
     q = db.query(Challenge).filter(
@@ -68,16 +73,16 @@ def submit_flag(
     challenge_id: int,
     submitted_value: str,
     user_id: int,
-    team_id: Optional[int],
-    event_id: Optional[int],
-    ip_address: Optional[str],
+    team_id: int | None,
+    event_id: int | None,
+    ip_address: str | None,
 ) -> ValidationResult:
     challenge = get_challenge_or_404(db, challenge_id)
 
     if check_already_solved(db, challenge_id, user_id):
         return ValidationResult(correct=True, already_solved=True)
 
-    deployment: Optional[Deployment] = None
+    deployment: Deployment | None = None
     if any(f.flag_type == "dynamic" for f in challenge.flags):
         deployment = (
             db.query(Deployment)
@@ -113,7 +118,7 @@ def submit_flag(
         is_first_blood=is_first,
         points_awarded=points,
         ip_address=ip_address,
-        submitted_at=datetime.now(timezone.utc),
+        submitted_at=datetime.now(UTC),
     )
     db.add(submission)
     db.commit()
@@ -155,7 +160,7 @@ def get_unlocked_hint_ids(db: Session, user_id: int, challenge_id: int) -> set[i
     return {r.hint_id for r in rows}
 
 
-def get_solve_count(db: Session, challenge_id: int, event_id: Optional[int] = None) -> int:
+def get_solve_count(db: Session, challenge_id: int, event_id: int | None = None) -> int:
     q = db.query(func.count(ChallengeSubmission.id)).filter(
         ChallengeSubmission.challenge_id == challenge_id,
         ChallengeSubmission.is_correct.is_(True),

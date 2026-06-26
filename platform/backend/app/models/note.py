@@ -5,9 +5,9 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Any, Optional
 
 from sqlalchemy import JSON, DateTime, ForeignKey, String, Text, func
-from app.core.db_types import EnumCol as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from app.core.db_types import EnumCol as SQLEnum
 from app.database import Base
 
 if TYPE_CHECKING:
@@ -30,16 +30,16 @@ class Note(Base):
     title: Mapped[str] = mapped_column(String(255), nullable=False)
     content: Mapped[str] = mapped_column(Text, nullable=False, default="")
     tags: Mapped[list[Any]] = mapped_column(JSON, nullable=False, default=list)
-    lab_template_id: Mapped[Optional[int]] = mapped_column(
+    lab_template_id: Mapped[int | None] = mapped_column(
         ForeignKey("lab_templates.id"), nullable=True, index=True
     )
-    challenge_id: Mapped[Optional[int]] = mapped_column(
+    challenge_id: Mapped[int | None] = mapped_column(
         ForeignKey("challenges.id"), nullable=True, index=True
     )
     visibility: Mapped[NoteVisibility] = mapped_column(
         SQLEnum(NoteVisibility), nullable=False, default=NoteVisibility.PRIVATE
     )
-    team_id: Mapped[Optional[int]] = mapped_column(
+    team_id: Mapped[int | None] = mapped_column(
         ForeignKey("teams.id"), nullable=True, index=True
     )
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

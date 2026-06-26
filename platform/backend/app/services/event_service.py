@@ -1,7 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
-from datetime import datetime, timezone
-from typing import Optional
+from datetime import UTC, datetime
 
 from sqlalchemy import func
 from sqlalchemy.orm import Session
@@ -9,12 +8,14 @@ from sqlalchemy.orm import Session
 from app.core.exceptions import bad_request, conflict, not_found
 from app.models.challenge import Challenge, ChallengeSubmission
 from app.models.ctf_event import (
-    CtfEvent, EventChallengeMap, EventRegistration, EventStatus, EventVisibility,
+    CtfEvent,
+    EventChallengeMap,
+    EventRegistration,
+    EventStatus,
+    EventVisibility,
 )
-from app.models.scoring import ScoreTransaction
 from app.models.team import Team, TeamMember
 from app.services.scoring_service import compute_dynamic_points
-
 
 # ── Read ──────────────────────────────────────────────────────────────────────
 
@@ -53,8 +54,8 @@ def get_visible_event_or_404(db: Session, slug: str, user) -> CtfEvent:
 
 def list_events(
     db: Session,
-    status: Optional[str] = None,
-    visibility: Optional[str] = None,
+    status: str | None = None,
+    visibility: str | None = None,
     include_private: bool = False,
 ) -> list[CtfEvent]:
     q = db.query(CtfEvent).filter(CtfEvent.status != EventStatus.ARCHIVED)
@@ -97,8 +98,8 @@ def add_challenge(
     db: Session,
     event: CtfEvent,
     challenge_id: int,
-    points_override: Optional[int] = None,
-    released_at: Optional[datetime] = None,
+    points_override: int | None = None,
+    released_at: datetime | None = None,
 ) -> EventChallengeMap:
     challenge = db.get(Challenge, challenge_id)
     if challenge is None or challenge.is_archived:
@@ -145,9 +146,9 @@ def remove_challenge(db: Session, event: CtfEvent, challenge_id: int) -> None:
 def get_event_challenges(
     db: Session,
     event: CtfEvent,
-    user_id: Optional[int] = None,
+    user_id: int | None = None,
 ) -> list[dict]:
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     maps = db.query(EventChallengeMap).filter(
         EventChallengeMap.event_id == event.id
     ).all()
@@ -257,4 +258,4 @@ def unregister_team(db: Session, event: CtfEvent, team_id: int) -> None:
 def is_scoreboard_frozen(event: CtfEvent) -> bool:
     if event.freeze_scoreboard_at is None:
         return False
-    return datetime.now(timezone.utc) >= event.freeze_scoreboard_at
+    return datetime.now(UTC) >= event.freeze_scoreboard_at

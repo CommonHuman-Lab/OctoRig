@@ -1,7 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
-from datetime import datetime, timezone
-from typing import Optional
+from datetime import UTC, datetime
 
 from sqlalchemy import Enum as _SAEnum
 
@@ -15,7 +14,7 @@ def EnumCol(enum_class, **kwargs):
     )
 
 
-def ensure_aware(dt: Optional[datetime]) -> Optional[datetime]:
+def ensure_aware(dt: datetime | None) -> datetime | None:
     """Normalize a DateTime(timezone=True) value to a UTC-aware datetime.
 
     Postgres reliably round-trips tzinfo for timezone-aware columns, but
@@ -26,4 +25,4 @@ def ensure_aware(dt: Optional[datetime]) -> Optional[datetime]:
     """
     if dt is None or dt.tzinfo is not None:
         return dt
-    return dt.replace(tzinfo=timezone.utc)
+    return dt.replace(tzinfo=UTC)

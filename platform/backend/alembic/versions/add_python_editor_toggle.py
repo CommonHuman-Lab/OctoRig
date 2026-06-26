@@ -5,13 +5,13 @@
 Revision ID: add_python_editor_toggle
 Revises: add_site_settings
 """
-from typing import Union
 
 import sqlalchemy as sa
+
 from alembic import op
 
 revision: str = "add_python_editor_toggle"
-down_revision: Union[str, None] = "add_site_settings"
+down_revision: str | None = "add_site_settings"
 branch_labels = None
 depends_on = None
 

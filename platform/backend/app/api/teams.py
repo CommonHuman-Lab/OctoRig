@@ -1,6 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
-from typing import Optional
 
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
@@ -11,7 +10,6 @@ from app.api.deps import (
     get_current_user_or_api_key,
     get_team_membership,
     get_team_or_404,
-    require_team_role,
 )
 from app.core.exceptions import forbidden_exception, not_found
 from app.core.permissions import (
@@ -67,7 +65,7 @@ def create_team(
     payload: TeamCreate,
     current_user: User = Depends(get_current_user_or_api_key),
     db: Session = Depends(get_db),
-    ip: Optional[str] = Depends(get_client_ip),
+    ip: str | None = Depends(get_client_ip),
 ) -> TeamWithRole:
     team = team_service.create_team(db, current_user, payload.name, payload.description)
     audit_service.write_audit(
@@ -89,7 +87,7 @@ def get_team(
     team: Team = Depends(get_team_or_404),
     current_user: User = Depends(get_current_user_or_api_key),
     db: Session = Depends(get_db),
-    membership: Optional[TeamMember] = Depends(get_team_membership),
+    membership: TeamMember | None = Depends(get_team_membership),
 ) -> TeamWithRole:
     if membership is None and not is_privileged(current_user, db):
         raise not_found("Team")
@@ -108,8 +106,8 @@ def update_team(
     team: Team = Depends(get_team_or_404),
     current_user: User = Depends(get_current_user_or_api_key),
     db: Session = Depends(get_db),
-    membership: Optional[TeamMember] = Depends(get_team_membership),
-    ip: Optional[str] = Depends(get_client_ip),
+    membership: TeamMember | None = Depends(get_team_membership),
+    ip: str | None = Depends(get_client_ip),
 ) -> TeamResponse:
     if membership is None and not is_privileged(current_user, db):
         raise not_found("Team")
@@ -128,8 +126,8 @@ def delete_team(
     team: Team = Depends(get_team_or_404),
     current_user: User = Depends(get_current_user_or_api_key),
     db: Session = Depends(get_db),
-    membership: Optional[TeamMember] = Depends(get_team_membership),
-    ip: Optional[str] = Depends(get_client_ip),
+    membership: TeamMember | None = Depends(get_team_membership),
+    ip: str | None = Depends(get_client_ip),
 ) -> None:
     if membership is None and not is_privileged(current_user, db):
         raise not_found("Team")
@@ -150,7 +148,7 @@ def list_members(
     team: Team = Depends(get_team_or_404),
     current_user: User = Depends(get_current_user_or_api_key),
     db: Session = Depends(get_db),
-    membership: Optional[TeamMember] = Depends(get_team_membership),
+    membership: TeamMember | None = Depends(get_team_membership),
 ) -> list[MemberResponse]:
     if membership is None and not is_privileged(current_user, db):
         raise not_found("Team")
@@ -164,8 +162,8 @@ def invite_member(
     team: Team = Depends(get_team_or_404),
     current_user: User = Depends(get_current_user_or_api_key),
     db: Session = Depends(get_db),
-    membership: Optional[TeamMember] = Depends(get_team_membership),
-    ip: Optional[str] = Depends(get_client_ip),
+    membership: TeamMember | None = Depends(get_team_membership),
+    ip: str | None = Depends(get_client_ip),
 ) -> InvitationResponse:
     if membership is None and not is_privileged(current_user, db):
         raise not_found("Team")
@@ -186,8 +184,8 @@ def remove_member(
     team: Team = Depends(get_team_or_404),
     current_user: User = Depends(get_current_user_or_api_key),
     db: Session = Depends(get_db),
-    membership: Optional[TeamMember] = Depends(get_team_membership),
-    ip: Optional[str] = Depends(get_client_ip),
+    membership: TeamMember | None = Depends(get_team_membership),
+    ip: str | None = Depends(get_client_ip),
 ) -> None:
     # A user can remove themselves regardless of role
     if user_id != current_user.id:
@@ -210,8 +208,8 @@ def change_member_role(
     team: Team = Depends(get_team_or_404),
     current_user: User = Depends(get_current_user_or_api_key),
     db: Session = Depends(get_db),
-    membership: Optional[TeamMember] = Depends(get_team_membership),
-    ip: Optional[str] = Depends(get_client_ip),
+    membership: TeamMember | None = Depends(get_team_membership),
+    ip: str | None = Depends(get_client_ip),
 ) -> MemberResponse:
     if membership is None and not is_privileged(current_user, db):
         raise not_found("Team")
@@ -237,8 +235,8 @@ def transfer_ownership(
     team: Team = Depends(get_team_or_404),
     current_user: User = Depends(get_current_user_or_api_key),
     db: Session = Depends(get_db),
-    membership: Optional[TeamMember] = Depends(get_team_membership),
-    ip: Optional[str] = Depends(get_client_ip),
+    membership: TeamMember | None = Depends(get_team_membership),
+    ip: str | None = Depends(get_client_ip),
 ) -> None:
     if membership is None and not is_privileged(current_user, db):
         raise not_found("Team")
@@ -277,7 +275,6 @@ def decline_invitation(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> None:
-    from datetime import datetime, timezone
     inv = db.query(TeamInvitation).filter(TeamInvitation.token == token).first()
     if inv is None or inv.accepted_at is not None:
         return
@@ -290,7 +287,7 @@ def accept_invitation(
     token: str,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
-    ip: Optional[str] = Depends(get_client_ip),
+    ip: str | None = Depends(get_client_ip),
 ) -> MemberResponse:
     membership = team_service.accept_invitation(db, token, current_user)
     audit_service.write_audit(

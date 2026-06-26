@@ -1,7 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
 import re
-from typing import Optional
 
 from fastapi import APIRouter, Depends, Query
 from fastapi.responses import Response
@@ -21,10 +20,10 @@ class NoteResponse(BaseModel):
     title: str
     content: str
     tags: list[str]
-    lab_template_id: Optional[int]
-    challenge_id: Optional[int]
+    lab_template_id: int | None
+    challenge_id: int | None
     visibility: str
-    team_id: Optional[int]
+    team_id: int | None
     owner_id: int
     created_at: str
     updated_at: str
@@ -50,20 +49,20 @@ class NoteCreateRequest(BaseModel):
     title: str
     content: str = ""
     tags: list[str] = []
-    lab_template_id: Optional[int] = None
-    challenge_id: Optional[int] = None
+    lab_template_id: int | None = None
+    challenge_id: int | None = None
     visibility: str = "private"
-    team_id: Optional[int] = None
+    team_id: int | None = None
 
 
 class NoteUpdateRequest(BaseModel):
-    title: Optional[str] = None
-    content: Optional[str] = None
-    tags: Optional[list[str]] = None
-    lab_template_id: Optional[int] = None
-    challenge_id: Optional[int] = None
-    visibility: Optional[str] = None
-    team_id: Optional[int] = None
+    title: str | None = None
+    content: str | None = None
+    tags: list[str] | None = None
+    lab_template_id: int | None = None
+    challenge_id: int | None = None
+    visibility: str | None = None
+    team_id: int | None = None
 
 
 def _slugify(text: str) -> str:
@@ -73,10 +72,10 @@ def _slugify(text: str) -> str:
 
 @router.get("", response_model=list[NoteResponse])
 def get_notes(
-    lab_template_id: Optional[int] = None,
-    challenge_id: Optional[int] = None,
-    tag: Optional[str] = None,
-    q: Optional[str] = Query(None),
+    lab_template_id: int | None = None,
+    challenge_id: int | None = None,
+    tag: str | None = None,
+    q: str | None = Query(None),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> list[NoteResponse]:

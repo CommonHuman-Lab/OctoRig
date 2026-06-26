@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
-from typing import Any, Optional
+from typing import Any
 
 from sqlalchemy.orm import Session
 
@@ -58,11 +58,11 @@ MARKETPLACE_UNINSTALLED = "marketplace.uninstalled"
 def write_audit(
     db: Session,
     action: str,
-    user_id: Optional[int] = None,
-    team_id: Optional[int] = None,
-    deployment_id: Optional[int] = None,
-    detail: Optional[dict[str, Any]] = None,
-    ip: Optional[str] = None,
+    user_id: int | None = None,
+    team_id: int | None = None,
+    deployment_id: int | None = None,
+    detail: dict[str, Any] | None = None,
+    ip: str | None = None,
 ) -> AuditLog:
     entry = AuditLog(
         action=action,

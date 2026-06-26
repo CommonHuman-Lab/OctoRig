@@ -1,25 +1,32 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
 import re
-from datetime import datetime, timezone
-from typing import Any, Optional
+from datetime import UTC, datetime
+from typing import Any
 
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user
 from app.core.exceptions import bad_request, forbidden_exception, not_found
 from app.database import get_db
 from app.models.challenge import (
-    Challenge, ChallengeFlag, ChallengeHint,
-    ChallengeType, ChallengeDifficulty, FlagType,
+    Challenge,
+    ChallengeDifficulty,
+    ChallengeFlag,
+    ChallengeHint,
+    ChallengeType,
+    FlagType,
 )
 from app.models.content import (
-    ContentReview, ContentStatus, ContentSubmission, ContentType, ReviewVerdict,
+    ContentReview,
+    ContentStatus,
+    ContentSubmission,
+    ContentType,
+    ReviewVerdict,
 )
 from app.models.user import User
 from app.services import audit_service
-
 
 # ── Slug helpers ─────────────────────────────────────────────────────────────
 
@@ -110,9 +117,9 @@ def get_submission_or_404(db: Session, submission_id: int) -> ContentSubmission:
 
 def list_submissions(
     db: Session,
-    author_id: Optional[int] = None,
-    status: Optional[str] = None,
-    statuses: Optional[list[str]] = None,
+    author_id: int | None = None,
+    status: str | None = None,
+    statuses: list[str] | None = None,
 ) -> list[ContentSubmission]:
     q = db.query(ContentSubmission)
     if author_id is not None:
@@ -127,8 +134,8 @@ def list_submissions(
 def update_submission(
     db: Session,
     submission: ContentSubmission,
-    title: Optional[str],
-    body: Optional[dict[str, Any]],
+    title: str | None,
+    body: dict[str, Any] | None,
 ) -> ContentSubmission:
     if submission.status not in (ContentStatus.DRAFT, ContentStatus.REJECTED):
         raise bad_request("Can only edit drafts or rejected submissions")
@@ -136,7 +143,7 @@ def update_submission(
         submission.title = title
     if body is not None:
         submission.body = body
-    submission.updated_at = datetime.now(timezone.utc)
+    submission.updated_at = datetime.now(UTC)
     db.commit()
     db.refresh(submission)
     return submission
@@ -150,7 +157,7 @@ def submit_for_review(db: Session, submission: ContentSubmission) -> ContentSubm
         if errors:
             raise bad_request("Body validation failed: " + "; ".join(errors))
     submission.status = ContentStatus.PENDING_REVIEW
-    submission.updated_at = datetime.now(timezone.utc)
+    submission.updated_at = datetime.now(UTC)
     db.commit()
     db.refresh(submission)
     return submission
@@ -163,7 +170,7 @@ def claim_review(db: Session, submission: ContentSubmission, reviewer_id: int) -
         raise bad_request("Submission is not pending review")
     submission.status = ContentStatus.IN_REVIEW
     submission.reviewer_id = reviewer_id
-    submission.updated_at = datetime.now(timezone.utc)
+    submission.updated_at = datetime.now(UTC)
     db.commit()
     db.refresh(submission)
     return submission
@@ -174,7 +181,7 @@ def record_review(
     submission: ContentSubmission,
     reviewer_id: int,
     verdict: ReviewVerdict,
-    comment: Optional[str],
+    comment: str | None,
 ) -> ContentReview:
     if submission.status not in (ContentStatus.IN_REVIEW,):
         raise bad_request("Submission is not in review")
@@ -195,7 +202,7 @@ def record_review(
     elif verdict == ReviewVerdict.NEEDS_CHANGES:
         submission.status = ContentStatus.DRAFT
 
-    submission.updated_at = datetime.now(timezone.utc)
+    submission.updated_at = datetime.now(UTC)
     db.commit()
     db.refresh(review)
     return review
@@ -261,7 +268,7 @@ def publish_submission(db: Session, submission: ContentSubmission, publisher_id:
             ))
 
     submission.status = ContentStatus.PUBLISHED
-    submission.updated_at = datetime.now(timezone.utc)
+    submission.updated_at = datetime.now(UTC)
     db.commit()
     audit_service.write_audit(db, audit_service.CONTENT_PUBLISHED, user_id=publisher_id,
                               detail={"id": submission.id, "slug": slug})

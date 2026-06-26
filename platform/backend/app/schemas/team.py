@@ -1,7 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
 from datetime import datetime
-from typing import Optional
 
 from pydantic import BaseModel, field_validator
 
@@ -11,7 +10,7 @@ from app.schemas.base import ORMModel
 
 class TeamCreate(BaseModel):
     name: str
-    description: Optional[str] = None
+    description: str | None = None
 
     @field_validator("name")
     @classmethod
@@ -22,15 +21,15 @@ class TeamCreate(BaseModel):
 
 
 class TeamUpdate(BaseModel):
-    name: Optional[str] = None
-    description: Optional[str] = None
+    name: str | None = None
+    description: str | None = None
 
 
 class TeamResponse(ORMModel):
     id: int
     name: str
     slug: str
-    description: Optional[str]
+    description: str | None
     is_personal: bool
     created_by_id: int
     created_at: datetime
@@ -65,7 +64,7 @@ class InvitationResponse(ORMModel):
     role: TeamRole
     token: str
     expires_at: datetime
-    accepted_at: Optional[datetime]
+    accepted_at: datetime | None
     created_at: datetime
 
 

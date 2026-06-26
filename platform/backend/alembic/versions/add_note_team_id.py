@@ -6,8 +6,9 @@ must target one specific team rather than "any of my teammates".
 Revision ID: add_note_team_id
 Revises: add_notes
 """
-from alembic import op
 import sqlalchemy as sa
+
+from alembic import op
 
 revision: str = "add_note_team_id"
 down_revision: str = "add_notes"

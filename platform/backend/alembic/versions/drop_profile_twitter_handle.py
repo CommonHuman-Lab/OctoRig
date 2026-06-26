@@ -6,13 +6,13 @@ Revision ID: drop_profile_twitter_handle
 Revises: drop_lab_template_static_network
 Create Date: 2026-06-19
 """
-from typing import Union
 
 import sqlalchemy as sa
+
 from alembic import op
 
 revision: str = "drop_profile_twitter_handle"
-down_revision: Union[str, None] = "drop_lab_template_static_network"
+down_revision: str | None = "drop_lab_template_static_network"
 branch_labels = None
 depends_on = None
 

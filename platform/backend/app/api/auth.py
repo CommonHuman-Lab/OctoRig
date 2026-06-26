@@ -1,16 +1,20 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 from fastapi import APIRouter, Depends, Request, Response
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
-from pydantic import BaseModel
-
 from app.api.deps import get_client_ip, get_current_user, get_current_user_or_api_key
-from app.core.db_helpers import raise_if_exists
 from app.config import settings
-from app.core.exceptions import bad_request, credentials_exception, forbidden_exception, too_many_requests
+from app.core.db_helpers import raise_if_exists
+from app.core.exceptions import (
+    bad_request,
+    credentials_exception,
+    forbidden_exception,
+    too_many_requests,
+)
 from app.core.limiter import limiter
 from app.core.security import (
     create_access_token,
@@ -53,7 +57,7 @@ def _clear_refresh_cookie(response: Response) -> None:
 def _issue_refresh_token(db: Session, user_id: int) -> str:
     """Generate, store (hashed), and return a plain refresh token."""
     raw = generate_opaque_token()
-    expires = datetime.now(timezone.utc) + timedelta(days=settings.refresh_token_expire_days)
+    expires = datetime.now(UTC) + timedelta(days=settings.refresh_token_expire_days)
     db.add(RefreshToken(user_id=user_id, token_hash=hash_token(raw), expires_at=expires))
     db.commit()
     return raw
@@ -63,7 +67,7 @@ def _purge_expired(db: Session, user_id: int) -> None:
     """Delete expired (not just revoked) tokens for this user to keep the table lean."""
     db.query(RefreshToken).filter(
         RefreshToken.user_id == user_id,
-        RefreshToken.expires_at < datetime.now(timezone.utc),
+        RefreshToken.expires_at < datetime.now(UTC),
     ).delete(synchronize_session=False)
     db.commit()
 
@@ -98,7 +102,7 @@ def login(
         raise credentials_exception
 
     login_lockout_service.reset(user)
-    user.last_login_at = datetime.now(timezone.utc)
+    user.last_login_at = datetime.now(UTC)
     db.commit()
 
     write_audit(db, action=audit_service.AUTH_LOGIN, user_id=user.id, ip=ip)
@@ -133,8 +137,8 @@ def refresh(
     token_hash = hash_token(raw)
     rt = db.query(RefreshToken).filter_by(token_hash=token_hash).first()
 
-    now = datetime.now(timezone.utc)
-    if rt is None or rt.revoked or rt.expires_at.replace(tzinfo=timezone.utc) < now:
+    now = datetime.now(UTC)
+    if rt is None or rt.revoked or rt.expires_at.replace(tzinfo=UTC) < now:
         _clear_refresh_cookie(response)
         raise credentials_exception
 

@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any
 
 from pydantic import BaseModel, model_validator
 
@@ -10,9 +10,9 @@ from app.schemas.base import ORMModel
 
 
 class DeploymentCreate(BaseModel):
-    lab_template_id: Optional[int] = None
-    challenge_id: Optional[int] = None
-    team_id: Optional[int] = None
+    lab_template_id: int | None = None
+    challenge_id: int | None = None
+    team_id: int | None = None
     visibility: DeploymentVisibility = DeploymentVisibility.PRIVATE
     ttl_hours: int = 2  # 1–8 hours
 
@@ -27,22 +27,22 @@ class DeploymentResponse(ORMModel):
     id: int
     lab_template_id: int
     started_by_id: int
-    team_id: Optional[int]
-    challenge_id: Optional[int] = None
-    instance_for_user_id: Optional[int] = None
-    auto_destroy_at: Optional[datetime] = None
-    dynamic_flag: Optional[str] = None
+    team_id: int | None
+    challenge_id: int | None = None
+    instance_for_user_id: int | None = None
+    auto_destroy_at: datetime | None = None
+    dynamic_flag: str | None = None
     status: DeploymentStatus
     visibility: DeploymentVisibility
     container_names: list[str]
     container_ids: dict[str, Any]
-    subnet: Optional[str] = None
-    app_ip: Optional[str] = None
-    network_name: Optional[str] = None
+    subnet: str | None = None
+    app_ip: str | None = None
+    network_name: str | None = None
     access_info: list[dict[str, str]] = []
-    error_message: Optional[str]
-    started_at: Optional[datetime]
-    stopped_at: Optional[datetime]
+    error_message: str | None
+    started_at: datetime | None
+    stopped_at: datetime | None
     created_at: datetime
 
 
@@ -51,4 +51,4 @@ class DeploymentWithTemplate(DeploymentResponse):
     lab_slug: str
     lab_category: str
     started_by_username: str
-    team_name: Optional[str] = None
+    team_name: str | None = None

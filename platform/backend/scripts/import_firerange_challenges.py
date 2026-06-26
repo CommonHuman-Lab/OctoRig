@@ -31,7 +31,7 @@ sys.path.insert(0, str(_BACKEND))         # app.* imports
 sys.path.insert(0, str(_REPO_ROOT))       # labs.* imports (used below as direct path import)
 
 # ── Registry imports (absolute path, no package __init__ needed) ──────────────
-import importlib.util as _ilu
+import importlib.util as _ilu  # noqa: E402
 
 
 def _load_registry(relative: str) -> list[dict]:
@@ -245,7 +245,14 @@ def build_vaultgate(raw: list[dict]) -> list[dict]:
 
 def _import_to_db(records: list[dict], dry_run: bool, reset_prefix: str | None) -> None:
     from app.database import SessionLocal
-    from app.models.challenge import Challenge, ChallengeFlag, ChallengeHint, FlagType, ChallengeType, ChallengeDifficulty
+    from app.models.challenge import (
+        Challenge,
+        ChallengeDifficulty,
+        ChallengeFlag,
+        ChallengeHint,
+        ChallengeType,
+        FlagType,
+    )
 
     db = SessionLocal()
     try:

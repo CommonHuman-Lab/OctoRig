@@ -6,13 +6,13 @@ Revision ID: drop_admin_superuser_flags
 Revises: add_platform_roles
 Create Date: 2026-06-18
 """
-from typing import Union
 
 import sqlalchemy as sa
+
 from alembic import op
 
 revision: str = "drop_admin_superuser_flags"
-down_revision: Union[str, None] = "add_platform_roles"
+down_revision: str | None = "add_platform_roles"
 branch_labels = None
 depends_on = None
 

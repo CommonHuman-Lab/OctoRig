@@ -1,20 +1,26 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any
 
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_current_user, get_db, require_admin
+from app.api.deps import get_current_user, get_db
 from app.core.permissions import is_privileged
 from app.models.content import ContentStatus, ContentType, ReviewVerdict
 from app.models.user import User
 from app.services.content_service import (
-    claim_review, create_submission, get_submission_or_404,
-    list_submissions, publish_submission, record_review,
-    require_platform_role, submit_for_review, update_submission,
+    claim_review,
+    create_submission,
+    get_submission_or_404,
+    list_submissions,
+    publish_submission,
+    record_review,
+    require_platform_role,
+    submit_for_review,
+    update_submission,
 )
 
 router = APIRouter(prefix="/content", tags=["content"])
@@ -25,12 +31,12 @@ router = APIRouter(prefix="/content", tags=["content"])
 class SubmissionOut(BaseModel):
     id: int
     author_id: int
-    author_username: Optional[str] = None
+    author_username: str | None = None
     content_type: ContentType
     title: str
     body: dict[str, Any]
     status: ContentStatus
-    reviewer_id: Optional[int]
+    reviewer_id: int | None
     created_at: datetime
     updated_at: datetime
 
@@ -59,13 +65,13 @@ class CreateRequest(BaseModel):
 
 
 class UpdateRequest(BaseModel):
-    title: Optional[str] = None
-    body: Optional[dict[str, Any]] = None
+    title: str | None = None
+    body: dict[str, Any] | None = None
 
 
 class ReviewRequest(BaseModel):
     verdict: ReviewVerdict
-    comment: Optional[str] = None
+    comment: str | None = None
 
 
 # ── Creator endpoints ─────────────────────────────────────────────────────────
@@ -81,7 +87,7 @@ def create_endpoint(
 
 @router.get("/mine", response_model=list[SubmissionOut])
 def list_mine(
-    status: Optional[str] = None,
+    status: str | None = None,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> list[SubmissionOut]:

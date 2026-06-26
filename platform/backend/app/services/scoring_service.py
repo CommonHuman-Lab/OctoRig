@@ -2,8 +2,8 @@
 # Copyright (c) 2026 CommonHuman-Lab
 import json
 import math
-from datetime import datetime, timezone
-from typing import Any, Optional
+from datetime import UTC, datetime
+from typing import Any
 
 import redis as redis_lib
 from sqlalchemy import func
@@ -15,7 +15,7 @@ from app.models.challenge import ChallengeSubmission
 from app.models.scoring import ScoreTransaction, ScoreTransactionSource
 from app.models.user import User
 
-_redis: Optional[redis_lib.Redis] = None
+_redis: redis_lib.Redis | None = None
 
 
 def _get_redis() -> redis_lib.Redis:
@@ -30,9 +30,9 @@ def award_points(
     user_id: int,
     points: int,
     source_type: ScoreTransactionSource,
-    source_id: Optional[int] = None,
-    team_id: Optional[int] = None,
-    event_id: Optional[int] = None,
+    source_id: int | None = None,
+    team_id: int | None = None,
+    event_id: int | None = None,
 ) -> ScoreTransaction:
     tx = ScoreTransaction(
         user_id=user_id,
@@ -53,9 +53,9 @@ def deduct_hint_cost(
     user_id: int,
     cost: int,
     hint_id: int,
-    team_id: Optional[int] = None,
-    event_id: Optional[int] = None,
-) -> Optional[ScoreTransaction]:
+    team_id: int | None = None,
+    event_id: int | None = None,
+) -> ScoreTransaction | None:
     if cost <= 0:
         return None
     return award_points(
@@ -69,7 +69,7 @@ def deduct_hint_cost(
     )
 
 
-def get_user_score(db: Session, user_id: int, event_id: Optional[int] = None) -> int:
+def get_user_score(db: Session, user_id: int, event_id: int | None = None) -> int:
     q = db.query(func.coalesce(func.sum(ScoreTransaction.points), 0)).filter(
         ScoreTransaction.user_id == user_id
     )
@@ -82,8 +82,8 @@ def get_global_scoreboard(db: Session, limit: int = 100) -> list[dict[str, Any]]
     from app.services.settings_service import get_settings
     site = get_settings(db)
     freeze_at = site.scoreboard_frozen_at
-    now = datetime.now(timezone.utc)
-    frozen = freeze_at is not None and freeze_at.replace(tzinfo=timezone.utc) <= now
+    now = datetime.now(UTC)
+    frozen = freeze_at is not None and freeze_at.replace(tzinfo=UTC) <= now
 
     cache_key = f"scoreboard:global:{limit}:{'frozen' if frozen else 'live'}"
     cached = _get_redis().get(cache_key)
@@ -199,7 +199,7 @@ def compute_dynamic_points(base: int, solve_count: int, decay_factor: float = 0.
     return max(math.floor(decayed), math.floor(base * 0.1))
 
 
-def _invalidate_scoreboard_cache(event_id: Optional[int]) -> None:
+def _invalidate_scoreboard_cache(event_id: int | None) -> None:
     r = _get_redis()
     if event_id is not None:
         r.delete(f"scoreboard:event:{event_id}")

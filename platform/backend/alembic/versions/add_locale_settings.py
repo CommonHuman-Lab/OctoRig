@@ -6,13 +6,13 @@ Revision ID: add_locale_settings
 Revises: add_note_team_id
 Create Date: 2026-06-23
 """
-from typing import Union
 
 import sqlalchemy as sa
+
 from alembic import op
 
 revision: str = "add_locale_settings"
-down_revision: Union[str, None] = "add_note_team_id"
+down_revision: str | None = "add_note_team_id"
 branch_labels = None
 depends_on = None
 

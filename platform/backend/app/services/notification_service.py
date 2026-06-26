@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
-from datetime import datetime, timezone
-from typing import Any, Optional
+from datetime import UTC, datetime
+from typing import Any
 
 from sqlalchemy.orm import Session
 
@@ -13,8 +13,8 @@ def create_notification(
     user_id: int,
     type: str,
     title: str,
-    body: Optional[str] = None,
-    data: Optional[dict[str, Any]] = None,
+    body: str | None = None,
+    data: dict[str, Any] | None = None,
 ) -> Notification:
     prefs = _get_prefs(db, user_id)
     if prefs.event_filter.get(type) is False:
@@ -47,17 +47,17 @@ def list_notifications(
     return q.order_by(Notification.created_at.desc()).limit(limit).all()
 
 
-def mark_read(db: Session, user_id: int, notification_id: int) -> Optional[Notification]:
+def mark_read(db: Session, user_id: int, notification_id: int) -> Notification | None:
     n = db.get(Notification, notification_id)
     if n is None or n.user_id != user_id:
         return None
-    n.read_at = datetime.now(timezone.utc)
+    n.read_at = datetime.now(UTC)
     db.commit()
     return n
 
 
 def mark_all_read(db: Session, user_id: int) -> int:
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     updated = (
         db.query(Notification)
         .filter(Notification.user_id == user_id, Notification.read_at.is_(None))
@@ -99,11 +99,11 @@ def get_preferences(db: Session, user_id: int) -> NotificationPreference:
 def update_preferences(
     db: Session,
     user_id: int,
-    in_app: Optional[bool] = None,
-    email: Optional[bool] = None,
-    discord_webhook_url: Optional[str] = None,
-    slack_webhook_url: Optional[str] = None,
-    event_filter: Optional[dict[str, Any]] = None,
+    in_app: bool | None = None,
+    email: bool | None = None,
+    discord_webhook_url: str | None = None,
+    slack_webhook_url: str | None = None,
+    event_filter: dict[str, Any] | None = None,
 ) -> NotificationPreference:
     prefs = _get_prefs(db, user_id)
     if in_app is not None:

@@ -10,7 +10,12 @@ DB, no real network, no real Docker, no real Redis — see tests/conftest.py.
 import os
 
 from app.models.challenge import (
-    Challenge, ChallengeDifficulty, ChallengeFlag, ChallengeHint, ChallengeType, FlagType,
+    Challenge,
+    ChallengeDifficulty,
+    ChallengeFlag,
+    ChallengeHint,
+    ChallengeType,
+    FlagType,
 )
 
 ADMIN_USERNAME = os.environ["ADMIN_USERNAME"]

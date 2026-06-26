@@ -10,7 +10,7 @@ slightly different (and collision-prone) logic.
 """
 import copy
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any
 
 from sqlalchemy.orm import Session
 
@@ -26,10 +26,10 @@ def prepare_deployment(
     lab_def: LabDefinition,
     *,
     started_by_id: int,
-    team_id: Optional[int] = None,
-    challenge_id: Optional[int] = None,
-    instance_for_user_id: Optional[int] = None,
-    auto_destroy_at: Optional[datetime] = None,
+    team_id: int | None = None,
+    challenge_id: int | None = None,
+    instance_for_user_id: int | None = None,
+    auto_destroy_at: datetime | None = None,
     visibility: DeploymentVisibility = DeploymentVisibility.PRIVATE,
 ) -> Deployment:
     """Builds and flushes a new Deployment with a unique subnet/IP and

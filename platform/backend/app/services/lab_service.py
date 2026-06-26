@@ -9,22 +9,20 @@ after the HTTP response has been sent. They must open their own DB session.
 import os
 import time
 import uuid
-from datetime import datetime, timezone
-from typing import Optional
+from datetime import UTC, datetime
 
 import httpx
 from sqlalchemy.orm import Session
 
 from app.config import settings
 from app.database import SessionLocal
-from app.labs.registry import LAB_REGISTRY, LabDefinition, REGISTRY_BY_ID, STANDALONE_CHALLENGES
+from app.labs.registry import LAB_REGISTRY, REGISTRY_BY_ID, STANDALONE_CHALLENGES, LabDefinition
 from app.models.deployment import Deployment, DeploymentStatus
 from app.models.lab_template import LabTemplate
 from app.services.audit_service import write_audit
 from app.services.deployment_provisioning import prepare_deployment
 from app.services.docker_runtime import docker_service
 from app.ws.manager import emit as ws_emit
-
 
 # --- Registry sync ---
 
@@ -171,9 +169,9 @@ def get_active_deployment(
     db: Session,
     lab_template_id: int,
     *,
-    started_by_id: Optional[int] = None,
-    team_id: Optional[int] = None,
-) -> Optional[Deployment]:
+    started_by_id: int | None = None,
+    team_id: int | None = None,
+) -> Deployment | None:
     """Active deployment lookup, scoped to a user or team when given.
 
     Different users/teams may now run the same lab template concurrently —
@@ -253,7 +251,7 @@ def _do_start(db: Session, deployment: Deployment, template: LabTemplate, lab_de
     )
 
     # 5. Generate dynamic flag if this is a challenge-linked deployment
-    dynamic_flag: Optional[str] = None
+    dynamic_flag: str | None = None
     if deployment.challenge_id is not None:
         challenge_slug = _get_challenge_slug(db, deployment.challenge_id)
         dynamic_flag = f"FLAG{{{challenge_slug}_{uuid.uuid4().hex[:12]}}}"
@@ -312,7 +310,7 @@ def _do_start(db: Session, deployment: Deployment, template: LabTemplate, lab_de
     # 9. Mark running
     deployment.status = DeploymentStatus.RUNNING
     deployment.container_ids = container_ids
-    deployment.started_at = datetime.now(timezone.utc)
+    deployment.started_at = datetime.now(UTC)
     db.commit()
 
     ws_emit("deployment.update", {
@@ -357,7 +355,7 @@ def stop_lab(deployment_id: int, user_id: int, remove_volumes: bool = False) -> 
                 docker_service.remove_volume(vol)
 
         deployment.status = DeploymentStatus.STOPPED
-        deployment.stopped_at = datetime.now(timezone.utc)
+        deployment.stopped_at = datetime.now(UTC)
         db.commit()
 
         ws_emit("deployment.update", {

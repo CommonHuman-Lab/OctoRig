@@ -1,7 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
-from datetime import datetime, timezone
-from typing import Optional
+from datetime import UTC, datetime
 
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
@@ -18,8 +17,8 @@ def _user_team_ids(db: Session, user_id: int) -> list[int]:
 
 
 def _resolve_team_id(
-    db: Session, user: User, visibility: NoteVisibility, team_id: Optional[int]
-) -> Optional[int]:
+    db: Session, user: User, visibility: NoteVisibility, team_id: int | None
+) -> int | None:
     if visibility == NoteVisibility.PRIVATE:
         return None
     if team_id is None:
@@ -33,10 +32,10 @@ def list_notes(
     db: Session,
     user: User,
     *,
-    lab_template_id: Optional[int] = None,
-    challenge_id: Optional[int] = None,
-    tag: Optional[str] = None,
-    q: Optional[str] = None,
+    lab_template_id: int | None = None,
+    challenge_id: int | None = None,
+    tag: str | None = None,
+    q: str | None = None,
 ) -> list[Note]:
     query = db.query(Note).filter(
         or_(
@@ -80,11 +79,11 @@ def create_note(
     *,
     title: str,
     content: str = "",
-    tags: Optional[list[str]] = None,
-    lab_template_id: Optional[int] = None,
-    challenge_id: Optional[int] = None,
+    tags: list[str] | None = None,
+    lab_template_id: int | None = None,
+    challenge_id: int | None = None,
     visibility: str = NoteVisibility.PRIVATE.value,
-    team_id: Optional[int] = None,
+    team_id: int | None = None,
 ) -> Note:
     resolved_visibility = NoteVisibility(visibility)
     note = Note(
@@ -108,13 +107,13 @@ def update_note(
     user: User,
     note_id: int,
     *,
-    title: Optional[str] = None,
-    content: Optional[str] = None,
-    tags: Optional[list[str]] = None,
-    lab_template_id: Optional[int] = None,
-    challenge_id: Optional[int] = None,
-    visibility: Optional[str] = None,
-    team_id: Optional[int] = None,
+    title: str | None = None,
+    content: str | None = None,
+    tags: list[str] | None = None,
+    lab_template_id: int | None = None,
+    challenge_id: int | None = None,
+    visibility: str | None = None,
+    team_id: int | None = None,
 ) -> Note:
     note = _get_visible_note(db, user, note_id)
     if note.owner_id != user.id:
@@ -135,7 +134,7 @@ def update_note(
         note.team_id = _resolve_team_id(db, user, resolved_visibility, team_id if team_id is not None else note.team_id)
     elif team_id is not None:
         note.team_id = _resolve_team_id(db, user, note.visibility, team_id)
-    note.updated_at = datetime.now(timezone.utc)
+    note.updated_at = datetime.now(UTC)
     db.commit()
     db.refresh(note)
     return note

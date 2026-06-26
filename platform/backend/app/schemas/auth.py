@@ -1,7 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
 from datetime import datetime
-from typing import Optional
 
 from pydantic import BaseModel
 
@@ -28,4 +27,4 @@ class UserResponse(ORMModel):
     platform_roles: list[str] = []
     permissions: list[str] = []
     created_at: datetime
-    last_login_at: Optional[datetime]
+    last_login_at: datetime | None

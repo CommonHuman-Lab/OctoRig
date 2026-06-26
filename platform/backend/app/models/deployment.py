@@ -5,9 +5,9 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Any, Optional
 
 from sqlalchemy import JSON, DateTime, ForeignKey, String, Text, func
-from app.core.db_types import EnumCol as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from app.core.db_types import EnumCol as SQLEnum
 from app.database import Base
 
 if TYPE_CHECKING:
@@ -39,9 +39,9 @@ class Deployment(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     lab_template_id: Mapped[int] = mapped_column(ForeignKey("lab_templates.id"), nullable=False, index=True)
     started_by_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
-    team_id: Mapped[Optional[int]] = mapped_column(ForeignKey("teams.id"), nullable=True, index=True)
-    challenge_id: Mapped[Optional[int]] = mapped_column(ForeignKey("challenges.id"), nullable=True, index=True)
-    instance_for_user_id: Mapped[Optional[int]] = mapped_column(ForeignKey("users.id"), nullable=True)
+    team_id: Mapped[int | None] = mapped_column(ForeignKey("teams.id"), nullable=True, index=True)
+    challenge_id: Mapped[int | None] = mapped_column(ForeignKey("challenges.id"), nullable=True, index=True)
+    instance_for_user_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
 
     status: Mapped[DeploymentStatus] = mapped_column(
         SQLEnum(DeploymentStatus), nullable=False, default=DeploymentStatus.STARTING
@@ -52,19 +52,19 @@ class Deployment(Base):
 
     container_names: Mapped[list[Any]] = mapped_column(JSON, nullable=False)
     container_ids: Mapped[dict[str, Any]] = mapped_column(JSON, nullable=False, default=dict)
-    dynamic_flag: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
-    auto_destroy_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
-    error_message: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    dynamic_flag: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    auto_destroy_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    error_message: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     # Per-deployment allocation, distinct from LabTemplate's static defaults, allows concurrent runs
-    subnet: Mapped[Optional[str]] = mapped_column(String(32), nullable=True)
-    app_ip: Mapped[Optional[str]] = mapped_column(String(32), nullable=True)
-    network_name: Mapped[Optional[str]] = mapped_column(String(128), nullable=True)
+    subnet: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    app_ip: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    network_name: Mapped[str | None] = mapped_column(String(128), nullable=True)
     volume_names: Mapped[list[Any]] = mapped_column(JSON, nullable=False, default=list)
     access_info: Mapped[list[Any]] = mapped_column(JSON, nullable=False, default=list)
 
-    started_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
-    stopped_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    stopped_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     lab_template: Mapped["LabTemplate"] = relationship(back_populates="deployments")

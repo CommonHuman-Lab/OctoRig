@@ -1,7 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
-from datetime import datetime, timedelta, timezone
-from typing import Optional
+from datetime import UTC, datetime, timedelta
 
 from fastapi import APIRouter, BackgroundTasks, Depends, Query, WebSocket, WebSocketDisconnect
 from sqlalchemy.orm import Session
@@ -16,7 +15,7 @@ from app.models.lab_template import LabTemplate
 from app.models.team import Team, TeamMember
 from app.models.user import User
 from app.schemas.deployment import DeploymentCreate, DeploymentResponse, DeploymentWithTemplate
-from app.services import audit_service, lab_service
+from app.services import lab_service
 from app.services.challenge_rendering import render_access_info
 from app.services.deployment_provisioning import prepare_deployment
 from app.services.docker_runtime import docker_service
@@ -24,7 +23,7 @@ from app.services.docker_runtime import docker_service
 router = APIRouter(prefix="/deployments", tags=["deployments"])
 
 
-def _get_membership(db: Session, user: User, team_id: Optional[int]) -> Optional[TeamMember]:
+def _get_membership(db: Session, user: User, team_id: int | None) -> TeamMember | None:
     if team_id is None:
         return None
     return (
@@ -68,8 +67,8 @@ def _visible_to_user(d: Deployment, user: User, db: Session) -> bool:
 
 @router.get("/", response_model=list[DeploymentWithTemplate])
 def list_deployments(
-    status: Optional[str] = Query(None),
-    team_id: Optional[int] = Query(None),
+    status: str | None = Query(None),
+    team_id: int | None = Query(None),
     limit: int = Query(50, le=200),
     offset: int = Query(0, ge=0),
     db: Session = Depends(get_db),
@@ -100,12 +99,12 @@ def list_deployments(
     return [_to_response(d, db) for d in deployments]
 
 
-@router.get("/instance", response_model=Optional[DeploymentWithTemplate])
+@router.get("/instance", response_model=DeploymentWithTemplate | None)
 def get_my_instance(
     challenge_id: int = Query(...),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user_or_api_key),
-) -> Optional[DeploymentWithTemplate]:
+) -> DeploymentWithTemplate | None:
     """Return the caller's active instance for a challenge, or null."""
     d = (
         db.query(Deployment)
@@ -153,7 +152,7 @@ def create_deployment(
         if lab_template_id is None:
             raise bad_request("Challenge has no associated lab template")
         instance_for_user_id = current_user.id
-        auto_destroy_at = datetime.now(timezone.utc) + timedelta(hours=max(1, min(8, payload.ttl_hours)))
+        auto_destroy_at = datetime.now(UTC) + timedelta(hours=max(1, min(8, payload.ttl_hours)))
 
     # Locked for the transaction so concurrent deployment requests serialize past the conflict check
     template = (
@@ -336,7 +335,9 @@ async def stream_logs(
     # Auth via first message avoids placing JWT in the URL, where every proxy/LB logs it
     import asyncio
     import json as _json
+
     from jose import JWTError
+
     from app.core.security import decode_access_token
 
     try:
@@ -347,7 +348,7 @@ async def stream_logs(
         if current_user is None or not current_user.is_active:
             await websocket.close(code=4001)
             return
-    except (asyncio.TimeoutError, JWTError, Exception):
+    except (TimeoutError, JWTError, Exception):
         await websocket.close(code=4001)
         return
 
@@ -373,7 +374,7 @@ async def stream_logs(
         await websocket.close()
 
 
-def _resolve_container_name(deployment: Deployment, template: Optional[LabTemplate], role: str) -> str:
+def _resolve_container_name(deployment: Deployment, template: LabTemplate | None, role: str) -> str:
     """Pick this deployment's own container name for `role` — never the
     template's static name, which no longer matches any running container
     now that containers are named per-deployment (see prepare_deployment())."""

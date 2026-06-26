@@ -147,28 +147,29 @@ def create_app() -> FastAPI:
         max_age=600,
     )
 
-    from app.api.assessments import admin_router as assessments_admin_router
-    from app.api.assessments import candidate_router as assessments_candidate_router
-    from app.api.events_ws import router as ws_router
     from app.api.admin import router as admin_router
     from app.api.api_keys import router as api_keys_router
+    from app.api.assessments import admin_router as assessments_admin_router
+    from app.api.assessments import candidate_router as assessments_candidate_router
     from app.api.auth import router as auth_router
     from app.api.badges import router as badges_router
     from app.api.challenges import router as challenges_router
     from app.api.content import router as content_router
+    from app.api.deployments import router as deployments_router
+    from app.api.events import router as events_router
+    from app.api.events_ws import router as ws_router
+    from app.api.labs import router as labs_router
     from app.api.marketplace import router as marketplace_router
     from app.api.notes import router as notes_router
     from app.api.notifications import router as notifications_router
     from app.api.profiles import router as profiles_router
-    from app.api.deployments import router as deployments_router
-    from app.api.events import router as events_router
-    from app.api.labs import router as labs_router
-    from app.api.scheduler import router as scheduler_router
     from app.api.ranks import router as ranks_router
     from app.api.roles import router as roles_router
+    from app.api.scheduler import router as scheduler_router
     from app.api.scoreboards import router as scoreboards_router
     from app.api.system import router as system_router
-    from app.api.teams import invitations_router, router as teams_router
+    from app.api.teams import invitations_router
+    from app.api.teams import router as teams_router
 
     app.include_router(ws_router)          # /ws/events (no prefix — raw WS path)
     prefix = "/api/v1"

@@ -1,17 +1,18 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
 from datetime import datetime
-from typing import Optional
 
 from fastapi import APIRouter, Depends, File, UploadFile
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user, get_db, require_admin
-from app.models.marketplace import MarketplacePackage, PackageType
+from app.models.marketplace import PackageType
 from app.models.user import User
 from app.services.marketplace_service import (
-    install_package, list_packages, uninstall_package,
+    install_package,
+    list_packages,
+    uninstall_package,
 )
 
 router = APIRouter(prefix="/marketplace", tags=["marketplace"])
@@ -23,10 +24,10 @@ class PackageOut(BaseModel):
     name: str
     version: str
     package_type: PackageType
-    description: Optional[str]
-    author: Optional[str]
+    description: str | None
+    author: str | None
     is_verified: bool
-    checksum: Optional[str]
+    checksum: str | None
     created_at: datetime
 
     model_config = {"from_attributes": True}

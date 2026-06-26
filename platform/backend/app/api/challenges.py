@@ -1,11 +1,11 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
-from datetime import datetime, timezone
-from typing import Any, Optional
+from datetime import UTC, datetime
+from typing import Any
 
 import redis as redis_lib
 from fastapi import APIRouter, Depends, Query, Request
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user, get_db, require_admin
@@ -16,17 +16,24 @@ from app.models.user import User
 from app.services import audit_service
 from app.services.challenge_rendering import render_target_text
 from app.services.challenge_service import (
-    get_challenge_by_slug_or_404, get_solve_count,
-    get_unlocked_hint_ids, list_challenges, submit_flag, unlock_hint,
+    get_challenge_by_slug_or_404,
+    get_solve_count,
+    get_unlocked_hint_ids,
+    list_challenges,
+    submit_flag,
+    unlock_hint,
 )
 from app.services.scoring_service import (
-    ScoreTransactionSource, award_points, compute_dynamic_points, get_user_score,
+    ScoreTransactionSource,
+    award_points,
+    compute_dynamic_points,
+    get_user_score,
 )
 from app.services.settings_service import get_settings
 
 router = APIRouter(prefix="/challenges", tags=["challenges"])
 
-_redis: Optional[redis_lib.Redis] = None
+_redis: redis_lib.Redis | None = None
 
 
 def _get_redis() -> redis_lib.Redis:
@@ -59,7 +66,7 @@ class HintResponse(BaseModel):
     id: int
     order_num: int
     cost: int
-    content: Optional[str] = None
+    content: str | None = None
     unlocked: bool = False
 
     model_config = {"from_attributes": True}
@@ -74,13 +81,13 @@ class ChallengeListItem(BaseModel):
     tags: list[str]
     points: int
     challenge_type: ChallengeType
-    estimated_minutes: Optional[int]
+    estimated_minutes: int | None
     solve_count: int = 0
     solved_by_me: bool = False
     is_active: bool = True
-    lab_slug: Optional[str] = None
-    lab_name: Optional[str] = None
-    lab_category: Optional[str] = None
+    lab_slug: str | None = None
+    lab_name: str | None = None
+    lab_category: str | None = None
 
     model_config = {"from_attributes": True}
 
@@ -100,24 +107,24 @@ class ChallengeDetail(BaseModel):
     skills: list[Any]
     points: int
     challenge_type: ChallengeType
-    estimated_minutes: Optional[int]
+    estimated_minutes: int | None
     content: dict[str, Any]
     hints: list[HintResponse]
     files: list[dict[str, Any]]
     solve_count: int = 0
     solved_by_me: bool = False
-    first_blood_user: Optional[str] = None
+    first_blood_user: str | None = None
     version: int
-    lab_slug: Optional[str] = None
-    lab_name: Optional[str] = None
-    lab_category: Optional[str] = None
+    lab_slug: str | None = None
+    lab_name: str | None = None
+    lab_category: str | None = None
 
     model_config = {"from_attributes": True}
 
 
 class FlagSubmitRequest(BaseModel):
     flag: str = Field(..., min_length=1, max_length=512)
-    event_id: Optional[int] = None
+    event_id: int | None = None
 
 
 class FlagSubmitResponse(BaseModel):
@@ -137,7 +144,7 @@ class HintUnlockResponse(BaseModel):
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
 def _serialize_hint(
-    hint, unlocked_ids: set[int], db: Session, current_user: User, lab_template_id: Optional[int]
+    hint, unlocked_ids: set[int], db: Session, current_user: User, lab_template_id: int | None
 ) -> HintResponse:
     unlocked = hint.id in unlocked_ids
     content = hint.content if unlocked else None
@@ -152,7 +159,7 @@ def _serialize_hint(
     )
 
 
-def _get_team_id(db: Session, user: User) -> Optional[int]:
+def _get_team_id(db: Session, user: User) -> int | None:
     from app.models.team import TeamMember
     membership = (
         db.query(TeamMember)
@@ -166,12 +173,12 @@ def _get_team_id(db: Session, user: User) -> Optional[int]:
 
 @router.get("/", response_model=list[ChallengeListItem])
 def list_challenges_endpoint(
-    category: Optional[str] = Query(None),
-    difficulty: Optional[str] = Query(None),
-    search: Optional[str] = Query(None),
-    tag: Optional[str] = Query(None),
-    lab_category: Optional[str] = Query(None, description="world | firerange | thirdparty"),
-    lab_slug: Optional[str] = Query(None),
+    category: str | None = Query(None),
+    difficulty: str | None = Query(None),
+    search: str | None = Query(None),
+    tag: str | None = Query(None),
+    lab_category: str | None = Query(None, description="world | firerange | thirdparty"),
+    lab_slug: str | None = Query(None),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> list[ChallengeListItem]:
@@ -218,7 +225,7 @@ def get_challenge_endpoint(
     lab = ch.lab_template
     site = get_settings(db)
 
-    first_blood_user: Optional[str] = None
+    first_blood_user: str | None = None
     if site.first_blood_enabled:
         fb_sub = (
             db.query(ChallengeSubmission)
@@ -435,6 +442,6 @@ def set_challenge_active(
     if ch is None:
         raise not_found("Challenge")
     ch.is_active = body.is_active
-    ch.updated_at = datetime.now(timezone.utc)
+    ch.updated_at = datetime.now(UTC)
     db.commit()
     return {"slug": ch.slug, "is_active": ch.is_active}

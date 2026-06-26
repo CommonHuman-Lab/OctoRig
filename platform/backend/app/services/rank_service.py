@@ -1,6 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (c) 2026 CommonHuman-Lab
-from typing import Optional
 
 from sqlalchemy.orm import Session
 
@@ -39,7 +38,7 @@ _LEGACY_ICONS = {
 }
 
 
-def get_rank_for_points(db: Session, points: int) -> Optional[Rank]:
+def get_rank_for_points(db: Session, points: int) -> Rank | None:
     return (
         db.query(Rank)
         .filter(Rank.is_active.is_(True), Rank.min_points <= points)
@@ -48,7 +47,7 @@ def get_rank_for_points(db: Session, points: int) -> Optional[Rank]:
     )
 
 
-def get_next_rank(db: Session, points: int) -> Optional[Rank]:
+def get_next_rank(db: Session, points: int) -> Rank | None:
     return (
         db.query(Rank)
         .filter(Rank.is_active.is_(True), Rank.min_points > points)
