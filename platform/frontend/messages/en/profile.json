@@ -1,0 +1,23 @@
+{
+  "editProfile": "Edit Profile",
+  "loadingProfile": "Loading profile…",
+  "notFound": "Profile not found.",
+  "firstBloodsLabel": "First Bloods",
+  "recentSolvesHeading": "Recent Solves",
+  "firstBloodLabel": "First Blood",
+  "profileSavedToast": "Profile saved",
+  "saveProfileFailed": "Failed to save profile",
+  "bioLabel": "Bio",
+  "bioPlaceholder": "A short bio about yourself…",
+  "avatarUrlLabel": "Avatar URL",
+  "urlPlaceholder": "https://…",
+  "websiteLabel": "Website",
+  "locationLabel": "Location",
+  "locationPlaceholder": "City, Country",
+  "githubLabel": "GitHub handle",
+  "githubPlaceholder": "username",
+  "privacyLabel": "Privacy",
+  "privacyPublic": "Public — visible to everyone",
+  "privacyTeamOnly": "Team only",
+  "showActivityLabel": "Show recent activity on profile"
+}

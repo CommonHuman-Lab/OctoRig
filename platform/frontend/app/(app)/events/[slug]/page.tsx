@@ -75,6 +75,7 @@ function ChallengeGrid({ challenges }: { challenges: EventChallenge[] }) {
 function Scoreboard({ slug }: { slug: string }) {
   const t = useTranslations("events");
   const ts = useTranslations("scoreboard");
+  const tc = useTranslations("common");
   const { data: rows = [], isLoading } = useQuery({
     queryKey: ["event-scoreboard", slug],
     queryFn: () => getEventScoreboard(slug, 50),
@@ -87,8 +88,8 @@ function Scoreboard({ slug }: { slug: string }) {
     <div className="sb-table">
       <div className="sb-head">
         <span>#</span>
-        <span>{t("colTeam")}</span>
-        <span className="sb-right">{t("colScore")}</span>
+        <span>{tc("colTeam")}</span>
+        <span className="sb-right">{tc("colScore")}</span>
       </div>
       {rows.map((r) => (
         <div key={r.rank} className={`sb-row ${r.rank <= 3 ? `sb-top${r.rank}` : ""}`}>

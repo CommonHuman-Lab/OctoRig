@@ -24,7 +24,6 @@ interface Props {
 export function StartLabDialog({ lab, open, onClose }: Props) {
   const t = useTranslations("labs");
   const td = useTranslations("deployments");
-  const tev = useTranslations("events");
   const tc = useTranslations("common");
   const [phase, setPhase] = useState<"confirm" | "starting" | "error">("confirm");
   const [errorMsg, setErrorMsg] = useState("");
@@ -117,7 +116,7 @@ export function StartLabDialog({ lab, open, onClose }: Props) {
                   </div>
                 )}
                 <div className="option-row">
-                  <label className="text-11 text-muted">{tev("visibilityLabel")}</label>
+                  <label className="text-11 text-muted">{tc("colVisibility")}</label>
                   <select
                     className="g-select g-select-sm"
                     value={visibility}

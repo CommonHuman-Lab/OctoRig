@@ -1,0 +1,31 @@
+{
+  "title": "Catalogue de labos",
+  "searchPlaceholder": "Rechercher des labos…",
+  "categoryWorld": "Monde",
+  "categoryFirerange": "Fire Range",
+  "categoryThirdparty": "Tiers",
+  "noMatch": "Aucun labo ne correspond à votre filtre.",
+  "stopRequested": "Arrêt du labo demandé",
+  "stopFailed": "Échec de l'arrêt du labo",
+  "resetRequested": "Réinitialisation du labo demandée",
+  "resetFailed": "Échec de la réinitialisation du labo",
+  "startingToast": "Démarrage de {name}…",
+  "submitting": "Envoi…",
+  "subnetAssignNotice": "Un sous-réseau privé et une IP seront attribués à ce labo à son démarrage.",
+  "privilegedWarning": "⚠ Ce labo nécessite le mode --privileged",
+  "deployToLabel": "Déployer sur",
+  "personalOption": "Personnel",
+  "publicReadOnlyOption": "Public (lecture seule)",
+  "close": "Fermer",
+  "startLabBtn": "Démarrer le labo",
+  "detail": {
+    "labNotFound": "Labo introuvable.",
+    "networkHeading": "Réseau",
+    "subnetAppIpLabel": "Sous-réseau / IP applicative",
+    "assignedWhenStarted": "Attribué au démarrage",
+    "challengesHeading": "Défis",
+    "loadingChallenges": "Chargement des défis…",
+    "noChallengesLinked": "Aucun défi associé à ce labo.",
+    "noNotesForLab": "Aucune note pour ce labo pour le moment."
+  }
+}

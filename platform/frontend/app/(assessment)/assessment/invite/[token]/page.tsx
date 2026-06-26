@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/Button";
 export default function InviteLandingPage() {
   const t = useTranslations("assessment");
   const tl = useTranslations("login");
-  const ts = useTranslations("settings");
+  const tc = useTranslations("common");
   const { token } = useParams<{ token: string }>();
   const router = useRouter();
   const { push } = useNotificationsStore();
@@ -178,7 +178,7 @@ export default function InviteLandingPage() {
             <div style={dividerStyle}>{t("createAccountDivider")}</div>
 
             <div className="ev-field">
-              <label className="ev-label">{ts("usernameLabel")}</label>
+              <label className="ev-label">{tc("colUsername")}</label>
               <input
                 className="g-input"
                 required
@@ -192,7 +192,7 @@ export default function InviteLandingPage() {
             </div>
 
             <div className="ev-field">
-              <label className="ev-label">{t("passwordLabel")}</label>
+              <label className="ev-label">{tc("colPassword")}</label>
               <input
                 className="g-input"
                 type="password"
@@ -258,7 +258,7 @@ export default function InviteLandingPage() {
           >
             <div style={dividerStyle}>{t("signInToContinueDivider")}</div>
             <div className="ev-field">
-              <label className="ev-label">{ts("usernameLabel")}</label>
+              <label className="ev-label">{tc("colUsername")}</label>
               <input
                 className="g-input"
                 required
@@ -269,7 +269,7 @@ export default function InviteLandingPage() {
               />
             </div>
             <div className="ev-field">
-              <label className="ev-label">{t("passwordLabel")}</label>
+              <label className="ev-label">{tc("colPassword")}</label>
               <input
                 className="g-input"
                 type="password"

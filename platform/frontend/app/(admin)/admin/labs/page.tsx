@@ -109,9 +109,9 @@ export default function AdminLabsPage() {
             <table className="g-table">
               <thead>
                 <tr>
-                  <th>{t("colName")}</th>
-                  <th>{t("colSlug")}</th>
-                  <th>{t("colCategory")}</th>
+                  <th>{tCommon("colName")}</th>
+                  <th>{tCommon("colSlug")}</th>
+                  <th>{tCommon("colCategory")}</th>
                   <th>{t("colActiveDeployments")}</th>
                   <th>{t("colEnabled")}</th>
                   <th>{tCommon("actions")}</th>
@@ -159,17 +159,17 @@ export default function AdminLabsPage() {
           }
         >
               <div className="lab-detail-section">
-                <div className="lab-detail-label">{t("descriptionLabel")}</div>
+                <div className="lab-detail-label">{tCommon("colDescription")}</div>
                 <p className="text-sm">{selected.description}</p>
               </div>
 
               <div className="lab-detail-section">
-                <div className="lab-detail-label">{t("colSlug")}</div>
+                <div className="lab-detail-label">{tCommon("colSlug")}</div>
                 <span className="font-mono text-11 text-muted">{selected.slug}</span>
               </div>
 
               <div className="lab-detail-section">
-                <div className="lab-detail-label">{t("categoryLabel")}</div>
+                <div className="lab-detail-label">{tCommon("colCategory")}</div>
                 <span className="text-sm">{selected.category}</span>
               </div>
 

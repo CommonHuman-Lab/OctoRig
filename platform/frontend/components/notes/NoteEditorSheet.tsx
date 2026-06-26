@@ -85,13 +85,13 @@ export function NoteEditorSheet({
             disabled={!title.trim() || (visibility === "team" && !teamId) || isPending}
             onClick={() => mutate()}
           >
-            {isPending ? tc("saving") : note ? t("saveChanges") : t("createNote")}
+            {isPending ? tc("saving") : note ? tc("saveChanges") : t("createNote")}
           </Button>
         </>
       }
     >
       <label className="ev-field">
-        <span className="ev-label">{t("titleLabel")}</span>
+        <span className="ev-label">{tc("colTitle")}</span>
         <input
           className="g-input"
           placeholder={t("titlePlaceholder")}
@@ -139,7 +139,7 @@ export function NoteEditorSheet({
 
       <div className="ev-field-row">
         <label className="ev-field">
-          <span className="ev-label">{t("visibilityLabel")}</span>
+          <span className="ev-label">{tc("colVisibility")}</span>
           <select
             className="g-input"
             value={visibility}
@@ -155,7 +155,7 @@ export function NoteEditorSheet({
         </label>
         {visibility === "team" && (
           <label className="ev-field">
-            <span className="ev-label">{t("teamLabel")}</span>
+            <span className="ev-label">{tc("colTeam")}</span>
             <select
               className="g-input"
               value={teamId ?? ""}

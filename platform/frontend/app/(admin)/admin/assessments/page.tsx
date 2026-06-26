@@ -31,6 +31,7 @@ export default function AdminAssessmentsPage() {
   const t = useTranslations("admin.assessments");
   const tNav = useTranslations("nav");
   const tUsers = useTranslations("admin.users");
+  const tCommon = useTranslations("common");
   const { user } = useUserStore();
   const router = useRouter();
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -97,13 +98,13 @@ export default function AdminAssessmentsPage() {
           <table className="g-table g-table-hover">
             <thead>
               <tr>
-                <th>{t("colName")}</th>
+                <th>{tCommon("colName")}</th>
                 <th>{t("colCompany")}</th>
                 <th>{tNav("labs")}</th>
                 <th>{t("colDuration")}</th>
                 <th>{t("colCandidates")}</th>
                 <th>{t("colActive")}</th>
-                <th>{tUsers("colStatus")}</th>
+                <th>{tCommon("colStatus")}</th>
               </tr>
             </thead>
             <tbody>

@@ -16,6 +16,7 @@ export function DangerZone({
   isRestartPending: boolean;
 }) {
   const t = useTranslations("admin.settings");
+  const tCommon = useTranslations("common");
   return (
     <div className="danger-zone">
       <div className="danger-zone-header">
@@ -35,7 +36,7 @@ export function DangerZone({
           onClick={onResetDb}
           leftIcon={<RotateCcw size={13} />}
         >
-          {isPending ? t("resettingBtn") : t("resetDbTitle")}
+          {isPending ? tCommon("resetting") : t("resetDbTitle")}
         </Button>
       </div>
       <div className="danger-action">

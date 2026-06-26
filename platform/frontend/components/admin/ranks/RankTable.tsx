@@ -31,9 +31,9 @@ export function RankTable({
     <table className="rank-table">
       <thead>
         <tr>
-          <th>{t("colRank")}</th>
+          <th>{tCommon("colRank")}</th>
           <th>{t("colMinPoints")}</th>
-          <th>{tUsers("colStatus")}</th>
+          <th>{tCommon("colStatus")}</th>
           <th></th>
         </tr>
       </thead>

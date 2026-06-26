@@ -42,6 +42,7 @@ function loadScript(src: string): Promise<void> {
 
 export function PyodideEditor({ starterCode }: { starterCode?: string }) {
   const t = useTranslations("challenges.detail");
+  const tc = useTranslations("common");
   const [code, setCode] = useState(starterCode ?? "");
   const [output, setOutput] = useState("");
   const [status, setStatus] = useState<Status>("idle");
@@ -102,7 +103,7 @@ export function PyodideEditor({ starterCode }: { starterCode?: string }) {
             disabled={isbusy}
             leftIcon={isbusy ? <IconSpinner size={12} /> : <Play size={12} />}
           >
-            {status === "loading" ? t("loadingBtn") : t("runBtn")}
+            {status === "loading" ? tc("loading") : t("runBtn")}
           </Button>
         </div>
       </div>

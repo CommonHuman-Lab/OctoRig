@@ -323,7 +323,7 @@ export default function AssessmentDetailPage() {
     <div className="page">
       <div className="page-header">
         <Button href="/admin/assessments" size="sm" leftIcon={<ArrowLeft size={14} />}>
-          {t("backBtn")}
+          {tCommon("back")}
         </Button>
         <h1 className="page-title font-mono">{assessment.name}</h1>
         <span className={`g-status-pill ${assessment.is_active ? "g-status-pill--on" : "g-status-pill--off"}`}>
@@ -404,7 +404,7 @@ export default function AssessmentDetailPage() {
             disabled={!newEmail || inviteMutation.isPending}
             onClick={() => inviteMutation.mutate()}
           >
-            {inviteMutation.isPending ? tUsers("creating") : t("generateInviteBtn")}
+            {inviteMutation.isPending ? tCommon("creating") : t("generateInviteBtn")}
           </Button>
         </div>
       </section>
@@ -424,14 +424,14 @@ export default function AssessmentDetailPage() {
             <thead>
               <tr>
                 <th style={{ width: 24 }}></th>
-                <th>{t("colEmail")}</th>
-                <th>{t("colName")}</th>
-                <th>{tUsers("colStatus")}</th>
+                <th>{tCommon("colEmail")}</th>
+                <th>{tCommon("colName")}</th>
+                <th>{tCommon("colStatus")}</th>
                 <th>{t("colStarted")}</th>
                 <th>{t("colExpires")}</th>
                 <th>{tNav("labs")}</th>
                 <th>{t("colFlags")}</th>
-                <th>{t("colScore")}</th>
+                <th>{tCommon("colScore")}</th>
                 <th>{tCommon("actions")}</th>
               </tr>
             </thead>

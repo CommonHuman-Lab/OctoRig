@@ -12,9 +12,7 @@ export function BodyPreview({
 }) {
   const t = useTranslations("admin.content");
   const tAdminChallenges = useTranslations("admin.challenges");
-  const tLabs = useTranslations("admin.labs");
-  const tCreator = useTranslations("creator");
-  const tRoles = useTranslations("admin.roles");
+  const tCommon = useTranslations("common");
   const isEmpty = Object.keys(body).length === 0;
   return (
     <div style={{
@@ -30,9 +28,9 @@ export function BodyPreview({
         <div style={{ display: "flex", flexDirection: "column", gap: "0.3rem", fontSize: "0.8125rem" }}>
           {[
             [tAdminChallenges("colDifficulty"), body.difficulty],
-            [tLabs("categoryLabel"), body.category],
-            [tCreator("typeLabel"), body.challenge_type],
-            [tCreator("pointsLabel"), body.points ?? 100],
+            [tCommon("colCategory"), body.category],
+            [tCommon("colType"), body.challenge_type],
+            [tCommon("colPoints"), body.points ?? 100],
           ].map(([label, val]) => (
             <div key={String(label)}>
               <span style={{ color: "var(--g-text-muted)", marginRight: "0.4rem" }}>{String(label)}:</span>
@@ -40,7 +38,7 @@ export function BodyPreview({
             </div>
           ))}
           <div>
-            <span style={{ color: "var(--g-text-muted)", marginRight: "0.4rem" }}>{tRoles("descriptionLabel")}:</span>
+            <span style={{ color: "var(--g-text-muted)", marginRight: "0.4rem" }}>{tCommon("colDescription")}:</span>
             <span style={{ color: "var(--g-text)" }}>{String(body.description ?? "—")}</span>
           </div>
           {Array.isArray(body.flags) && body.flags.length > 0 && (

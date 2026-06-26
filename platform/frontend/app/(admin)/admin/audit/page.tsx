@@ -48,7 +48,6 @@ export default function AdminAuditPage() {
   const t = useTranslations("admin.audit");
   const tNav = useTranslations("nav");
   const tCommon = useTranslations("common");
-  const tDeployments = useTranslations("deployments");
   const ACTION_GROUPS = useActionGroups();
   const [actionFilter, setActionFilter] = useState("");
   const [userFilter, setUserFilter] = useState("");
@@ -137,8 +136,8 @@ export default function AdminAuditPage() {
                   <tr>
                     <th>{t("colTime")}</th>
                     <th>{t("actionLabel")}</th>
-                    <th>{t("colUser")}</th>
-                    <th>{tDeployments("teamLabel")}</th>
+                    <th>{tCommon("colUser")}</th>
+                    <th>{tCommon("colTeam")}</th>
                     <th>{t("colDetail")}</th>
                     <th>{t("colIp")}</th>
                   </tr>

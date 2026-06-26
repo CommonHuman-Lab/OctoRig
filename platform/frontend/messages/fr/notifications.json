@@ -1,0 +1,19 @@
+{
+  "title": "Notifications",
+  "unreadCount": "{count} non lues",
+  "markAllRead": "Tout marquer comme lu",
+  "noNotifications": "Pas encore de notifications.",
+  "deleteFailed": "Échec de la suppression de la notification",
+  "markAllFailed": "Échec du marquage de toutes comme lues",
+  "markedReadToast": "{count, plural, one {{count} notification marquée comme lue} other {{count} notifications marquées comme lues}}",
+  "joinedTeamToast": "Rejoint {team}",
+  "acceptFailed": "Échec de l'acceptation",
+  "declinedToast": "Invitation refusée",
+  "declineFailed": "Échec du refus",
+  "accept": "Accepter",
+  "decline": "Refuser",
+  "justNow": "à l'instant",
+  "minutesAgo": "il y a {count} min",
+  "hoursAgo": "il y a {count} h",
+  "daysAgo": "il y a {count} j"
+}

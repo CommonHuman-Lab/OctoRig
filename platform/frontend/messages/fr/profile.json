@@ -1,0 +1,23 @@
+{
+  "editProfile": "Modifier le profil",
+  "loadingProfile": "Chargement du profil…",
+  "notFound": "Profil introuvable.",
+  "firstBloodsLabel": "Premiers sangs",
+  "recentSolvesHeading": "Résolutions récentes",
+  "firstBloodLabel": "Premier sang",
+  "profileSavedToast": "Profil enregistré",
+  "saveProfileFailed": "Échec de l'enregistrement du profil",
+  "bioLabel": "Bio",
+  "bioPlaceholder": "Une courte bio à propos de vous…",
+  "avatarUrlLabel": "URL de l'avatar",
+  "urlPlaceholder": "https://…",
+  "websiteLabel": "Site web",
+  "locationLabel": "Localisation",
+  "locationPlaceholder": "Ville, Pays",
+  "githubLabel": "Identifiant GitHub",
+  "githubPlaceholder": "nom d'utilisateur",
+  "privacyLabel": "Confidentialité",
+  "privacyPublic": "Public — visible par tous",
+  "privacyTeamOnly": "Équipe uniquement",
+  "showActivityLabel": "Afficher l'activité récente sur le profil"
+}

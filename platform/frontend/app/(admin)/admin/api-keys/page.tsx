@@ -21,7 +21,7 @@ export default function AdminApiKeysPage() {
   const t = useTranslations("admin.apiKeys");
   const tApiKeys = useTranslations("apiKeys");
   const tNav = useTranslations("nav");
-  const tTeams = useTranslations("teams");
+  const tCommon = useTranslations("common");
   const { confirm } = useConfirmStore();
   const { user } = useUserStore();
 
@@ -84,11 +84,11 @@ export default function AdminApiKeysPage() {
               <thead>
                 <tr>
                   <th>{t("colKey")}</th>
-                  <th>{tTeams("roleOwner")}</th>
+                  <th>{tCommon("owner")}</th>
                   <th>{tApiKeys("colCreated")}</th>
                   <th>{tApiKeys("colLastUsed")}</th>
                   <th>{tApiKeys("colExpires")}</th>
-                  <th>{tApiKeys("colStatus")}</th>
+                  <th>{tCommon("colStatus")}</th>
                   <th></th>
                 </tr>
               </thead>

@@ -1,0 +1,9 @@
+{
+  "usernamePlaceholder": "Username",
+  "passwordPlaceholder": "Password",
+  "signIn": "Sign in",
+  "signingIn": "Signing in…",
+  "invalidCredentials": "Invalid username or password",
+  "tooManyAttempts": "Too many attempts. Please try again later.",
+  "by": "By"
+}

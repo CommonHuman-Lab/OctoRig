@@ -99,8 +99,6 @@ export default function AdminChallengesPage() {
   const t = useTranslations("admin.challenges");
   const tCommon = useTranslations("common");
   const tUsers = useTranslations("admin.users");
-  const tCreator = useTranslations("creator");
-  const tLabsAdmin = useTranslations("admin.labs");
 
   function filterLabel(v: string | undefined) {
     if (v === "active") return tUsers("active");
@@ -166,13 +164,13 @@ export default function AdminChallengesPage() {
           <table className="g-table">
             <thead>
               <tr>
-                <th>{tCreator("titleLabel")}</th>
-                <th>{tLabsAdmin("categoryLabel")}</th>
+                <th>{tCommon("colTitle")}</th>
+                <th>{tCommon("colCategory")}</th>
                 <th>{t("colDifficulty")}</th>
-                <th>{tCreator("typeLabel")}</th>
-                <th style={{ textAlign: "right" }}>{tCreator("pointsLabel")}</th>
-                <th style={{ textAlign: "right" }}>{t("colSolves")}</th>
-                <th>{tUsers("colStatus")}</th>
+                <th>{tCommon("colType")}</th>
+                <th style={{ textAlign: "right" }}>{tCommon("colPoints")}</th>
+                <th style={{ textAlign: "right" }}>{tCommon("colSolves")}</th>
+                <th>{tCommon("colStatus")}</th>
               </tr>
             </thead>
             <tbody>

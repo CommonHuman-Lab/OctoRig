@@ -76,9 +76,9 @@ export default function AdminTeamsPage() {
             <table className="g-table">
               <thead>
                 <tr>
-                  <th>{t("colName")}</th>
-                  <th>{t("colSlug")}</th>
-                  <th>{tTeams("roleOwner")}</th>
+                  <th>{tCommon("colName")}</th>
+                  <th>{tCommon("colSlug")}</th>
+                  <th>{tCommon("owner")}</th>
                   <th>{t("colMembers")}</th>
                   <th>{tNav("deployments")}</th>
                   <th>{tTeams("personal")}</th>

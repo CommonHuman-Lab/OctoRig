@@ -1,0 +1,20 @@
+{
+  "earnedCount": "{earned}/{total} earned",
+  "checking": "Checking…",
+  "checkAchievements": "Check Achievements",
+  "unlockedToast": "Unlocked: {names}",
+  "noNewBadges": "No new badges earned yet.",
+  "evalFailed": "Failed to evaluate achievements",
+  "categoryMilestone": "Milestone",
+  "categoryCompetition": "Competition",
+  "categorySkill": "Skill",
+  "categoryOther": "Other",
+  "statusEarned": "Earned",
+  "statusLocked": "Locked",
+  "loadingBadges": "Loading badges…",
+  "noMatch": "No badges match this filter.",
+  "earnedOn": "Earned {date}",
+  "pointsValue": "+{count} pts",
+  "rankProgress": "{points} / {nextPoints} pts → {nextName}",
+  "maxRank": "{points} pts — Max rank achieved"
+}

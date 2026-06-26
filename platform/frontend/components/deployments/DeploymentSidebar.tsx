@@ -53,7 +53,7 @@ export function DeploymentSidebar({
   isChangingVisibility,
 }: DeploymentSidebarProps) {
   const t = useTranslations("deployments");
-  const tev = useTranslations("events");
+  const tc = useTranslations("common");
   return (
     <div className="dd-sidebar">
       {isActive && (deployment.access_info.length > 0 || (lab && lab.access_info.length > 0)) && (
@@ -109,9 +109,9 @@ export function DeploymentSidebar({
         <div className="dd-section-title">{t("detailsHeading")}</div>
         <div className="dd-meta-rows">
           <MetaRow label={t("colLab")} value={deployment.lab_name} />
-          <MetaRow label={t("colCategory")} value={deployment.lab_category} />
+          <MetaRow label={tc("colCategory")} value={deployment.lab_category} />
           <MetaRow label={t("startedByLabel")} value={deployment.started_by_username} />
-          {deployment.team_name && <MetaRow label={t("teamLabel")} value={deployment.team_name} />}
+          {deployment.team_name && <MetaRow label={tc("colTeam")} value={deployment.team_name} />}
           <MetaRow label={t("startedLabel")} value={formatDateTime(deployment.started_at)} />
           {deployment.stopped_at && (
             <MetaRow label={t("stoppedLabel")} value={formatDateTime(deployment.stopped_at)} />
@@ -144,7 +144,7 @@ export function DeploymentSidebar({
       </div>
 
       <div className="g-card dd-card">
-        <div className="dd-section-title">{tev("visibilityLabel")}</div>
+        <div className="dd-section-title">{tc("colVisibility")}</div>
         <div className="dd-vis-pills">
           {(["private", "team", "public"] as Visibility[]).map((v) => {
             const disabled = v === "team" && !deployment.team_id;

@@ -19,6 +19,7 @@ import { STALE_TIME, PAGINATION } from "@/lib/config";
 export default function ScoreboardPage() {
   const t = useTranslations("scoreboard");
   const tn = useTranslations("nav");
+  const tc = useTranslations("common");
   const { user } = useUserStore();
   const [limit, setLimit] = useState<number>(PAGINATION.DEFAULT_LIMIT);
   const [eventSlug, setEventSlug] = useState("");
@@ -102,9 +103,9 @@ export default function ScoreboardPage() {
                 <tr>
                   <th style={{ textAlign: "right" }}>#</th>
                   <th>{t("colPlayer")}</th>
-                  <th>{t("colRank")}</th>
-                  <th>{t("colPoints")}</th>
-                  <th>{t("colSolves")}</th>
+                  <th>{tc("colRank")}</th>
+                  <th>{tc("colPoints")}</th>
+                  <th>{tc("colSolves")}</th>
                   <th>{tn("badges")}</th>
                 </tr>
               </thead>

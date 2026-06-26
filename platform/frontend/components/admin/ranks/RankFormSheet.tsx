@@ -32,8 +32,6 @@ interface RankFormSheetProps {
 export function RankFormSheet({ open, initialValues, saveMutation, onToggleActive, onClose }: RankFormSheetProps) {
   const t = useTranslations("admin.ranks");
   const tCommon = useTranslations("common");
-  const tTeams = useTranslations("admin.teams");
-  const tRoles = useTranslations("admin.roles");
   const tUsers = useTranslations("admin.users");
   const [form, setForm] = useState<RankFormState>(BLANK_FORM);
   const isEdit = !!initialValues;
@@ -73,7 +71,7 @@ export function RankFormSheet({ open, initialValues, saveMutation, onToggleActiv
             onClick={handleSubmit}
             leftIcon={<Save size={13} />}
           >
-            {saveMutation.isPending ? tCommon("saving") : isEdit ? tRoles("saveChanges") : t("createRankBtn")}
+            {saveMutation.isPending ? tCommon("saving") : isEdit ? tCommon("saveChanges") : t("createRankBtn")}
           </Button>
         </>
       }
@@ -81,7 +79,7 @@ export function RankFormSheet({ open, initialValues, saveMutation, onToggleActiv
           <RankChip rank={previewRank} />
 
           <label className="ev-field">
-            <span className="ev-label">{tTeams("nameLabel")}</span>
+            <span className="ev-label">{tCommon("colName")}</span>
             <input
               className="g-input"
               value={form.name}

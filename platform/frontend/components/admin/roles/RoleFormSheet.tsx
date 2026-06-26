@@ -137,14 +137,14 @@ export function RoleFormSheet({ open, initialValues, saveMutation, onClose }: Ro
             onClick={handleSubmit}
             leftIcon={<Save size={13} />}
           >
-            {saveMutation.isPending ? tCommon("saving") : isEdit ? t("saveChanges") : t("createRoleBtn")}
+            {saveMutation.isPending ? tCommon("saving") : isEdit ? tCommon("saveChanges") : t("createRoleBtn")}
           </Button>
         </>
       }
     >
           {!isEdit && (
             <label className="ev-field">
-              <span className="ev-label">{t("slugLabel")}</span>
+              <span className="ev-label">{tCommon("colSlug")}</span>
               <input
                 className="g-input"
                 style={{ fontFamily: "var(--font-mono, monospace)" }}
@@ -166,7 +166,7 @@ export function RoleFormSheet({ open, initialValues, saveMutation, onClose }: Ro
           </label>
 
           <label className="ev-field">
-            <span className="ev-label">{t("descriptionLabel")}</span>
+            <span className="ev-label">{tCommon("colDescription")}</span>
             <input
               className="g-input"
               value={form.description}

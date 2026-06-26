@@ -167,7 +167,7 @@ export default function AdminUsersPage() {
                 disabled={!newPw || resetMutation.isPending}
                 onClick={() => resetMutation.mutate({ id: selected.id, password: newPw })}
               >
-                {resetMutation.isPending ? t("resetting") : t("resetPasswordBtn")}
+                {resetMutation.isPending ? tCommon("resetting") : t("resetPasswordBtn")}
               </Button>
             </>
           }

@@ -18,6 +18,12 @@ export const DEFAULT_LOCALE: LocaleId = "en";
 
 export const LOCALE_STORAGE_KEY = "octorig_locale";
 
+export const NAMESPACES = [
+  "admin", "apiKeys", "assessment", "badges", "challenges", "common", "content",
+  "creator", "dashboard", "deployments", "events", "labs", "login", "nav",
+  "notes", "notifications", "profile", "scoreboard", "settings", "teams",
+] as const;
+
 export function isLocaleId(v: string): v is LocaleId {
   return LOCALES.some((l) => l.id === v);
 }

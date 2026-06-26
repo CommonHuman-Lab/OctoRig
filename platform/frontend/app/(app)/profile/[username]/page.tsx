@@ -35,6 +35,7 @@ function ProfileView({ profile, rankData }: { profile: UserProfile; rankData?: U
   const t = useTranslations("profile");
   const tn = useTranslations("nav");
   const tb = useTranslations("badges");
+  const tc = useTranslations("common");
   const initials = profile.username.slice(0, 2).toUpperCase();
 
   return (
@@ -89,8 +90,8 @@ function ProfileView({ profile, rankData }: { profile: UserProfile; rankData?: U
       <div className="profile-main">
         {/* Stats row */}
         <div className="stats-row g-card">
-          <StatBlock icon={<Trophy size={16} />} label={t("pointsLabel")} value={profile.total_points} />
-          <StatBlock icon={<Target size={16} />} label={t("solvesLabel")} value={profile.solve_count} />
+          <StatBlock icon={<Trophy size={16} />} label={tc("colPoints")} value={profile.total_points} />
+          <StatBlock icon={<Target size={16} />} label={tc("colSolves")} value={profile.solve_count} />
           <StatBlock icon={<Droplets size={16} />} label={t("firstBloodsLabel")} value={profile.first_bloods} />
           <StatBlock icon={<Users size={16} />} label={tn("teams")} value={profile.team_count} />
         </div>
@@ -137,6 +138,7 @@ function ProfileView({ profile, rankData }: { profile: UserProfile; rankData?: U
 
 export default function UserProfilePage() {
   const t = useTranslations("profile");
+  const tc = useTranslations("common");
   const { username } = useParams<{ username: string }>();
   const { user } = useUserStore();
   const isOwnProfile = user?.username === username;
@@ -159,7 +161,7 @@ export default function UserProfilePage() {
       <div className="page-header">
         <Link href="/" className="back-link">
           <ArrowLeft size={14} />
-          <span>{t("back")}</span>
+          <span>{tc("back")}</span>
         </Link>
         {isOwnProfile && (
           <Button

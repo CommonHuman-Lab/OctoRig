@@ -24,7 +24,6 @@ export function CreateUserForm({
 }) {
   const t = useTranslations("admin.users");
   const tCommon = useTranslations("common");
-  const tSettings = useTranslations("settings");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -64,13 +63,13 @@ export function CreateUserForm({
             disabled={!username || !email || !password || isPending}
             leftIcon={<Save size={13} />}
           >
-            {isPending ? t("creating") : t("createUserBtn")}
+            {isPending ? tCommon("creating") : t("createUserBtn")}
           </Button>
         </>
       }
     >
           <label className="ev-field">
-            <span className="ev-label">{tSettings("usernameLabel")}</span>
+            <span className="ev-label">{tCommon("colUsername")}</span>
             <input
               className="g-input"
               value={username}
@@ -80,7 +79,7 @@ export function CreateUserForm({
           </label>
 
           <label className="ev-field">
-            <span className="ev-label">{tSettings("emailLabel")}</span>
+            <span className="ev-label">{tCommon("colEmail")}</span>
             <input
               className="g-input"
               type="email"
@@ -91,7 +90,7 @@ export function CreateUserForm({
           </label>
 
           <label className="ev-field">
-            <span className="ev-label">{t("passwordLabel")}</span>
+            <span className="ev-label">{tCommon("colPassword")}</span>
             <input
               className="g-input"
               type="password"

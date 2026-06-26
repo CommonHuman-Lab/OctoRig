@@ -36,10 +36,9 @@ export function ChallengeMappingPanel({
 }: ChallengeMappingPanelProps) {
   const t = useTranslations("admin.events");
   const tLabs = useTranslations("labs");
-  const tLabsAdmin = useTranslations("admin.labs");
-  const tCreator = useTranslations("creator");
   const tDeployments = useTranslations("deployments");
   const tChallenges = useTranslations("challenges");
+  const tCommon = useTranslations("common");
 
   return (
     <div className="g-card" style={{ marginTop: "1rem" }}>
@@ -59,8 +58,8 @@ export function ChallengeMappingPanel({
           <thead>
             <tr>
               <th>{t("colChallenge")}</th>
-              <th>{tLabsAdmin("categoryLabel")}</th>
-              <th>{tCreator("pointsLabel")}</th>
+              <th>{tCommon("colCategory")}</th>
+              <th>{tCommon("colPoints")}</th>
               <th></th>
             </tr>
           </thead>

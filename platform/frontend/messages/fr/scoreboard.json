@@ -1,0 +1,10 @@
+{
+  "playersRanked": "{count, plural, one {{count} joueur classé} other {{count} joueurs classés}}",
+  "frozen": "Classement gelé",
+  "noScores": "Pas encore de scores.",
+  "colPlayer": "Joueur",
+  "global": "Global",
+  "topN": "Top {count}",
+  "myRank": "Mon rang #{rank}",
+  "unknownUser": "Inconnu"
+}

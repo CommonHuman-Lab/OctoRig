@@ -1,0 +1,31 @@
+{
+  "title": "Lab Catalog",
+  "searchPlaceholder": "Search labs…",
+  "categoryWorld": "World",
+  "categoryFirerange": "Fire Range",
+  "categoryThirdparty": "Third Party",
+  "noMatch": "No labs match your filter.",
+  "stopRequested": "Lab stop requested",
+  "stopFailed": "Failed to stop lab",
+  "resetRequested": "Lab reset requested",
+  "resetFailed": "Failed to reset lab",
+  "startingToast": "Starting {name}…",
+  "submitting": "Submitting…",
+  "subnetAssignNotice": "A private subnet and IP will be assigned to this lab when it starts.",
+  "privilegedWarning": "⚠ This lab requires --privileged mode",
+  "deployToLabel": "Deploy to",
+  "personalOption": "Personal",
+  "publicReadOnlyOption": "Public (read-only)",
+  "close": "Close",
+  "startLabBtn": "Start Lab",
+  "detail": {
+    "labNotFound": "Lab not found.",
+    "networkHeading": "Network",
+    "subnetAppIpLabel": "Subnet / App IP",
+    "assignedWhenStarted": "Assigned when started",
+    "challengesHeading": "Challenges",
+    "loadingChallenges": "Loading challenges…",
+    "noChallengesLinked": "No challenges linked to this lab.",
+    "noNotesForLab": "No notes for this lab yet."
+  }
+}

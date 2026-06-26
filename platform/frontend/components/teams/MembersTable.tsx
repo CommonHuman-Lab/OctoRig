@@ -28,8 +28,8 @@ export function MembersTable({
     <table className="g-table">
       <thead>
         <tr>
-          <th>{t("colUser")}</th>
-          <th>{t("colRole")}</th>
+          <th>{tc("colUser")}</th>
+          <th>{tc("colRole")}</th>
           <th>{t("colJoined")}</th>
           {canManage && <th>{tc("actions")}</th>}
         </tr>

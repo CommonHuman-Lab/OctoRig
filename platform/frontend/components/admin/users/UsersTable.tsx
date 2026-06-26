@@ -50,12 +50,12 @@ export function UsersTable({
     <table className="g-table">
       <thead>
         <tr>
-          <th>{t("colUsername")}</th>
-          <th>{t("colEmail")}</th>
+          <th>{tCommon("colUsername")}</th>
+          <th>{tCommon("colEmail")}</th>
           <th>{t("colRoles")}</th>
           <th>{tNav("teams")}</th>
           <th>{tNav("deployments")}</th>
-          <th>{t("colStatus")}</th>
+          <th>{tCommon("colStatus")}</th>
           <th>{tCommon("actions")}</th>
         </tr>
       </thead>
@@ -83,7 +83,7 @@ export function UsersTable({
                 {u.is_active ? t("active") : t("inactive")}
               </span>
               {isLocked(u) && <span className="g-badge g-badge--muted" style={{ marginLeft: 6 }}>{tAssessment("lockedBadge")}</span>}
-              {u.is_owner && <span className="g-badge g-badge--accent" style={{ marginLeft: 6 }}>{t("owner")}</span>}
+              {u.is_owner && <span className="g-badge g-badge--accent" style={{ marginLeft: 6 }}>{tCommon("owner")}</span>}
             </td>
             <td>
               <div className="row-actions">

@@ -168,7 +168,7 @@ export function ChallengeBodyEditor({ sub }: { sub: ContentSubmission }) {
       {/* Points & extras */}
       <div style={{ ...sectionStyle, display: "grid", gridTemplateColumns: "1fr 1fr 2fr", gap: "0.5rem" }}>
         <div style={fieldStyle}>
-          <label style={labelStyle}>{t("pointsLabel")}</label>
+          <label style={labelStyle}>{tc("colPoints")}</label>
           <input
             className="g-input"
             type="number"

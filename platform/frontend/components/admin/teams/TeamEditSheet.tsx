@@ -18,7 +18,6 @@ interface TeamEditSheetProps {
 
 export function TeamEditSheet({ open, team, saveMutation, onClose }: TeamEditSheetProps) {
   const t = useTranslations("admin.teams");
-  const tRoles = useTranslations("admin.roles");
   const tCommon = useTranslations("common");
   const [name, setName] = useState("");
 
@@ -43,13 +42,13 @@ export function TeamEditSheet({ open, team, saveMutation, onClose }: TeamEditShe
             onClick={() => saveMutation.mutate({ name })}
             leftIcon={<Save size={13} />}
           >
-            {saveMutation.isPending ? tCommon("saving") : tRoles("saveChanges")}
+            {saveMutation.isPending ? tCommon("saving") : tCommon("saveChanges")}
           </Button>
         </>
       }
     >
       <label className="ev-field">
-        <span className="ev-label">{t("nameLabel")}</span>
+        <span className="ev-label">{tCommon("colName")}</span>
         <input
           className="g-input"
           value={name}

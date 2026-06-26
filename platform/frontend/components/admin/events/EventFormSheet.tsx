@@ -68,13 +68,13 @@ export function EventFormSheet({ sheet, form, onChange, onClose, saveMutation }:
             onClick={() => saveMutation.mutate()}
             leftIcon={<Save size={13} />}
           >
-            {saveMutation.isPending ? tc("saving") : sheet.editing ? t("saveChanges") : t("createEvent")}
+            {saveMutation.isPending ? tc("saving") : sheet.editing ? tc("saveChanges") : t("createEvent")}
           </Button>
         </>
       }
     >
           <label className="ev-field">
-            <span className="ev-label">{t("titleLabel")}</span>
+            <span className="ev-label">{tc("colTitle")}</span>
             <input
               className="g-input"
               value={form.title}
@@ -87,7 +87,7 @@ export function EventFormSheet({ sheet, form, onChange, onClose, saveMutation }:
 
           {!sheet.editing && (
             <label className="ev-field">
-              <span className="ev-label">{t("slugLabel")}</span>
+              <span className="ev-label">{tc("colSlug")}</span>
               <input
                 className="g-input"
                 value={form.slug}
@@ -97,7 +97,7 @@ export function EventFormSheet({ sheet, form, onChange, onClose, saveMutation }:
           )}
 
           <div className="ev-field">
-            <span className="ev-label">{t("descriptionLabel")}</span>
+            <span className="ev-label">{tc("colDescription")}</span>
             <MarkdownEditor
               value={form.description}
               onChange={(v) => onChange({ description: v })}
@@ -143,7 +143,7 @@ export function EventFormSheet({ sheet, form, onChange, onClose, saveMutation }:
 
           <div className="ev-field-row">
             <label className="ev-field">
-              <span className="ev-label">{t("visibilityLabel")}</span>
+              <span className="ev-label">{tc("colVisibility")}</span>
               <select
                 className="g-input"
                 value={form.visibility}

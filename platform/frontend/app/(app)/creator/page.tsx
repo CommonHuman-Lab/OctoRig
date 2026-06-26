@@ -15,7 +15,6 @@ import { Button } from "@/components/ui/Button";
 
 export default function CreatorPage() {
   const t = useTranslations("creator");
-  const td = useTranslations("deployments");
   const tc = useTranslations("common");
   const [showCreate, setShowCreate] = useState(false);
 
@@ -50,9 +49,9 @@ export default function CreatorPage() {
             <table className="g-table">
               <thead>
                 <tr>
-                  <th>{t("colTitle")}</th>
-                  <th>{t("colType")}</th>
-                  <th>{td("colStatus")}</th>
+                  <th>{tc("colTitle")}</th>
+                  <th>{tc("colType")}</th>
+                  <th>{tc("colStatus")}</th>
                   <th>{t("colLastUpdated")}</th>
                   <th>{tc("actions")}</th>
                 </tr>

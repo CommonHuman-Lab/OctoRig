@@ -28,6 +28,7 @@ const VISIBILITY_BADGE: Record<string, string> = {
 export default function AdminDeploymentsPage() {
   const t = useTranslations("admin.deployments");
   const tDeployments = useTranslations("deployments");
+  const tCommon = useTranslations("common");
   const VISIBILITY_LABEL: Record<string, string> = {
     private: tDeployments("visPrivate"),
     team: tDeployments("visTeam"),
@@ -146,10 +147,10 @@ export default function AdminDeploymentsPage() {
               <thead>
                 <tr>
                   <th>{tDeployments("colLab")}</th>
-                  <th>{t("colUser")}</th>
-                  <th>{tDeployments("teamLabel")}</th>
-                  <th>{t("colVisibility")}</th>
-                  <th>{tDeployments("colStatus")}</th>
+                  <th>{tCommon("colUser")}</th>
+                  <th>{tCommon("colTeam")}</th>
+                  <th>{tCommon("colVisibility")}</th>
+                  <th>{tCommon("colStatus")}</th>
                   <th>{tDeployments("startedLabel")}</th>
                   <th>{tDeployments("stoppedLabel")}</th>
                   <th></th>

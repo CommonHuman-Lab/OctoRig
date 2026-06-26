@@ -1,0 +1,8 @@
+{
+  "statusDraft": "Brouillon",
+  "statusPendingReview": "En attente de révision",
+  "statusInReview": "En révision",
+  "statusApproved": "Approuvé",
+  "statusPublished": "Publié",
+  "statusRejected": "Rejeté"
+}

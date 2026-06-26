@@ -134,9 +134,9 @@ export default function AdminDashboard() {
           <table className="g-table mt-2">
             <thead>
               <tr>
-                <th>{t("name")}</th>
+                <th>{tCommon("colName")}</th>
                 <th>{t("version")}</th>
-                <th>{t("type")}</th>
+                <th>{tCommon("colType")}</th>
                 <th>{t("entryPoint")}</th>
               </tr>
             </thead>

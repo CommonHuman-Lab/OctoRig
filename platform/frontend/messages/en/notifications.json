@@ -1,0 +1,19 @@
+{
+  "title": "Notifications",
+  "unreadCount": "{count} unread",
+  "markAllRead": "Mark all read",
+  "noNotifications": "No notifications yet.",
+  "deleteFailed": "Failed to delete notification",
+  "markAllFailed": "Failed to mark all as read",
+  "markedReadToast": "{count, plural, one {Marked {count} notification as read} other {Marked {count} notifications as read}}",
+  "joinedTeamToast": "Joined {team}",
+  "acceptFailed": "Failed to accept",
+  "declinedToast": "Invitation declined",
+  "declineFailed": "Failed to decline",
+  "accept": "Accept",
+  "decline": "Decline",
+  "justNow": "just now",
+  "minutesAgo": "{count}m ago",
+  "hoursAgo": "{count}h ago",
+  "daysAgo": "{count}d ago"
+}

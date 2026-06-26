@@ -22,12 +22,13 @@ const ROLE_ICON: Record<TeamRole, React.ReactNode> = {
   viewer:  <Eye     size={11} />,
 };
 const ROLE_KEY: Record<TeamRole, string> = {
-  owner: "roleOwner", manager: "roleManager", member: "roleMember", viewer: "roleViewer",
-};
+  manager: "roleManager", member: "roleMember", viewer: "roleViewer",
+} as Record<TeamRole, string>;
 
 export default function TeamsPage() {
   const t = useTranslations("teams");
   const tn = useTranslations("nav");
+  const tc = useTranslations("common");
   const router = useRouter();
   const [sheetOpen, setSheetOpen] = useState(false);
 
@@ -81,7 +82,7 @@ export default function TeamsPage() {
                     <span className="team-name font-mono">{team.name}</span>
                     <span className={`role-badge role-badge--${team.my_role}`}>
                       {ROLE_ICON[team.my_role]}
-                      {t(ROLE_KEY[team.my_role] as any)}
+                      {team.my_role === "owner" ? tc("owner") : t(ROLE_KEY[team.my_role] as any)}
                     </span>
                   </div>
                   {team.description && (

@@ -19,7 +19,6 @@ export function ProfileForm({
 }) {
   const t = useTranslations("profile");
   const td = useTranslations("deployments");
-  const tn = useTranslations("notes");
   const tc = useTranslations("common");
   return (
     <form
@@ -108,7 +107,7 @@ export function ProfileForm({
           variant="primary"
           disabled={isPending}
         >
-          {isPending ? tc("saving") : tn("saveChanges")}
+          {isPending ? tc("saving") : tc("saveChanges")}
         </Button>
       </div>
     </form>

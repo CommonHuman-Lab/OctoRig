@@ -60,7 +60,7 @@ export function CreateKeyForm({
             onClick={handleSubmit}
             disabled={!name.trim() || isPending}
           >
-            {isPending ? t("creating") : t("createKeyBtn")}
+            {isPending ? tc("creating") : t("createKeyBtn")}
           </Button>
         </div>
       </div>

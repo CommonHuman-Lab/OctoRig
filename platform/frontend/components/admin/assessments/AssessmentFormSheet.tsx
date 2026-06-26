@@ -61,8 +61,6 @@ export function AssessmentFormSheet({
 }: AssessmentFormSheetProps) {
   const t = useTranslations("admin.assessments");
   const tCommon = useTranslations("common");
-  const tRoles = useTranslations("admin.roles");
-  const tUsers = useTranslations("admin.users");
   const [form, setForm] = useState(BLANK_FORM);
   const isEdit = !!initialValues;
 
@@ -121,13 +119,13 @@ export function AssessmentFormSheet({
             onClick={handleSubmit}
             leftIcon={<Save size={13} />}
           >
-            {saveMutation.isPending ? (isEdit ? tCommon("saving") : tUsers("creating")) : (isEdit ? tRoles("saveChanges") : t("createAssessmentBtn"))}
+            {saveMutation.isPending ? (isEdit ? tCommon("saving") : tCommon("creating")) : (isEdit ? tCommon("saveChanges") : t("createAssessmentBtn"))}
           </Button>
         </>
       }
     >
           <label className="ev-field">
-            <span className="ev-label">{t("nameLabel")}</span>
+            <span className="ev-label">{tCommon("colName")}</span>
             <input
               className="g-input"
               placeholder={t("namePlaceholder")}
@@ -137,7 +135,7 @@ export function AssessmentFormSheet({
           </label>
 
           <label className="ev-field">
-            <span className="ev-label">{tRoles("slugLabel")}</span>
+            <span className="ev-label">{tCommon("colSlug")}</span>
             <input
               className="g-input"
               style={{ fontFamily: "var(--font-mono, monospace)" }}
@@ -185,7 +183,7 @@ export function AssessmentFormSheet({
           </label>
 
           <div className="ev-field">
-            <span className="ev-label">{tRoles("descriptionLabel")}</span>
+            <span className="ev-label">{tCommon("colDescription")}</span>
             <textarea
               className="g-input"
               rows={3}

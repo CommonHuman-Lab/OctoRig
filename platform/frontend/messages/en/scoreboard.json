@@ -1,0 +1,10 @@
+{
+  "playersRanked": "{count, plural, one {{count} player ranked} other {{count} players ranked}}",
+  "frozen": "Scoreboard frozen",
+  "noScores": "No scores yet.",
+  "colPlayer": "Player",
+  "global": "Global",
+  "topN": "Top {count}",
+  "myRank": "My Rank #{rank}",
+  "unknownUser": "Unknown"
+}

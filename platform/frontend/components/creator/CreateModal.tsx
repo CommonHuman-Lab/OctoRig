@@ -13,7 +13,6 @@ import { Button } from "@/components/ui/Button";
 
 export function CreateModal({ onClose }: { onClose: () => void }) {
   const t = useTranslations("creator");
-  const ta = useTranslations("apiKeys");
   const tc = useTranslations("common");
   const [title, setTitle] = useState("");
   const [contentType, setContentType] = useState<ContentType>("challenge");
@@ -33,7 +32,7 @@ export function CreateModal({ onClose }: { onClose: () => void }) {
         <h2 className="modal-title">{t("newDraft")}</h2>
 
         <div className="modal-field">
-          <label className="modal-label">{t("titleLabel")}</label>
+          <label className="modal-label">{tc("colTitle")}</label>
           <input
             className="g-input"
             placeholder={t("submissionTitlePlaceholder")}
@@ -44,7 +43,7 @@ export function CreateModal({ onClose }: { onClose: () => void }) {
         </div>
 
         <div className="modal-field">
-          <label className="modal-label">{t("typeLabel")}</label>
+          <label className="modal-label">{tc("colType")}</label>
           <select
             className="g-input"
             value={contentType}
@@ -62,7 +61,7 @@ export function CreateModal({ onClose }: { onClose: () => void }) {
             disabled={!title.trim() || isPending}
             onClick={() => mutate()}
           >
-            {isPending ? ta("creating") : t("createDraftBtn")}
+            {isPending ? tc("creating") : t("createDraftBtn")}
           </Button>
         </div>
       </div>

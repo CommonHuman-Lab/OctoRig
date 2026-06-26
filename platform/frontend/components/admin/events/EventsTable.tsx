@@ -47,13 +47,12 @@ export function EventsTable({
   const t = useTranslations("admin.events");
   const tNav = useTranslations("nav");
   const tEvents = useTranslations("events");
-  const tUsers = useTranslations("admin.users");
-  const tDeployments = useTranslations("admin.deployments");
+  const tCommon = useTranslations("common");
 
   const STATUS_LABEL: Record<EventStatus, string> = {
     draft: tEvents("statusDraft"),
     published: t("statusPublished"),
-    running: t("statusRunning"),
+    running: tCommon("running"),
     ended: tEvents("ended"),
     archived: t("statusArchived"),
   };
@@ -83,8 +82,8 @@ export function EventsTable({
             <thead>
               <tr>
                 <th>{t("colEvent")}</th>
-                <th>{tUsers("colStatus")}</th>
-                <th>{tDeployments("colVisibility")}</th>
+                <th>{tCommon("colStatus")}</th>
+                <th>{tCommon("colVisibility")}</th>
                 <th>{t("colScoring")}</th>
                 <th>{t("colStartEnd")}</th>
                 <th>{tNav("challenges")}</th>
@@ -154,7 +153,7 @@ export function EventsTable({
                           </Button>
                         )}
                         <Button size="sm" onClick={() => onEdit(ev)}>
-                          {t("editBtn")}
+                          {tCommon("edit")}
                         </Button>
                       </div>
                     </td>

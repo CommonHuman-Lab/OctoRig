@@ -24,7 +24,6 @@ export default function AdminRolesPage() {
   useAdminGuard();
   const t = useTranslations("admin.roles");
   const tCommon = useTranslations("common");
-  const tAdmin = useTranslations("admin");
   const { confirm } = useConfirmStore();
 
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -103,10 +102,10 @@ export default function AdminRolesPage() {
           <table className="g-table">
             <thead>
               <tr>
-                <th>{t("colSlug")}</th>
-                <th>{t("colName")}</th>
+                <th>{tCommon("colSlug")}</th>
+                <th>{tCommon("colName")}</th>
                 <th>{t("colPermissions")}</th>
-                <th>{tAdmin("type")}</th>
+                <th>{tCommon("colType")}</th>
                 <th>{t("colDefault")}</th>
                 <th>{tCommon("actions")}</th>
               </tr>

@@ -17,8 +17,6 @@ type Tab = "pending" | "approved";
 export default function AdminContentPage() {
   const t = useTranslations("admin.content");
   const tContent = useTranslations("content");
-  const tCreator = useTranslations("creator");
-  const tUsers = useTranslations("admin.users");
   const tCommon = useTranslations("common");
   const [tab, setTab] = useState<Tab>("pending");
 
@@ -65,10 +63,10 @@ export default function AdminContentPage() {
           <table className="g-table">
             <thead>
               <tr>
-                <th>{tCreator("titleLabel")}</th>
-                <th>{tCreator("typeLabel")}</th>
+                <th>{tCommon("colTitle")}</th>
+                <th>{tCommon("colType")}</th>
                 <th>{t("colAuthor")}</th>
-                <th>{tUsers("colStatus")}</th>
+                <th>{tCommon("colStatus")}</th>
                 <th>{tCommon("actions")}</th>
               </tr>
             </thead>

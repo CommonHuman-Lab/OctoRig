@@ -90,8 +90,8 @@ export default function DeploymentsPage() {
             <thead>
               <tr>
                 <th>{t("colLab")}</th>
-                <th>{t("colCategory")}</th>
-                <th>{t("colStatus")}</th>
+                <th>{tc("colCategory")}</th>
+                <th>{tc("colStatus")}</th>
                 <th>{t("colStartedBy")}</th>
                 <th>{t("colStartedAt")}</th>
                 <th>{t("colStoppedAt")}</th>

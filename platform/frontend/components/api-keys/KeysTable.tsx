@@ -33,9 +33,9 @@ export function KeysTable({
       <table className="g-table">
         <thead>
           <tr>
-            <th>{t("colName")}</th>
+            <th>{tc("colName")}</th>
             <th>{t("colPrefix")}</th>
-            <th>{t("colStatus")}</th>
+            <th>{tc("colStatus")}</th>
             <th>{t("colLastUsed")}</th>
             <th>{t("colExpires")}</th>
             <th>{t("colCreated")}</th>

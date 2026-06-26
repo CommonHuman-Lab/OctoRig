@@ -1,0 +1,9 @@
+{
+  "usernamePlaceholder": "Nom d'utilisateur",
+  "passwordPlaceholder": "Mot de passe",
+  "signIn": "Se connecter",
+  "signingIn": "Connexion en cours…",
+  "invalidCredentials": "Nom d'utilisateur ou mot de passe invalide",
+  "tooManyAttempts": "Trop de tentatives. Veuillez réessayer plus tard.",
+  "by": "Par"
+}

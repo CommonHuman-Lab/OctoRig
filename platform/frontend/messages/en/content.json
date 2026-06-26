@@ -1,0 +1,8 @@
+{
+  "statusDraft": "Draft",
+  "statusPendingReview": "Pending Review",
+  "statusInReview": "In Review",
+  "statusApproved": "Approved",
+  "statusPublished": "Published",
+  "statusRejected": "Rejected"
+}

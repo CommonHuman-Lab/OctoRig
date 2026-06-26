@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/Button";
 
 export default function SettingsPage() {
   const t = useTranslations("settings");
+  const tCommon = useTranslations("common");
   const { theme, setTheme } = useThemeStore();
   const { locale, setLocale } = useLocaleStore();
   const { user } = useUserStore();
@@ -174,11 +175,11 @@ export default function SettingsPage() {
             <div className="settings-section">
               <h2 className="settings-section-title font-mono">{t("accountHeading")}</h2>
               <div className="meta-rows">
-                <MetaRow label={t("usernameLabel")} value={me?.username ?? user?.username ?? "—"} />
-                <MetaRow label={t("emailLabel")} value={me?.email ?? user?.email ?? "—"} />
+                <MetaRow label={tCommon("colUsername")} value={me?.username ?? user?.username ?? "—"} />
+                <MetaRow label={tCommon("colEmail")} value={me?.email ?? user?.email ?? "—"} />
                 <MetaRow
-                  label={t("roleLabel")}
-                  value={(me?.permissions ?? user?.permissions)?.includes("admin.panel") ? t("roleAdministrator") : t("roleUser")}
+                  label={tCommon("colRole")}
+                  value={(me?.permissions ?? user?.permissions)?.includes("admin.panel") ? t("roleAdministrator") : tCommon("colUser")}
                 />
               </div>
               {(me?.permissions ?? user?.permissions)?.includes("admin.panel") && (
@@ -211,6 +212,7 @@ function MetaRow({ label, value }: { label: string; value: string }) {
 
 function ChangePasswordForm({ push }: { push: (type: "success" | "error", msg: string) => void }) {
   const t = useTranslations("settings");
+  const tc = useTranslations("common");
   const [current, setCurrent] = useState("");
   const [next, setNext] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -270,7 +272,7 @@ function ChangePasswordForm({ push }: { push: (type: "success" | "error", msg: s
           variant="primary"
           disabled={!canSubmit || mutation.isPending}
         >
-          {mutation.isPending ? t("saving") : t("updatePassword")}
+          {mutation.isPending ? tc("saving") : t("updatePassword")}
         </Button>
       </div>
     </form>
