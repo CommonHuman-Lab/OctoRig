@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRef, useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import {
   LayoutDashboard, FlaskConical, Rocket, Settings, LogOut, Users,
   KeyRound, ShieldCheck, Swords, Flag, Award, ChevronUp, Zap, PenTool,
@@ -15,28 +16,31 @@ import { getMyRank } from "@/lib/api/ranks";
 import { clsx } from "clsx";
 import { useUserStore } from "@/stores/user.store";
 import { useThemeStore } from "@/stores/theme.store";
+import { useLocaleStore } from "@/stores/locale.store";
 import { useSidebarStore } from "@/stores/sidebar.store";
 import { logout } from "@/lib/api/auth";
 import { getMyProfile } from "@/lib/api/profiles";
 import { STALE_TIME } from "@/lib/config";
 
 const NAV_MAIN = [
-  { href: "/",             icon: LayoutDashboard, label: "Dashboard" },
-  { href: "/challenges",   icon: Swords,          label: "Challenges" },
-  { href: "/events",       icon: Flag,            label: "Events" },
-  { href: "/scoreboard",   icon: Trophy,          label: "Scoreboard" },
-  { href: "/badges",       icon: Award,           label: "Badges" },
-  { href: "/labs",         icon: FlaskConical,    label: "Labs" },
-  { href: "/notes",        icon: NotebookPen,     label: "Notes" },
-  { href: "/deployments",  icon: Rocket,          label: "Deployments" },
-  { href: "/teams",        icon: Users,           label: "Teams" },
-  { href: "/api-keys",     icon: KeyRound,        label: "API Keys" },
-];
+  { href: "/",             icon: LayoutDashboard, key: "dashboard" },
+  { href: "/challenges",   icon: Swords,          key: "challenges" },
+  { href: "/events",       icon: Flag,            key: "events" },
+  { href: "/scoreboard",   icon: Trophy,          key: "scoreboard" },
+  { href: "/badges",       icon: Award,           key: "badges" },
+  { href: "/labs",         icon: FlaskConical,    key: "labs" },
+  { href: "/notes",        icon: NotebookPen,     key: "notes" },
+  { href: "/deployments",  icon: Rocket,          key: "deployments" },
+  { href: "/teams",        icon: Users,           key: "teams" },
+  { href: "/api-keys",     icon: KeyRound,        key: "apiKeys" },
+] as const;
 
 export function Sidebar() {
+  const t = useTranslations("nav");
   const pathname = usePathname();
   const { user, clearSession } = useUserStore();
   const { resetExplicit } = useThemeStore();
+  const { resetExplicit: resetLocaleExplicit } = useLocaleStore();
   const { collapsed, toggleCollapsed } = useSidebarStore();
   const isPrivileged = user?.permissions?.includes("admin.panel") ?? false;
   const [menuOpen, setMenuOpen] = useState(false);
@@ -68,6 +72,7 @@ export function Sidebar() {
   async function handleLogout() {
     try { await logout(); } catch {}
     resetExplicit();
+    resetLocaleExplicit();
     clearSession();
     window.location.href = "/login";
   }
@@ -93,7 +98,7 @@ export function Sidebar() {
           onClick={toggleCollapsed}
           className="g-nav-item"
           style={{ padding: "0.375rem", justifyContent: "center" }}
-          title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          title={collapsed ? t("expandSidebar") : t("collapseSidebar")}
         >
           {collapsed ? (
             <PanelLeftOpen size={14} style={{ color: "var(--g-text-muted)" }} />
@@ -105,8 +110,9 @@ export function Sidebar() {
 
       {/* Main nav */}
       <nav className="flex-1 p-2 space-y-0.5 overflow-y-auto">
-        {NAV_MAIN.map(({ href, icon: Icon, label }) => {
+        {NAV_MAIN.map(({ href, icon: Icon, key }) => {
           const active = isActive(href);
+          const label = t(key);
           return (
             <Link
               key={href}
@@ -146,7 +152,7 @@ export function Sidebar() {
                 borderColor: "var(--g-border-hover)",
                 justifyContent: collapsed ? "center" : undefined,
               } : { justifyContent: collapsed ? "center" : undefined }}
-              title="Creator"
+              title={t("creator")}
             >
               <PenTool
                 size={14}
@@ -155,7 +161,7 @@ export function Sidebar() {
               />
               {!collapsed && (
                 <span style={{ color: active ? "var(--g-text)" : "var(--g-text-muted)" }}>
-                  Creator
+                  {t("creator")}
                 </span>
               )}
             </Link>
@@ -166,9 +172,9 @@ export function Sidebar() {
       {/* Admin entry — opens the separate admin area (its own sidebar/layout) */}
       {isPrivileged && (
         <div className="p-2 border-t shrink-0" style={{ borderColor: "var(--g-border)" }}>
-          <Link href="/admin" className={clsx("g-nav-item", collapsed && "collapsed")} style={{ justifyContent: collapsed ? "center" : undefined }} title="Admin">
+          <Link href="/admin" className={clsx("g-nav-item", collapsed && "collapsed")} style={{ justifyContent: collapsed ? "center" : undefined }} title={t("admin")}>
             <ShieldCheck size={14} className="g-nav-icon shrink-0" style={{ color: "var(--g-text-muted)" }} />
-            {!collapsed && <span style={{ color: "var(--g-text-muted)" }}>Admin</span>}
+            {!collapsed && <span style={{ color: "var(--g-text-muted)" }}>{t("admin")}</span>}
           </Link>
         </div>
       )}
@@ -200,7 +206,7 @@ export function Sidebar() {
               style={{ color: "var(--g-text-muted)" }}
             >
               <User size={13} />
-              My Profile
+              {t("myProfile")}
             </Link>
             <Link
               href="/settings"
@@ -209,7 +215,7 @@ export function Sidebar() {
               style={{ color: "var(--g-text-muted)" }}
             >
               <Settings size={13} />
-              Settings
+              {t("settings")}
             </Link>
             <div style={{ borderTop: "1px solid var(--g-border)" }} />
             <button
@@ -218,7 +224,7 @@ export function Sidebar() {
               style={{ color: "var(--g-danger, #f85149)" }}
             >
               <LogOut size={13} />
-              Log Out
+              {t("logOut")}
             </button>
           </div>
         )}

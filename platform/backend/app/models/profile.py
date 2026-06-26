@@ -34,6 +34,7 @@ class UserProfile(Base):
     )
     show_activity: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     theme: Mapped[Optional[str]] = mapped_column(String(32), nullable=True)
+    locale: Mapped[Optional[str]] = mapped_column(String(8), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 

@@ -5,6 +5,7 @@
 import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import type { LabTemplate } from "@/lib/api/labs";
 import { startDeployment } from "@/lib/api/deployments";
 import { getTeams } from "@/lib/api/teams";
@@ -21,6 +22,10 @@ interface Props {
 }
 
 export function StartLabDialog({ lab, open, onClose }: Props) {
+  const t = useTranslations("labs");
+  const td = useTranslations("deployments");
+  const tev = useTranslations("events");
+  const tc = useTranslations("common");
   const [phase, setPhase] = useState<"confirm" | "starting" | "error">("confirm");
   const [errorMsg, setErrorMsg] = useState("");
   const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
@@ -53,12 +58,12 @@ export function StartLabDialog({ lab, open, onClose }: Props) {
         team_id: selectedTeamId ?? undefined,
         visibility,
       });
-      const toastId = pushPersistent("info", `Starting ${lab.name}…`);
+      const toastId = pushPersistent("info", t("startingToast", { name: lab.name }));
       addPending({ deploymentId: d.id, labName: lab.name, toastId });
       onClose();
     } catch (err: any) {
       setPhase("error");
-      setErrorMsg(err.response?.data?.detail ?? "Failed to start lab");
+      setErrorMsg(err.response?.data?.detail ?? td("startFailed"));
     }
   }
 
@@ -78,7 +83,7 @@ export function StartLabDialog({ lab, open, onClose }: Props) {
           {phase === "starting" && (
             <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
               <IconSpinner size={18} color="var(--g-accent)" />
-              <span className="text-sm text-muted">Submitting…</span>
+              <span className="text-sm text-muted">{t("submitting")}</span>
             </div>
           )}
 
@@ -86,17 +91,17 @@ export function StartLabDialog({ lab, open, onClose }: Props) {
             <>
               <p className="text-body text-sm mb-1">{lab.description}</p>
               <p className="text-muted text-11">
-                A private subnet and IP will be assigned to this lab when it starts.
+                {t("subnetAssignNotice")}
               </p>
               {lab.requires_privileged && (
-                <p className="text-warning text-11 mt-1">⚠ This lab requires --privileged mode</p>
+                <p className="text-warning text-11 mt-1">{t("privilegedWarning")}</p>
               )}
 
               {/* Team + visibility options */}
               <div className="deploy-options">
                 {teamOptions.length > 0 && (
                   <div className="option-row">
-                    <label className="text-11 text-muted">Deploy to</label>
+                    <label className="text-11 text-muted">{t("deployToLabel")}</label>
                     <select
                       className="g-select g-select-sm"
                       value={selectedTeamId ?? ""}
@@ -104,23 +109,23 @@ export function StartLabDialog({ lab, open, onClose }: Props) {
                         setSelectedTeamId(e.target.value ? Number(e.target.value) : null)
                       }
                     >
-                      <option value="">Personal</option>
-                      {teamOptions.map((t) => (
-                        <option key={t.id} value={t.id}>{t.name}</option>
+                      <option value="">{t("personalOption")}</option>
+                      {teamOptions.map((team) => (
+                        <option key={team.id} value={team.id}>{team.name}</option>
                       ))}
                     </select>
                   </div>
                 )}
                 <div className="option-row">
-                  <label className="text-11 text-muted">Visibility</label>
+                  <label className="text-11 text-muted">{tev("visibilityLabel")}</label>
                   <select
                     className="g-select g-select-sm"
                     value={visibility}
                     onChange={(e) => setVisibility(e.target.value as typeof visibility)}
                   >
-                    <option value="private">Private</option>
-                    {selectedTeamId && <option value="team">Team</option>}
-                    <option value="public">Public (read-only)</option>
+                    <option value="private">{td("visPrivate")}</option>
+                    {selectedTeamId && <option value="team">{td("visTeam")}</option>}
+                    <option value="public">{t("publicReadOnlyOption")}</option>
                   </select>
                 </div>
               </div>
@@ -129,7 +134,7 @@ export function StartLabDialog({ lab, open, onClose }: Props) {
 
           {phase === "error" && (
             <div>
-              <p className="text-danger text-sm">Failed to start lab</p>
+              <p className="text-danger text-sm">{td("startFailed")}</p>
               <p className="text-muted text-11 mt-1 font-mono">{errorMsg}</p>
             </div>
           )}
@@ -138,14 +143,14 @@ export function StartLabDialog({ lab, open, onClose }: Props) {
         <div className="g-modal-footer">
           {phase === "confirm" && (
             <>
-              <Button onClick={onClose}>Cancel</Button>
+              <Button onClick={onClose}>{tc("cancel")}</Button>
               <Button variant="primary" onClick={handleStart}>
-                Start Lab
+                {t("startLabBtn")}
               </Button>
             </>
           )}
           {phase === "error" && (
-            <Button onClick={onClose}>Close</Button>
+            <Button onClick={onClose}>{t("close")}</Button>
           )}
         </div>
       </div>

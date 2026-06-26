@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
 import { Calendar, Save } from "lucide-react";
+import { useTranslations } from "next-intl";
 import {
   type CtfEvent, type EventVisibility, type EventScoringMode,
 } from "@/lib/api/events";
@@ -48,30 +49,32 @@ interface EventFormSheetProps {
 }
 
 export function EventFormSheet({ sheet, form, onChange, onClose, saveMutation }: EventFormSheetProps) {
+  const t = useTranslations("events");
+  const tc = useTranslations("common");
   useEscapeKey(onClose, sheet.open);
 
   if (!sheet.open) return null;
 
   return (
     <SheetShell
-      title={sheet.editing ? "Edit Event" : "New Event"}
+      title={sheet.editing ? t("editEvent") : t("newEvent")}
       onClose={onClose}
       footer={
         <>
-          <Button onClick={onClose}>Cancel</Button>
+          <Button onClick={onClose}>{tc("cancel")}</Button>
           <Button
             variant="primary"
             disabled={!form.title || (!sheet.editing && !form.slug) || saveMutation.isPending}
             onClick={() => saveMutation.mutate()}
             leftIcon={<Save size={13} />}
           >
-            {saveMutation.isPending ? "Saving…" : sheet.editing ? "Save Changes" : "Create Event"}
+            {saveMutation.isPending ? tc("saving") : sheet.editing ? t("saveChanges") : t("createEvent")}
           </Button>
         </>
       }
     >
           <label className="ev-field">
-            <span className="ev-label">Title</span>
+            <span className="ev-label">{t("titleLabel")}</span>
             <input
               className="g-input"
               value={form.title}
@@ -84,7 +87,7 @@ export function EventFormSheet({ sheet, form, onChange, onClose, saveMutation }:
 
           {!sheet.editing && (
             <label className="ev-field">
-              <span className="ev-label">Slug</span>
+              <span className="ev-label">{t("slugLabel")}</span>
               <input
                 className="g-input"
                 value={form.slug}
@@ -94,11 +97,11 @@ export function EventFormSheet({ sheet, form, onChange, onClose, saveMutation }:
           )}
 
           <div className="ev-field">
-            <span className="ev-label">Description</span>
+            <span className="ev-label">{t("descriptionLabel")}</span>
             <MarkdownEditor
               value={form.description}
               onChange={(v) => onChange({ description: v })}
-              placeholder="Event description (markdown supported)…"
+              placeholder={t("descriptionPlaceholder")}
               minHeight={120}
             />
           </div>
@@ -106,7 +109,7 @@ export function EventFormSheet({ sheet, form, onChange, onClose, saveMutation }:
           <div className="ev-field-row">
             <label className="ev-field">
               <span className="ev-label">
-                <Calendar size={11} style={{ display: "inline", marginRight: 4 }} />Start
+                <Calendar size={11} style={{ display: "inline", marginRight: 4 }} />{t("startLabel")}
               </span>
               <input
                 type="datetime-local"
@@ -117,7 +120,7 @@ export function EventFormSheet({ sheet, form, onChange, onClose, saveMutation }:
             </label>
             <label className="ev-field">
               <span className="ev-label">
-                <Calendar size={11} style={{ display: "inline", marginRight: 4 }} />End
+                <Calendar size={11} style={{ display: "inline", marginRight: 4 }} />{t("endLabel")}
               </span>
               <input
                 type="datetime-local"
@@ -129,7 +132,7 @@ export function EventFormSheet({ sheet, form, onChange, onClose, saveMutation }:
           </div>
 
           <label className="ev-field">
-            <span className="ev-label">Freeze Scoreboard At</span>
+            <span className="ev-label">{t("freezeScoreboardLabel")}</span>
             <input
               type="datetime-local"
               className="g-input"
@@ -140,37 +143,37 @@ export function EventFormSheet({ sheet, form, onChange, onClose, saveMutation }:
 
           <div className="ev-field-row">
             <label className="ev-field">
-              <span className="ev-label">Visibility</span>
+              <span className="ev-label">{t("visibilityLabel")}</span>
               <select
                 className="g-input"
                 value={form.visibility}
                 onChange={(e) => onChange({ visibility: e.target.value as EventVisibility })}
               >
-                <option value="private">Private</option>
-                <option value="unlisted">Unlisted</option>
-                <option value="public">Public</option>
+                <option value="private">{t("visibilityPrivate")}</option>
+                <option value="unlisted">{t("visibilityUnlisted")}</option>
+                <option value="public">{t("visibilityPublic")}</option>
               </select>
             </label>
             <label className="ev-field">
-              <span className="ev-label">Scoring Mode</span>
+              <span className="ev-label">{t("scoringModeLabel")}</span>
               <select
                 className="g-input"
                 value={form.scoring_mode}
                 onChange={(e) => onChange({ scoring_mode: e.target.value as EventScoringMode })}
               >
-                <option value="static">Static</option>
-                <option value="dynamic">Dynamic</option>
+                <option value="static">{t("scoringStatic")}</option>
+                <option value="dynamic">{t("scoringDynamic")}</option>
               </select>
             </label>
           </div>
 
           <label className="ev-field">
-            <span className="ev-label">Max Team Size</span>
+            <span className="ev-label">{t("maxTeamSizeLabel")}</span>
             <input
               type="number"
               className="g-input"
               min={1}
-              placeholder="Unlimited"
+              placeholder={t("unlimitedPlaceholder")}
               value={form.max_team_size}
               onChange={(e) => onChange({ max_team_size: e.target.value })}
             />

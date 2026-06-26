@@ -29,6 +29,7 @@ export interface UserProfile {
   privacy_level: "public" | "team_only" | "private";
   show_activity: boolean;
   theme: string | null;
+  locale: string | null;
   total_points: number;
   solve_count: number;
   first_bloods: number;
@@ -46,6 +47,7 @@ export interface ProfileUpdatePayload {
   privacy_level?: "public" | "team_only" | "private";
   show_activity?: boolean;
   theme?: string | null;
+  locale?: string | null;
 }
 
 export async function getMyProfile(): Promise<UserProfile> {

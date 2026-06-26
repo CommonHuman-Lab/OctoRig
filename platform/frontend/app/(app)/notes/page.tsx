@@ -4,10 +4,13 @@
 import "./notes.css";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Search, NotebookPen } from "lucide-react";
 import { NoteList } from "@/components/notes/NoteList";
 
 export default function NotesPage() {
+  const t = useTranslations("notes");
+  const tn = useTranslations("nav");
   const [search, setSearch] = useState("");
   const [tag, setTag] = useState("");
 
@@ -17,9 +20,9 @@ export default function NotesPage() {
         <div>
           <h1 className="page-title font-mono">
             <NotebookPen size={18} style={{ display: "inline", marginRight: "0.5rem", verticalAlign: "middle" }} />
-            Notes
+            {tn("notes")}
           </h1>
-          <p className="page-sub">Personal notes — optionally linked to a lab or challenge, exportable as markdown anytime.</p>
+          <p className="page-sub">{t("subtitle")}</p>
         </div>
       </div>
 
@@ -28,7 +31,7 @@ export default function NotesPage() {
           <Search size={14} className="icon-left" />
           <input
             className="g-input"
-            placeholder="Search notes…"
+            placeholder={t("searchPlaceholder")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -36,7 +39,7 @@ export default function NotesPage() {
         <input
           className="g-input"
           style={{ maxWidth: "12rem" }}
-          placeholder="Filter by tag…"
+          placeholder={t("filterByTagPlaceholder")}
           value={tag}
           onChange={(e) => setTag(e.target.value)}
         />
@@ -44,7 +47,7 @@ export default function NotesPage() {
 
       <NoteList
         filter={{ q: search || undefined, tag: tag || undefined }}
-        emptyMessage="No notes yet. Create one to start keeping track of what you find."
+        emptyMessage={t("emptyMessage")}
       />
     </div>
   );

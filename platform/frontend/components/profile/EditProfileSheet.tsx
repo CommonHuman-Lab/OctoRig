@@ -3,6 +3,7 @@
 // Copyright (c) 2026 CommonHuman-Lab
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { updateMyProfile, type ProfileUpdatePayload, type UserProfile } from "@/lib/api/profiles";
 import { useApiMutation } from "@/hooks/useApiMutation";
 import { ProfileForm } from "@/components/profile/ProfileForm";
@@ -18,6 +19,7 @@ export function EditProfileSheet({
   profile: UserProfile | null | undefined;
   onClose: () => void;
 }) {
+  const t = useTranslations("profile");
   const [form, setForm] = useState<ProfileUpdatePayload>({});
 
   useEffect(() => {
@@ -36,8 +38,8 @@ export function EditProfileSheet({
   const saveMutation = useApiMutation<UserProfile, void>({
     mutationFn: () => updateMyProfile(form),
     invalidateKeys: [["profile"]],
-    successMessage: "Profile saved",
-    errorMessage: "Failed to save profile",
+    successMessage: t("profileSavedToast"),
+    errorMessage: t("saveProfileFailed"),
     onSuccess: onClose,
   });
 
@@ -46,7 +48,7 @@ export function EditProfileSheet({
   if (!open) return null;
 
   return (
-    <SheetShell title="Edit Profile" onClose={onClose}>
+    <SheetShell title={t("editProfile")} onClose={onClose}>
       <ProfileForm
         form={form}
         onChange={(key, value) => setForm((prev) => ({ ...prev, [key]: value }))}

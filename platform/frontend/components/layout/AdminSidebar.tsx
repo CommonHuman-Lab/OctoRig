@@ -4,6 +4,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import {
   ShieldCheck, UserCog, FolderGit2, Container, ScrollText,
   Trophy, Flag, KeyRound, BarChart3, Zap, ClipboardList, Settings,
@@ -12,30 +13,33 @@ import {
 import { clsx } from "clsx";
 import { useUserStore } from "@/stores/user.store";
 import { useThemeStore } from "@/stores/theme.store";
+import { useLocaleStore } from "@/stores/locale.store";
 import { logout } from "@/lib/api/auth";
 import { Brand } from "./Brand";
 
 const NAV_ADMIN = [
-  { href: "/admin",              icon: ShieldCheck,   label: "Overview" },
-  { href: "/admin/users",        icon: UserCog,       label: "Users" },
-  { href: "/admin/roles",        icon: ShieldCheck,   label: "Roles" },
-  { href: "/admin/teams",        icon: FolderGit2,    label: "Teams" },
-  { href: "/admin/labs",         icon: Boxes,         label: "Labs" },
-  { href: "/admin/deployments",  icon: Container,     label: "Deployments" },
-  { href: "/admin/audit",        icon: ScrollText,    label: "Audit Log" },
-  { href: "/admin/challenges",   icon: Trophy,        label: "Challenges" },
-  { href: "/admin/events",       icon: Flag,          label: "Events" },
-  { href: "/admin/api-keys",     icon: KeyRound,      label: "API Keys" },
-  { href: "/admin/ranks",        icon: BarChart3,     label: "Ranks" },
-  { href: "/admin/assessments",  icon: Zap,           label: "Assessments" },
-  { href: "/admin/content",      icon: ClipboardList, label: "Content" },
-  { href: "/admin/settings",     icon: Settings,      label: "Settings" },
-];
+  { href: "/admin",              icon: ShieldCheck,   key: "adminOverview" },
+  { href: "/admin/users",        icon: UserCog,       key: "adminUsers" },
+  { href: "/admin/roles",        icon: ShieldCheck,   key: "adminRoles" },
+  { href: "/admin/teams",        icon: FolderGit2,    key: "teams" },
+  { href: "/admin/labs",         icon: Boxes,         key: "labs" },
+  { href: "/admin/deployments",  icon: Container,     key: "deployments" },
+  { href: "/admin/audit",        icon: ScrollText,    key: "adminAuditLog" },
+  { href: "/admin/challenges",   icon: Trophy,        key: "challenges" },
+  { href: "/admin/events",       icon: Flag,          key: "events" },
+  { href: "/admin/api-keys",     icon: KeyRound,      key: "apiKeys" },
+  { href: "/admin/ranks",        icon: BarChart3,     key: "adminRanks" },
+  { href: "/admin/assessments",  icon: Zap,           key: "adminAssessments" },
+  { href: "/admin/content",      icon: ClipboardList, key: "adminContent" },
+  { href: "/admin/settings",     icon: Settings,      key: "settings" },
+] as const;
 
 export function AdminSidebar() {
+  const t = useTranslations("nav");
   const pathname = usePathname();
   const { user, clearSession } = useUserStore();
   const { resetExplicit } = useThemeStore();
+  const { resetExplicit: resetLocaleExplicit } = useLocaleStore();
 
   function isActive(href: string) {
     if (href === "/admin") return pathname === "/admin";
@@ -45,6 +49,7 @@ export function AdminSidebar() {
   async function handleLogout() {
     try { await logout(); } catch {}
     resetExplicit();
+    resetLocaleExplicit();
     clearSession();
     window.location.href = "/login";
   }
@@ -64,7 +69,7 @@ export function AdminSidebar() {
           className="g-nav-item"
         >
           <ArrowLeft size={14} className="shrink-0" style={{ color: "var(--g-text-muted)" }} />
-          <span style={{ color: "var(--g-text-muted)" }}>Back to Platform</span>
+          <span style={{ color: "var(--g-text-muted)" }}>{t("backToPlatform")}</span>
         </Link>
       </div>
 
@@ -73,14 +78,15 @@ export function AdminSidebar() {
           className="text-9px font-mono uppercase"
           style={{ color: "var(--g-text-muted)", letterSpacing: "0.12em" }}
         >
-          Admin
+          {t("adminSection")}
         </span>
       </div>
 
       {/* Admin nav */}
       <nav className="flex-1 p-2 space-y-0.5 overflow-y-auto">
-        {NAV_ADMIN.map(({ href, icon: Icon, label }) => {
+        {NAV_ADMIN.map(({ href, icon: Icon, key }) => {
           const active = isActive(href);
+          const label = t(key);
           return (
             <Link
               key={href}
@@ -116,7 +122,7 @@ export function AdminSidebar() {
         </span>
         <button
           onClick={handleLogout}
-          title="Log out"
+          title={t("logOut")}
           className="flex items-center justify-center p-1 rounded hover:bg-[var(--g-accent-dim)] transition-colors"
           style={{ color: "var(--g-danger, #f85149)" }}
         >

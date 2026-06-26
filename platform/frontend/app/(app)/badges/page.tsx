@@ -5,6 +5,7 @@ import "./badges.css";
 
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { Award, RefreshCw } from "lucide-react";
 import { getBadges, evaluateAchievements } from "@/lib/api/badges";
 import { getMyRank } from "@/lib/api/ranks";
@@ -19,7 +20,17 @@ const CATEGORIES = ["all", "milestone", "competition", "skill"] as const;
 type CategoryFilter = typeof CATEGORIES[number];
 type StatusFilter = "all" | "earned" | "locked";
 
+const CATEGORY_KEY: Record<string, string> = {
+  milestone: "categoryMilestone",
+  competition: "categoryCompetition",
+  skill: "categorySkill",
+  other: "categoryOther",
+};
+
 export default function BadgesPage() {
+  const t = useTranslations("badges");
+  const tn = useTranslations("nav");
+  const tc = useTranslations("common");
   const qc = useQueryClient();
   const { push } = useNotificationsStore();
   const [catFilter, setCatFilter] = useState<CategoryFilter>("all");
@@ -35,12 +46,12 @@ export default function BadgesPage() {
     onSuccess: (newBadges) => {
       qc.invalidateQueries({ queryKey: ["badges"] });
       if (newBadges.length > 0) {
-        push("success", `Unlocked: ${newBadges.join(", ")}`);
+        push("success", t("unlockedToast", { names: newBadges.join(", ") }));
       } else {
-        push("info", "No new badges earned yet.");
+        push("info", t("noNewBadges"));
       }
     },
-    onError: () => push("error", "Failed to evaluate achievements"),
+    onError: () => push("error", t("evalFailed")),
   });
 
   const { data: myRank } = useQuery({
@@ -71,16 +82,16 @@ export default function BadgesPage() {
         <div>
           <h1 className="page-title font-mono">
             <Award size={18} style={{ display: "inline", marginRight: "0.5rem", verticalAlign: "middle" }} />
-            Badges
+            {tn("badges")}
           </h1>
-          {!isLoading && <p className="page-sub">{earned}/{total} earned</p>}
+          {!isLoading && <p className="page-sub">{t("earnedCount", { earned, total })}</p>}
         </div>
         <Button
           leftIcon={<RefreshCw size={13} />}
           onClick={() => evalMutation.mutate()}
           disabled={evalMutation.isPending}
         >
-          {evalMutation.isPending ? "Checking…" : "Check Achievements"}
+          {evalMutation.isPending ? t("checking") : t("checkAchievements")}
         </Button>
       </div>
 
@@ -93,21 +104,22 @@ export default function BadgesPage() {
               options: [...CATEGORIES],
               value: catFilter,
               onChange: (v) => setCatFilter(v as CategoryFilter),
-              label: (v) => v === "all" ? "All" : v!.charAt(0).toUpperCase() + v!.slice(1),
+              label: (v) => v === "all" ? tc("all") : t(CATEGORY_KEY[v!] as any),
             },
             {
               options: ["all", "earned", "locked"],
               value: statusFilter,
               onChange: (v) => setStatusFilter(v as StatusFilter),
+              label: (v) => v === "all" ? tc("all") : v === "earned" ? t("statusEarned") : t("statusLocked"),
             },
           ]}
         />
       </div>
 
       {isLoading ? (
-        <div className="text-muted text-xs">Loading badges…</div>
+        <div className="text-muted text-xs">{t("loadingBadges")}</div>
       ) : filtered.length === 0 ? (
-        <div className="text-muted text-xs">No badges match this filter.</div>
+        <div className="text-muted text-xs">{t("noMatch")}</div>
       ) : catFilter !== "all" ? (
         <div className="g-grid-auto badge-grid">
           {filtered.map((b) => <BadgeCard key={b.id} badge={b} />)}
@@ -116,7 +128,7 @@ export default function BadgesPage() {
         <div className="categories">
           {Object.entries(byCategory).map(([cat, catBadges]) => (
             <section key={cat}>
-              <h2 className="cat-title">{cat}</h2>
+              <h2 className="cat-title">{t(CATEGORY_KEY[cat] as any)}</h2>
               <div className="g-grid-auto badge-grid">
                 {catBadges.map((b) => <BadgeCard key={b.id} badge={b} />)}
               </div>

@@ -6,6 +6,7 @@ import "./events.css";
 import { useState } from "react";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { useApiMutation } from "@/hooks/useApiMutation";
 import { Calendar, Clock, Trophy, Users, Lock, Globe, Eye, Plus, Flag } from "lucide-react";
 import {
@@ -26,12 +27,16 @@ import { AsyncContent } from "@/components/ui/AsyncContent";
 import { FilterPills } from "@/components/ui/FilterPills";
 import { Button } from "@/components/ui/Button";
 
-const STATUS_TABS: { id: EventStatus | undefined; label: string }[] = [
-  { id: undefined, label: "All" },
-  { id: "published", label: "Upcoming" },
-  { id: "running", label: "Live" },
-  { id: "ended", label: "Past" },
-];
+const STATUS_TAB_IDS: (EventStatus | undefined)[] = [undefined, "published", "running", "ended"];
+const STATUS_TAB_KEY: Record<string, string> = {
+  published: "statusUpcoming", running: "statusLive", ended: "statusPast",
+};
+const EVENT_STATUS_KEY: Record<string, string> = {
+  draft: "statusDraft", published: "statusUpcoming", ended: "statusPast",
+};
+const SCORING_MODE_KEY: Record<string, string> = {
+  static: "scoringStatic", dynamic: "scoringDynamic",
+};
 
 const VIS_ICON: Record<string, React.ReactNode> = {
   public:   <Globe size={10} />,
@@ -39,30 +44,31 @@ const VIS_ICON: Record<string, React.ReactNode> = {
   unlisted: <Eye size={10} />,
 };
 
-function CountdownBadge({ end_at }: { end_at: string | null }) {
+function CountdownBadge({ end_at, t }: { end_at: string | null; t: ReturnType<typeof useTranslations> }) {
   if (!end_at) return null;
   const ms = new Date(end_at).getTime() - Date.now();
-  if (ms <= 0) return <span className="ev-ended-label">Ended</span>;
+  if (ms <= 0) return <span className="ev-ended-label">{t("ended")}</span>;
   const h = Math.floor(ms / 3_600_000);
   const m = Math.floor((ms % 3_600_000) / 60_000);
   return (
     <span className="ev-countdown">
       <Clock size={10} />
-      {h > 0 ? `${h}h ${m}m remaining` : `${m}m remaining`}
+      {h > 0 ? t("remainingHM", { hours: h, minutes: m }) : t("remainingM", { minutes: m })}
     </span>
   );
 }
 
 function EventCard({ ev }: { ev: CtfEvent }) {
+  const t = useTranslations("events");
   const isLive = ev.status === "running";
   return (
     <Link href={`/events/${ev.slug}`} className={`ev-card g-card ${isLive ? "ev-card--live" : ""}`}>
       <div className="ev-card-header">
         <span className="ev-vis">{VIS_ICON[ev.visibility]}</span>
         <span className="ev-status" style={{ color: EVENT_STATUS_COLORS[ev.status] }}>
-          {isLive ? "● LIVE" : ev.status}
+          {isLive ? t("liveLabel") : t(EVENT_STATUS_KEY[ev.status] as any)}
         </span>
-        {isLive && <CountdownBadge end_at={ev.end_at} />}
+        {isLive && <CountdownBadge end_at={ev.end_at} t={t} />}
       </div>
       <h3 className="ev-title">{ev.title}</h3>
       {ev.description && <p className="ev-desc">{ev.description}</p>}
@@ -74,12 +80,12 @@ function EventCard({ ev }: { ev: CtfEvent }) {
         {ev.max_team_size && (
           <span className="ev-meta-item">
             <Users size={11} />
-            Max {ev.max_team_size}/team
+            {t("maxPerTeam", { count: ev.max_team_size })}
           </span>
         )}
         <span className="ev-meta-item">
           <Trophy size={11} />
-          {ev.scoring_mode}
+          {t(SCORING_MODE_KEY[ev.scoring_mode] as any)}
         </span>
       </div>
     </Link>
@@ -87,6 +93,8 @@ function EventCard({ ev }: { ev: CtfEvent }) {
 }
 
 export default function EventsPage() {
+  const t = useTranslations("events");
+  const tc = useTranslations("common");
   const [statusFilter, setStatusFilter] = useState<EventStatus | undefined>(undefined);
   const [sheet, setSheet] = useState<SheetState>({ open: false, editing: null });
   const [form, setForm] = useState<EventForm>(BLANK_FORM);
@@ -113,8 +121,8 @@ export default function EventsPage() {
       return createEvent(payload);
     },
     invalidateKeys: [["events"]],
-    successMessage: (data) => `Event "${data.title}" created as draft`,
-    errorMessage: (err: any) => err?.response?.data?.detail ?? "Failed to create event",
+    successMessage: (data) => t("createdToast", { title: data.title }),
+    errorMessage: (err: any) => err?.response?.data?.detail ?? t("createFailed"),
     onSuccess: () => setSheet({ open: false, editing: null }),
   });
 
@@ -128,7 +136,7 @@ export default function EventsPage() {
       <div className="page-header">
         <h1 className="page-title font-mono">
           <Flag size={18} style={{ display: "inline", marginRight: "0.5rem", verticalAlign: "middle" }} />
-          CTF Events
+          {t("title")}
         </h1>
         {isAdmin && (
           <Button
@@ -137,7 +145,7 @@ export default function EventsPage() {
             onClick={openCreate}
             leftIcon={<Plus size={13} />}
           >
-            New Event
+            {t("newEvent")}
           </Button>
         )}
       </div>
@@ -146,10 +154,10 @@ export default function EventsPage() {
         <FilterPills
           groups={[
             {
-              options: STATUS_TABS.map((t) => t.id),
+              options: STATUS_TAB_IDS,
               value: statusFilter,
               onChange: (v) => setStatusFilter(v as EventStatus | undefined),
-              label: (v) => STATUS_TABS.find((t) => t.id === v)?.label ?? "All",
+              label: (v) => v ? t(STATUS_TAB_KEY[v] as any) : tc("all"),
             },
           ]}
         />
@@ -160,7 +168,7 @@ export default function EventsPage() {
         data={events}
         empty={
           <div className="text-muted text-sm" style={{ marginTop: "1.5rem" }}>
-            No events found.{isAdmin && " Click “New Event” to create one."}
+            {t("noEvents")}{isAdmin && t("noEventsAdminHint")}
           </div>
         }
       >

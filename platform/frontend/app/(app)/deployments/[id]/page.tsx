@@ -6,6 +6,7 @@ import "../deployment-detail.css";
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { useApiMutation } from "@/hooks/useApiMutation";
 import {
   ArrowLeft, CheckCircle2, Clock, ExternalLink,
@@ -41,12 +42,18 @@ import { STALE_TIME } from "@/lib/config";
 type Visibility = "private" | "team" | "public";
 
 function DiffBadge({ difficulty }: { difficulty: ChallengeDifficulty }) {
+  const tc = useTranslations("common");
   return (
-    <span className="g-diff-badge" style={{ color: DIFF_COLOR[difficulty] }}>{difficulty}</span>
+    <span className="g-diff-badge" style={{ color: DIFF_COLOR[difficulty] }}>{tc(difficulty)}</span>
   );
 }
 
 export default function DeploymentDetailPage() {
+  const t = useTranslations("deployments");
+  const tn = useTranslations("nav");
+  const tl = useTranslations("labs");
+  const tch = useTranslations("challenges");
+  const tc = useTranslations("common");
   const { id } = useParams<{ id: string }>();
   const deploymentId = Number(id);
   const qc = useQueryClient();
@@ -80,38 +87,38 @@ export default function DeploymentDetailPage() {
   const stopMutation = useApiMutation<Deployment, void>({
     mutationFn: () => stopDeployment(deploymentId),
     invalidateKeys: [["deployment", deploymentId], ["deployments"], ["labs"]],
-    successMessage: "Lab stop requested",
-    errorMessage: "Failed to stop lab",
+    successMessage: tl("stopRequested"),
+    errorMessage: tl("stopFailed"),
   });
 
   const resetMutation = useApiMutation<Deployment, void>({
     mutationFn: () => resetDeployment(deploymentId),
     invalidateKeys: [["deployment", deploymentId]],
-    successMessage: "Lab reset requested",
-    errorMessage: "Failed to reset lab",
+    successMessage: tl("resetRequested"),
+    errorMessage: tl("resetFailed"),
   });
 
   const startMutation = useApiMutation<Deployment, void>({
     mutationFn: () => restartDeployment(deploymentId),
     invalidateKeys: [["deployment", deploymentId], ["deployments"], ["labs"]],
-    successMessage: "Lab start requested",
-    errorMessage: "Failed to start lab",
+    successMessage: t("startRequested"),
+    errorMessage: t("startFailed"),
   });
 
   const removeMutation = useApiMutation<void, void>({
     mutationFn: () => removeDeployment(deploymentId),
     invalidateKeys: [["deployments"]],
-    successMessage: "Deployment removed",
-    errorMessage: "Failed to remove deployment",
+    successMessage: t("removedToast"),
+    errorMessage: t("removeFailed"),
     onSuccess: () => router.push("/deployments"),
   });
 
   function handleRemove() {
     if (!deployment) return;
     confirm({
-      title: "Remove deployment?",
-      body: `Permanently remove the "${deployment.lab_name}" deployment record? This cannot be undone.`,
-      confirmLabel: "Remove",
+      title: t("removeConfirmTitle"),
+      body: t("removeConfirmBody", { name: deployment.lab_name }),
+      confirmLabel: t("removeLabel"),
       dangerous: true,
       onConfirm: () => removeMutation.mutate(),
     });
@@ -121,9 +128,9 @@ export default function DeploymentDetailPage() {
     mutationFn: (v: Visibility) => setDeploymentVisibility(deploymentId, v),
     onSuccess: (updated) => {
       qc.setQueryData(["deployment", deploymentId], updated);
-      push("success", `Visibility set to ${updated.visibility}`);
+      push("success", t("visibilitySetToast", { vis: updated.visibility }));
     },
-    onError: () => push("error", "Failed to update visibility"),
+    onError: () => push("error", t("visibilityUpdateFailed")),
   });
 
   const scheduleMutation = useApiMutation<ScheduledAction, void>({
@@ -134,15 +141,15 @@ export default function DeploymentDetailPage() {
         scheduled_at: new Date(scheduledAt).toISOString(),
       }),
     invalidateKeys: [],
-    successMessage: "Destroy scheduled",
-    errorMessage: (err: any) => err?.response?.data?.detail ?? "Failed to schedule destroy",
+    successMessage: t("destroyScheduledToast"),
+    errorMessage: (err: any) => err?.response?.data?.detail ?? t("destroyScheduleFailed"),
     onSuccess: () => setShowSchedule(false),
   });
 
   const { label: countdown, remainingMs: countdownMs } = useCountdown(deployment?.auto_destroy_at ?? null);
 
   if (isLoading) return <div className="page"><PageSpinner /></div>;
-  if (!deployment) return <div className="page text-muted text-sm">Deployment not found.</div>;
+  if (!deployment) return <div className="page text-muted text-sm">{t("notFound")}</div>;
 
   const isActive = deployment.status === "running" || deployment.status === "starting";
   const canStop = deployment.status === "running" || deployment.status === "error";
@@ -158,7 +165,7 @@ export default function DeploymentDetailPage() {
   return (
     <div className="page">
       <Link href="/deployments" className="back-link">
-        <ArrowLeft size={14} /> Deployments
+        <ArrowLeft size={14} /> {tn("deployments")}
       </Link>
 
       <div className="dd-header">
@@ -180,7 +187,7 @@ export default function DeploymentDetailPage() {
               onClick={() => stopMutation.mutate()}
               disabled={stopMutation.isPending || deployment.status === "stopping"}
             >
-              Stop
+              {t("stop")}
             </Button>
           )}
           {canReset && (
@@ -189,7 +196,7 @@ export default function DeploymentDetailPage() {
               onClick={() => resetMutation.mutate()}
               disabled={resetMutation.isPending}
             >
-              Reset
+              {t("reset")}
             </Button>
           )}
           {canStart && (
@@ -199,7 +206,7 @@ export default function DeploymentDetailPage() {
               onClick={() => startMutation.mutate()}
               disabled={startMutation.isPending}
             >
-              Start
+              {t("start")}
             </Button>
           )}
           {canRemove && (
@@ -209,12 +216,12 @@ export default function DeploymentDetailPage() {
               onClick={handleRemove}
               disabled={removeMutation.isPending}
             >
-              Remove
+              {t("removeLabel")}
             </Button>
           )}
           {labUrl && isActive && (
             <Button href={labUrl} leftIcon={<ExternalLink size={14} />}>
-              Open Lab
+              {t("openLab")}
             </Button>
           )}
           {canSchedule && (
@@ -223,7 +230,7 @@ export default function DeploymentDetailPage() {
               leftIcon={<Clock size={13} />}
               onClick={() => { setShowSchedule(true); setScheduledAt(addHours(2)); }}
             >
-              Schedule Destroy
+              {t("scheduleDestroy")}
             </Button>
           )}
         </div>
@@ -252,7 +259,7 @@ export default function DeploymentDetailPage() {
       {challenges.length > 0 && (
         <div className="g-card dd-challenges">
           <div className="dd-section-title">
-            Challenges
+            {tn("challenges")}
             <span className="dd-ch-count">{challenges.length}</span>
           </div>
           <div className="dd-ch-list">
@@ -269,7 +276,7 @@ export default function DeploymentDetailPage() {
                 </div>
                 <div className="dd-ch-right">
                   <DiffBadge difficulty={ch.difficulty} />
-                  <span className="dd-ch-pts">{ch.points} pts</span>
+                  <span className="dd-ch-pts">{tc("points", { count: ch.points })}</span>
                   <div className="dd-ch-meta">
                     {ch.estimated_minutes && (
                       <span className="dd-ch-meta-item">
@@ -281,7 +288,7 @@ export default function DeploymentDetailPage() {
                     </span>
                     {ch.solved_by_me && (
                       <span className="dd-ch-solved">
-                        <CheckCircle2 size={10} />Solved
+                        <CheckCircle2 size={10} />{tch("solvedLabel")}
                       </span>
                     )}
                   </div>

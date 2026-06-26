@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useApiMutation } from "@/hooks/useApiMutation";
 import {
   createSubmission,
@@ -11,6 +12,9 @@ import {
 import { Button } from "@/components/ui/Button";
 
 export function CreateModal({ onClose }: { onClose: () => void }) {
+  const t = useTranslations("creator");
+  const ta = useTranslations("apiKeys");
+  const tc = useTranslations("common");
   const [title, setTitle] = useState("");
   const [contentType, setContentType] = useState<ContentType>("challenge");
 
@@ -18,21 +22,21 @@ export function CreateModal({ onClose }: { onClose: () => void }) {
     mutationFn: () =>
       createSubmission({ content_type: contentType, title, body: {} }),
     invalidateKeys: [["content", "mine"]],
-    successMessage: "Draft created.",
-    errorMessage: "Failed to create draft.",
+    successMessage: t("draftCreatedToast"),
+    errorMessage: t("createDraftFailed"),
     onSuccess: onClose,
   });
 
   return (
     <div className="modal-backdrop" onClick={(e) => e.target === e.currentTarget && onClose()}>
       <div className="modal-box">
-        <h2 className="modal-title">New Draft</h2>
+        <h2 className="modal-title">{t("newDraft")}</h2>
 
         <div className="modal-field">
-          <label className="modal-label">Title</label>
+          <label className="modal-label">{t("titleLabel")}</label>
           <input
             className="g-input"
-            placeholder="Submission title…"
+            placeholder={t("submissionTitlePlaceholder")}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             autoFocus
@@ -40,25 +44,25 @@ export function CreateModal({ onClose }: { onClose: () => void }) {
         </div>
 
         <div className="modal-field">
-          <label className="modal-label">Type</label>
+          <label className="modal-label">{t("typeLabel")}</label>
           <select
             className="g-input"
             value={contentType}
             onChange={(e) => setContentType(e.target.value as ContentType)}
           >
-            <option value="challenge">Challenge</option>
-            <option value="lab">Lab</option>
+            <option value="challenge">{t("challengeOption")}</option>
+            <option value="lab">{t("labOption")}</option>
           </select>
         </div>
 
         <div className="modal-footer">
-          <Button onClick={onClose}>Cancel</Button>
+          <Button onClick={onClose}>{tc("cancel")}</Button>
           <Button
             variant="primary"
             disabled={!title.trim() || isPending}
             onClick={() => mutate()}
           >
-            {isPending ? "Creating…" : "Create Draft"}
+            {isPending ? ta("creating") : t("createDraftBtn")}
           </Button>
         </div>
       </div>

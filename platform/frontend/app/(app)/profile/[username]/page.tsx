@@ -7,6 +7,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import {
   ArrowLeft, MapPin, Globe, Link2,
   Trophy, Target, Droplets, Users, Pencil,
@@ -31,6 +32,9 @@ function StatBlock({ icon, label, value }: { icon: React.ReactNode; label: strin
 }
 
 function ProfileView({ profile, rankData }: { profile: UserProfile; rankData?: UserRank }) {
+  const t = useTranslations("profile");
+  const tn = useTranslations("nav");
+  const tb = useTranslations("badges");
   const initials = profile.username.slice(0, 2).toUpperCase();
 
   return (
@@ -85,16 +89,16 @@ function ProfileView({ profile, rankData }: { profile: UserProfile; rankData?: U
       <div className="profile-main">
         {/* Stats row */}
         <div className="stats-row g-card">
-          <StatBlock icon={<Trophy size={16} />} label="Points" value={profile.total_points} />
-          <StatBlock icon={<Target size={16} />} label="Solves" value={profile.solve_count} />
-          <StatBlock icon={<Droplets size={16} />} label="First Bloods" value={profile.first_bloods} />
-          <StatBlock icon={<Users size={16} />} label="Teams" value={profile.team_count} />
+          <StatBlock icon={<Trophy size={16} />} label={t("pointsLabel")} value={profile.total_points} />
+          <StatBlock icon={<Target size={16} />} label={t("solvesLabel")} value={profile.solve_count} />
+          <StatBlock icon={<Droplets size={16} />} label={t("firstBloodsLabel")} value={profile.first_bloods} />
+          <StatBlock icon={<Users size={16} />} label={tn("teams")} value={profile.team_count} />
         </div>
 
         {/* Badges */}
         {profile.badges.length > 0 && (
           <section className="g-card">
-            <h2 className="section-title">Badges</h2>
+            <h2 className="section-title">{tn("badges")}</h2>
             <div className="badge-row">
               {profile.badges.map((b) => (
                 <div key={b.slug} className="g-badge g-badge--accent" title={b.name}>
@@ -109,15 +113,15 @@ function ProfileView({ profile, rankData }: { profile: UserProfile; rankData?: U
         {/* Recent solves */}
         {profile.recent_solves.length > 0 && (
           <section className="g-card">
-            <h2 className="section-title">Recent Solves</h2>
+            <h2 className="section-title">{t("recentSolvesHeading")}</h2>
             <div className="solves-list">
               {profile.recent_solves.map((s, i) => (
                 <div key={i} className="solve-row">
                   <Link href={`/challenges/${s.challenge_slug}`} className="solve-title">
                     {s.challenge_title}
                   </Link>
-                  <span className="solve-pts">+{s.points_awarded} pts</span>
-                  {s.is_first_blood && <span className="solve-fb">🩸 First Blood</span>}
+                  <span className="solve-pts">{tb("pointsValue", { count: s.points_awarded })}</span>
+                  {s.is_first_blood && <span className="solve-fb">🩸 {t("firstBloodLabel")}</span>}
                   <span className="solve-date">
                     {formatDate(s.submitted_at)}
                   </span>
@@ -132,6 +136,7 @@ function ProfileView({ profile, rankData }: { profile: UserProfile; rankData?: U
 }
 
 export default function UserProfilePage() {
+  const t = useTranslations("profile");
   const { username } = useParams<{ username: string }>();
   const { user } = useUserStore();
   const isOwnProfile = user?.username === username;
@@ -154,7 +159,7 @@ export default function UserProfilePage() {
       <div className="page-header">
         <Link href="/" className="back-link">
           <ArrowLeft size={14} />
-          <span>Back</span>
+          <span>{t("back")}</span>
         </Link>
         {isOwnProfile && (
           <Button
@@ -162,13 +167,13 @@ export default function UserProfilePage() {
             leftIcon={<Pencil size={13} />}
             onClick={() => setEditOpen(true)}
           >
-            Edit Profile
+            {t("editProfile")}
           </Button>
         )}
       </div>
 
-      {isLoading && <div className="text-muted text-xs">Loading profile…</div>}
-      {isError && <div className="text-muted text-xs">Profile not found.</div>}
+      {isLoading && <div className="text-muted text-xs">{t("loadingProfile")}</div>}
+      {isError && <div className="text-muted text-xs">{t("notFound")}</div>}
       {profile && <ProfileView profile={profile} rankData={rankData} />}
 
       {isOwnProfile && (

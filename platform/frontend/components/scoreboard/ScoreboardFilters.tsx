@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
 import { Crosshair } from "lucide-react";
+import { useTranslations } from "next-intl";
 import type { ScoreboardEntry } from "@/lib/api/challenges";
 import { Button } from "@/components/ui/Button";
 
@@ -23,6 +24,7 @@ export function ScoreboardFilters({
   onLimitChange: (limit: number) => void;
   onScrollToMe: () => void;
 }) {
+  const t = useTranslations("scoreboard");
   return (
     <div className="sb-filters">
       <select
@@ -30,7 +32,7 @@ export function ScoreboardFilters({
         value={eventSlug}
         onChange={(e) => onEventChange(e.target.value)}
       >
-        <option value="">Global</option>
+        <option value="">{t("global")}</option>
         {events
           .filter((ev) => ev.status !== "draft")
           .map((ev) => (
@@ -44,13 +46,13 @@ export function ScoreboardFilters({
         onChange={(e) => onLimitChange(Number(e.target.value))}
       >
         {SCOREBOARD_LIMITS.map((l) => (
-          <option key={l} value={l}>Top {l}</option>
+          <option key={l} value={l}>{t("topN", { count: l })}</option>
         ))}
       </select>
 
       {myEntry && (
         <Button variant="ghost" className="sb-highlight-btn" onClick={onScrollToMe} leftIcon={<Crosshair size={12} />}>
-          My Rank #{myEntry.rank}
+          {t("myRank", { rank: myEntry.rank })}
         </Button>
       )}
     </div>

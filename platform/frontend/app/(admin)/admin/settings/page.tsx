@@ -64,6 +64,7 @@ export default function AdminSettingsPage() {
     });
     setAppearance({
       default_theme: settings.default_theme,
+      default_locale: settings.default_locale,
     });
   }, [settings]);
 

@@ -13,6 +13,7 @@ import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { LabPoller } from "@/components/deployments/LabPoller";
 import { useUserStore } from "@/stores/user.store";
 import { useThemeStore } from "@/stores/theme.store";
+import { useLocaleStore } from "@/stores/locale.store";
 import { useSidebarStore } from "@/stores/sidebar.store";
 import { getPublicSettings } from "@/lib/api/settings";
 import { getMyProfile } from "@/lib/api/profiles";
@@ -21,6 +22,7 @@ import { STALE_TIME } from "@/lib/config";
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const { accessToken, _hasHydrated, isRestoringToken, user } = useUserStore();
   const { theme, applyPlatformDefault, applyProfileTheme } = useThemeStore();
+  const { applyPlatformDefault: applyLocalePlatformDefault, applyProfileLocale } = useLocaleStore();
   const { collapsed: sidebarCollapsed } = useSidebarStore();
   const router = useRouter();
   const [bannerDismissed, setBannerDismissed] = useState(false);
@@ -53,11 +55,13 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     applyPlatformDefault(publicSettings?.default_theme);
-  }, [publicSettings, applyPlatformDefault]);
+    applyLocalePlatformDefault(publicSettings?.default_locale);
+  }, [publicSettings, applyPlatformDefault, applyLocalePlatformDefault]);
 
   useEffect(() => {
     applyProfileTheme(myProfile?.theme);
-  }, [myProfile, applyProfileTheme]);
+    applyProfileLocale(myProfile?.locale);
+  }, [myProfile, applyProfileTheme, applyProfileLocale]);
 
   // Wait for rehydration and any in-flight token restore before rendering or redirecting.
   if (!_hasHydrated || isRestoringToken || !accessToken) return null;

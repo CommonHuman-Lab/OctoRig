@@ -5,6 +5,7 @@ import "./creator.css";
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { Plus, PenTool } from "lucide-react";
 import { getMySubmissions } from "@/lib/api/content";
 import { CreateModal } from "@/components/creator/CreateModal";
@@ -13,6 +14,9 @@ import { AsyncContent } from "@/components/ui/AsyncContent";
 import { Button } from "@/components/ui/Button";
 
 export default function CreatorPage() {
+  const t = useTranslations("creator");
+  const td = useTranslations("deployments");
+  const tc = useTranslations("common");
   const [showCreate, setShowCreate] = useState(false);
 
   const { data: submissions = [], isLoading } = useQuery({
@@ -25,10 +29,10 @@ export default function CreatorPage() {
       <div className="creator-header page-header">
         <h1 className="page-title font-mono">
           <PenTool size={18} style={{ display: "inline", marginRight: "0.5rem", verticalAlign: "middle" }} />
-          Content Creator
+          {t("title")}
         </h1>
         <Button variant="primary" leftIcon={<Plus size={14} />} onClick={() => setShowCreate(true)}>
-          New Draft
+          {t("newDraft")}
         </Button>
       </div>
 
@@ -37,7 +41,7 @@ export default function CreatorPage() {
         data={submissions}
         empty={
           <div className="creator-empty">
-            No submissions yet. Create a draft to get started.
+            {t("noSubmissions")}
           </div>
         }
       >
@@ -46,11 +50,11 @@ export default function CreatorPage() {
             <table className="g-table">
               <thead>
                 <tr>
-                  <th>Title</th>
-                  <th>Type</th>
-                  <th>Status</th>
-                  <th>Last Updated</th>
-                  <th>Actions</th>
+                  <th>{t("colTitle")}</th>
+                  <th>{t("colType")}</th>
+                  <th>{td("colStatus")}</th>
+                  <th>{t("colLastUpdated")}</th>
+                  <th>{tc("actions")}</th>
                 </tr>
               </thead>
               <tbody>

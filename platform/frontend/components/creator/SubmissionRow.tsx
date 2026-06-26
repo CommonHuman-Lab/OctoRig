@@ -3,13 +3,21 @@
 // Copyright (c) 2026 CommonHuman-Lab
 import { useState } from "react";
 import { Edit3, FileText } from "lucide-react";
+import { useTranslations } from "next-intl";
 import type { ContentSubmission } from "@/lib/api/content";
 import { formatDate } from "@/lib/utils/date";
 import { StatusPill } from "@/components/ui/StatusPill";
 import { Button } from "@/components/ui/Button";
 import { ChallengeBodyEditor } from "./ChallengeBodyEditor";
 
+const CONTENT_TYPE_KEY: Record<string, string> = {
+  challenge: "challengeOption",
+  lab: "labOption",
+};
+
 export function SubmissionRow({ sub }: { sub: ContentSubmission }) {
+  const t = useTranslations("creator");
+  const tc = useTranslations("common");
   const [expanded, setExpanded] = useState(false);
 
   const isEditable = sub.status === "draft" || sub.status === "rejected";
@@ -21,7 +29,7 @@ export function SubmissionRow({ sub }: { sub: ContentSubmission }) {
         <td style={{ color: "var(--g-text)" }}>{sub.title}</td>
         <td>
           <span className="g-status-pill" style={{ background: "color-mix(in srgb, var(--g-accent) 10%, transparent)", color: "var(--g-accent)" }}>
-            {sub.content_type}
+            {t(CONTENT_TYPE_KEY[sub.content_type] as any)}
           </span>
         </td>
         <td><StatusPill status={sub.status} /></td>
@@ -36,7 +44,7 @@ export function SubmissionRow({ sub }: { sub: ContentSubmission }) {
               onClick={() => setExpanded((v) => !v)}
               leftIcon={isEditable ? <Edit3 size={12} /> : <FileText size={12} />}
             >
-              {expanded ? "Hide" : isEditable ? "Edit" : "View"}
+              {expanded ? t("hide") : isEditable ? tc("edit") : t("view")}
             </Button>
           </div>
         </td>
@@ -54,11 +62,11 @@ export function SubmissionRow({ sub }: { sub: ContentSubmission }) {
                 padding: "0.75rem",
               }}>
                 <div style={{ fontSize: "0.625rem", textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--g-text-muted)", marginBottom: "0.5rem" }}>
-                  Body
+                  {t("bodyHeading")}
                 </div>
                 {Object.keys(sub.body).length === 0 ? (
                   <span style={{ fontSize: "0.75rem", color: "var(--g-text-muted)", fontStyle: "italic" }}>
-                    Empty — no body content yet.
+                    {t("emptyBody")}
                   </span>
                 ) : (
                   <pre style={{ margin: 0, fontSize: "0.75rem", color: "var(--g-text-secondary)", whiteSpace: "pre-wrap", wordBreak: "break-all", fontFamily: "var(--font-mono, monospace)" }}>

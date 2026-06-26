@@ -3,6 +3,7 @@
 // Copyright (c) 2026 CommonHuman-Lab
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
 
 export function CreateKeyForm({
@@ -14,6 +15,8 @@ export function CreateKeyForm({
   isPending: boolean;
   onCancel: () => void;
 }) {
+  const t = useTranslations("apiKeys");
+  const tc = useTranslations("common");
   const [name, setName] = useState("");
   const [expiry, setExpiry] = useState("");
 
@@ -26,21 +29,21 @@ export function CreateKeyForm({
   return (
     <div className="create-form g-panel">
       <div className="g-panel-header">
-        <span className="font-mono text-sm">New API Key</span>
+        <span className="font-mono text-sm">{t("newApiKeyHeading")}</span>
       </div>
       <div className="create-body">
         <div className="field">
-          <label className="text-11 text-muted">Key Name</label>
+          <label className="text-11 text-muted">{t("keyNameLabel")}</label>
           <input
             className="g-input"
-            placeholder="e.g. CI/CD Pipeline"
+            placeholder={t("keyNamePlaceholder")}
             value={name}
             onChange={(e) => setName(e.target.value)}
             autoFocus
           />
         </div>
         <div className="field">
-          <label className="text-11 text-muted">Expiry Date (optional)</label>
+          <label className="text-11 text-muted">{t("expiryDateLabel")}</label>
           <input
             className="g-input"
             type="datetime-local"
@@ -50,14 +53,14 @@ export function CreateKeyForm({
         </div>
         <div className="form-actions">
           <Button onClick={onCancel}>
-            Cancel
+            {tc("cancel")}
           </Button>
           <Button
             variant="primary"
             onClick={handleSubmit}
             disabled={!name.trim() || isPending}
           >
-            {isPending ? "Creating…" : "Create Key"}
+            {isPending ? t("creating") : t("createKeyBtn")}
           </Button>
         </div>
       </div>

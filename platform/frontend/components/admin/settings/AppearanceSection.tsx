@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { Save } from "lucide-react";
 import { THEMES } from "@/lib/themes";
+import { LOCALES } from "@/lib/i18n";
 import type { SiteSettings } from "@/lib/api/settings";
 import { useThemeStore } from "@/stores/theme.store";
 import { SettingRow } from "./SettingRow";
@@ -87,6 +88,50 @@ export function AppearanceSection({
                     letterSpacing: "0.04em",
                   }}>
                     {t.name}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        }
+      />
+
+      <SettingRow
+        label="Default Language"
+        description="Applied to new users and any user who has not explicitly chosen a language."
+        control={
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+            {LOCALES.map((l) => {
+              const isActive = (appearance.default_locale ?? "en") === l.id;
+              return (
+                <button
+                  key={l.id}
+                  onClick={() => onChange({ default_locale: l.id })}
+                  title={l.name}
+                  aria-pressed={isActive}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.375rem",
+                    padding: "0.25rem 0.625rem",
+                    borderRadius: "var(--g-radius, 4px)",
+                    border: isActive
+                      ? "1px solid var(--g-accent)"
+                      : "1px solid var(--g-border)",
+                    background: isActive
+                      ? "color-mix(in srgb, var(--g-accent) 12%, transparent)"
+                      : "transparent",
+                    cursor: "pointer",
+                    transition: "border-color 0.15s, background 0.15s",
+                  }}
+                >
+                  <span style={{
+                    fontSize: "0.6875rem",
+                    fontFamily: "var(--font-mono, monospace)",
+                    color: isActive ? "var(--g-accent)" : "var(--g-text-muted)",
+                    letterSpacing: "0.04em",
+                  }}>
+                    {l.nativeName}
                   </span>
                 </button>
               );

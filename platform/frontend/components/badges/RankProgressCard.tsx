@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
+import { useTranslations } from "next-intl";
 import type { UserRank } from "@/lib/api/ranks";
 
 export function RankProgressCard({ myRank }: { myRank: UserRank }) {
+  const t = useTranslations("badges");
   if (!myRank.rank) return null;
 
   return (
@@ -16,11 +18,15 @@ export function RankProgressCard({ myRank }: { myRank: UserRank }) {
         </span>
         {myRank.next_rank ? (
           <span className="font-mono" style={{ fontSize: "0.7rem", color: "var(--g-text-muted)" }}>
-            {myRank.points.toLocaleString()} / {myRank.next_rank.min_points.toLocaleString()} pts → {myRank.next_rank.name}
+            {t("rankProgress", {
+              points: myRank.points.toLocaleString(),
+              nextPoints: myRank.next_rank.min_points.toLocaleString(),
+              nextName: myRank.next_rank.name,
+            })}
           </span>
         ) : (
           <span className="font-mono" style={{ fontSize: "0.7rem", color: "var(--g-text-muted)" }}>
-            {myRank.points.toLocaleString()} pts — Max rank achieved
+            {t("maxRank", { points: myRank.points.toLocaleString() })}
           </span>
         )}
       </div>

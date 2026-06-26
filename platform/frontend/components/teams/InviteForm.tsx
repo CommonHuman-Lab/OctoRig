@@ -4,6 +4,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import type { TeamRole } from "@/lib/api/teams";
 import { ASSIGNABLE_ROLES, searchUsers } from "@/lib/api/teams";
 import { Button } from "@/components/ui/Button";
@@ -18,6 +19,8 @@ export function InviteForm({
   isPending: boolean;
   onCancel: () => void;
 }) {
+  const t = useTranslations("teams");
+  const tc = useTranslations("common");
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<string | null>(null);
   const [role, setRole] = useState<TeamRole>("member");
@@ -59,7 +62,7 @@ export function InviteForm({
       <div ref={containerRef} style={{ position: "relative" }}>
         <input
           className="g-input g-input-sm"
-          placeholder="Search username…"
+          placeholder={t("searchUsernamePlaceholder")}
           value={query}
           onChange={(e) => {
             setQuery(e.target.value);
@@ -112,10 +115,10 @@ export function InviteForm({
         onClick={handleSubmit}
         disabled={!selected || isPending}
       >
-        {isPending ? "Sending…" : "Invite"}
+        {isPending ? t("sending") : t("invite")}
       </Button>
       <Button size="sm" onClick={onCancel}>
-        Cancel
+        {tc("cancel")}
       </Button>
     </div>
   );

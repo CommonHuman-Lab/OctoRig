@@ -10,12 +10,14 @@ import { Notifications } from "@/components/ui/Notifications";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { useUserStore } from "@/stores/user.store";
 import { useThemeStore } from "@/stores/theme.store";
+import { useLocaleStore } from "@/stores/locale.store";
 import { getPublicSettings } from "@/lib/api/settings";
 import { STALE_TIME } from "@/lib/config";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const { accessToken, _hasHydrated, isRestoringToken, user } = useUserStore();
   const { theme, applyPlatformDefault } = useThemeStore();
+  const { applyPlatformDefault: applyLocalePlatformDefault } = useLocaleStore();
   const router = useRouter();
 
   useEffect(() => {
@@ -37,7 +39,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   useEffect(() => {
     applyPlatformDefault(publicSettings?.default_theme);
-  }, [publicSettings, applyPlatformDefault]);
+    applyLocalePlatformDefault(publicSettings?.default_locale);
+  }, [publicSettings, applyPlatformDefault, applyLocalePlatformDefault]);
 
   const isAdmin = user?.permissions?.includes("admin.panel") ?? false;
 

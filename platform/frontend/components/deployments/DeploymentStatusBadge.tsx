@@ -1,15 +1,16 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
 import { clsx } from "clsx";
+import { useTranslations } from "next-intl";
 
 type Status = "starting" | "running" | "stopping" | "stopped" | "error";
 
-const LABEL: Record<Status, string> = {
-  starting: "Starting",
-  running: "Running",
-  stopping: "Stopping",
-  stopped: "Stopped",
-  error: "Error",
+const LABEL_KEY: Record<Status, string> = {
+  starting: "statusStarting",
+  running: "running",
+  stopping: "statusStopping",
+  stopped: "statusStopped",
+  error: "statusError",
 };
 
 const VAR: Record<Status, string> = {
@@ -21,7 +22,10 @@ const VAR: Record<Status, string> = {
 };
 
 export function DeploymentStatusBadge({ status }: { status: string }) {
+  const t = useTranslations("deployments");
+  const tc = useTranslations("common");
   const s = status as Status;
+  const label = s === "running" ? tc("running") : LABEL_KEY[s] ? t(LABEL_KEY[s] as any) : status;
   return (
     <span
       className="g-badge"
@@ -30,7 +34,7 @@ export function DeploymentStatusBadge({ status }: { status: string }) {
       {s === "starting" || s === "stopping" ? (
         <span className="g-dot animate-pulse" style={{ background: VAR[s] }} />
       ) : null}
-      {LABEL[s] ?? status}
+      {label}
     </span>
   );
 }

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
 import { Trash2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import type { ApiKey } from "@/lib/api/apiKeys";
 import { formatDateTime } from "@/lib/utils/date";
 import { Button } from "@/components/ui/Button";
@@ -14,12 +15,14 @@ export function KeysTable({
   onRevoke: (id: number) => void;
   isPending: boolean;
 }) {
+  const t = useTranslations("apiKeys");
+  const tc = useTranslations("common");
   if (keys.length === 0) {
     return (
       <div className="g-panel empty-state">
-        <p className="text-muted text-sm">No API keys yet.</p>
+        <p className="text-muted text-sm">{t("noKeysYet")}</p>
         <p className="text-muted text-11">
-          Create a key to authenticate via CLI, CI/CD pipelines, or external integrations.
+          {t("noKeysHint")}
         </p>
       </div>
     );
@@ -30,13 +33,13 @@ export function KeysTable({
       <table className="g-table">
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Prefix</th>
-            <th>Status</th>
-            <th>Last Used</th>
-            <th>Expires</th>
-            <th>Created</th>
-            <th>Actions</th>
+            <th>{t("colName")}</th>
+            <th>{t("colPrefix")}</th>
+            <th>{t("colStatus")}</th>
+            <th>{t("colLastUsed")}</th>
+            <th>{t("colExpires")}</th>
+            <th>{t("colCreated")}</th>
+            <th>{tc("actions")}</th>
           </tr>
         </thead>
         <tbody>
@@ -46,14 +49,14 @@ export function KeysTable({
               <td className="font-mono text-11 text-muted">oktor_{key.key_prefix}…</td>
               <td>
                 <span className={`g-status-dot ${key.is_active ? "g-status-dot--active" : "g-status-dot--inactive"}`}>
-                  {key.is_active ? "Active" : "Revoked"}
+                  {key.is_active ? t("active") : t("revoked")}
                 </span>
               </td>
               <td className="text-11 text-muted">
-                {key.last_used_at ? formatDateTime(key.last_used_at) : "Never"}
+                {key.last_used_at ? formatDateTime(key.last_used_at) : t("never")}
               </td>
               <td className="text-11 text-muted">
-                {key.expires_at ? formatDateTime(key.expires_at) : "Never"}
+                {key.expires_at ? formatDateTime(key.expires_at) : t("never")}
               </td>
               <td className="font-mono text-11 text-muted">
                 {formatDateTime(key.created_at)}
@@ -64,12 +67,12 @@ export function KeysTable({
                     variant="danger"
                     icon
                     onClick={() => {
-                      if (confirm("Revoke this API key? This cannot be undone.")) {
+                      if (confirm(t("revokeConfirm"))) {
                         onRevoke(key.id);
                       }
                     }}
                     disabled={isPending}
-                    tooltip="Revoke key"
+                    tooltip={t("revokeKeyTooltip")}
                     leftIcon={<Trash2 size={13} />}
                   />
                 )}

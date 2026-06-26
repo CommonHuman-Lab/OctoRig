@@ -5,6 +5,7 @@ import "./scoreboard.css";
 
 import { useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { Trophy, Snowflake } from "lucide-react";
 import { getGlobalScoreboard } from "@/lib/api/challenges";
 import { getEventScoreboard, getEvents } from "@/lib/api/events";
@@ -16,6 +17,8 @@ import { AsyncContent } from "@/components/ui/AsyncContent";
 import { STALE_TIME, PAGINATION } from "@/lib/config";
 
 export default function ScoreboardPage() {
+  const t = useTranslations("scoreboard");
+  const tn = useTranslations("nav");
   const { user } = useUserStore();
   const [limit, setLimit] = useState<number>(PAGINATION.DEFAULT_LIMIT);
   const [eventSlug, setEventSlug] = useState("");
@@ -55,11 +58,11 @@ export default function ScoreboardPage() {
         <div>
           <h1 className="page-title font-mono">
             <Trophy size={18} style={{ display: "inline", marginRight: "0.5rem", verticalAlign: "middle" }} />
-            Scoreboard
+            {tn("scoreboard")}
           </h1>
           {!isLoading && (
             <p className="page-sub" style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-              {entries.length} players ranked
+              {t("playersRanked", { count: entries.length })}
               {isFrozen && (
                 <span style={{
                   display: "inline-flex", alignItems: "center", gap: "0.25rem",
@@ -69,7 +72,7 @@ export default function ScoreboardPage() {
                   borderRadius: "4px", padding: "0.1rem 0.4rem",
                 }}>
                   <Snowflake size={10} />
-                  Scoreboard frozen
+                  {t("frozen")}
                 </span>
               )}
             </p>
@@ -90,7 +93,7 @@ export default function ScoreboardPage() {
       <AsyncContent
         isLoading={isLoading}
         data={entries}
-        empty={<div className="sb-empty">No scores yet.</div>}
+        empty={<div className="sb-empty">{t("noScores")}</div>}
       >
         {(entries) => (
           <div className="sb-table-wrap g-card" style={{ padding: 0, overflow: "hidden" }}>
@@ -98,11 +101,11 @@ export default function ScoreboardPage() {
               <thead>
                 <tr>
                   <th style={{ textAlign: "right" }}>#</th>
-                  <th>Player</th>
-                  <th>Rank</th>
-                  <th>Points</th>
-                  <th>Solves</th>
-                  <th>Badges</th>
+                  <th>{t("colPlayer")}</th>
+                  <th>{t("colRank")}</th>
+                  <th>{t("colPoints")}</th>
+                  <th>{t("colSolves")}</th>
+                  <th>{tn("badges")}</th>
                 </tr>
               </thead>
               <tbody>

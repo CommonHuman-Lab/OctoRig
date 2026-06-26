@@ -37,6 +37,7 @@ class SiteSettings(Base):
     company_name: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     company_logo_url: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     default_theme: Mapped[Optional[str]] = mapped_column(String(32), nullable=True)
+    default_locale: Mapped[Optional[str]] = mapped_column(String(8), nullable=True)
 
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now()

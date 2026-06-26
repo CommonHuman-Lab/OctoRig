@@ -127,6 +127,7 @@ class SiteSettingsResponse(ORMModel):
     company_name: Optional[str]
     company_logo_url: Optional[str]
     default_theme: Optional[str]
+    default_locale: Optional[str]
     updated_at: datetime
 
 
@@ -145,6 +146,7 @@ class SiteSettingsUpdate(BaseModel):
     company_name: Optional[str] = None
     company_logo_url: Optional[str] = None
     default_theme: Optional[str] = None
+    default_locale: Optional[str] = None
 
 
 class PublicSettingsResponse(BaseModel):
@@ -156,3 +158,4 @@ class PublicSettingsResponse(BaseModel):
     company_name: Optional[str]
     company_logo_url: Optional[str]
     default_theme: Optional[str]
+    default_locale: Optional[str]

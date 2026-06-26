@@ -3,6 +3,7 @@
 // Copyright (c) 2026 CommonHuman-Lab
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Download, Pencil, Trash2, Users, Lock } from "lucide-react";
@@ -13,7 +14,9 @@ import { getTeams } from "@/lib/api/teams";
 import { Button } from "@/components/ui/Button";
 import { NoteEditorSheet } from "./NoteEditorSheet";
 
-export function NoteList({ filter, emptyMessage = "No notes yet." }: { filter?: NoteListParams; emptyMessage?: string }) {
+export function NoteList({ filter, emptyMessage }: { filter?: NoteListParams; emptyMessage?: string }) {
+  const t = useTranslations("notes");
+  const tc = useTranslations("common");
   const [editing, setEditing] = useState<Note | "new" | null>(null);
   const { confirm } = useConfirmStore();
 
@@ -28,14 +31,14 @@ export function NoteList({ filter, emptyMessage = "No notes yet." }: { filter?: 
   const deleteMutation = useApiMutation<void, number>({
     mutationFn: (id) => deleteNote(id),
     invalidateKeys: [["notes"]],
-    successMessage: "Note deleted.",
-    errorMessage: "Failed to delete note.",
+    successMessage: t("deletedToast"),
+    errorMessage: t("deleteFailed"),
   });
 
   function handleDelete(note: Note) {
     confirm({
-      title: "Delete note?",
-      body: `"${note.title}" will be permanently deleted.`,
+      title: t("deleteConfirmTitle"),
+      body: t("deleteConfirmBody", { title: note.title }),
       dangerous: true,
       onConfirm: () => deleteMutation.mutate(note.id),
     });
@@ -45,14 +48,14 @@ export function NoteList({ filter, emptyMessage = "No notes yet." }: { filter?: 
     <div className="notes-list-wrap">
       <div className="notes-list-header">
         <Button variant="primary" onClick={() => setEditing("new")}>
-          New Note
+          {t("newNote")}
         </Button>
       </div>
 
       {isLoading ? (
-        <div className="text-muted text-xs">Loading notes…</div>
+        <div className="text-muted text-xs">{t("loadingNotes")}</div>
       ) : notes.length === 0 ? (
-        <div className="text-muted text-xs">{emptyMessage}</div>
+        <div className="text-muted text-xs">{emptyMessage ?? t("noNotesYet")}</div>
       ) : (
         <div className="notes-list">
           {notes.map((note) => (
@@ -60,13 +63,13 @@ export function NoteList({ filter, emptyMessage = "No notes yet." }: { filter?: 
               <div className="note-card-header">
                 <h3 className="note-card-title">{note.title}</h3>
                 <div className="note-card-actions">
-                  <Button size="sm" icon title="Export as Markdown" onClick={() => exportNote(note.id)}>
+                  <Button size="sm" icon title={t("exportTooltip")} onClick={() => exportNote(note.id)}>
                     <Download size={13} />
                   </Button>
-                  <Button size="sm" icon title="Edit" onClick={() => setEditing(note)}>
+                  <Button size="sm" icon title={tc("edit")} onClick={() => setEditing(note)}>
                     <Pencil size={13} />
                   </Button>
-                  <Button size="sm" icon variant="danger-ghost" title="Delete" onClick={() => handleDelete(note)}>
+                  <Button size="sm" icon variant="danger-ghost" title={tc("delete")} onClick={() => handleDelete(note)}>
                     <Trash2 size={13} />
                   </Button>
                 </div>
@@ -79,15 +82,15 @@ export function NoteList({ filter, emptyMessage = "No notes yet." }: { filter?: 
               )}
 
               <div className="note-card-footer">
-                <span className="note-card-visibility" title={note.visibility === "team" ? `Shared with ${teamName(note.team_id)}` : "Private"}>
+                <span className="note-card-visibility" title={note.visibility === "team" ? t("sharedWith", { team: teamName(note.team_id) }) : t("private")}>
                   {note.visibility === "team" ? <Users size={11} /> : <Lock size={11} />}
                   {note.visibility === "team" && teamName(note.team_id)}
                 </span>
-                {note.tags.map((t) => (
-                  <span key={t} className="g-tag text-10">{t}</span>
+                {note.tags.map((tag) => (
+                  <span key={tag} className="g-tag text-10">{tag}</span>
                 ))}
                 <span className="note-card-updated text-muted">
-                  Updated {new Date(note.updated_at).toLocaleDateString()}
+                  {t("updatedPrefix")} {new Date(note.updated_at).toLocaleDateString()}
                 </span>
               </div>
             </div>

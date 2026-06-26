@@ -5,6 +5,7 @@ import "../teams.css";
 
 import { useState } from "react";
 import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useApiMutation } from "@/hooks/useApiMutation";
 import { ArrowLeft, UserPlus, Pencil, Check, X } from "lucide-react";
@@ -20,6 +21,9 @@ import { MembersTable } from "@/components/teams/MembersTable";
 import { Button } from "@/components/ui/Button";
 
 export default function TeamDetailPage() {
+  const t = useTranslations("teams");
+  const tn = useTranslations("nav");
+  const tc = useTranslations("common");
   const { id } = useParams<{ id: string }>();
   const teamId = Number(id);
   const qc = useQueryClient();
@@ -45,32 +49,32 @@ export default function TeamDetailPage() {
     mutationFn: ({ username, role }: { username: string; role: TeamRole }) =>
       inviteMember(teamId, { username, role }),
     onSuccess: (_, { username }) => {
-      push("success", `Invitation sent to ${username}`);
+      push("success", t("invitedToast", { username }));
       setShowInvite(false);
     },
-    onError: (err: any) => push("error", err?.response?.data?.detail ?? "Failed to send invitation"),
+    onError: (err: any) => push("error", err?.response?.data?.detail ?? t("inviteFailed")),
   });
 
   const removeMutation = useApiMutation({
     mutationFn: (userId: number) => removeMember(teamId, userId),
     invalidateKeys: [["team-members", teamId]],
-    successMessage: "Member removed",
-    errorMessage: (err: any) => err?.response?.data?.detail ?? "Failed to remove member",
+    successMessage: t("memberRemoved"),
+    errorMessage: (err: any) => err?.response?.data?.detail ?? t("removeMemberFailed"),
   });
 
   const roleMutation = useApiMutation({
     mutationFn: ({ userId, role }: { userId: number; role: TeamRole }) =>
       changeMemberRole(teamId, userId, role),
     invalidateKeys: [["team-members", teamId]],
-    successMessage: "Role updated",
-    errorMessage: (err: any) => err?.response?.data?.detail ?? "Failed to update role",
+    successMessage: t("roleUpdated"),
+    errorMessage: (err: any) => err?.response?.data?.detail ?? t("roleUpdateFailed"),
   });
 
   const editMutation = useApiMutation<Team, void>({
     mutationFn: () => updateTeam(teamId, { name: editName.trim(), description: editDesc.trim() || undefined }),
     invalidateKeys: [["team", teamId]],
-    successMessage: "Team updated",
-    errorMessage: (err: any) => err?.response?.data?.detail ?? "Failed to update team",
+    successMessage: t("teamUpdated"),
+    errorMessage: (err: any) => err?.response?.data?.detail ?? t("teamUpdateFailed"),
     onSuccess: () => setEditing(false),
   });
 
@@ -84,15 +88,15 @@ export default function TeamDetailPage() {
     team?.my_role === "owner" || team?.my_role === "manager" ||
     (user?.permissions?.includes("admin.panel") ?? false);
 
-  if (teamLoading) return <div className="page text-muted text-sm">Loading…</div>;
-  if (!team) return <div className="page text-muted text-sm">Team not found.</div>;
+  if (teamLoading) return <div className="page text-muted text-sm">{tc("loading")}</div>;
+  if (!team) return <div className="page text-muted text-sm">{t("notFound")}</div>;
 
   return (
     <div className="page">
       <div className="page-header">
         <Link href="/teams" className="back-link text-muted text-sm">
           <ArrowLeft size={14} />
-          Teams
+          {tn("teams")}
         </Link>
       </div>
 
@@ -104,14 +108,14 @@ export default function TeamDetailPage() {
                 className="g-input g-input-sm font-mono"
                 value={editName}
                 onChange={(e) => setEditName(e.target.value)}
-                placeholder="Team name"
+                placeholder={t("teamNamePlaceholder")}
                 autoFocus
               />
               <input
                 className="g-input g-input-sm"
                 value={editDesc}
                 onChange={(e) => setEditDesc(e.target.value)}
-                placeholder="Description (optional)"
+                placeholder={t("descriptionPlaceholder")}
               />
               <div style={{ display: "flex", gap: "0.4rem" }}>
                 <Button
@@ -121,10 +125,10 @@ export default function TeamDetailPage() {
                   onClick={() => editMutation.mutate()}
                   disabled={!editName.trim() || editMutation.isPending}
                 >
-                  {editMutation.isPending ? "Saving…" : "Save"}
+                  {editMutation.isPending ? tc("saving") : tc("save")}
                 </Button>
                 <Button size="sm" leftIcon={<X size={12} />} onClick={() => setEditing(false)}>
-                  Cancel
+                  {tc("cancel")}
                 </Button>
               </div>
             </div>
@@ -139,7 +143,7 @@ export default function TeamDetailPage() {
               <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                 <span className={`role-badge role-badge--${team.my_role}`}>{team.my_role}</span>
                 {canManage && (
-                  <Button icon leftIcon={<Pencil size={13} />} onClick={startEdit} tooltip="Edit team" />
+                  <Button icon leftIcon={<Pencil size={13} />} onClick={startEdit} tooltip={t("editTeamTooltip")} />
                 )}
               </div>
             </>
@@ -149,14 +153,14 @@ export default function TeamDetailPage() {
 
       <div className="members-panel g-panel mt-3">
         <div className="g-panel-header">
-          <span className="font-mono text-sm">Members ({members.length})</span>
+          <span className="font-mono text-sm">{t("membersCount", { count: members.length })}</span>
           {canManage && (
             <Button
               size="sm"
               leftIcon={<UserPlus size={13} />}
               onClick={() => setShowInvite(!showInvite)}
             >
-              Invite
+              {t("invite")}
             </Button>
           )}
         </div>
@@ -170,7 +174,7 @@ export default function TeamDetailPage() {
         )}
 
         {membersLoading ? (
-          <div className="members-loading text-muted text-11">Loading members…</div>
+          <div className="members-loading text-muted text-11">{t("loadingMembers")}</div>
         ) : (
           <MembersTable
             members={members}

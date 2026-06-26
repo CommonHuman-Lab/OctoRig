@@ -23,6 +23,7 @@ class ProfileUpdateRequest(BaseModel):
     privacy_level: Optional[str] = None
     show_activity: Optional[bool] = None
     theme: Optional[str] = None
+    locale: Optional[str] = None
 
 
 @router.get("/me", response_model=dict[str, Any])
@@ -50,6 +51,7 @@ def update_my_profile(
         privacy_level=body.privacy_level,
         show_activity=body.show_activity,
         theme=body.theme,
+        locale=body.locale,
     )
     return get_profile(db, current_user.username, viewer_id=current_user.id)
 

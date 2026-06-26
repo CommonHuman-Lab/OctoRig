@@ -282,4 +282,5 @@ def public_settings(db: Session = Depends(get_db)) -> PublicSettingsResponse:
         company_name=row.company_name,
         company_logo_url=row.company_logo_url,
         default_theme=row.default_theme,
+        default_locale=row.default_locale,
     )

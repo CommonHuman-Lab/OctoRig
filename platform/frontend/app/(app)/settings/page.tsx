@@ -5,19 +5,24 @@ import "./settings.css";
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { useApiMutation } from "@/hooks/useApiMutation";
 import { Palette, User, Shield, FlaskConical, Settings as SettingsIcon } from "lucide-react";
 import { changePassword, getMe } from "@/lib/api/auth";
 import { updateMyProfile } from "@/lib/api/profiles";
 import { useThemeStore } from "@/stores/theme.store";
+import { useLocaleStore } from "@/stores/locale.store";
 import { useUserStore } from "@/stores/user.store";
 import { useNotificationsStore } from "@/stores/notifications.store";
 import { useDemoStore } from "@/stores/demo.store";
 import { THEMES } from "@/lib/themes";
+import { LOCALES } from "@/lib/i18n";
 import { Button } from "@/components/ui/Button";
 
 export default function SettingsPage() {
+  const t = useTranslations("settings");
   const { theme, setTheme } = useThemeStore();
+  const { locale, setLocale } = useLocaleStore();
   const { user } = useUserStore();
   const { push } = useNotificationsStore();
   const { isDemoMode, toggle: toggleDemo } = useDemoStore();
@@ -28,22 +33,28 @@ export default function SettingsPage() {
   const themeMutation = useApiMutation({
     mutationFn: (themeId: string) => updateMyProfile({ theme: themeId }),
     invalidateKeys: [],
-    errorMessage: "Failed to save theme preference",
+    errorMessage: t("saveThemeError"),
+  });
+
+  const localeMutation = useApiMutation({
+    mutationFn: (localeId: string) => updateMyProfile({ locale: localeId }),
+    invalidateKeys: [],
+    errorMessage: t("saveLocaleError"),
   });
 
   return (
     <div className="page">
       <h1 className="page-title font-mono">
         <SettingsIcon size={18} style={{ display: "inline", marginRight: "0.5rem", verticalAlign: "middle" }} />
-        Settings
+        {t("title")}
       </h1>
 
       <div className="settings-layout">
         <nav className="settings-nav g-panel">
           {([
-            { id: "appearance", label: "Appearance", icon: <Palette size={15} /> },
-            { id: "account",    label: "Account",    icon: <User size={15} /> },
-            { id: "demo",       label: "Demo",       icon: <FlaskConical size={15} /> },
+            { id: "appearance", label: t("navAppearance"), icon: <Palette size={15} /> },
+            { id: "account",    label: t("navAccount"),    icon: <User size={15} /> },
+            { id: "demo",       label: t("navDemo"),       icon: <FlaskConical size={15} /> },
           ] as const).map((item) => (
             <button
               key={item.id}
@@ -59,23 +70,41 @@ export default function SettingsPage() {
         <div className="settings-content g-panel">
           {section === "appearance" && (
             <div>
-              <h2 className="settings-section-title font-mono">Theme</h2>
-              <p className="text-muted text-sm mb-3">Choose a color theme for the platform.</p>
+              <h2 className="settings-section-title font-mono">{t("themeHeading")}</h2>
+              <p className="text-muted text-sm mb-3">{t("themeDescription")}</p>
               <div className="theme-grid">
-                {THEMES.map((t) => (
+                {THEMES.map((th) => (
                   <button
-                    key={t.id}
-                    className={`theme-card ${theme === t.id ? "active" : ""}`}
-                    onClick={() => { setTheme(t.id); themeMutation.mutate(t.id); }}
-                    aria-pressed={theme === t.id}
+                    key={th.id}
+                    className={`theme-card ${theme === th.id ? "active" : ""}`}
+                    onClick={() => { setTheme(th.id); themeMutation.mutate(th.id); }}
+                    aria-pressed={theme === th.id}
                   >
                     <div className="theme-swatches">
-                      {[t.preview.bg, t.preview.accent, t.preview.text].map((color, i) => (
+                      {[th.preview.bg, th.preview.accent, th.preview.text].map((color, i) => (
                         <div key={i} className="theme-swatch" style={{ background: color }} />
                       ))}
                     </div>
-                    <span className="theme-name text-11 font-mono">{t.name}</span>
-                    {theme === t.id && <span className="theme-active-dot" />}
+                    <span className="theme-name text-11 font-mono">{th.name}</span>
+                    {theme === th.id && <span className="theme-active-dot" />}
+                  </button>
+                ))}
+              </div>
+
+              <hr className="settings-divider" />
+
+              <h2 className="settings-section-title font-mono">{t("languageHeading")}</h2>
+              <p className="text-muted text-sm mb-3">{t("languageDescription")}</p>
+              <div className="theme-grid">
+                {LOCALES.map((l) => (
+                  <button
+                    key={l.id}
+                    className={`theme-card ${locale === l.id ? "active" : ""}`}
+                    onClick={() => { setLocale(l.id); localeMutation.mutate(l.id); }}
+                    aria-pressed={locale === l.id}
+                  >
+                    <span className="theme-name text-11 font-mono">{l.nativeName}</span>
+                    {locale === l.id && <span className="theme-active-dot" />}
                   </button>
                 ))}
               </div>
@@ -84,22 +113,19 @@ export default function SettingsPage() {
 
           {section === "demo" && (
             <div className="settings-section">
-              <h2 className="settings-section-title font-mono">Demo Mode</h2>
-              <p className="text-muted text-sm mb-3">
-                Populate the platform with synthetic data for screenshots and demos.
-                Real challenges and labs are kept; activity data (scores, events, teams, notifications) is faked.
-              </p>
+              <h2 className="settings-section-title font-mono">{t("demoHeading")}</h2>
+              <p className="text-muted text-sm mb-3">{t("demoDescription")}</p>
 
               {isDemoMode && (
                 <div className="admin-notice mb-3" style={{ borderColor: "var(--g-accent)", color: "var(--g-accent)" }}>
                   <FlaskConical size={13} />
-                  <span className="text-11">Demo mode is ON — all activity data is synthetic</span>
+                  <span className="text-11">{t("demoBannerOn")}</span>
                 </div>
               )}
 
               <div className="meta-rows">
                 <div className="meta-row" style={{ alignItems: "center" }}>
-                  <span className="text-muted text-11">Demo mode</span>
+                  <span className="text-muted text-11">{t("demoModeLabel")}</span>
                   <label className="demo-toggle" style={{ display: "flex", alignItems: "center", gap: "0.5rem", cursor: "pointer" }}>
                     <input
                       type="checkbox"
@@ -133,38 +159,38 @@ export default function SettingsPage() {
                         transition: "left 0.15s",
                       }} />
                     </span>
-                    <span className="text-sm">{isDemoMode ? "On" : "Off"}</span>
+                    <span className="text-sm">{isDemoMode ? t("on") : t("off")}</span>
                   </label>
                 </div>
               </div>
 
               <p className="text-muted" style={{ fontSize: "0.68rem", marginTop: "1rem" }}>
-                Toggling will reload the page. Disable to return to live data.
+                {t("demoReloadNote")}
               </p>
             </div>
           )}
 
           {section === "account" && (
             <div className="settings-section">
-              <h2 className="settings-section-title font-mono">Account</h2>
+              <h2 className="settings-section-title font-mono">{t("accountHeading")}</h2>
               <div className="meta-rows">
-                <MetaRow label="Username" value={me?.username ?? user?.username ?? "—"} />
-                <MetaRow label="Email" value={me?.email ?? user?.email ?? "—"} />
+                <MetaRow label={t("usernameLabel")} value={me?.username ?? user?.username ?? "—"} />
+                <MetaRow label={t("emailLabel")} value={me?.email ?? user?.email ?? "—"} />
                 <MetaRow
-                  label="Role"
-                  value={(me?.permissions ?? user?.permissions)?.includes("admin.panel") ? "Administrator" : "User"}
+                  label={t("roleLabel")}
+                  value={(me?.permissions ?? user?.permissions)?.includes("admin.panel") ? t("roleAdministrator") : t("roleUser")}
                 />
               </div>
               {(me?.permissions ?? user?.permissions)?.includes("admin.panel") && (
                 <div className="admin-notice mt-3">
                   <Shield size={13} />
-                  <span className="text-11 text-warning">Administrator account — full platform access</span>
+                  <span className="text-11 text-warning">{t("adminAccountNotice")}</span>
                 </div>
               )}
 
               <hr className="settings-divider" />
 
-              <h2 className="settings-section-title font-mono">Change Password</h2>
+              <h2 className="settings-section-title font-mono">{t("changePasswordHeading")}</h2>
               <ChangePasswordForm push={push} />
             </div>
           )}
@@ -184,6 +210,7 @@ function MetaRow({ label, value }: { label: string; value: string }) {
 }
 
 function ChangePasswordForm({ push }: { push: (type: "success" | "error", msg: string) => void }) {
+  const t = useTranslations("settings");
   const [current, setCurrent] = useState("");
   const [next, setNext] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -191,8 +218,8 @@ function ChangePasswordForm({ push }: { push: (type: "success" | "error", msg: s
   const mutation = useApiMutation<void, void>({
     mutationFn: () => changePassword(current, next),
     invalidateKeys: [],
-    successMessage: "Password changed",
-    errorMessage: (err: any) => err?.response?.data?.detail ?? "Failed to change password",
+    successMessage: t("passwordChanged"),
+    errorMessage: (err: any) => err?.response?.data?.detail ?? t("passwordChangeError"),
     onSuccess: () => {
       setCurrent(""); setNext(""); setConfirm("");
     },
@@ -207,7 +234,7 @@ function ChangePasswordForm({ push }: { push: (type: "success" | "error", msg: s
       onSubmit={(e) => { e.preventDefault(); if (canSubmit) mutation.mutate(); }}
     >
       <div className="settings-field">
-        <label>Current password</label>
+        <label>{t("currentPasswordLabel")}</label>
         <input
           type="password"
           className="g-input"
@@ -217,7 +244,7 @@ function ChangePasswordForm({ push }: { push: (type: "success" | "error", msg: s
         />
       </div>
       <div className="settings-field">
-        <label>New password <span className="text-muted">(min 8 chars)</span></label>
+        <label>{t("newPasswordLabel")} <span className="text-muted">{t("newPasswordHint")}</span></label>
         <input
           type="password"
           className="g-input"
@@ -227,7 +254,7 @@ function ChangePasswordForm({ push }: { push: (type: "success" | "error", msg: s
         />
       </div>
       <div className="settings-field">
-        <label>Confirm new password</label>
+        <label>{t("confirmPasswordLabel")}</label>
         <input
           type="password"
           className={`g-input ${mismatch ? "input-error" : ""}`}
@@ -235,7 +262,7 @@ function ChangePasswordForm({ push }: { push: (type: "success" | "error", msg: s
           onChange={(e) => setConfirm(e.target.value)}
           autoComplete="new-password"
         />
-        {mismatch && <span className="input-hint text-danger text-11">Passwords don't match</span>}
+        {mismatch && <span className="input-hint text-danger text-11">{t("passwordMismatch")}</span>}
       </div>
       <div className="settings-field" style={{ alignItems: "flex-start" }}>
         <Button
@@ -243,7 +270,7 @@ function ChangePasswordForm({ push }: { push: (type: "success" | "error", msg: s
           variant="primary"
           disabled={!canSubmit || mutation.isPending}
         >
-          {mutation.isPending ? "Saving…" : "Update Password"}
+          {mutation.isPending ? t("saving") : t("updatePassword")}
         </Button>
       </div>
     </form>

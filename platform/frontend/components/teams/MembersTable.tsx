@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
 import { Trash2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import type { TeamMember, TeamRole } from "@/lib/api/teams";
 import { TEAM_ROLES } from "@/lib/api/teams";
 import { formatDate } from "@/lib/utils/date";
@@ -21,14 +22,16 @@ export function MembersTable({
   onChangeRole: (userId: number, role: TeamRole) => void;
   isPending: boolean;
 }) {
+  const t = useTranslations("teams");
+  const tc = useTranslations("common");
   return (
     <table className="g-table">
       <thead>
         <tr>
-          <th>User</th>
-          <th>Role</th>
-          <th>Joined</th>
-          {canManage && <th>Actions</th>}
+          <th>{t("colUser")}</th>
+          <th>{t("colRole")}</th>
+          <th>{t("colJoined")}</th>
+          {canManage && <th>{tc("actions")}</th>}
         </tr>
       </thead>
       <tbody>
@@ -67,7 +70,7 @@ export function MembersTable({
                       leftIcon={<Trash2 size={13} />}
                       onClick={() => onRemove(m.user_id)}
                       disabled={isPending}
-                      tooltip="Remove member"
+                      tooltip={t("removeMemberTooltip")}
                     />
                   )}
                 </td>

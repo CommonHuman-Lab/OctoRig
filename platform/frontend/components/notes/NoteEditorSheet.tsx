@@ -3,6 +3,7 @@
 // Copyright (c) 2026 CommonHuman-Lab
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { useEscapeKey } from "@/hooks/useEscapeKey";
 import { SheetShell } from "@/components/ui/SheetShell";
 import { Button } from "@/components/ui/Button";
@@ -28,6 +29,10 @@ interface NoteEditorSheetProps {
 export function NoteEditorSheet({
   open, note, defaultLabTemplateId, defaultChallengeId, onClose,
 }: NoteEditorSheetProps) {
+  const t = useTranslations("notes");
+  const tc = useTranslations("common");
+  const tl = useTranslations("labs");
+  const tch = useTranslations("challenges");
   const [title, setTitle] = useState(note?.title ?? "");
   const [content, setContent] = useState(note?.content ?? "");
   const [tagsInput, setTagsInput] = useState(note?.tags.join(", ") ?? "");
@@ -59,8 +64,8 @@ export function NoteEditorSheet({
   const { mutate, isPending } = useApiMutation<Note, void>({
     mutationFn: () => (note ? updateNote(note.id, payload) : createNote(payload)),
     invalidateKeys: [["notes"]],
-    successMessage: note ? "Note updated." : "Note created.",
-    errorMessage: note ? "Failed to update note." : "Failed to create note.",
+    successMessage: note ? t("updatedToast") : t("createdToast"),
+    errorMessage: note ? t("updateFailed") : t("createFailed"),
     onSuccess: onClose,
   });
 
@@ -70,26 +75,26 @@ export function NoteEditorSheet({
 
   return (
     <SheetShell
-      title={note ? "Edit Note" : "New Note"}
+      title={note ? t("editNote") : t("newNote")}
       onClose={onClose}
       footer={
         <>
-          <Button onClick={onClose}>Cancel</Button>
+          <Button onClick={onClose}>{tc("cancel")}</Button>
           <Button
             variant="primary"
             disabled={!title.trim() || (visibility === "team" && !teamId) || isPending}
             onClick={() => mutate()}
           >
-            {isPending ? "Saving…" : note ? "Save Changes" : "Create Note"}
+            {isPending ? tc("saving") : note ? t("saveChanges") : t("createNote")}
           </Button>
         </>
       }
     >
       <label className="ev-field">
-        <span className="ev-label">Title</span>
+        <span className="ev-label">{t("titleLabel")}</span>
         <input
           className="g-input"
-          placeholder="Note title…"
+          placeholder={t("titlePlaceholder")}
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           autoFocus
@@ -97,15 +102,15 @@ export function NoteEditorSheet({
       </label>
 
       <label className="ev-field">
-        <span className="ev-label">Content</span>
-        <MarkdownEditor value={content} onChange={setContent} placeholder="Write anything — markdown is optional…" />
+        <span className="ev-label">{t("contentLabel")}</span>
+        <MarkdownEditor value={content} onChange={setContent} placeholder={t("contentPlaceholder")} />
       </label>
 
       <label className="ev-field">
-        <span className="ev-label">Tags (comma separated)</span>
+        <span className="ev-label">{t("tagsLabel")}</span>
         <input
           className="g-input"
-          placeholder="recon, sqli, todo…"
+          placeholder={t("tagsPlaceholder")}
           value={tagsInput}
           onChange={(e) => setTagsInput(e.target.value)}
         />
@@ -113,28 +118,28 @@ export function NoteEditorSheet({
 
       <div className="ev-field-row">
         <label className="ev-field">
-          <span className="ev-label">Linked Lab</span>
+          <span className="ev-label">{t("linkedLabLabel")}</span>
           <SearchableSelect
             options={labs.map((l) => ({ id: l.id, label: l.name }))}
             value={labTemplateId}
             onChange={setLabTemplateId}
-            placeholder="Search labs…"
+            placeholder={tl("searchPlaceholder")}
           />
         </label>
         <label className="ev-field">
-          <span className="ev-label">Linked Challenge</span>
+          <span className="ev-label">{t("linkedChallengeLabel")}</span>
           <SearchableSelect
             options={challenges.map((c) => ({ id: c.id, label: c.title }))}
             value={challengeId}
             onChange={setChallengeId}
-            placeholder="Search challenges…"
+            placeholder={tch("searchPlaceholder")}
           />
         </label>
       </div>
 
       <div className="ev-field-row">
         <label className="ev-field">
-          <span className="ev-label">Visibility</span>
+          <span className="ev-label">{t("visibilityLabel")}</span>
           <select
             className="g-input"
             value={visibility}
@@ -144,21 +149,21 @@ export function NoteEditorSheet({
               if (next === "team" && !teamId && teams.length === 1) setTeamId(teams[0].id);
             }}
           >
-            <option value="private">Private</option>
-            <option value="team">Shared with a team</option>
+            <option value="private">{t("private")}</option>
+            <option value="team">{t("sharedWithTeam")}</option>
           </select>
         </label>
         {visibility === "team" && (
           <label className="ev-field">
-            <span className="ev-label">Team</span>
+            <span className="ev-label">{t("teamLabel")}</span>
             <select
               className="g-input"
               value={teamId ?? ""}
               onChange={(e) => setTeamId(e.target.value ? Number(e.target.value) : null)}
             >
-              <option value="">Select a team…</option>
-              {teams.map((t) => (
-                <option key={t.id} value={t.id}>{t.name}</option>
+              <option value="">{t("selectTeamPlaceholder")}</option>
+              {teams.map((team) => (
+                <option key={team.id} value={team.id}>{team.name}</option>
               ))}
             </select>
           </label>

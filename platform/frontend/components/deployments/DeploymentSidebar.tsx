@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
 import { Clock, ExternalLink, Flag, Globe, Lock, Users } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { CopyButton } from "@/components/ui/CopyButton";
 import { type Deployment } from "@/lib/api/deployments";
 import { type LabTemplate } from "@/lib/api/labs";
@@ -13,6 +14,12 @@ const VIS_ICON: Record<Visibility, React.ReactNode> = {
   private: <Lock size={11} />,
   team: <Users size={11} />,
   public: <Globe size={11} />,
+};
+
+const VIS_LABEL_KEY: Record<Visibility, string> = {
+  private: "visPrivate",
+  team: "visTeam",
+  public: "visPublic",
 };
 
 function MetaRow({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
@@ -45,11 +52,13 @@ export function DeploymentSidebar({
   onVisibilityChange,
   isChangingVisibility,
 }: DeploymentSidebarProps) {
+  const t = useTranslations("deployments");
+  const tev = useTranslations("events");
   return (
     <div className="dd-sidebar">
       {isActive && (deployment.access_info.length > 0 || (lab && lab.access_info.length > 0)) && (
         <div className="g-card dd-card">
-          <div className="dd-section-title">Access</div>
+          <div className="dd-section-title">{t("accessHeading")}</div>
           <div className="dd-access-rows">
             {(deployment.access_info.length > 0 ? deployment.access_info : lab!.access_info).map((row) => (
               <div key={row.key} className="dd-access-row">
@@ -70,7 +79,7 @@ export function DeploymentSidebar({
       {deployment.dynamic_flag && (
         <div className="g-card dd-card">
           <div className="dd-section-title" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <span><Flag size={11} /> Flag</span>
+            <span><Flag size={11} /> {t("flagHeading")}</span>
             <CopyButton value={deployment.dynamic_flag!} />
           </div>
           <code className="dd-flag">{deployment.dynamic_flag}</code>
@@ -79,7 +88,7 @@ export function DeploymentSidebar({
 
       {deployment.auto_destroy_at && countdown && (
         <div className="g-card dd-card">
-          <div className="dd-section-title"><Clock size={11} /> Auto Destroy</div>
+          <div className="dd-section-title"><Clock size={11} /> {t("autoDestroyHeading")}</div>
           <div
             className="dd-countdown"
             style={{
@@ -97,24 +106,24 @@ export function DeploymentSidebar({
       )}
 
       <div className="g-card dd-card">
-        <div className="dd-section-title">Details</div>
+        <div className="dd-section-title">{t("detailsHeading")}</div>
         <div className="dd-meta-rows">
-          <MetaRow label="Lab" value={deployment.lab_name} />
-          <MetaRow label="Category" value={deployment.lab_category} />
-          <MetaRow label="Started by" value={deployment.started_by_username} />
-          {deployment.team_name && <MetaRow label="Team" value={deployment.team_name} />}
-          <MetaRow label="Started" value={formatDateTime(deployment.started_at)} />
+          <MetaRow label={t("colLab")} value={deployment.lab_name} />
+          <MetaRow label={t("colCategory")} value={deployment.lab_category} />
+          <MetaRow label={t("startedByLabel")} value={deployment.started_by_username} />
+          {deployment.team_name && <MetaRow label={t("teamLabel")} value={deployment.team_name} />}
+          <MetaRow label={t("startedLabel")} value={formatDateTime(deployment.started_at)} />
           {deployment.stopped_at && (
-            <MetaRow label="Stopped" value={formatDateTime(deployment.stopped_at)} />
+            <MetaRow label={t("stoppedLabel")} value={formatDateTime(deployment.stopped_at)} />
           )}
           {(deployment.subnet || deployment.app_ip) && (
             <>
-              <MetaRow label="Subnet" value={deployment.subnet ?? "—"} mono />
-              <MetaRow label="App IP" value={deployment.app_ip ?? "—"} mono />
+              <MetaRow label={t("subnetLabel")} value={deployment.subnet ?? "—"} mono />
+              <MetaRow label={t("appIpLabel")} value={deployment.app_ip ?? "—"} mono />
             </>
           )}
           <div className="dd-meta-row">
-            <span className="dd-meta-label">Containers</span>
+            <span className="dd-meta-label">{t("containersLabel")}</span>
             <div className="dd-meta-chips">
               {deployment.container_names.map((c) => (
                 <span key={c} className="g-tag text-10">{c.split("-").pop()}</span>
@@ -123,7 +132,7 @@ export function DeploymentSidebar({
           </div>
           {lab && Object.keys(lab.exposed_ports).length > 0 && (
             <div className="dd-meta-row">
-              <span className="dd-meta-label">Ports</span>
+              <span className="dd-meta-label">{t("portsLabel")}</span>
               <div className="dd-meta-chips">
                 {Object.entries(lab.exposed_ports).map(([name, port]) => (
                   <span key={name} className="g-tag text-10">{name.toUpperCase()}:{port}</span>
@@ -135,7 +144,7 @@ export function DeploymentSidebar({
       </div>
 
       <div className="g-card dd-card">
-        <div className="dd-section-title">Visibility</div>
+        <div className="dd-section-title">{tev("visibilityLabel")}</div>
         <div className="dd-vis-pills">
           {(["private", "team", "public"] as Visibility[]).map((v) => {
             const disabled = v === "team" && !deployment.team_id;
@@ -145,10 +154,10 @@ export function DeploymentSidebar({
                 className={`dd-vis-pill${vis === v ? " dd-vis-pill--active" : ""}`}
                 onClick={() => !disabled && onVisibilityChange(v)}
                 disabled={disabled || isChangingVisibility}
-                title={disabled ? "Assign a team first" : undefined}
+                title={disabled ? t("assignTeamFirstTooltip") : undefined}
               >
                 {VIS_ICON[v]}
-                {v.charAt(0).toUpperCase() + v.slice(1)}
+                {t(VIS_LABEL_KEY[v] as any)}
               </button>
             );
           })}
@@ -157,7 +166,7 @@ export function DeploymentSidebar({
 
       {deployment.error_message && (
         <div className="g-card dd-card">
-          <div className="dd-section-title">Error</div>
+          <div className="dd-section-title">{t("errorHeading")}</div>
           <p className="dd-error-msg font-mono">{deployment.error_message}</p>
         </div>
       )}

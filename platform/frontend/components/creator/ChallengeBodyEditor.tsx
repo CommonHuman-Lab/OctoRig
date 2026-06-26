@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useApiMutation } from "@/hooks/useApiMutation";
 import { Plus, Send, X } from "lucide-react";
 import {
@@ -19,6 +20,8 @@ const labelStyle = { fontSize: "0.6875rem", textTransform: "uppercase" as const,
 const sectionStyle = { borderTop: "1px solid var(--g-border)", paddingTop: "0.75rem", marginTop: "0.25rem" };
 
 export function ChallengeBodyEditor({ sub }: { sub: ContentSubmission }) {
+  const t = useTranslations("creator");
+  const tc = useTranslations("common");
   const body = sub.body as any;
 
   const [description, setDescription] = useState<string>(body.description ?? "");
@@ -59,8 +62,8 @@ export function ChallengeBodyEditor({ sub }: { sub: ContentSubmission }) {
   const saveMutation = useApiMutation<ContentSubmission, void>({
     mutationFn: () => updateSubmission(sub.id, { body: buildBody() }),
     invalidateKeys: [["content", "mine"]],
-    successMessage: "Draft saved.",
-    errorMessage: (err: any) => err?.response?.data?.detail ?? "Save failed.",
+    successMessage: t("draftSavedToast"),
+    errorMessage: (err: any) => err?.response?.data?.detail ?? t("saveFailed"),
   });
 
   const submitMutation = useApiMutation<ContentSubmission, void>({
@@ -69,8 +72,8 @@ export function ChallengeBodyEditor({ sub }: { sub: ContentSubmission }) {
       return submitForReview(sub.id);
     },
     invalidateKeys: [["content", "mine"]],
-    successMessage: "Submitted for review.",
-    errorMessage: (err: any) => err?.response?.data?.detail ?? "Submission failed.",
+    successMessage: t("submittedToast"),
+    errorMessage: (err: any) => err?.response?.data?.detail ?? t("submitFailed"),
   });
 
   return (
@@ -86,31 +89,31 @@ export function ChallengeBodyEditor({ sub }: { sub: ContentSubmission }) {
 
       {/* Core */}
       <div style={fieldStyle}>
-        <label style={labelStyle}>Description *</label>
+        <label style={labelStyle}>{t("descriptionRequired")}</label>
         <MarkdownEditor
           value={description}
           onChange={setDescription}
-          placeholder="Describe the challenge scenario without revealing the technique…"
+          placeholder={t("descPlaceholder")}
           minHeight={140}
         />
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "0.5rem" }}>
         <div style={fieldStyle}>
-          <label style={labelStyle}>Difficulty *</label>
+          <label style={labelStyle}>{t("difficultyRequired")}</label>
           <select className="g-input" value={difficulty} onChange={(e) => setDifficulty(e.target.value)}>
-            <option value="easy">Easy</option>
-            <option value="medium">Medium</option>
-            <option value="hard">Hard</option>
-            <option value="insane">Insane</option>
+            <option value="easy">{tc("easy")}</option>
+            <option value="medium">{tc("medium")}</option>
+            <option value="hard">{tc("hard")}</option>
+            <option value="insane">{tc("insane")}</option>
           </select>
         </div>
         <div style={fieldStyle}>
-          <label style={labelStyle}>Category *</label>
+          <label style={labelStyle}>{t("categoryRequired")}</label>
           <input
             className="g-input"
             list="category-suggestions"
-            placeholder="e.g. sqli, xss, web…"
+            placeholder={t("categoryPlaceholder")}
             value={category}
             onChange={(e) => setCategory(e.target.value)}
           />
@@ -121,13 +124,13 @@ export function ChallengeBodyEditor({ sub }: { sub: ContentSubmission }) {
           </datalist>
         </div>
         <div style={fieldStyle}>
-          <label style={labelStyle}>Challenge Type</label>
+          <label style={labelStyle}>{t("challengeTypeLabel")}</label>
           <select className="g-input" value={challengeType} onChange={(e) => setChallengeType(e.target.value)}>
-            <option value="flag">Flag</option>
-            <option value="short_answer">Coding Challenge</option>
-            <option value="web">Web</option>
-            <option value="container">Container</option>
-            <option value="mcq">MCQ</option>
+            <option value="flag">{t("typeFlag")}</option>
+            <option value="short_answer">{t("typeCoding")}</option>
+            <option value="web">{t("typeWeb")}</option>
+            <option value="container">{t("typeContainer")}</option>
+            <option value="mcq">{t("typeMcq")}</option>
           </select>
         </div>
       </div>
@@ -137,10 +140,10 @@ export function ChallengeBodyEditor({ sub }: { sub: ContentSubmission }) {
         <div style={sectionStyle}>
           <div style={{ display: "flex", gap: "0.5rem", alignItems: "flex-end", marginBottom: "0.5rem" }}>
             <div style={{ ...fieldStyle, flex: 1 }}>
-              <label style={labelStyle}>Code Snippet</label>
+              <label style={labelStyle}>{t("codeSnippetLabel")}</label>
             </div>
             <div style={fieldStyle}>
-              <label style={labelStyle}>Language</label>
+              <label style={labelStyle}>{t("languageLabel")}</label>
               <select className="g-input" style={{ width: "auto" }} value={language} onChange={(e) => setLanguage(e.target.value)}>
                 {["python", "javascript", "typescript", "bash", "go", "rust", "java", "c", "cpp", "text"].map((l) => (
                   <option key={l} value={l}>{l}</option>
@@ -157,7 +160,7 @@ export function ChallengeBodyEditor({ sub }: { sub: ContentSubmission }) {
             style={{ resize: "vertical", fontFamily: "var(--font-mono, monospace)", fontSize: "0.8125rem" }}
           />
           <div style={{ fontSize: "0.6875rem", color: "var(--g-text-muted)", marginTop: "0.25rem" }}>
-            The expected output (the answer) goes in the Flags section below.
+            {t("codeAnswerHint")}
           </div>
         </div>
       )}
@@ -165,7 +168,7 @@ export function ChallengeBodyEditor({ sub }: { sub: ContentSubmission }) {
       {/* Points & extras */}
       <div style={{ ...sectionStyle, display: "grid", gridTemplateColumns: "1fr 1fr 2fr", gap: "0.5rem" }}>
         <div style={fieldStyle}>
-          <label style={labelStyle}>Points</label>
+          <label style={labelStyle}>{t("pointsLabel")}</label>
           <input
             className="g-input"
             type="number"
@@ -175,21 +178,21 @@ export function ChallengeBodyEditor({ sub }: { sub: ContentSubmission }) {
           />
         </div>
         <div style={fieldStyle}>
-          <label style={labelStyle}>Est. Minutes</label>
+          <label style={labelStyle}>{t("estMinutesLabel")}</label>
           <input
             className="g-input"
             type="number"
             min={1}
-            placeholder="optional"
+            placeholder={t("optionalPlaceholder")}
             value={estMinutes}
             onChange={(e) => setEstMinutes(e.target.value)}
           />
         </div>
         <div style={fieldStyle}>
-          <label style={labelStyle}>Tags (comma-separated)</label>
+          <label style={labelStyle}>{t("tagsLabel")}</label>
           <input
             className="g-input"
-            placeholder="sqli, union, error-based…"
+            placeholder={t("tagsPlaceholder")}
             value={tags}
             onChange={(e) => setTags(e.target.value)}
           />
@@ -199,20 +202,20 @@ export function ChallengeBodyEditor({ sub }: { sub: ContentSubmission }) {
       {/* Flags */}
       <div style={sectionStyle}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "0.5rem" }}>
-          <span style={labelStyle}>Flags * (at least one required)</span>
+          <span style={labelStyle}>{t("flagsLabel")}</span>
           <Button
             size="sm"
             leftIcon={<Plus size={11} />}
             onClick={() => setFlags((f) => [...f, { value: "", flag_type: "static", case_sensitive: true }])}
           >
-            Add Flag
+            {t("addFlagBtn")}
           </Button>
         </div>
         {flags.map((flag, i) => (
           <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr auto auto auto", gap: "0.4rem", alignItems: "center", marginBottom: "0.35rem" }}>
             <input
               className="g-input"
-              placeholder={challengeType === "short_answer" ? "Expected output…" : "FLAG{...}"}
+              placeholder={challengeType === "short_answer" ? t("flagValuePlaceholderAnswer") : t("flagValuePlaceholderFlag")}
               value={flag.value}
               onChange={(e) => setFlags((f) => f.map((x, j) => j === i ? { ...x, value: e.target.value } : x))}
             />
@@ -222,10 +225,10 @@ export function ChallengeBodyEditor({ sub }: { sub: ContentSubmission }) {
               value={flag.flag_type}
               onChange={(e) => setFlags((f) => f.map((x, j) => j === i ? { ...x, flag_type: e.target.value as FlagInput["flag_type"] } : x))}
             >
-              <option value="static">Static</option>
-              <option value="dynamic">Dynamic</option>
-              <option value="per_user">Per User</option>
-              <option value="per_team">Per Team</option>
+              <option value="static">{t("flagTypeStatic")}</option>
+              <option value="dynamic">{t("flagTypeDynamic")}</option>
+              <option value="per_user">{t("flagTypePerUser")}</option>
+              <option value="per_team">{t("flagTypePerTeam")}</option>
             </select>
             <label style={{ display: "flex", alignItems: "center", gap: "0.25rem", fontSize: "0.75rem", color: "var(--g-text-muted)", whiteSpace: "nowrap" }}>
               <input
@@ -233,7 +236,7 @@ export function ChallengeBodyEditor({ sub }: { sub: ContentSubmission }) {
                 checked={flag.case_sensitive}
                 onChange={(e) => setFlags((f) => f.map((x, j) => j === i ? { ...x, case_sensitive: e.target.checked } : x))}
               />
-              Case sensitive
+              {t("caseSensitiveLabel")}
             </label>
             <Button
               size="sm"
@@ -250,20 +253,20 @@ export function ChallengeBodyEditor({ sub }: { sub: ContentSubmission }) {
       {/* Hints */}
       <div style={sectionStyle}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "0.5rem" }}>
-          <span style={labelStyle}>Hints (optional)</span>
+          <span style={labelStyle}>{t("hintsLabel")}</span>
           <Button
             size="sm"
             leftIcon={<Plus size={11} />}
             onClick={() => setHints((h) => [...h, { order_num: h.length + 1, content: "", cost: 0 }])}
           >
-            Add Hint
+            {t("addHintBtn")}
           </Button>
         </div>
         {hints.map((hint, i) => (
           <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr auto auto", gap: "0.4rem", alignItems: "center", marginBottom: "0.35rem" }}>
             <input
               className="g-input"
-              placeholder={`Hint ${i + 1}…`}
+              placeholder={t("hintPlaceholder", { n: i + 1 })}
               value={hint.content}
               onChange={(e) => setHints((h) => h.map((x, j) => j === i ? { ...x, content: e.target.value } : x))}
             />
@@ -272,8 +275,8 @@ export function ChallengeBodyEditor({ sub }: { sub: ContentSubmission }) {
               type="number"
               min={0}
               style={{ width: "5rem" }}
-              title="Cost (points)"
-              placeholder="Cost"
+              title={t("costTooltip")}
+              placeholder={t("costPlaceholder")}
               value={hint.cost}
               onChange={(e) => setHints((h) => h.map((x, j) => j === i ? { ...x, cost: parseInt(e.target.value, 10) || 0 } : x))}
             />
@@ -295,7 +298,7 @@ export function ChallengeBodyEditor({ sub }: { sub: ContentSubmission }) {
           disabled={saveMutation.isPending}
           onClick={() => saveMutation.mutate()}
         >
-          {saveMutation.isPending ? "Saving…" : "Save Draft"}
+          {saveMutation.isPending ? tc("saving") : t("saveDraftBtn")}
         </Button>
         <Button
           variant="primary"
@@ -304,7 +307,7 @@ export function ChallengeBodyEditor({ sub }: { sub: ContentSubmission }) {
           disabled={!canSubmit || submitMutation.isPending}
           onClick={() => submitMutation.mutate()}
         >
-          {submitMutation.isPending ? "Submitting…" : "Save & Submit for Review"}
+          {submitMutation.isPending ? t("submitting") : t("saveSubmitBtn")}
         </Button>
       </div>
     </div>

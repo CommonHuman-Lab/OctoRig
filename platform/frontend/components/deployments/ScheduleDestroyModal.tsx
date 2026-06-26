@@ -1,6 +1,7 @@
 "use client";
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
+import { useTranslations } from "next-intl";
 import { addHours } from "@/lib/utils/date";
 import { useEscapeKey } from "@/hooks/useEscapeKey";
 import { Button } from "@/components/ui/Button";
@@ -28,17 +29,19 @@ export function ScheduleDestroyModal({
   onClose,
   isPending,
 }: ScheduleDestroyModalProps) {
+  const t = useTranslations("deployments");
+  const tc = useTranslations("common");
   useEscapeKey(onClose, true);
 
   return (
     <div className="g-backdrop" onClick={onClose}>
       <div className="g-modal" onClick={(e) => e.stopPropagation()}>
         <div className="g-modal-header">
-          <span className="font-mono text-sm">Schedule Destroy — {labName}</span>
+          <span className="font-mono text-sm">{t("scheduleModalTitle", { labName })}</span>
         </div>
         <div className="g-modal-body">
           <p className="text-muted text-11" style={{ marginBottom: "0.75rem" }}>
-            The lab will be automatically stopped at the specified time.
+            {t("scheduleModalBody")}
           </p>
           <div className="dd-preset-row">
             {PRESETS.map((p) => (
@@ -52,7 +55,7 @@ export function ScheduleDestroyModal({
             ))}
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
-            <label className="text-11 text-muted">Custom time</label>
+            <label className="text-11 text-muted">{t("customTimeLabel")}</label>
             <input
               type="datetime-local"
               className="g-input"
@@ -64,14 +67,14 @@ export function ScheduleDestroyModal({
         </div>
         <div className="g-modal-footer">
           <Button onClick={onClose}>
-            Cancel
+            {tc("cancel")}
           </Button>
           <Button
             variant="danger"
             onClick={onConfirm}
             disabled={isPending}
           >
-            {isPending ? "Scheduling…" : "Schedule Destroy"}
+            {isPending ? t("scheduling") : t("scheduleDestroy")}
           </Button>
         </div>
       </div>

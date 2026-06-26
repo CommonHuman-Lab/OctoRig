@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import type { ScoreboardEntry } from "@/lib/api/challenges";
 import type { Rank } from "@/lib/api/ranks";
 import { RankChip } from "@/components/ui/RankChip";
@@ -23,6 +24,7 @@ export function ScoreRow({
   isMe: boolean;
   rowRef?: React.Ref<HTMLTableRowElement>;
 }) {
+  const t = useTranslations("scoreboard");
   const rank = rankForPoints(ranks, entry.total);
   return (
     <tr className={isMe ? "sb-row--me" : ""} ref={rowRef}>
@@ -33,7 +35,7 @@ export function ScoreRow({
             {entry.username}
           </Link>
         ) : (
-          <span className="sb-username" style={{ color: "var(--g-text-muted)" }}>Unknown</span>
+          <span className="sb-username" style={{ color: "var(--g-text-muted)" }}>{t("unknownUser")}</span>
         )}
       </td>
       <td><RankChip rank={rank} /></td>

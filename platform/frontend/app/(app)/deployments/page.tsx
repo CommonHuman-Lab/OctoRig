@@ -4,6 +4,7 @@
 import "./deployments.css";
 
 import { useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { useApiMutation } from "@/hooks/useApiMutation";
 import { useRouter } from "next/navigation";
 import { Square, RotateCcw, Play, Trash2, Rocket } from "lucide-react";
@@ -17,6 +18,10 @@ import { AsyncContent } from "@/components/ui/AsyncContent";
 import { Button } from "@/components/ui/Button";
 
 export default function DeploymentsPage() {
+  const t = useTranslations("deployments");
+  const tn = useTranslations("nav");
+  const tl = useTranslations("labs");
+  const tc = useTranslations("common");
   const router = useRouter();
   const { confirm } = useConfirmStore();
 
@@ -28,36 +33,36 @@ export default function DeploymentsPage() {
   const stopMutation = useApiMutation({
     mutationFn: stopDeployment,
     invalidateKeys: [["deployments"], ["labs"]],
-    successMessage: "Lab stop requested",
-    errorMessage: "Failed to stop lab",
+    successMessage: tl("stopRequested"),
+    errorMessage: tl("stopFailed"),
   });
 
   const resetMutation = useApiMutation({
     mutationFn: resetDeployment,
     invalidateKeys: [["deployments"], ["labs"]],
-    successMessage: "Lab reset requested",
-    errorMessage: "Failed to reset lab",
+    successMessage: tl("resetRequested"),
+    errorMessage: tl("resetFailed"),
   });
 
   const startMutation = useApiMutation({
     mutationFn: restartDeployment,
     invalidateKeys: [["deployments"], ["labs"]],
-    successMessage: "Lab start requested",
-    errorMessage: "Failed to start lab",
+    successMessage: t("startRequested"),
+    errorMessage: t("startFailed"),
   });
 
   const removeMutation = useApiMutation({
     mutationFn: removeDeployment,
     invalidateKeys: [["deployments"]],
-    successMessage: "Deployment removed",
-    errorMessage: "Failed to remove deployment",
+    successMessage: t("removedToast"),
+    errorMessage: t("removeFailed"),
   });
 
   function handleRemove(id: number, labName: string) {
     confirm({
-      title: "Remove deployment?",
-      body: `Permanently remove the "${labName}" deployment record? This cannot be undone.`,
-      confirmLabel: "Remove",
+      title: t("removeConfirmTitle"),
+      body: t("removeConfirmBody", { name: labName }),
+      confirmLabel: t("removeLabel"),
       dangerous: true,
       onConfirm: () => removeMutation.mutate(id),
     });
@@ -67,7 +72,7 @@ export default function DeploymentsPage() {
     <div className="page">
       <h1 className="page-title font-mono">
         <Rocket size={18} style={{ display: "inline", marginRight: "0.5rem", verticalAlign: "middle" }} />
-        Deployments
+        {tn("deployments")}
       </h1>
 
       <AsyncContent
@@ -75,8 +80,8 @@ export default function DeploymentsPage() {
         data={deployments}
         empty={
           <div className="g-panel empty-state">
-            <p className="text-muted text-sm">No deployments yet.</p>
-            <Button href="/labs" variant="primary" className="mt-2">Start a Lab</Button>
+            <p className="text-muted text-sm">{t("noDeployments")}</p>
+            <Button href="/labs" variant="primary" className="mt-2">{t("startALab")}</Button>
           </div>
         }
       >
@@ -84,13 +89,13 @@ export default function DeploymentsPage() {
           <table className="g-table">
             <thead>
               <tr>
-                <th>Lab</th>
-                <th>Category</th>
-                <th>Status</th>
-                <th>Started By</th>
-                <th>Started At</th>
-                <th>Stopped At</th>
-                <th>Actions</th>
+                <th>{t("colLab")}</th>
+                <th>{t("colCategory")}</th>
+                <th>{t("colStatus")}</th>
+                <th>{t("colStartedBy")}</th>
+                <th>{t("colStartedAt")}</th>
+                <th>{t("colStoppedAt")}</th>
+                <th>{tc("actions")}</th>
               </tr>
             </thead>
             <tbody>
@@ -124,7 +129,7 @@ export default function DeploymentsPage() {
                             leftIcon={<Square size={13} />}
                             onClick={() => stopMutation.mutate(d.id)}
                             disabled={stopMutation.isPending || d.status === "stopping"}
-                            tooltip="Stop lab"
+                            tooltip={t("stopLabTooltip")}
                           />
                         )}
                         {canReset && (
@@ -133,7 +138,7 @@ export default function DeploymentsPage() {
                             leftIcon={<RotateCcw size={13} />}
                             onClick={() => resetMutation.mutate(d.id)}
                             disabled={resetMutation.isPending}
-                            tooltip="Reset scoreboard"
+                            tooltip={t("resetScoreboardTooltip")}
                           />
                         )}
                         {canStart && (
@@ -143,7 +148,7 @@ export default function DeploymentsPage() {
                             leftIcon={<Play size={13} />}
                             onClick={() => startMutation.mutate(d.id)}
                             disabled={startMutation.isPending}
-                            tooltip="Start lab"
+                            tooltip={t("startLabTooltip")}
                           />
                         )}
                         {canRemove && (
@@ -153,7 +158,7 @@ export default function DeploymentsPage() {
                             leftIcon={<Trash2 size={13} />}
                             onClick={() => handleRemove(d.id, d.lab_name)}
                             disabled={removeMutation.isPending}
-                            tooltip="Remove deployment"
+                            tooltip={t("removeDeploymentTooltip")}
                           />
                         )}
                       </div>

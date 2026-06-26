@@ -5,6 +5,7 @@ import "./teams.css";
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { useApiMutation } from "@/hooks/useApiMutation";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -14,14 +15,19 @@ import { NewTeamSheet } from "@/components/teams/NewTeamSheet";
 import { AsyncContent } from "@/components/ui/AsyncContent";
 import { Button } from "@/components/ui/Button";
 
-const ROLE_LABEL: Record<TeamRole, { label: string; icon: React.ReactNode }> = {
-  owner:   { label: "Owner",   icon: <Crown   size={11} /> },
-  manager: { label: "Manager", icon: <Shield  size={11} /> },
-  member:  { label: "Member",  icon: <Users   size={11} /> },
-  viewer:  { label: "Viewer",  icon: <Eye     size={11} /> },
+const ROLE_ICON: Record<TeamRole, React.ReactNode> = {
+  owner:   <Crown   size={11} />,
+  manager: <Shield  size={11} />,
+  member:  <Users   size={11} />,
+  viewer:  <Eye     size={11} />,
+};
+const ROLE_KEY: Record<TeamRole, string> = {
+  owner: "roleOwner", manager: "roleManager", member: "roleMember", viewer: "roleViewer",
 };
 
 export default function TeamsPage() {
+  const t = useTranslations("teams");
+  const tn = useTranslations("nav");
   const router = useRouter();
   const [sheetOpen, setSheetOpen] = useState(false);
 
@@ -33,8 +39,8 @@ export default function TeamsPage() {
   const createMutation = useApiMutation({
     mutationFn: (data: { name: string; description?: string }) => createTeam(data),
     invalidateKeys: [["teams"]],
-    successMessage: (team) => `Team "${team.name}" created`,
-    errorMessage: (err: any) => err?.response?.data?.detail ?? "Failed to create team",
+    successMessage: (team) => t("createdToast", { name: team.name }),
+    errorMessage: (err: any) => err?.response?.data?.detail ?? t("createFailed"),
     onSuccess: (team) => {
       setSheetOpen(false);
       router.push(`/teams/${team.id}`);
@@ -46,10 +52,10 @@ export default function TeamsPage() {
       <div className="page-header">
         <h1 className="page-title font-mono">
           <Users size={18} style={{ display: "inline", marginRight: "0.5rem", verticalAlign: "middle" }} />
-          Teams
+          {tn("teams")}
         </h1>
         <Button variant="primary" leftIcon={<Plus size={14} />} onClick={() => setSheetOpen(true)}>
-          New Team
+          {t("newTeam")}
         </Button>
       </div>
 
@@ -59,9 +65,9 @@ export default function TeamsPage() {
         empty={
           <div className="g-panel empty-state">
             <Users size={32} className="text-muted" />
-            <p className="text-muted text-sm mt-2">No teams yet.</p>
+            <p className="text-muted text-sm mt-2">{t("noTeams")}</p>
             <Button variant="primary" className="mt-2" onClick={() => setSheetOpen(true)}>
-              Create your first team
+              {t("createFirst")}
             </Button>
           </div>
         }
@@ -69,14 +75,13 @@ export default function TeamsPage() {
         {(teams) => (
           <div className="g-grid-auto team-grid">
             {teams.map((team) => {
-              const role = ROLE_LABEL[team.my_role];
               return (
                 <Link key={team.id} href={`/teams/${team.id}`} className="g-card team-card">
                   <div className="team-card-header">
                     <span className="team-name font-mono">{team.name}</span>
                     <span className={`role-badge role-badge--${team.my_role}`}>
-                      {role.icon}
-                      {role.label}
+                      {ROLE_ICON[team.my_role]}
+                      {t(ROLE_KEY[team.my_role] as any)}
                     </span>
                   </div>
                   {team.description && (
@@ -84,10 +89,10 @@ export default function TeamsPage() {
                   )}
                   <div className="team-meta">
                     <span className="text-muted text-11">
-                      <Users size={11} /> {team.member_count} member{team.member_count !== 1 ? "s" : ""}
+                      <Users size={11} /> {t("memberCount", { count: team.member_count })}
                     </span>
                     {team.is_personal && (
-                      <span className="personal-badge text-11">Personal</span>
+                      <span className="personal-badge text-11">{t("personal")}</span>
                     )}
                   </div>
                 </Link>

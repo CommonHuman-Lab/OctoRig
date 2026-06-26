@@ -5,6 +5,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { WSProvider } from "@/providers/WSProvider";
+import { IntlProvider } from "@/providers/IntlProvider";
 import { useUserStore } from "@/stores/user.store";
 import { refreshToken } from "@/lib/api/auth";
 import { STALE_TIME } from "@/lib/config";
@@ -31,7 +32,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <QueryClientProvider client={client}>
-      <WSProvider>{children}</WSProvider>
+      <IntlProvider>
+        <WSProvider>{children}</WSProvider>
+      </IntlProvider>
     </QueryClientProvider>
   );
 }

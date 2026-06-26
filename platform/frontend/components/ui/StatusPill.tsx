@@ -1,6 +1,7 @@
 "use client";
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
+import { useTranslations } from "next-intl";
 import type { ContentStatus } from "@/lib/api/content";
 
 const STATUS_STYLE: Record<ContentStatus, { bg: string; color: string }> = {
@@ -12,11 +13,21 @@ const STATUS_STYLE: Record<ContentStatus, { bg: string; color: string }> = {
   rejected:       { bg: "color-mix(in srgb, var(--g-danger) 15%, transparent)",     color: "var(--g-danger)" },
 };
 
+const STATUS_KEY: Record<ContentStatus, string> = {
+  draft: "statusDraft",
+  pending_review: "statusPendingReview",
+  in_review: "statusInReview",
+  approved: "statusApproved",
+  published: "statusPublished",
+  rejected: "statusRejected",
+};
+
 export function StatusPill({ status }: { status: ContentStatus }) {
+  const t = useTranslations("content");
   const s = STATUS_STYLE[status];
   return (
     <span className="g-status-pill" style={{ background: s.bg, color: s.color }}>
-      {status.replace("_", " ")}
+      {t(STATUS_KEY[status] as any)}
     </span>
   );
 }

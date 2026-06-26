@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import {
   ArrowLeft, Trophy, Clock, Users, Snowflake, CheckCircle2, Target,
 } from "lucide-react";
@@ -16,6 +17,38 @@ import {
 import { formatDateTime } from "@/lib/utils/date";
 import { DIFF_COLOR } from "@/lib/utils/difficulty";
 import { Button } from "@/components/ui/Button";
+
+const EVENT_STATUS_KEY: Record<string, string> = {
+  draft: "statusDraft", published: "statusUpcoming", ended: "statusPast",
+};
+const SCORING_MODE_KEY: Record<string, string> = {
+  static: "scoringStatic", dynamic: "scoringDynamic",
+};
+
+function ChallengeTile({ ch }: { ch: EventChallenge }) {
+  const tc = useTranslations("common");
+  return (
+    <Link
+      href={`/challenges/${ch.slug}`}
+      className={`ev-ch-card ${ch.solved_by_me ? "ev-ch-card--solved" : ""}`}
+    >
+      <div className="ev-ch-top">
+        <span className="ev-ch-title">{ch.title}</span>
+        {ch.solved_by_me && <CheckCircle2 size={12} style={{ color: "var(--g-success)" }} />}
+      </div>
+      <div className="ev-ch-footer">
+        <span className="ev-ch-pts">{tc("points", { count: ch.points })}</span>
+        <span className="ev-ch-diff" style={{ color: DIFF_COLOR[ch.difficulty] }}>
+          {tc(ch.difficulty)}
+        </span>
+        <span className="ev-ch-solves">
+          <Target size={10} />
+          {ch.solve_count}
+        </span>
+      </div>
+    </Link>
+  );
+}
 
 function ChallengeGrid({ challenges }: { challenges: EventChallenge[] }) {
   const byCategory = challenges.reduce<Record<string, EventChallenge[]>>((acc, ch) => {
@@ -30,26 +63,7 @@ function ChallengeGrid({ challenges }: { challenges: EventChallenge[] }) {
           <h3 className="cat-title">{cat.replace(/-/g, " ")}</h3>
           <div className="ch-grid">
             {chs.map((ch) => (
-              <Link
-                key={ch.id}
-                href={`/challenges/${ch.slug}`}
-                className={`ev-ch-card ${ch.solved_by_me ? "ev-ch-card--solved" : ""}`}
-              >
-                <div className="ev-ch-top">
-                  <span className="ev-ch-title">{ch.title}</span>
-                  {ch.solved_by_me && <CheckCircle2 size={12} style={{ color: "var(--g-success)" }} />}
-                </div>
-                <div className="ev-ch-footer">
-                  <span className="ev-ch-pts">{ch.points} pts</span>
-                  <span className="ev-ch-diff" style={{ color: DIFF_COLOR[ch.difficulty] }}>
-                    {ch.difficulty}
-                  </span>
-                  <span className="ev-ch-solves">
-                    <Target size={10} />
-                    {ch.solve_count}
-                  </span>
-                </div>
-              </Link>
+              <ChallengeTile key={ch.id} ch={ch} />
             ))}
           </div>
         </div>
@@ -59,25 +73,27 @@ function ChallengeGrid({ challenges }: { challenges: EventChallenge[] }) {
 }
 
 function Scoreboard({ slug }: { slug: string }) {
+  const t = useTranslations("events");
+  const ts = useTranslations("scoreboard");
   const { data: rows = [], isLoading } = useQuery({
     queryKey: ["event-scoreboard", slug],
     queryFn: () => getEventScoreboard(slug, 50),
   });
 
-  if (isLoading) return <div className="text-muted text-sm">Loading scoreboard…</div>;
-  if (rows.length === 0) return <div className="text-muted text-sm">No scores yet.</div>;
+  if (isLoading) return <div className="text-muted text-sm">{t("loadingScoreboard")}</div>;
+  if (rows.length === 0) return <div className="text-muted text-sm">{ts("noScores")}</div>;
 
   return (
     <div className="sb-table">
       <div className="sb-head">
         <span>#</span>
-        <span>Team</span>
-        <span className="sb-right">Score</span>
+        <span>{t("colTeam")}</span>
+        <span className="sb-right">{t("colScore")}</span>
       </div>
       {rows.map((r) => (
         <div key={r.rank} className={`sb-row ${r.rank <= 3 ? `sb-top${r.rank}` : ""}`}>
           <span className="sb-rank">{r.rank}</span>
-          <span className="sb-name">Team {r.team_id ?? r.user_id}</span>
+          <span className="sb-name">{t("teamLabel", { id: r.team_id ?? r.user_id ?? "" })}</span>
           <span className="sb-score">{r.total}</span>
         </div>
       ))}
@@ -86,6 +102,10 @@ function Scoreboard({ slug }: { slug: string }) {
 }
 
 export default function EventDetailPage() {
+  const t = useTranslations("events");
+  const tn = useTranslations("nav");
+  const tch = useTranslations("challenges");
+  const tsb = useTranslations("scoreboard");
   const { slug } = useParams<{ slug: string }>();
   const [tab, setTab] = useState<"challenges" | "scoreboard">("challenges");
 
@@ -100,8 +120,8 @@ export default function EventDetailPage() {
     enabled: tab === "challenges",
   });
 
-  if (evLoading) return <div className="page text-muted text-sm">Loading event…</div>;
-  if (!ev) return <div className="page text-muted text-sm">Event not found.</div>;
+  if (evLoading) return <div className="page text-muted text-sm">{t("loadingEvent")}</div>;
+  if (!ev) return <div className="page text-muted text-sm">{t("notFound")}</div>;
 
   const isLive = ev.status === "running";
   const solved = challenges.filter((c) => c.solved_by_me).length;
@@ -110,19 +130,19 @@ export default function EventDetailPage() {
     <div className="page">
       <Link href="/events" className="back-link">
         <ArrowLeft size={14} />
-        <span>Events</span>
+        <span>{tn("events")}</span>
       </Link>
 
       {/* Header */}
       <div className="ev-header">
         <div className="ev-header-top">
           <span className={`ev-status-badge ${isLive ? "ev-status-live" : ""}`}>
-            {isLive ? "● LIVE" : ev.status.toUpperCase()}
+            {isLive ? t("liveLabel") : t(EVENT_STATUS_KEY[ev.status] as any).toUpperCase()}
           </span>
           {ev.scoreboard_frozen && (
             <span className="ev-frozen">
               <Snowflake size={11} />
-              Scoreboard frozen
+              {tsb("frozen")}
             </span>
           )}
         </div>
@@ -139,17 +159,17 @@ export default function EventDetailPage() {
           {ev.max_team_size && (
             <span className="ev-stat">
               <Users size={12} />
-              Max {ev.max_team_size} per team
+              {t("maxPerTeamLong", { count: ev.max_team_size })}
             </span>
           )}
           <span className="ev-stat">
             <Trophy size={12} />
-            {ev.scoring_mode} scoring
+            {t("scoringSuffix", { mode: t(SCORING_MODE_KEY[ev.scoring_mode] as any) })}
           </span>
           {tab === "challenges" && challenges.length > 0 && (
             <span className="ev-stat">
               <CheckCircle2 size={12} />
-              {solved}/{challenges.length} solved
+              {tch("solved", { solved, total: challenges.length })}
             </span>
           )}
         </div>
@@ -158,19 +178,19 @@ export default function EventDetailPage() {
       {/* Tabs */}
       <div className="tabs">
         <Button variant="tab" active={tab === "challenges"} onClick={() => setTab("challenges")}>
-          Challenges {challenges.length > 0 && `(${challenges.length})`}
+          {tn("challenges")} {challenges.length > 0 && `(${challenges.length})`}
         </Button>
         <Button variant="tab" active={tab === "scoreboard"} onClick={() => setTab("scoreboard")}>
-          Scoreboard
+          {tn("scoreboard")}
         </Button>
       </div>
 
       <div className="tab-content">
         {tab === "challenges" && (
           chLoading
-            ? <div className="text-muted text-sm">Loading challenges…</div>
+            ? <div className="text-muted text-sm">{t("loadingChallenges")}</div>
             : challenges.length === 0
-              ? <div className="text-muted text-sm">No challenges released yet.</div>
+              ? <div className="text-muted text-sm">{t("noChallengesReleased")}</div>
               : <ChallengeGrid challenges={challenges} />
         )}
         {tab === "scoreboard" && <Scoreboard slug={slug} />}

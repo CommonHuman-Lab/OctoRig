@@ -17,6 +17,7 @@ export interface SiteSettings {
   company_name: string | null;
   company_logo_url: string | null;
   default_theme: string | null;
+  default_locale: string | null;
   updated_at: string;
 }
 
@@ -29,6 +30,7 @@ export interface PublicSettings {
   company_name: string | null;
   company_logo_url: string | null;
   default_theme: string | null;
+  default_locale: string | null;
 }
 
 export type SiteSettingsPatch = Partial<Omit<SiteSettings, "updated_at">>;

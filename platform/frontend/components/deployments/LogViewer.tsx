@@ -4,6 +4,7 @@
 
 import { useRef, useEffect, useState } from "react";
 import { Download, Trash2, Wifi, WifiOff } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useLogStream } from "@/hooks/useLogStream";
 import { Button } from "@/components/ui/Button";
 
@@ -13,6 +14,8 @@ interface Props {
 }
 
 export function LogViewer({ deploymentId, containerNames }: Props) {
+  const t = useTranslations("deployments");
+  const tc = useTranslations("common");
   const [selectedContainer, setSelectedContainer] = useState("app");
   const [filterText, setFilterText] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -92,26 +95,26 @@ export function LogViewer({ deploymentId, containerNames }: Props) {
         {/* Filter input */}
         <input
           className="g-input log-filter"
-          placeholder="Filter logs…"
+          placeholder={t("filterLogsPlaceholder")}
           value={filterText}
           onChange={(e) => setFilterText(e.target.value)}
           spellCheck={false}
         />
         {filterText && (
           <span className="log-filter-count">
-            {filteredLines.length} match{filteredLines.length !== 1 ? "es" : ""}
+            {t("matchCount", { count: filteredLines.length })}
           </span>
         )}
 
         <div className="log-toolbar-actions">
           <span className="log-status">
             {connected
-              ? <><Wifi size={12} className="text-success" /> connected</>
-              : <><WifiOff size={12} className="text-muted" /> disconnected</>
+              ? <><Wifi size={12} className="text-success" /> {t("connected")}</>
+              : <><WifiOff size={12} className="text-muted" /> {t("disconnected")}</>
             }
           </span>
-          <Button icon leftIcon={<Trash2 size={14} />} onClick={clearLines} tooltip="Clear" />
-          <Button icon leftIcon={<Download size={14} />} onClick={downloadLogs} tooltip="Download" />
+          <Button icon leftIcon={<Trash2 size={14} />} onClick={clearLines} tooltip={tc("clear")} />
+          <Button icon leftIcon={<Download size={14} />} onClick={downloadLogs} tooltip={tc("download")} />
         </div>
       </div>
 
@@ -124,7 +127,7 @@ export function LogViewer({ deploymentId, containerNames }: Props) {
       >
         {filteredLines.length === 0 ? (
           <span className="log-empty">
-            {lines.length === 0 ? "Waiting for logs…" : "No lines match filter."}
+            {lines.length === 0 ? t("waitingForLogs") : t("noLinesMatch")}
           </span>
         ) : (
           filteredLines.map((line, i) => (

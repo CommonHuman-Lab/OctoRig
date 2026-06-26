@@ -6,6 +6,7 @@ import "./challenges.css";
 import { useState } from "react";
 import Link from "next/link";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { Search, CheckCircle2, Clock, Target, Swords } from "lucide-react";
 import { getChallenges, type ChallengeListItem, type ChallengeDifficulty } from "@/lib/api/challenges";
 import { getLabs, type LabTemplate } from "@/lib/api/labs";
@@ -15,37 +16,32 @@ import { Button } from "@/components/ui/Button";
 import { DIFF_CLASS } from "@/lib/utils/difficulty";
 import { STALE_TIME } from "@/lib/config";
 
-const CATEGORIES = [
-  { id: undefined, label: "All" },
-  { id: "sqli", label: "SQLi" },
-  { id: "xss", label: "XSS" },
-  { id: "idor", label: "IDOR" },
-  { id: "web", label: "Web" },
-  { id: "recon", label: "Recon" },
-  { id: "python", label: "Python" },
-] as const;
+const CATEGORY_IDS = [undefined, "sqli", "xss", "idor", "web", "recon", "python"] as const;
+const CATEGORY_KEYS: Record<string, string> = {
+  sqli: "categorySqli", xss: "categoryXss", idor: "categoryIdor",
+  web: "categoryWeb", recon: "categoryRecon", python: "categoryPython",
+};
 
-const DIFFICULTIES: { id: ChallengeDifficulty | undefined; label: string }[] = [
-  { id: undefined, label: "Any" },
-  { id: "easy", label: "Easy" },
-  { id: "medium", label: "Medium" },
-  { id: "hard", label: "Hard" },
-  { id: "insane", label: "Insane" },
-];
+const DIFFICULTY_IDS: (ChallengeDifficulty | undefined)[] = [undefined, "easy", "medium", "hard", "insane"];
+const DIFFICULTY_KEYS: Record<string, string> = {
+  easy: "easy", medium: "medium", hard: "hard", insane: "insane",
+};
 
 const DIFF_ORDER: Record<ChallengeDifficulty, number> = {
   easy: 0, medium: 1, hard: 2, insane: 3,
 };
 
 function DiffBadge({ difficulty }: { difficulty: ChallengeDifficulty }) {
+  const t = useTranslations("common");
   return (
     <span className={`g-diff-badge ${DIFF_CLASS[difficulty]}`}>
-      {difficulty}
+      {t(difficulty)}
     </span>
   );
 }
 
 function ChallengeCard({ ch }: { ch: ChallengeListItem }) {
+  const t = useTranslations("challenges");
   return (
     <Link href={`/challenges/${ch.slug}`} className="ch-card g-card">
       <div className="ch-card-header">
@@ -60,8 +56,8 @@ function ChallengeCard({ ch }: { ch: ChallengeListItem }) {
       )}
 
       <div className="ch-tags">
-        {ch.tags.slice(0, 3).map((t) => (
-          <span key={t} className="g-badge g-badge--accent">{t}</span>
+        {ch.tags.slice(0, 3).map((tag) => (
+          <span key={tag} className="g-badge g-badge--accent">{tag}</span>
         ))}
       </div>
 
@@ -76,12 +72,12 @@ function ChallengeCard({ ch }: { ch: ChallengeListItem }) {
           )}
           <span className="ch-meta-item">
             <Target size={11} />
-            {ch.solve_count} solves
+            {t("solveCountShort", { count: ch.solve_count })}
           </span>
           {ch.solved_by_me && (
             <span className="ch-solved-badge">
               <CheckCircle2 size={11} />
-              Solved
+              {t("solvedLabel")}
             </span>
           )}
         </div>
@@ -91,6 +87,9 @@ function ChallengeCard({ ch }: { ch: ChallengeListItem }) {
 }
 
 export default function ChallengesPage() {
+  const t = useTranslations("challenges");
+  const tc = useTranslations("common");
+  const tn = useTranslations("nav");
   const [category, setCategory] = useState<string | undefined>(undefined);
   const [difficulty, setDifficulty] = useState<ChallengeDifficulty | undefined>(undefined);
   const [labSlug, setLabSlug] = useState<string | undefined>(undefined);
@@ -137,10 +136,10 @@ export default function ChallengesPage() {
         <div>
           <h1 className="page-title font-mono">
             <Swords size={18} style={{ display: "inline", marginRight: "0.5rem", verticalAlign: "middle" }} />
-            Challenges
+            {tn("challenges")}
           </h1>
           {!isLoading && (
-            <p className="page-sub">{solved}/{total} solved</p>
+            <p className="page-sub">{t("solved", { solved, total })}</p>
           )}
         </div>
       </div>
@@ -150,7 +149,7 @@ export default function ChallengesPage() {
           <Search size={14} className="icon-left" />
           <input
             className="g-input"
-            placeholder="Search challenges…"
+            placeholder={t("searchPlaceholder")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -159,16 +158,16 @@ export default function ChallengesPage() {
         <FilterPills
           groups={[
             {
-              options: CATEGORIES.map((c) => c.id),
+              options: [...CATEGORY_IDS],
               value: category,
               onChange: (v) => setCategory(v),
-              label: (v) => CATEGORIES.find((c) => c.id === v)?.label ?? "All",
+              label: (v) => v === undefined ? tc("all") : t(CATEGORY_KEYS[v] as any),
             },
             {
-              options: DIFFICULTIES.map((d) => d.id),
+              options: DIFFICULTY_IDS,
               value: difficulty,
               onChange: (v) => setDifficulty(v as ChallengeDifficulty | undefined),
-              label: (v) => DIFFICULTIES.find((d) => d.id === v)?.label ?? "Any",
+              label: (v) => v === undefined ? tc("any") : tc(DIFFICULTY_KEYS[v] as any),
             },
             {
               options: ["all", "unsolved", "solved"],
@@ -190,7 +189,7 @@ export default function ChallengesPage() {
                   options: [undefined, ...labsWithChallenges.map((l) => l.slug)],
                   value: labSlug,
                   onChange: (v) => setLabSlug(v === labSlug ? undefined : v),
-                  label: (v) => v === undefined ? "All" : labsWithChallenges.find((l) => l.slug === v)?.name ?? v,
+                  label: (v) => v === undefined ? tc("all") : labsWithChallenges.find((l) => l.slug === v)?.name ?? v,
                 },
               ]}
             />
@@ -199,7 +198,7 @@ export default function ChallengesPage() {
         <div className="ch-filter-status">
           {!isLoading && (
             <span className="ch-result-count">
-              {displayed.length} challenge{displayed.length !== 1 ? "s" : ""}
+              {t("resultCount", { count: displayed.length })}
             </span>
           )}
           {(category || difficulty || labSlug || solvedFilter !== "all" || search) && (
@@ -213,7 +212,7 @@ export default function ChallengesPage() {
                 setSearch("");
               }}
             >
-              Clear filters
+              {tc("clearFilters")}
             </Button>
           )}
         </div>
@@ -229,7 +228,7 @@ export default function ChallengesPage() {
             ))}
           </div>
           {displayed.length === 0 && (
-            <div className="text-muted text-xs mt-4">No challenges match your filter.</div>
+            <div className="text-muted text-xs mt-4">{t("noMatch")}</div>
           )}
         </>
       )}

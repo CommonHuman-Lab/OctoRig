@@ -4,6 +4,7 @@
 import "./notifications.css";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { useApiMutation } from "@/hooks/useApiMutation";
 import { Bell, CheckCheck, Check, X, Trash2 } from "lucide-react";
 import {
@@ -15,14 +16,14 @@ import { useNotificationsStore } from "@/stores/notifications.store";
 import { AsyncContent } from "@/components/ui/AsyncContent";
 import { Button } from "@/components/ui/Button";
 
-function timeAgo(created_at: string) {
+function timeAgo(created_at: string, t: ReturnType<typeof useTranslations>) {
   const ms = Date.now() - new Date(created_at).getTime();
   const m = Math.floor(ms / 60_000);
-  if (m < 1) return "just now";
-  if (m < 60) return `${m}m ago`;
+  if (m < 1) return t("justNow");
+  if (m < 60) return t("minutesAgo", { count: m });
   const h = Math.floor(m / 60);
-  if (h < 24) return `${h}h ago`;
-  return `${Math.floor(h / 24)}d ago`;
+  if (h < 24) return t("hoursAgo", { count: h });
+  return t("daysAgo", { count: Math.floor(h / 24) });
 }
 
 function TeamInviteActions({
@@ -32,25 +33,26 @@ function TeamInviteActions({
   n: AppNotification;
   onDone: () => void;
 }) {
+  const t = useTranslations("notifications");
   const { push } = useNotificationsStore();
   const token = n.data.invitation_token as string | undefined;
 
   const acceptMutation = useMutation({
     mutationFn: () => acceptInvitation(token!),
     onSuccess: () => {
-      push("success", `Joined ${n.data.team_name as string}`);
+      push("success", t("joinedTeamToast", { team: n.data.team_name as string }));
       onDone();
     },
-    onError: (err: any) => push("error", err?.response?.data?.detail ?? "Failed to accept"),
+    onError: (err: any) => push("error", err?.response?.data?.detail ?? t("acceptFailed")),
   });
 
   const declineMutation = useMutation({
     mutationFn: () => declineInvitation(token!),
     onSuccess: () => {
-      push("info", "Invitation declined");
+      push("info", t("declinedToast"));
       onDone();
     },
-    onError: () => push("error", "Failed to decline"),
+    onError: () => push("error", t("declineFailed")),
   });
 
   if (!token) return null;
@@ -64,7 +66,7 @@ function TeamInviteActions({
         onClick={() => acceptMutation.mutate()}
         disabled={acceptMutation.isPending || declineMutation.isPending}
       >
-        Accept
+        {t("accept")}
       </Button>
       <Button
         size="sm"
@@ -72,7 +74,7 @@ function TeamInviteActions({
         onClick={() => declineMutation.mutate()}
         disabled={acceptMutation.isPending || declineMutation.isPending}
       >
-        Decline
+        {t("decline")}
       </Button>
     </div>
   );
@@ -89,6 +91,8 @@ function NotificationRow({
   onDelete: (id: number) => void;
   onInviteResolved: () => void;
 }) {
+  const t = useTranslations("notifications");
+  const tc = useTranslations("common");
   const isUnread = !n.read_at;
 
   return (
@@ -102,14 +106,14 @@ function NotificationRow({
         )}
       </div>
       <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "0.4rem", flexShrink: 0 }}>
-        <span className="notif-time">{timeAgo(n.created_at)}</span>
+        <span className="notif-time">{timeAgo(n.created_at, t)}</span>
         {!isUnread && (
           <Button
             icon
             style={{ padding: "0.2rem" }}
             leftIcon={<Trash2 size={12} />}
             onClick={() => onDelete(n.id)}
-            tooltip="Delete"
+            tooltip={tc("delete")}
           />
         )}
       </div>
@@ -118,6 +122,7 @@ function NotificationRow({
 }
 
 export default function NotificationsPage() {
+  const t = useTranslations("notifications");
   const qc = useQueryClient();
   const { push } = useNotificationsStore();
 
@@ -134,14 +139,14 @@ export default function NotificationsPage() {
   const deleteMutation = useApiMutation({
     mutationFn: deleteNotification,
     invalidateKeys: [["notifications"], ["notifications-unread"]],
-    errorMessage: "Failed to delete notification",
+    errorMessage: t("deleteFailed"),
   });
 
   const readAllMutation = useApiMutation<number, void>({
     mutationFn: markAllRead,
     invalidateKeys: [["notifications"], ["notifications-unread"]],
-    successMessage: (count) => `Marked ${count} notification${count !== 1 ? "s" : ""} as read`,
-    errorMessage: "Failed to mark all as read",
+    successMessage: (count) => t("markedReadToast", { count }),
+    errorMessage: t("markAllFailed"),
   });
 
   const unread = notifications.filter((n) => !n.read_at).length;
@@ -152,10 +157,10 @@ export default function NotificationsPage() {
         <div>
           <h1 className="page-title font-mono">
             <Bell size={18} style={{ display: "inline", marginRight: "0.5rem", verticalAlign: "middle" }} />
-            Notifications
+            {t("title")}
           </h1>
           {!isLoading && unread > 0 && (
-            <p className="page-sub">{unread} unread</p>
+            <p className="page-sub">{t("unreadCount", { count: unread })}</p>
           )}
         </div>
         {unread > 0 && (
@@ -164,7 +169,7 @@ export default function NotificationsPage() {
             onClick={() => readAllMutation.mutate()}
             disabled={readAllMutation.isPending}
           >
-            Mark all read
+            {t("markAllRead")}
           </Button>
         )}
       </div>
@@ -175,7 +180,7 @@ export default function NotificationsPage() {
         empty={
           <div className="empty-state g-card">
             <Bell size={24} style={{ color: "var(--g-text-muted)" }} />
-            <p className="text-muted text-xs">No notifications yet.</p>
+            <p className="text-muted text-xs">{t("noNotifications")}</p>
           </div>
         }
       >

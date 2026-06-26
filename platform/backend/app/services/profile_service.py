@@ -107,6 +107,7 @@ def get_profile(db: Session, username: str, viewer_id: Optional[int] = None) -> 
         "privacy_level": profile.privacy_level.value,
         "show_activity": profile.show_activity,
         "theme": profile.theme,
+        "locale": profile.locale,
         "total_points": total_points,
         "solve_count": solve_count,
         "first_bloods": first_bloods,
@@ -135,6 +136,7 @@ def update_profile(
     privacy_level: Optional[str] = None,
     show_activity: Optional[bool] = None,
     theme: Optional[str] = None,
+    locale: Optional[str] = None,
 ) -> UserProfile:
     profile = _ensure_profile(db, user_id)
     if bio is not None:
@@ -153,6 +155,8 @@ def update_profile(
         profile.show_activity = show_activity
     if theme is not None:
         profile.theme = theme
+    if locale is not None:
+        profile.locale = locale
     profile.updated_at = datetime.now(timezone.utc)
     db.commit()
     db.refresh(profile)

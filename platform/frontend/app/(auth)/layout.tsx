@@ -5,11 +5,13 @@
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useThemeStore } from "@/stores/theme.store";
+import { useLocaleStore } from "@/stores/locale.store";
 import { getPublicSettings } from "@/lib/api/settings";
 import { STALE_TIME } from "@/lib/config";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   const { theme, applyPlatformDefault } = useThemeStore();
+  const { applyPlatformDefault: applyLocalePlatformDefault } = useLocaleStore();
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
@@ -23,7 +25,8 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
 
   useEffect(() => {
     applyPlatformDefault(publicSettings?.default_theme);
-  }, [publicSettings, applyPlatformDefault]);
+    applyLocalePlatformDefault(publicSettings?.default_locale);
+  }, [publicSettings, applyPlatformDefault, applyLocalePlatformDefault]);
 
   return <>{children}</>;
 }

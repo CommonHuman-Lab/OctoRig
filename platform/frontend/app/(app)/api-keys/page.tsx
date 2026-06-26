@@ -5,6 +5,7 @@ import "./api-keys.css";
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { useApiMutation } from "@/hooks/useApiMutation";
 import { Plus, KeyRound } from "lucide-react";
 import { getApiKeys, createApiKey, revokeApiKey, type ApiKeyCreated } from "@/lib/api/apiKeys";
@@ -14,6 +15,9 @@ import { KeysTable } from "@/components/api-keys/KeysTable";
 import { Button } from "@/components/ui/Button";
 
 export default function ApiKeysPage() {
+  const t = useTranslations("apiKeys");
+  const tn = useTranslations("nav");
+  const tc = useTranslations("common");
   const [showCreate, setShowCreate] = useState(false);
   const [createdKey, setCreatedKey] = useState<ApiKeyCreated | null>(null);
 
@@ -26,7 +30,7 @@ export default function ApiKeysPage() {
     mutationFn: (payload: { name: string; expires_at: string | null }) =>
       createApiKey(payload),
     invalidateKeys: [["api-keys"]],
-    errorMessage: (err: any) => err?.response?.data?.detail ?? "Failed to create key",
+    errorMessage: (err: any) => err?.response?.data?.detail ?? t("createFailed"),
     onSuccess: (key) => {
       setCreatedKey(key);
       setShowCreate(false);
@@ -36,8 +40,8 @@ export default function ApiKeysPage() {
   const revokeMutation = useApiMutation({
     mutationFn: revokeApiKey,
     invalidateKeys: [["api-keys"]],
-    successMessage: "API key revoked",
-    errorMessage: "Failed to revoke key",
+    successMessage: t("revokedToast"),
+    errorMessage: t("revokeFailed"),
   });
 
   return (
@@ -45,14 +49,14 @@ export default function ApiKeysPage() {
       <div className="page-header">
         <h1 className="page-title font-mono">
           <KeyRound size={18} style={{ display: "inline", marginRight: "0.5rem", verticalAlign: "middle" }} />
-          API Keys
+          {tn("apiKeys")}
         </h1>
         <Button
           variant="primary"
           leftIcon={<Plus size={14} />}
           onClick={() => { setShowCreate(true); setCreatedKey(null); }}
         >
-          New Key
+          {t("newKey")}
         </Button>
       </div>
 
@@ -71,7 +75,7 @@ export default function ApiKeysPage() {
       )}
 
       {isLoading ? (
-        <div className="text-muted text-sm">Loading…</div>
+        <div className="text-muted text-sm">{tc("loading")}</div>
       ) : (
         <KeysTable
           keys={keys}
