@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
 
+import { useTranslations } from "next-intl";
 import { CheckCircle2, XCircle, Zap } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
@@ -22,11 +23,15 @@ export function SubmitForm({
   submitResult: { correct: boolean; message: string; firstBlood: boolean; points: number } | null;
   cooldownRemaining: number;
 }) {
+  const t = useTranslations("challenges.detail");
+  const tAssessment = useTranslations("assessment");
+  const tCreator = useTranslations("creator");
+  const tProfile = useTranslations("profile");
   const btnLabel = isLoading
-    ? "Checking…"
+    ? t("checkingBtn")
     : cooldownRemaining > 0
-    ? `Try again in ${cooldownRemaining}s`
-    : "Submit";
+    ? t("tryAgainInBtn", { s: cooldownRemaining })
+    : tAssessment("submit");
 
   return (
     <form onSubmit={onSubmit} className="submit-form">
@@ -35,7 +40,7 @@ export function SubmitForm({
           <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
             <textarea
               className="g-input font-mono"
-              placeholder="Enter the expected output…"
+              placeholder={t("answerPlaceholder")}
               rows={3}
               value={flag}
               onChange={(e) => onFlagChange(e.target.value)}
@@ -56,7 +61,7 @@ export function SubmitForm({
         ) : (
           <input
             className="g-input submit-input font-mono"
-            placeholder="FLAG{...}"
+            placeholder={tCreator("flagValuePlaceholderFlag")}
             value={flag}
             onChange={(e) => onFlagChange(e.target.value)}
             disabled={isLoading || cooldownRemaining > 0}
@@ -81,7 +86,7 @@ export function SubmitForm({
           <span>{submitResult.message}</span>
           {submitResult.firstBlood && (
             <span className="fb-firstblood">
-              <Zap size={12} /> First Blood
+              <Zap size={12} /> {tProfile("firstBloodLabel")}
             </span>
           )}
         </div>

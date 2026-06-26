@@ -4,6 +4,7 @@
 import "../admin.css";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
 import { getPendingQueue, getApprovedQueue } from "@/lib/api/content";
 import { PendingRow } from "@/components/admin/content/PendingRow";
@@ -14,6 +15,11 @@ import { FilterPills } from "@/components/ui/FilterPills";
 type Tab = "pending" | "approved";
 
 export default function AdminContentPage() {
+  const t = useTranslations("admin.content");
+  const tContent = useTranslations("content");
+  const tCreator = useTranslations("creator");
+  const tUsers = useTranslations("admin.users");
+  const tCommon = useTranslations("common");
   const [tab, setTab] = useState<Tab>("pending");
 
   const { data: pending = [], isLoading: loadingPending } = useQuery({
@@ -34,7 +40,7 @@ export default function AdminContentPage() {
   return (
     <div className="page">
       <div className="page-header">
-        <h1 className="page-title font-mono">Content Review</h1>
+        <h1 className="page-title font-mono">{t("title")}</h1>
       </div>
 
       <div className="filter-bar">
@@ -44,6 +50,7 @@ export default function AdminContentPage() {
               options: ["pending", "approved"],
               value: tab,
               onChange: (v) => setTab(v as Tab),
+              label: (v) => (v === "approved" ? tContent("statusApproved") : t("pendingTab")),
             },
           ]}
         />
@@ -52,17 +59,17 @@ export default function AdminContentPage() {
       <AsyncContent
         isLoading={isLoading}
         data={rows}
-        empty={<div className="text-muted text-sm mt-4">No submissions in this queue.</div>}
+        empty={<div className="text-muted text-sm mt-4">{t("noSubmissionsInQueue")}</div>}
       >
         {() => (
           <table className="g-table">
             <thead>
               <tr>
-                <th>Title</th>
-                <th>Type</th>
-                <th>Author</th>
-                <th>Status</th>
-                <th>Actions</th>
+                <th>{tCreator("titleLabel")}</th>
+                <th>{tCreator("typeLabel")}</th>
+                <th>{t("colAuthor")}</th>
+                <th>{tUsers("colStatus")}</th>
+                <th>{tCommon("actions")}</th>
               </tr>
             </thead>
             <tbody>

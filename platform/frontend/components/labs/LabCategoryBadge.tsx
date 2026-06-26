@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
-import { clsx } from "clsx";
+import { useTranslations } from "next-intl";
 
 const COLORS: Record<string, string> = {
   world: "var(--g-sky)",
@@ -8,13 +8,13 @@ const COLORS: Record<string, string> = {
   thirdparty: "var(--g-zinc)",
 };
 
-const LABELS: Record<string, string> = {
-  world: "World",
-  firerange: "Fire Range",
-  thirdparty: "Third Party",
-};
-
 export function LabCategoryBadge({ category }: { category: string }) {
+  const t = useTranslations("labs");
+  const LABELS: Record<string, string> = {
+    world: t("categoryWorld"),
+    firerange: t("categoryFirerange"),
+    thirdparty: t("categoryThirdparty"),
+  };
   return (
     <span
       className="g-badge"

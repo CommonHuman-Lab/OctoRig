@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
 import { useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { Save } from "lucide-react";
 import { THEMES } from "@/lib/themes";
 import { LOCALES } from "@/lib/i18n";
@@ -20,6 +21,7 @@ export function AppearanceSection({
   onSave: () => void;
   isPending: boolean;
 }) {
+  const t = useTranslations("admin.settings");
   // Snap back to the admin's real theme on unmount so previewing the default doesn't stick
   useEffect(() => {
     return () => {
@@ -29,15 +31,14 @@ export function AppearanceSection({
 
   return (
     <section className="admin-settings-section">
-      <h2 className="admin-settings-section-title">Appearance</h2>
+      <h2 className="admin-settings-section-title">{t("appearanceTitle")}</h2>
       <p className="settings-section-desc">
-        Set the default theme for users who have not chosen one themselves.
-        Users can override this from their personal settings.
+        {t("appearanceDesc")}
       </p>
 
       <SettingRow
-        label="Default Theme"
-        description="Applied to new users and any user who has not explicitly chosen a theme."
+        label={t("defaultThemeLabel")}
+        description={t("defaultThemeDesc")}
         control={
           <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
             {THEMES.map((t) => {
@@ -97,8 +98,8 @@ export function AppearanceSection({
       />
 
       <SettingRow
-        label="Default Language"
-        description="Applied to new users and any user who has not explicitly chosen a language."
+        label={t("defaultLanguageLabel")}
+        description={t("defaultLanguageDesc")}
         control={
           <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
             {LOCALES.map((l) => {
@@ -148,7 +149,7 @@ export function AppearanceSection({
           onClick={onSave}
           leftIcon={<Save size={13} />}
         >
-          Save Appearance
+          {t("saveAppearanceBtn")}
         </Button>
       </div>
     </section>

@@ -5,6 +5,7 @@ import "../../admin.css";
 import "../../settings/settings.css";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { useApiMutation } from "@/hooks/useApiMutation";
@@ -31,6 +32,8 @@ import { Button } from "@/components/ui/Button";
 import { TIMING, STALE_TIME } from "@/lib/config";
 
 function StatusBadge({ status }: { status: InviteStatus }) {
+  const t = useTranslations("admin.assessments");
+  const tUsers = useTranslations("admin.users");
   const colors: Record<InviteStatus, string> = {
     pending: "var(--g-text-muted)",
     accepted: "var(--g-warning, #f59e0b)",
@@ -38,6 +41,14 @@ function StatusBadge({ status }: { status: InviteStatus }) {
     completed: "var(--g-success, #22c55e)",
     expired: "var(--g-danger)",
     revoked: "var(--g-danger)",
+  };
+  const labels: Record<InviteStatus, string> = {
+    pending: t("statusPending"),
+    accepted: t("statusAccepted"),
+    active: tUsers("active"),
+    completed: t("statusCompleted"),
+    expired: t("statusExpired"),
+    revoked: t("statusRevoked"),
   };
   return (
     <span
@@ -49,18 +60,19 @@ function StatusBadge({ status }: { status: InviteStatus }) {
         letterSpacing: "0.04em",
       }}
     >
-      {status}
+      {labels[status]}
     </span>
   );
 }
 
 function CopyButton({ text }: { text: string }) {
+  const t = useTranslations("admin.assessments");
   const [copied, setCopied] = useState(false);
   return (
     <Button
       size="sm"
       icon
-      tooltip="Copy invite link"
+      tooltip={t("copyInviteLinkTooltip")}
       leftIcon={copied ? <Check size={12} /> : <Copy size={12} />}
       onClick={() => {
         navigator.clipboard.writeText(text);
@@ -80,14 +92,16 @@ function ProgressRow({
   invite: AssessmentInvite;
   progress?: AssessmentInviteWithProgress;
 }) {
+  const t = useTranslations("admin.assessments");
+  const tAssessment = useTranslations("assessment");
   const [expanded, setExpanded] = useState(false);
   const { confirm } = useConfirmStore();
 
   const revokeMutation = useApiMutation<void, void>({
     mutationFn: () => revokeInvite(assessmentId, invite.id),
     invalidateKeys: [["assessment-invites", assessmentId]],
-    successMessage: "Invite revoked",
-    errorMessage: "Failed to revoke invite",
+    successMessage: t("toastInviteRevoked"),
+    errorMessage: t("toastRevokeInviteFailed"),
   });
 
   const inviteUrl =
@@ -116,7 +130,7 @@ function ProgressRow({
           {formatDateTime(invite.expires_at)}
         </td>
         <td style={{ fontSize: "0.8rem", color: "var(--g-text-muted)" }}>
-          {invite.deployment_ids.length > 0 ? `${invite.deployment_ids.length} labs` : "—"}
+          {invite.deployment_ids.length > 0 ? tAssessment("labCount", { count: invite.deployment_ids.length }) : "—"}
         </td>
         <td style={{ fontSize: "0.8rem", color: "var(--g-text)" }}>
           {progress ? (
@@ -138,15 +152,15 @@ function ProgressRow({
                 style={{ color: "var(--g-danger)" }}
                 onClick={() =>
                   confirm({
-                    title: "Revoke invite?",
-                    body: `This will block ${invite.email} from starting or continuing the assessment.`,
-                    confirmLabel: "Revoke",
+                    title: t("revokeInviteTitle"),
+                    body: t("revokeInviteBody", { email: invite.email }),
+                    confirmLabel: t("revokeBtn"),
                     dangerous: true,
                     onConfirm: () => revokeMutation.mutate(),
                   })
                 }
               >
-                Revoke
+                {t("revokeBtn")}
               </Button>
             )}
           </div>
@@ -161,10 +175,10 @@ function ProgressRow({
                 <div style={{ display: "flex", gap: 32, flexWrap: "wrap" }}>
                   <div>
                     <div style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--g-text-muted)", marginBottom: 6 }}>
-                      Flags Solved ({progress.flags_solved.length}) · {progress.score} pts
+                      {t("flagsSolvedHeading", { count: progress.flags_solved.length, points: progress.score })}
                     </div>
                     {progress.flags_solved.length === 0 ? (
-                      <span className="text-muted" style={{ fontSize: "0.8rem" }}>None yet</span>
+                      <span className="text-muted" style={{ fontSize: "0.8rem" }}>{t("noneYet")}</span>
                     ) : (
                       <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 4 }}>
                         {progress.flags_solved.map((f) => (
@@ -182,7 +196,7 @@ function ProgressRow({
                   </div>
                   <div>
                     <div style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--g-text-muted)", marginBottom: 6 }}>
-                      Completed
+                      {t("completedHeading")}
                     </div>
                     <span style={{ fontSize: "0.8rem", color: "var(--g-text)", fontFamily: "var(--font-mono, monospace)" }}>
                       {formatDateTime(invite.completed_at)}
@@ -192,13 +206,13 @@ function ProgressRow({
 
                 <div>
                   <div style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--g-text-muted)", marginBottom: 6, display: "flex", alignItems: "center", gap: 8 }}>
-                    Report
+                    {t("reportHeading")}
                     {invite.completed_at ? (
-                      <span className="g-status-pill g-status-pill--on" style={{ fontSize: "0.7rem" }}>Submitted</span>
+                      <span className="g-status-pill g-status-pill--on" style={{ fontSize: "0.7rem" }}>{t("submittedBadge")}</span>
                     ) : progress.report_content ? (
-                      <span className="g-status-pill" style={{ fontSize: "0.7rem", color: "var(--g-warning, #f59e0b)" }}>Draft (in progress)</span>
+                      <span className="g-status-pill" style={{ fontSize: "0.7rem", color: "var(--g-warning, #f59e0b)" }}>{t("draftInProgressBadge")}</span>
                     ) : (
-                      <span className="g-status-pill g-status-pill--off" style={{ fontSize: "0.7rem" }}>Not started</span>
+                      <span className="g-status-pill g-status-pill--off" style={{ fontSize: "0.7rem" }}>{t("notStartedBadge")}</span>
                     )}
                   </div>
                   {progress.report_content ? (
@@ -216,12 +230,12 @@ function ProgressRow({
                       <ReactMarkdown remarkPlugins={[remarkGfm]}>{progress.report_content}</ReactMarkdown>
                     </div>
                   ) : (
-                    <span className="text-muted" style={{ fontSize: "0.8rem" }}>No report saved yet.</span>
+                    <span className="text-muted" style={{ fontSize: "0.8rem" }}>{t("noReportSavedYet")}</span>
                   )}
                 </div>
               </div>
             ) : (
-              <span className="text-muted text-sm">No progress yet.</span>
+              <span className="text-muted text-sm">{t("noProgressYet")}</span>
             )}
           </td>
         </tr>
@@ -231,6 +245,10 @@ function ProgressRow({
 }
 
 export default function AssessmentDetailPage() {
+  const t = useTranslations("admin.assessments");
+  const tCommon = useTranslations("common");
+  const tNav = useTranslations("nav");
+  const tUsers = useTranslations("admin.users");
   const { id } = useParams<{ id: string }>();
   const assessmentId = Number(id);
 
@@ -265,8 +283,8 @@ export default function AssessmentDetailPage() {
   const updateMutation = useApiMutation({
     mutationFn: (payload: CreateAssessmentPayload) => updateAssessment(assessmentId, payload),
     invalidateKeys: [["admin-assessment", assessmentId], ["admin-assessments"]],
-    successMessage: "Assessment updated",
-    errorMessage: (err: any) => err?.response?.data?.detail ?? "Failed to update assessment",
+    successMessage: t("toastAssessmentUpdated"),
+    errorMessage: (err: any) => err?.response?.data?.detail ?? t("toastUpdateAssessmentFailed"),
     onSuccess: () => setEditSheetOpen(false),
   });
 
@@ -277,8 +295,8 @@ export default function AssessmentDetailPage() {
         candidate_name: newName || undefined,
       }),
     invalidateKeys: [["assessment-invites", assessmentId], ["admin-assessments"]],
-    successMessage: (data) => `Invite created for ${data.email}`,
-    errorMessage: (err: any) => err?.response?.data?.detail ?? "Failed to create invite",
+    successMessage: (data) => t("toastInviteCreated", { email: data.email }),
+    errorMessage: (err: any) => err?.response?.data?.detail ?? t("toastCreateInviteFailed"),
     onSuccess: () => {
       setNewEmail("");
       setNewName("");
@@ -288,7 +306,7 @@ export default function AssessmentDetailPage() {
   if (assessmentLoading) {
     return (
       <div className="page">
-        <p className="text-muted text-sm">Loading…</p>
+        <p className="text-muted text-sm">{tCommon("loading")}</p>
       </div>
     );
   }
@@ -296,7 +314,7 @@ export default function AssessmentDetailPage() {
   if (!assessment) {
     return (
       <div className="page">
-        <p className="text-muted text-sm">Assessment not found.</p>
+        <p className="text-muted text-sm">{t("assessmentNotFound")}</p>
       </div>
     );
   }
@@ -305,11 +323,11 @@ export default function AssessmentDetailPage() {
     <div className="page">
       <div className="page-header">
         <Button href="/admin/assessments" size="sm" leftIcon={<ArrowLeft size={14} />}>
-          Back
+          {t("backBtn")}
         </Button>
         <h1 className="page-title font-mono">{assessment.name}</h1>
         <span className={`g-status-pill ${assessment.is_active ? "g-status-pill--on" : "g-status-pill--off"}`}>
-          {assessment.is_active ? "active" : "inactive"}
+          {assessment.is_active ? tUsers("active") : tUsers("inactive")}
         </span>
         <Button
           size="sm"
@@ -317,14 +335,14 @@ export default function AssessmentDetailPage() {
           leftIcon={<Pencil size={13} />}
           onClick={() => setEditSheetOpen(true)}
         >
-          Edit
+          {tCommon("edit")}
         </Button>
       </div>
 
       {/* Assessment summary */}
       <div className="g-card" style={{ padding: "16px 20px", marginBottom: 24, display: "flex", gap: 32, flexWrap: "wrap" }}>
         <div>
-          <div className="text-11 text-muted" style={{ marginBottom: 2 }}>Labs</div>
+          <div className="text-11 text-muted" style={{ marginBottom: 2 }}>{tNav("labs")}</div>
           <div style={{ fontFamily: "var(--font-mono, monospace)", fontSize: "0.875rem", color: "var(--g-text)" }}>
             {assessment.lab_slugs.map((slug) => {
               const display = assessment.lab_display_names[slug];
@@ -339,42 +357,42 @@ export default function AssessmentDetailPage() {
           </div>
         </div>
         <div>
-          <div className="text-11 text-muted" style={{ marginBottom: 2 }}>Duration</div>
+          <div className="text-11 text-muted" style={{ marginBottom: 2 }}>{t("durationLabel")}</div>
           <div style={{ fontSize: "0.875rem", color: "var(--g-text)" }}>{assessment.duration_hours}h</div>
         </div>
         {assessment.company_name && (
           <div>
-            <div className="text-11 text-muted" style={{ marginBottom: 2 }}>Company</div>
+            <div className="text-11 text-muted" style={{ marginBottom: 2 }}>{t("companyLabel")}</div>
             <div style={{ fontSize: "0.875rem", color: "var(--g-text)" }}>{assessment.company_name}</div>
           </div>
         )}
         <div>
-          <div className="text-11 text-muted" style={{ marginBottom: 2 }}>Candidates</div>
+          <div className="text-11 text-muted" style={{ marginBottom: 2 }}>{t("colCandidates")}</div>
           <div style={{ fontSize: "0.875rem", color: "var(--g-text)" }}>
-            {assessment.active_invite_count} active / {assessment.invite_count} total
+            {t("candidatesCountSummary", { active: assessment.active_invite_count, total: assessment.invite_count })}
           </div>
         </div>
       </div>
 
       {/* Add candidate */}
       <section className="admin-settings-section" style={{ marginBottom: 24 }}>
-        <h2 className="admin-settings-section-title">Add Candidate</h2>
+        <h2 className="admin-settings-section-title">{t("addCandidateSectionTitle")}</h2>
         <div style={{ display: "flex", gap: 10, alignItems: "flex-end", flexWrap: "wrap", padding: "12px 16px" }}>
           <div className="ev-field" style={{ flexShrink: 0, minWidth: 220 }}>
-            <label className="ev-label">Email *</label>
+            <label className="ev-label">{t("emailLabel")}</label>
             <input
               className="g-input"
               type="email"
-              placeholder="candidate@example.com"
+              placeholder={t("emailPlaceholder")}
               value={newEmail}
               onChange={(e) => setNewEmail(e.target.value)}
             />
           </div>
           <div className="ev-field" style={{ flexShrink: 0, minWidth: 180 }}>
-            <label className="ev-label">Name (optional)</label>
+            <label className="ev-label">{t("nameOptionalLabel")}</label>
             <input
               className="g-input"
-              placeholder="Jane Smith"
+              placeholder={t("namePlaceholderJane")}
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
             />
@@ -386,7 +404,7 @@ export default function AssessmentDetailPage() {
             disabled={!newEmail || inviteMutation.isPending}
             onClick={() => inviteMutation.mutate()}
           >
-            {inviteMutation.isPending ? "Creating…" : "Generate Invite"}
+            {inviteMutation.isPending ? tUsers("creating") : t("generateInviteBtn")}
           </Button>
         </div>
       </section>
@@ -394,27 +412,27 @@ export default function AssessmentDetailPage() {
       {/* Candidates table */}
       <section>
         <h2 className="section-title text-11 text-muted" style={{ marginBottom: "0.75rem" }}>
-          Candidates ({invites.length})
+          {t("candidatesSectionTitle", { count: invites.length })}
         </h2>
 
         {invitesLoading ? (
-          <p className="text-muted text-sm">Loading…</p>
+          <p className="text-muted text-sm">{tCommon("loading")}</p>
         ) : invites.length === 0 ? (
-          <p className="text-muted text-sm">No invites yet. Add candidates above.</p>
+          <p className="text-muted text-sm">{t("noInvitesYet")}</p>
         ) : (
           <table className="g-table">
             <thead>
               <tr>
                 <th style={{ width: 24 }}></th>
-                <th>Email</th>
-                <th>Name</th>
-                <th>Status</th>
-                <th>Started</th>
-                <th>Expires</th>
-                <th>Labs</th>
-                <th>Flags</th>
-                <th>Score</th>
-                <th>Actions</th>
+                <th>{t("colEmail")}</th>
+                <th>{t("colName")}</th>
+                <th>{tUsers("colStatus")}</th>
+                <th>{t("colStarted")}</th>
+                <th>{t("colExpires")}</th>
+                <th>{tNav("labs")}</th>
+                <th>{t("colFlags")}</th>
+                <th>{t("colScore")}</th>
+                <th>{tCommon("actions")}</th>
               </tr>
             </thead>
             <tbody>

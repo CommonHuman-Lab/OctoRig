@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
+import { useTranslations } from "next-intl";
 import { Save, Droplets, Snowflake } from "lucide-react";
 import type { SiteSettings } from "@/lib/api/settings";
 import { SettingToggle } from "./SettingToggle";
@@ -27,20 +28,23 @@ export function ScoringSection({
   onSave: () => void;
   isPending: boolean;
 }) {
+  const t = useTranslations("admin.settings");
+  const tProfile = useTranslations("profile");
+  const tCommon = useTranslations("common");
   return (
     <section className="admin-settings-section">
-      <h2 className="admin-settings-section-title">Scoring</h2>
+      <h2 className="admin-settings-section-title">{t("scoringTitle")}</h2>
 
       <SettingToggle
-        label="First Blood"
-        description="Track and display who was the first solver on each challenge."
+        label={tProfile("firstBloodLabel")}
+        description={t("firstBloodDesc")}
         checked={scoring.first_blood_enabled ?? true}
         onChange={(v) => onChange({ first_blood_enabled: v })}
       />
 
       <SettingToggle
-        label={<><Droplets size={13} style={{ display: "inline", marginRight: 4, verticalAlign: "middle" }} />Dynamic Scoring</>}
-        description="Points decrease as more players solve a challenge. First blood gets full points."
+        label={<><Droplets size={13} style={{ display: "inline", marginRight: 4, verticalAlign: "middle" }} />{t("dynamicScoringLabel")}</>}
+        description={t("dynamicScoringDesc")}
         checked={scoring.dynamic_scoring_enabled ?? false}
         onChange={(v) => onChange({ dynamic_scoring_enabled: v })}
       />
@@ -48,8 +52,8 @@ export function ScoringSection({
       {scoring.dynamic_scoring_enabled && (
         <>
           <SettingRow
-            label="Decay Factor"
-            description="Multiplier per solve (0.0–1.0). Lower = faster decay. Default 0.9."
+            label={t("decayFactorLabel")}
+            description={t("decayFactorDesc")}
             indent
             control={
               <input
@@ -63,8 +67,8 @@ export function ScoringSection({
             }
           />
           <SettingRow
-            label="Minimum Floor (%)"
-            description="Points never drop below this percentage of the base value. Default 10%."
+            label={t("minFloorLabel")}
+            description={t("minFloorDesc")}
             indent
             control={
               <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
@@ -84,8 +88,8 @@ export function ScoringSection({
       )}
 
       <SettingRow
-        label={<><Snowflake size={13} style={{ display: "inline", marginRight: 4, verticalAlign: "middle" }} />Freeze Scoreboard At</>}
-        description="Lock the global leaderboard display at this time. New solves still record but won't move rankings."
+        label={<><Snowflake size={13} style={{ display: "inline", marginRight: 4, verticalAlign: "middle" }} />{t("freezeScoreboardLabel")}</>}
+        description={t("freezeScoreboardDesc")}
         control={
           <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
             <input
@@ -100,7 +104,7 @@ export function ScoringSection({
                 size="sm"
                 onClick={() => onChange({ scoreboard_frozen_at: null })}
               >
-                Clear
+                {tCommon("clear")}
               </Button>
             )}
           </div>
@@ -115,7 +119,7 @@ export function ScoringSection({
           onClick={onSave}
           leftIcon={<Save size={13} />}
         >
-          Save Scoring Settings
+          {t("saveScoringBtn")}
         </Button>
       </div>
     </section>

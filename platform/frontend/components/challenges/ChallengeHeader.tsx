@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { CheckCircle2, Clock, Target, Flag, Droplets, FlaskConical, ExternalLink } from "lucide-react";
 import type { ChallengeDetail } from "@/lib/api/challenges";
@@ -16,6 +17,10 @@ export function ChallengeHeader({
   labIsLive?: boolean;
   labUrl?: string | null;
 }) {
+  const t = useTranslations("challenges.detail");
+  const tChallenges = useTranslations("challenges");
+  const tDeployments = useTranslations("deployments");
+  const tCommon = useTranslations("common");
   const diffColor = DIFF_COLOR[challenge.difficulty];
 
   return (
@@ -30,7 +35,7 @@ export function ChallengeHeader({
             {labIsLive !== undefined && (
               <span
                 className={`ch-lab-status-dot ${labIsLive ? "ch-lab-status-dot--live" : "ch-lab-status-dot--off"}`}
-                title={labIsLive ? "Lab is running" : "Lab is offline"}
+                title={labIsLive ? t("labIsRunningTooltip") : t("labIsOfflineTooltip")}
               />
             )}
             {labIsLive && labUrl && (
@@ -39,20 +44,20 @@ export function ChallengeHeader({
                 target="_blank"
                 rel="noopener noreferrer"
                 className="ch-lab-open-link"
-                title={`Open ${challenge.lab_name}`}
+                title={t("openLabTitle", { name: challenge.lab_name })}
               >
                 <ExternalLink size={10} />
-                Open Lab
+                {tDeployments("openLab")}
               </a>
             )}
           </span>
         )}
         <span className="ch-cat">{challenge.category.replace(/-/g, " ")}</span>
-        <span className="ch-diff" style={{ color: diffColor }}>{challenge.difficulty}</span>
+        <span className="ch-diff" style={{ color: diffColor }}>{tCommon(challenge.difficulty as "easy" | "medium" | "hard" | "insane")}</span>
         {solvedByMe && (
           <span className="ch-solved">
             <CheckCircle2 size={12} />
-            Solved
+            {t("solvedBadge")}
           </span>
         )}
       </div>
@@ -60,7 +65,7 @@ export function ChallengeHeader({
       <div className="ch-stats">
         <span className="ch-stat">
           <Flag size={12} />
-          {challenge.points} pts
+          {tCommon("points", { count: challenge.points })}
         </span>
         {challenge.estimated_minutes && (
           <span className="ch-stat">
@@ -70,10 +75,10 @@ export function ChallengeHeader({
         )}
         <span className="ch-stat">
           <Target size={12} />
-          {challenge.solve_count} solve{challenge.solve_count !== 1 ? "s" : ""}
+          {tChallenges("solveCountShort", { count: challenge.solve_count })}
         </span>
         {challenge.first_blood_user && (
-          <span className="ch-stat ch-stat--blood" title={`First blood: ${challenge.first_blood_user}`}>
+          <span className="ch-stat ch-stat--blood" title={t("firstBloodTooltip", { name: challenge.first_blood_user })}>
             <Droplets size={12} />
             {challenge.first_blood_user}
           </span>

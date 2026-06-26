@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Save } from "lucide-react";
 import { type LabTemplate } from "@/lib/api/labs";
 import { type Assessment, type CreateAssessmentPayload } from "@/lib/api/assessments";
@@ -58,6 +59,10 @@ export function AssessmentFormSheet({
   onClose,
   initialValues,
 }: AssessmentFormSheetProps) {
+  const t = useTranslations("admin.assessments");
+  const tCommon = useTranslations("common");
+  const tRoles = useTranslations("admin.roles");
+  const tUsers = useTranslations("admin.users");
   const [form, setForm] = useState(BLANK_FORM);
   const isEdit = !!initialValues;
 
@@ -103,12 +108,12 @@ export function AssessmentFormSheet({
 
   return (
     <SheetShell
-      title={isEdit ? "Edit Assessment" : "New Assessment"}
+      title={isEdit ? t("editTitle") : t("newAssessmentBtn")}
       onClose={onClose}
       footer={
         <>
           <Button onClick={onClose}>
-            Cancel
+            {tCommon("cancel")}
           </Button>
           <Button
             variant="primary"
@@ -116,27 +121,27 @@ export function AssessmentFormSheet({
             onClick={handleSubmit}
             leftIcon={<Save size={13} />}
           >
-            {saveMutation.isPending ? (isEdit ? "Saving…" : "Creating…") : (isEdit ? "Save Changes" : "Create Assessment")}
+            {saveMutation.isPending ? (isEdit ? tCommon("saving") : tUsers("creating")) : (isEdit ? tRoles("saveChanges") : t("createAssessmentBtn"))}
           </Button>
         </>
       }
     >
           <label className="ev-field">
-            <span className="ev-label">Name *</span>
+            <span className="ev-label">{t("nameLabel")}</span>
             <input
               className="g-input"
-              placeholder="e.g. Senior Pentest Engineer — Round 1"
+              placeholder={t("namePlaceholder")}
               value={form.name}
               onChange={(e) => handleNameChange(e.target.value)}
             />
           </label>
 
           <label className="ev-field">
-            <span className="ev-label">Slug</span>
+            <span className="ev-label">{tRoles("slugLabel")}</span>
             <input
               className="g-input"
               style={{ fontFamily: "var(--font-mono, monospace)" }}
-              placeholder="auto-generated"
+              placeholder={t("slugPlaceholder")}
               value={form.slug}
               onChange={(e) =>
                 setForm((f) => ({ ...f, slug: e.target.value, slugEdited: true }))
@@ -146,7 +151,7 @@ export function AssessmentFormSheet({
 
           <div className="ev-field-row">
             <label className="ev-field">
-              <span className="ev-label">Duration (hours)</span>
+              <span className="ev-label">{t("durationHoursLabel")}</span>
               <input
                 className="g-input"
                 type="number"
@@ -159,10 +164,10 @@ export function AssessmentFormSheet({
               />
             </label>
             <label className="ev-field">
-              <span className="ev-label">Company Name</span>
+              <span className="ev-label">{t("companyNameLabel")}</span>
               <input
                 className="g-input"
-                placeholder="Inherits from platform settings"
+                placeholder={t("companyNamePlaceholder")}
                 value={form.companyName}
                 onChange={(e) => setForm((f) => ({ ...f, companyName: e.target.value }))}
               />
@@ -170,42 +175,42 @@ export function AssessmentFormSheet({
           </div>
 
           <label className="ev-field">
-            <span className="ev-label">Company Logo URL</span>
+            <span className="ev-label">{t("companyLogoUrlLabel")}</span>
             <input
               className="g-input"
-              placeholder="https://example.com/logo.png"
+              placeholder={t("companyLogoUrlPlaceholder")}
               value={form.companyLogoUrl}
               onChange={(e) => setForm((f) => ({ ...f, companyLogoUrl: e.target.value }))}
             />
           </label>
 
           <div className="ev-field">
-            <span className="ev-label">Description</span>
+            <span className="ev-label">{tRoles("descriptionLabel")}</span>
             <textarea
               className="g-input"
               rows={3}
-              placeholder="Internal notes about this assessment round"
+              placeholder={t("descriptionPlaceholder")}
               value={form.description}
               onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
             />
           </div>
 
           <div className="ev-field">
-            <span className="ev-label">Candidate Instructions</span>
+            <span className="ev-label">{t("candidateInstructionsLabel")}</span>
             <textarea
               className="g-input"
               rows={5}
-              placeholder="Shown to candidates on the invite page. Markdown supported — explain goals, flag format, report expectations."
+              placeholder={t("candidateInstructionsPlaceholder")}
               value={form.instructions}
               onChange={(e) => setForm((f) => ({ ...f, instructions: e.target.value }))}
             />
           </div>
 
           <div className="ev-field">
-            <span className="ev-label">Labs *</span>
+            <span className="ev-label">{t("labsRequiredLabel")}</span>
             {labsLoading ? (
               <p style={{ color: "var(--g-text-muted)", fontSize: "0.8rem", margin: 0 }}>
-                Loading labs…
+                {t("loadingLabs")}
               </p>
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
@@ -260,7 +265,7 @@ export function AssessmentFormSheet({
                         >
                           <input
                             className="g-input"
-                            placeholder={`Display name shown to candidates (default: ${lab.name})`}
+                            placeholder={t("displayNamePlaceholder", { name: lab.name })}
                             value={form.displayNames[lab.slug] ?? ""}
                             onClick={(e) => e.stopPropagation()}
                             onChange={(e) =>
@@ -279,8 +284,7 @@ export function AssessmentFormSheet({
             )}
             {form.selectedSlugs.length > 0 && (
               <span style={{ fontSize: "0.75rem", color: "var(--g-text-muted)" }}>
-                {form.selectedSlugs.length} lab
-                {form.selectedSlugs.length !== 1 ? "s" : ""} selected
+                {t("labsSelectedCount", { count: form.selectedSlugs.length })}
               </span>
             )}
           </div>

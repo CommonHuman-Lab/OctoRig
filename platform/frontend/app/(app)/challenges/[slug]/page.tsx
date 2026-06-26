@@ -4,6 +4,7 @@
 import "../challenges.css";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useApiMutation } from "@/hooks/useApiMutation";
@@ -32,6 +33,8 @@ import { Button } from "@/components/ui/Button";
 import { TIMING, STALE_TIME } from "@/lib/config";
 
 export default function ChallengeDetailPage() {
+  const t = useTranslations("challenges.detail");
+  const tNav = useTranslations("nav");
   const { slug } = useParams<{ slug: string }>();
   const qc = useQueryClient();
   const { push } = useNotificationsStore();
@@ -111,19 +114,19 @@ export default function ChallengeDetailPage() {
   const deployMutation = useApiMutation<Deployment, void>({
     mutationFn: () => deployInstance(ch!.id, 2),
     invalidateKeys: [["challenge-instance", ch?.id]],
-    successMessage: "Instance starting…",
+    successMessage: t("toastInstanceStarting"),
     errorMessage: (err: unknown) =>
       (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail ??
-      "Failed to deploy instance",
+      t("toastDeployFailed"),
   });
 
   const stopMutation = useMutation({
     mutationFn: () => stopDeployment(instance!.id),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["challenge-instance", ch?.id] });
-      push("info", "Instance destroyed");
+      push("info", t("toastInstanceDestroyed"));
     },
-    onError: () => push("error", "Failed to stop instance"),
+    onError: () => push("error", t("toastStopInstanceFailed")),
   });
 
   const submitMutation = useMutation({
@@ -138,11 +141,11 @@ export default function ChallengeDetailPage() {
       if (res.correct || res.already_solved) {
         qc.invalidateQueries({ queryKey: ["challenge", slug] });
         qc.invalidateQueries({ queryKey: ["challenges"] });
-        if (res.first_blood) push("success", `First Blood! +${res.points_awarded} pts`);
-        else if (!res.already_solved) push("success", `Correct! +${res.points_awarded} pts`);
+        if (res.first_blood) push("success", t("toastFirstBlood", { points: res.points_awarded }));
+        else if (!res.already_solved) push("success", t("toastCorrect", { points: res.points_awarded }));
         setFlag("");
       } else {
-        push("error", "Incorrect flag");
+        push("error", t("toastIncorrectFlag"));
       }
     },
     onError: (err: unknown) => {
@@ -152,7 +155,7 @@ export default function ChallengeDetailPage() {
         const match = detail.match(/(\d+)\s*second/i);
         if (match) setCooldownUntil(Date.now() + parseInt(match[1]) * 1000);
       }
-      push("error", detail ?? "Submission failed");
+      push("error", detail ?? t("toastSubmissionFailed"));
     },
   });
 
@@ -169,7 +172,7 @@ export default function ChallengeDetailPage() {
   }
 
   if (isLoading) return <div className="page"><PageSpinner /></div>;
-  if (!ch) return <div className="page text-muted text-xs">Challenge not found.</div>;
+  if (!ch) return <div className="page text-muted text-xs">{t("challengeNotFound")}</div>;
 
   const codeSnippet = ch.challenge_type === "short_answer" ? (ch.content?.code_snippet as string | undefined) : undefined;
   const language = (ch.content?.language as string | undefined) ?? "text";
@@ -187,7 +190,7 @@ export default function ChallengeDetailPage() {
     <div className="page">
       <Link href="/challenges" className="back-link">
         <ArrowLeft size={14} />
-        <span>Challenges</span>
+        <span>{tNav("challenges")}</span>
       </Link>
 
       <ChallengeHeader
@@ -215,7 +218,7 @@ export default function ChallengeDetailPage() {
           {codeSnippet && !showEditor && (
             <section className="g-card">
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "0.75rem" }}>
-                <h2 className="section-title" style={{ margin: 0 }}>Code</h2>
+                <h2 className="section-title" style={{ margin: 0 }}>{t("codeHeading")}</h2>
                 <span style={{
                   fontSize: "0.625rem", fontFamily: "var(--font-mono, monospace)",
                   textTransform: "uppercase", letterSpacing: "0.08em",
@@ -239,7 +242,7 @@ export default function ChallengeDetailPage() {
 
           {hints.length > 0 && (
             <section>
-              <h2 className="section-title">Hints</h2>
+              <h2 className="section-title">{t("hintsHeading")}</h2>
               <div className="hints-list">
                 {hints.map((h) => (
                   <HintCard
@@ -256,7 +259,7 @@ export default function ChallengeDetailPage() {
 
           {ch.challenge_type === "container" && (
             <section>
-              <h2 className="section-title">Lab Instance</h2>
+              <h2 className="section-title">{t("labInstanceHeading")}</h2>
               {instance && (instance.status === "running" || instance.status === "starting" || instance.status === "stopping") ? (
                 <InstanceCard
                   instance={instance}
@@ -266,7 +269,7 @@ export default function ChallengeDetailPage() {
               ) : (
                 <div className="g-card" style={{ borderStyle: "dashed" }}>
                   <p className="text-11 text-muted mb-3">
-                    This challenge requires a personal lab instance. Instances auto-destroy after 2 hours.
+                    {t("requiresInstanceBody")}
                   </p>
                   <Button
                     variant="primary"
@@ -274,7 +277,7 @@ export default function ChallengeDetailPage() {
                     onClick={() => deployMutation.mutate()}
                     disabled={deployMutation.isPending}
                   >
-                    {deployMutation.isPending ? "Deploying…" : "Deploy Instance"}
+                    {deployMutation.isPending ? t("deployingBtn") : t("deployInstanceBtn")}
                   </Button>
                 </div>
               )}
@@ -282,16 +285,16 @@ export default function ChallengeDetailPage() {
           )}
 
           <section className="g-card">
-            <h2 className="section-title">Notes</h2>
-            <NoteList filter={{ challenge_id: ch.id }} emptyMessage="No notes for this challenge yet." />
+            <h2 className="section-title">{tNav("notes")}</h2>
+            <NoteList filter={{ challenge_id: ch.id }} emptyMessage={t("noNotesForChallenge")} />
           </section>
 
           <section className="g-card submit-card">
-            <h2 className="section-title">{codeSnippet ? "Submit Answer" : "Submit Flag"}</h2>
+            <h2 className="section-title">{codeSnippet ? t("submitAnswerHeading") : t("submitFlagHeading")}</h2>
             {ch.solved_by_me ? (
               <div className="submit-solved">
                 <CheckCircle2 size={16} />
-                You&apos;ve already solved this challenge.
+                {t("alreadySolvedBody")}
               </div>
             ) : (
               <SubmitForm

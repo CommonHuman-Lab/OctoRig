@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Container, Clock, Trash2, Copy } from "lucide-react";
 import { type Deployment } from "@/lib/api/deployments";
 import { useCountdown } from "@/hooks/useCountdown";
@@ -15,6 +16,7 @@ interface InstanceCardProps {
 }
 
 export function InstanceCard({ instance, onStop, isStopping }: InstanceCardProps) {
+  const t = useTranslations("challenges.detail");
   const { label: countdown } = useCountdown(instance.auto_destroy_at);
   const [copied, setCopied] = useState(false);
 
@@ -37,7 +39,7 @@ export function InstanceCard({ instance, onStop, isStopping }: InstanceCardProps
         <div className="flex items-center gap-2">
           <Container size={14} style={{ color: "var(--g-accent)" }} />
           <span className="text-11 font-mono" style={{ color: "var(--g-text)" }}>
-            Instance #{instance.id}
+            {t("instanceLabel", { id: instance.id })}
           </span>
           <span
             className="text-9px font-mono uppercase px-1.5 py-0.5 rounded"
@@ -54,7 +56,7 @@ export function InstanceCard({ instance, onStop, isStopping }: InstanceCardProps
           icon
           onClick={onStop}
           disabled={isStopping || instance.status === "stopping"}
-          tooltip="Destroy instance"
+          tooltip={t("destroyInstanceTooltip")}
           leftIcon={<Trash2 size={12} />}
         />
       </div>
@@ -62,14 +64,14 @@ export function InstanceCard({ instance, onStop, isStopping }: InstanceCardProps
       {instance.auto_destroy_at && (
         <div className="flex items-center gap-1.5 mb-2 text-9px font-mono" style={{ color: "var(--g-warning)" }}>
           <Clock size={10} />
-          Auto-destroys in {countdown}
+          {t("autoDestroysIn", { time: countdown })}
         </div>
       )}
 
       {instance.dynamic_flag && (
         <div className="mt-2">
           <div className="text-9px font-mono uppercase mb-1" style={{ color: "var(--g-text-muted)" }}>
-            Dynamic Flag
+            {t("dynamicFlagLabel")}
           </div>
           <div className="flex items-center gap-2">
             <code
@@ -81,7 +83,7 @@ export function InstanceCard({ instance, onStop, isStopping }: InstanceCardProps
             <Button
               icon
               onClick={copyFlag}
-              tooltip="Copy flag"
+              tooltip={t("copyFlagTooltip")}
               style={{ flexShrink: 0 }}
               leftIcon={<Copy size={12} style={{ color: copied ? "var(--g-success)" : undefined }} />}
             />

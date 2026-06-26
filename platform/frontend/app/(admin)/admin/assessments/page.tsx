@@ -4,6 +4,7 @@
 import "../admin.css";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
 import { useApiMutation } from "@/hooks/useApiMutation";
 import { Plus, ClipboardList, Users } from "lucide-react";
@@ -18,14 +19,18 @@ import { Button } from "@/components/ui/Button";
 import { STALE_TIME } from "@/lib/config";
 
 function StatusBadge({ isActive }: { isActive: boolean }) {
+  const tUsers = useTranslations("admin.users");
   return (
     <span className={`g-status-pill ${isActive ? "g-status-pill--on" : "g-status-pill--off"}`}>
-      {isActive ? "active" : "inactive"}
+      {isActive ? tUsers("active") : tUsers("inactive")}
     </span>
   );
 }
 
 export default function AdminAssessmentsPage() {
+  const t = useTranslations("admin.assessments");
+  const tNav = useTranslations("nav");
+  const tUsers = useTranslations("admin.users");
   const { user } = useUserStore();
   const router = useRouter();
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -49,8 +54,8 @@ export default function AdminAssessmentsPage() {
   const createMutation = useApiMutation({
     mutationFn: createAssessment,
     invalidateKeys: [["admin-assessments"]],
-    successMessage: (assessment) => `Assessment "${assessment.name}" created`,
-    errorMessage: (err: any) => err?.response?.data?.detail ?? "Failed to create assessment",
+    successMessage: (assessment) => t("toastAssessmentCreated", { name: assessment.name }),
+    errorMessage: (err: any) => err?.response?.data?.detail ?? t("toastCreateAssessmentFailed"),
     onSuccess: (assessment) => {
       setSheetOpen(false);
       router.push(`/admin/assessments/${assessment.id}`);
@@ -60,14 +65,14 @@ export default function AdminAssessmentsPage() {
   return (
     <div className="page">
       <div className="page-header">
-        <h1 className="page-title font-mono">Assessments</h1>
+        <h1 className="page-title font-mono">{tNav("adminAssessments")}</h1>
         <Button
           variant="primary"
           size="sm"
           leftIcon={<Plus size={14} />}
           onClick={() => setSheetOpen(true)}
         >
-          New Assessment
+          {t("newAssessmentBtn")}
         </Button>
       </div>
 
@@ -77,13 +82,13 @@ export default function AdminAssessmentsPage() {
         empty={
           <div className="empty-state">
             <ClipboardList size={40} strokeWidth={1.2} />
-            <p>No assessments yet.</p>
+            <p>{t("noAssessmentsYet")}</p>
             <Button
               variant="primary"
               size="sm"
               onClick={() => setSheetOpen(true)}
             >
-              Create your first assessment
+              {t("createFirstBtn")}
             </Button>
           </div>
         }
@@ -92,13 +97,13 @@ export default function AdminAssessmentsPage() {
           <table className="g-table g-table-hover">
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Company</th>
-                <th>Labs</th>
-                <th>Duration</th>
-                <th>Candidates</th>
-                <th>Active</th>
-                <th>Status</th>
+                <th>{t("colName")}</th>
+                <th>{t("colCompany")}</th>
+                <th>{tNav("labs")}</th>
+                <th>{t("colDuration")}</th>
+                <th>{t("colCandidates")}</th>
+                <th>{t("colActive")}</th>
+                <th>{tUsers("colStatus")}</th>
               </tr>
             </thead>
             <tbody>

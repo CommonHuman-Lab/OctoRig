@@ -2,6 +2,7 @@
 // Copyright (c) 2026 CommonHuman-Lab
 "use client";
 import { useRef, useState, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import { Play, RotateCcw } from "lucide-react";
 import { IconSpinner } from "@/components/ui/IconSpinner";
 import { Button } from "@/components/ui/Button";
@@ -40,6 +41,7 @@ function loadScript(src: string): Promise<void> {
 }
 
 export function PyodideEditor({ starterCode }: { starterCode?: string }) {
+  const t = useTranslations("challenges.detail");
   const [code, setCode] = useState(starterCode ?? "");
   const [output, setOutput] = useState("");
   const [status, setStatus] = useState<Status>("idle");
@@ -81,12 +83,12 @@ export function PyodideEditor({ starterCode }: { starterCode?: string }) {
     <div className="g-panel" style={{ height: "100%", minHeight: 420 }}>
       <div className="g-panel-header">
         <span style={{ fontSize: "0.6875rem", fontWeight: 600, color: "var(--g-text)", fontFamily: "var(--font-mono, monospace)", textTransform: "uppercase", letterSpacing: "0.08em" }}>
-          Python
+          {t("pythonLabel")}
         </span>
         <div style={{ display: "flex", gap: "0.375rem" }}>
           <Button
             size="sm"
-            tooltip="Clear output"
+            tooltip={t("clearOutputTooltip")}
             onClick={() => { setOutput(""); setStatus("idle"); }}
             disabled={isbusy}
             style={{ padding: "0.2rem 0.5rem" }}
@@ -100,7 +102,7 @@ export function PyodideEditor({ starterCode }: { starterCode?: string }) {
             disabled={isbusy}
             leftIcon={isbusy ? <IconSpinner size={12} /> : <Play size={12} />}
           >
-            {status === "loading" ? "Loading…" : "Run"}
+            {status === "loading" ? t("loadingBtn") : t("runBtn")}
           </Button>
         </div>
       </div>
@@ -110,7 +112,7 @@ export function PyodideEditor({ starterCode }: { starterCode?: string }) {
         value={code}
         onChange={(e) => setCode(e.target.value)}
         spellCheck={false}
-        placeholder="# Write Python here…"
+        placeholder={t("pythonPlaceholder")}
         style={{
           flex: 1,
           resize: "none",
@@ -161,9 +163,9 @@ export function PyodideEditor({ starterCode }: { starterCode?: string }) {
         }}
       >
         {outputEmpty && status === "idle"
-          ? <span style={{ color: "var(--g-text-muted)", fontStyle: "italic" }}>▶ Press Run to execute — Python runtime loads on first run (~6 MB)</span>
+          ? <span style={{ color: "var(--g-text-muted)", fontStyle: "italic" }}>{t("pressRunHint")}</span>
           : outputEmpty && status === "loading"
-          ? <span style={{ color: "var(--g-text-muted)" }}>Loading Python runtime…</span>
+          ? <span style={{ color: "var(--g-text-muted)" }}>{t("loadingRuntime")}</span>
           : output || " "}
       </pre>
     </div>

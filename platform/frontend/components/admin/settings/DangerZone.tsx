@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
+import { useTranslations } from "next-intl";
 import { AlertTriangle, Power, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
@@ -14,18 +15,18 @@ export function DangerZone({
   onRestartPlatform: () => void;
   isRestartPending: boolean;
 }) {
+  const t = useTranslations("admin.settings");
   return (
     <div className="danger-zone">
       <div className="danger-zone-header">
         <AlertTriangle size={14} />
-        <span>Danger Zone</span>
+        <span>{t("dangerZoneTitle")}</span>
       </div>
       <div className="danger-action">
         <div className="danger-action-info">
-          <span className="danger-action-title">Reset Database</span>
+          <span className="danger-action-title">{t("resetDbTitle")}</span>
           <span className="danger-action-desc">
-            Wipe all user activity — submissions, scores, hint unlocks, deployments, and audit
-            logs. Accounts, teams, labs, and challenges are preserved.
+            {t("resetDbDesc")}
           </span>
         </div>
         <Button
@@ -34,15 +35,14 @@ export function DangerZone({
           onClick={onResetDb}
           leftIcon={<RotateCcw size={13} />}
         >
-          {isPending ? "Resetting…" : "Reset Database"}
+          {isPending ? t("resettingBtn") : t("resetDbTitle")}
         </Button>
       </div>
       <div className="danger-action">
         <div className="danger-action-info">
-          <span className="danger-action-title">Restart Platform</span>
+          <span className="danger-action-title">{t("restartPlatformTitle")}</span>
           <span className="danger-action-desc">
-            Stops every running lab, then restarts the API, worker, and frontend containers.
-            The platform will be briefly unreachable while it comes back up.
+            {t("restartPlatformDesc")}
           </span>
         </div>
         <Button
@@ -51,7 +51,7 @@ export function DangerZone({
           onClick={onRestartPlatform}
           leftIcon={<Power size={13} />}
         >
-          {isRestartPending ? "Restarting…" : "Restart Platform"}
+          {isRestartPending ? t("restartingBtn") : t("restartPlatformTitle")}
         </Button>
       </div>
     </div>

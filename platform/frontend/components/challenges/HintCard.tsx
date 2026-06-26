@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Lightbulb, Eye, EyeOff } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { unlockHint, type HintSummary } from "@/lib/api/challenges";
@@ -16,6 +17,8 @@ interface HintCardProps {
 }
 
 export function HintCard({ hint, slug, userPoints, onUnlocked }: HintCardProps) {
+  const t = useTranslations("challenges.detail");
+  const tCommon = useTranslations("common");
   const [visible, setVisible] = useState(false);
   const { push } = useNotificationsStore();
   const canAfford = hint.cost === 0 || userPoints >= hint.cost;
@@ -25,12 +28,12 @@ export function HintCard({ hint, slug, userPoints, onUnlocked }: HintCardProps) 
     onSuccess: (res) => {
       onUnlocked(res.hint_id, res.content);
       setVisible(true);
-      if (res.cost > 0) push("info", `-${res.cost} pts spent to unlock hint`);
+      if (res.cost > 0) push("info", t("toastHintCostSpent", { cost: res.cost }));
     },
     onError: (err: unknown) => {
       const detail = (err as { response?: { data?: { detail?: string } } })
         ?.response?.data?.detail;
-      push("error", detail ?? "Failed to unlock hint");
+      push("error", detail ?? t("toastUnlockHintFailed"));
     },
   });
 
@@ -39,10 +42,10 @@ export function HintCard({ hint, slug, userPoints, onUnlocked }: HintCardProps) 
       <div className="hint-card hint-locked">
         <div className="hint-header">
           <Lightbulb size={13} className="hint-icon" />
-          <span className="hint-label">Hint {hint.order_num}</span>
+          <span className="hint-label">{t("hintLabel", { n: hint.order_num })}</span>
           {hint.cost > 0 && (
             <span className="hint-cost" style={{ color: canAfford ? undefined : "var(--g-danger)" }}>
-              {hint.cost} pts
+              {tCommon("points", { count: hint.cost })}
             </span>
           )}
         </div>
@@ -51,13 +54,15 @@ export function HintCard({ hint, slug, userPoints, onUnlocked }: HintCardProps) 
           className="hint-unlock-btn"
           onClick={() => unlockMutation.mutate()}
           disabled={unlockMutation.isPending || !canAfford}
-          tooltip={!canAfford ? `Not enough points (need ${hint.cost}, have ${userPoints})` : undefined}
+          tooltip={!canAfford ? t("notEnoughPtsTooltip", { cost: hint.cost, have: userPoints }) : undefined}
         >
           {unlockMutation.isPending
-            ? "Unlocking…"
+            ? t("unlockingBtn")
             : !canAfford
-            ? `Not enough pts`
-            : `Unlock${hint.cost > 0 ? ` (−${hint.cost} pts)` : ""}`}
+            ? t("notEnoughPtsBtn")
+            : hint.cost > 0
+            ? t("unlockWithCostBtn", { cost: hint.cost })
+            : t("unlockBtn")}
         </Button>
       </div>
     );
@@ -68,12 +73,12 @@ export function HintCard({ hint, slug, userPoints, onUnlocked }: HintCardProps) 
     <div className="hint-card hint-unlocked">
       <div className="hint-header">
         <Lightbulb size={13} className="hint-icon hint-icon--unlocked" />
-        <span className="hint-label">Hint {hint.order_num}</span>
+        <span className="hint-label">{t("hintLabel", { n: hint.order_num })}</span>
         {hint.cost > 0 && <span className="hint-cost hint-cost--paid">−{hint.cost} pts</span>}
         <button
           className="hint-toggle"
           onClick={() => setVisible((v) => !v)}
-          aria-label={visible ? "Hide hint" : "Show hint"}
+          aria-label={visible ? t("hideHintLabel") : t("showHintLabel")}
         >
           {visible ? <EyeOff size={12} /> : <Eye size={12} />}
         </button>

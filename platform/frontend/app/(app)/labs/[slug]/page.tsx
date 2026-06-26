@@ -4,6 +4,7 @@
 import "./lab-detail.css";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
@@ -26,12 +27,15 @@ import { DIFF_CLASS } from "@/lib/utils/difficulty";
 import { STALE_TIME } from "@/lib/config";
 
 function DiffBadge({ difficulty }: { difficulty: ChallengeDifficulty }) {
+  const tCommon = useTranslations("common");
   return (
-    <span className={`g-diff-badge ${DIFF_CLASS[difficulty]}`}>{difficulty}</span>
+    <span className={`g-diff-badge ${DIFF_CLASS[difficulty]}`}>{tCommon(difficulty)}</span>
   );
 }
 
 function ChallengeRow({ ch }: { ch: ChallengeListItem }) {
+  const tChallengeDetail = useTranslations("challenges.detail");
+  const tCommon = useTranslations("common");
   return (
     <Link href={`/challenges/${ch.slug}`} className="ld-ch-row">
       <div className="ld-ch-info">
@@ -45,14 +49,14 @@ function ChallengeRow({ ch }: { ch: ChallengeListItem }) {
       </div>
       <div className="ld-ch-right">
         <DiffBadge difficulty={ch.difficulty} />
-        <span className="ld-ch-pts">{ch.points} pts</span>
+        <span className="ld-ch-pts">{tCommon("points", { count: ch.points })}</span>
         <div className="ld-ch-meta">
           {ch.estimated_minutes && (
             <span className="ld-ch-meta-item"><Clock size={10} />{ch.estimated_minutes}m</span>
           )}
           <span className="ld-ch-meta-item"><Target size={10} />{ch.solve_count}</span>
           {ch.solved_by_me && (
-            <span className="ld-ch-solved"><CheckCircle2 size={10} />Solved</span>
+            <span className="ld-ch-solved"><CheckCircle2 size={10} />{tChallengeDetail("solvedBadge")}</span>
           )}
         </div>
       </div>
@@ -61,6 +65,10 @@ function ChallengeRow({ ch }: { ch: ChallengeListItem }) {
 }
 
 export default function LabDetailPage() {
+  const t = useTranslations("labs.detail");
+  const tLabs = useTranslations("labs");
+  const tNav = useTranslations("nav");
+  const tDeployments = useTranslations("deployments");
   const { slug } = useParams<{ slug: string }>();
   const [startOpen, setStartOpen] = useState(false);
 
@@ -81,15 +89,15 @@ export default function LabDetailPage() {
   const stopMutation = useApiMutation({
     mutationFn: stopDeployment,
     invalidateKeys: [["labs"]],
-    successMessage: "Stop requested",
-    errorMessage: "Failed to stop lab",
+    successMessage: tLabs("stopRequested"),
+    errorMessage: tLabs("stopFailed"),
   });
 
   const resetMutation = useApiMutation({
     mutationFn: resetDeployment,
     invalidateKeys: [["labs"]],
-    successMessage: "Reset requested",
-    errorMessage: "Failed to reset lab",
+    successMessage: tLabs("resetRequested"),
+    errorMessage: tLabs("resetFailed"),
   });
 
   if (labsLoading) {
@@ -104,9 +112,9 @@ export default function LabDetailPage() {
     return (
       <div className="page">
         <Link href="/labs" className="back-link">
-          <ArrowLeft size={14} /> Labs
+          <ArrowLeft size={14} /> {tNav("labs")}
         </Link>
-        <p className="text-muted text-sm mt-4">Lab not found.</p>
+        <p className="text-muted text-sm mt-4">{t("labNotFound")}</p>
       </div>
     );
   }
@@ -127,7 +135,7 @@ export default function LabDetailPage() {
   return (
     <div className="page">
       <Link href="/labs" className="back-link">
-        <ArrowLeft size={14} /> Labs
+        <ArrowLeft size={14} /> {tNav("labs")}
       </Link>
 
       {/* Header */}
@@ -145,7 +153,7 @@ export default function LabDetailPage() {
         <div className="ld-controls">
           {!isRunning ? (
             <Button variant="primary" leftIcon={<Play size={14} />} onClick={() => setStartOpen(true)}>
-              Start Lab
+              {tLabs("startLabBtn")}
             </Button>
           ) : (
             <>
@@ -155,19 +163,19 @@ export default function LabDetailPage() {
                 onClick={() => deployment && stopMutation.mutate(deployment.id)}
                 disabled={deployment?.status === "stopping"}
               >
-                Stop
+                {tDeployments("stop")}
               </Button>
               {lab.category === "firerange" && (
                 <Button
                   leftIcon={<RotateCcw size={14} />}
                   onClick={() => deployment && resetMutation.mutate(deployment.id)}
                 >
-                  Reset
+                  {tDeployments("reset")}
                 </Button>
               )}
               {labUrl && (
                 <Button href={labUrl} leftIcon={<ExternalLink size={14} />}>
-                  Open Lab
+                  {tDeployments("openLab")}
                 </Button>
               )}
             </>
@@ -178,33 +186,33 @@ export default function LabDetailPage() {
       <div className="ld-body">
         {/* Network info */}
         <div className="g-card ld-info-card">
-          <h2 className="ld-section-title">Network</h2>
+          <h2 className="ld-section-title">{t("networkHeading")}</h2>
           <div className="ld-info-rows">
             {subnet && appIp ? (
               <>
                 <div className="ld-info-row">
-                  <span className="ld-info-key"><Network size={12} /> Subnet</span>
+                  <span className="ld-info-key"><Network size={12} /> {tDeployments("subnetLabel")}</span>
                   <span className="ld-info-val font-mono">{subnet}</span>
                 </div>
                 <div className="ld-info-row">
-                  <span className="ld-info-key"><Server size={12} /> App IP</span>
+                  <span className="ld-info-key"><Server size={12} /> {tDeployments("appIpLabel")}</span>
                   <span className="ld-info-val font-mono">{appIp}</span>
                 </div>
               </>
             ) : (
               <div className="ld-info-row">
-                <span className="ld-info-key"><Network size={12} /> Subnet / App IP</span>
-                <span className="ld-info-val text-muted">Assigned when started</span>
+                <span className="ld-info-key"><Network size={12} /> {t("subnetAppIpLabel")}</span>
+                <span className="ld-info-val text-muted">{t("assignedWhenStarted")}</span>
               </div>
             )}
             <div className="ld-info-row">
-              <span className="ld-info-key"><Terminal size={12} /> Containers</span>
+              <span className="ld-info-key"><Terminal size={12} /> {tDeployments("containersLabel")}</span>
               <span className="ld-info-val font-mono">
-                {containerNames ? containerNames.join(", ") : "Assigned when started"}
+                {containerNames ? containerNames.join(", ") : t("assignedWhenStarted")}
               </span>
             </div>
             <div className="ld-info-row">
-              <span className="ld-info-key"><Globe size={12} /> Ports</span>
+              <span className="ld-info-key"><Globe size={12} /> {tDeployments("portsLabel")}</span>
               <div className="ld-info-chips">{portChips}</div>
             </div>
           </div>
@@ -213,7 +221,7 @@ export default function LabDetailPage() {
         {/* Access info — only shown when running */}
         {isRunning && accessInfo.length > 0 && (
           <div className="g-card ld-info-card">
-            <h2 className="ld-section-title">Access</h2>
+            <h2 className="ld-section-title">{tDeployments("accessHeading")}</h2>
             <div className="ld-access-rows">
               {accessInfo.map((row) => (
                 <div key={row.key} className="ld-access-row">
@@ -234,15 +242,15 @@ export default function LabDetailPage() {
         {/* Challenges */}
         <div className="g-card ld-ch-card">
           <h2 className="ld-section-title">
-            Challenges
+            {t("challengesHeading")}
             {!chLoading && (
               <span className="ld-ch-count">{challenges.length}</span>
             )}
           </h2>
           {chLoading ? (
-            <div className="text-muted text-sm">Loading challenges…</div>
+            <div className="text-muted text-sm">{t("loadingChallenges")}</div>
           ) : challenges.length === 0 ? (
-            <div className="text-muted text-sm">No challenges linked to this lab.</div>
+            <div className="text-muted text-sm">{t("noChallengesLinked")}</div>
           ) : (
             <div className="ld-ch-list">
               {challenges.map((ch) => (
@@ -253,8 +261,8 @@ export default function LabDetailPage() {
         </div>
         {/* Notes */}
         <div className="g-card ld-info-card">
-          <h2 className="ld-section-title">Notes</h2>
-          <NoteList filter={{ lab_template_id: lab.id }} emptyMessage="No notes for this lab yet." />
+          <h2 className="ld-section-title">{tNav("notes")}</h2>
+          <NoteList filter={{ lab_template_id: lab.id }} emptyMessage={t("noNotesForLab")} />
         </div>
       </div>
 

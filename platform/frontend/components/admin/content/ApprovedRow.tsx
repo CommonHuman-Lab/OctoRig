@@ -3,6 +3,7 @@
 // Copyright (c) 2026 CommonHuman-Lab
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Printer } from "lucide-react";
 import {
   publishSubmission,
@@ -14,13 +15,14 @@ import { StatusPill } from "@/components/ui/StatusPill";
 import { Button } from "@/components/ui/Button";
 
 export function ApprovedRow({ sub }: { sub: ContentSubmission }) {
+  const t = useTranslations("admin.content");
   const [showBody, setShowBody] = useState(false);
 
   const { mutate: publish, isPending } = useApiMutation<ContentSubmission, void>({
     mutationFn: () => publishSubmission(sub.id),
     invalidateKeys: [["content", "queue", "approved"]],
-    successMessage: "Submission published.",
-    errorMessage: (err: any) => err?.response?.data?.detail ?? "Failed to publish.",
+    successMessage: t("toastSubmissionPublished"),
+    errorMessage: (err: any) => err?.response?.data?.detail ?? t("toastPublishFailed"),
   });
 
   return (
@@ -32,7 +34,7 @@ export function ApprovedRow({ sub }: { sub: ContentSubmission }) {
             size="sm"
             style={{ padding: "0.1rem 0.4rem", fontSize: "0.7rem" }}
             onClick={() => setShowBody((v) => !v)}
-            tooltip="Toggle body"
+            tooltip={t("toggleBodyTooltip")}
           >
             {showBody ? "▾" : "▸"}
           </Button>
@@ -52,7 +54,7 @@ export function ApprovedRow({ sub }: { sub: ContentSubmission }) {
             onClick={() => publish()}
             leftIcon={<Printer size={12} />}
           >
-            {isPending ? "Publishing…" : "Publish"}
+            {isPending ? t("publishingBtn") : t("publishBtn")}
           </Button>
         </td>
       </tr>

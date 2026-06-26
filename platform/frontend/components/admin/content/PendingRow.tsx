@@ -3,6 +3,7 @@
 // Copyright (c) 2026 CommonHuman-Lab
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useApiMutation } from "@/hooks/useApiMutation";
 import { CheckCircle, XCircle, Clock } from "lucide-react";
 import {
@@ -16,8 +17,18 @@ import { StatusPill } from "@/components/ui/StatusPill";
 import { Button } from "@/components/ui/Button";
 
 function ReviewForm({ subId, onDone }: { subId: number; onDone: () => void }) {
+  const t = useTranslations("admin.content");
+  const tContent = useTranslations("content");
+  const tCreator = useTranslations("creator");
+  const tCommon = useTranslations("common");
   const [verdict, setVerdict] = useState<ReviewVerdict>("approved");
   const [comment, setComment] = useState("");
+
+  const VERDICT_LABEL: Record<ReviewVerdict, string> = {
+    approved: tContent("statusApproved"),
+    rejected: tContent("statusRejected"),
+    needs_changes: t("verdictNeedsChanges"),
+  };
 
   const { mutate, isPending } = useApiMutation<
     { review_id: number; verdict: ReviewVerdict; submission_status: ContentSubmission["status"] },
@@ -25,8 +36,8 @@ function ReviewForm({ subId, onDone }: { subId: number; onDone: () => void }) {
   >({
     mutationFn: () => reviewSubmission(subId, verdict, comment || undefined),
     invalidateKeys: [["content", "queue", "pending"]],
-    successMessage: (data) => `Verdict submitted: ${data.verdict}`,
-    errorMessage: "Failed to submit review.",
+    successMessage: (data) => t("toastVerdictSubmitted", { verdict: VERDICT_LABEL[data.verdict] }),
+    errorMessage: t("toastReviewFailed"),
     onSuccess: onDone,
   });
 
@@ -49,22 +60,22 @@ function ReviewForm({ subId, onDone }: { subId: number; onDone: () => void }) {
               <Clock size={12} />
             }
           >
-            {v.replace("_", " ")}
+            {VERDICT_LABEL[v]}
           </Button>
         ))}
       </div>
       <textarea
         className="g-input"
         rows={2}
-        placeholder="Optional comment…"
+        placeholder={t("commentPlaceholder")}
         value={comment}
         onChange={(e) => setComment(e.target.value)}
         style={{ resize: "vertical", fontSize: "0.8125rem" }}
       />
       <div style={{ display: "flex", gap: "0.5rem", justifyContent: "flex-end" }}>
-        <Button variant="ghost" size="sm" onClick={onDone}>Cancel</Button>
+        <Button variant="ghost" size="sm" onClick={onDone}>{tCommon("cancel")}</Button>
         <Button variant="primary" size="sm" disabled={isPending} onClick={() => mutate()}>
-          {isPending ? "Submitting…" : "Submit Review"}
+          {isPending ? tCreator("submitting") : t("submitReviewBtn")}
         </Button>
       </div>
     </div>
@@ -72,14 +83,15 @@ function ReviewForm({ subId, onDone }: { subId: number; onDone: () => void }) {
 }
 
 export function PendingRow({ sub }: { sub: ContentSubmission }) {
+  const t = useTranslations("admin.content");
   const [showReview, setShowReview] = useState(false);
   const [showBody, setShowBody] = useState(false);
 
   const { mutate: claim, isPending: claiming } = useApiMutation<ContentSubmission, void>({
     mutationFn: () => claimSubmission(sub.id),
     invalidateKeys: [["content", "queue", "pending"]],
-    successMessage: "Submission claimed.",
-    errorMessage: "Failed to claim submission.",
+    successMessage: t("toastSubmissionClaimed"),
+    errorMessage: t("toastClaimFailed"),
   });
 
   const isClaimed = sub.status === "in_review";
@@ -93,7 +105,7 @@ export function PendingRow({ sub }: { sub: ContentSubmission }) {
             size="sm"
             style={{ padding: "0.1rem 0.4rem", fontSize: "0.7rem" }}
             onClick={() => setShowBody((v) => !v)}
-            tooltip="Toggle body"
+            tooltip={t("toggleBodyTooltip")}
           >
             {showBody ? "▾" : "▸"}
           </Button>
@@ -109,12 +121,12 @@ export function PendingRow({ sub }: { sub: ContentSubmission }) {
           <div style={{ display: "flex", gap: "0.5rem" }}>
             {!isClaimed && (
               <Button variant="ghost" size="sm" disabled={claiming} onClick={() => claim()}>
-                {claiming ? "Claiming…" : "Claim"}
+                {claiming ? t("claimingBtn") : t("claimBtn")}
               </Button>
             )}
             {isClaimed && (
               <Button variant="primary" size="sm" onClick={() => setShowReview((v) => !v)}>
-                Review
+                {t("reviewBtn")}
               </Button>
             )}
           </div>

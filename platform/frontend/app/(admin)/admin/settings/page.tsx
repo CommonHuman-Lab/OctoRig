@@ -4,6 +4,7 @@
 import "../admin.css";
 import "./settings.css";
 
+import { useTranslations } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -20,6 +21,9 @@ import { AppearanceSection } from "@/components/admin/settings/AppearanceSection
 import { DangerZone } from "@/components/admin/settings/DangerZone";
 
 export default function AdminSettingsPage() {
+  const t = useTranslations("admin.settings");
+  const tNav = useTranslations("nav");
+  const tCommon = useTranslations("common");
   const { confirm } = useConfirmStore();
   const { user } = useUserStore();
   const router = useRouter();
@@ -71,22 +75,22 @@ export default function AdminSettingsPage() {
   const saveMutation = useApiMutation({
     mutationFn: updateSiteSettings,
     invalidateKeys: [["site-settings"]],
-    successMessage: "Settings saved",
-    errorMessage: "Failed to save settings",
+    successMessage: t("toastSettingsSaved"),
+    errorMessage: t("toastSaveSettingsFailed"),
   });
 
   const resetDbMutation = useApiMutation<void, void>({
     mutationFn: resetDatabase,
     invalidateKeys: [],
-    successMessage: "Database reset — all activity data cleared",
-    errorMessage: "Failed to reset database",
+    successMessage: t("toastDbReset"),
+    errorMessage: t("toastResetDbFailed"),
   });
 
   function handleResetDb() {
     confirm({
-      title: "Reset entire database?",
-      body: "This will permanently delete ALL submissions, scores, hint unlocks, badges, event registrations, assessment invites & reports, deployments, notifications, sessions, and audit logs. Accounts, teams, labs, challenges, events, and assessment configs are kept. This cannot be undone.",
-      confirmLabel: "Reset Database",
+      title: t("resetDbConfirmTitle"),
+      body: t("resetDbConfirmBody"),
+      confirmLabel: t("resetDbTitle"),
       dangerous: true,
       onConfirm: () => resetDbMutation.mutate(),
     });
@@ -95,15 +99,15 @@ export default function AdminSettingsPage() {
   const restartPlatformMutation = useApiMutation<void, void>({
     mutationFn: restartPlatform,
     invalidateKeys: [],
-    successMessage: "Platform restarting — this may take a minute",
-    errorMessage: "Failed to restart platform",
+    successMessage: t("toastPlatformRestarting"),
+    errorMessage: t("toastRestartFailed"),
   });
 
   function handleRestartPlatform() {
     confirm({
-      title: "Restart the platform?",
-      body: "This stops every running lab, then restarts the API, worker, and frontend containers. The platform — including this page — will be briefly unreachable while it comes back up.",
-      confirmLabel: "Restart Platform",
+      title: t("restartConfirmTitle"),
+      body: t("restartConfirmBody"),
+      confirmLabel: t("restartPlatformTitle"),
       dangerous: true,
       onConfirm: () => restartPlatformMutation.mutate(),
     });
@@ -112,8 +116,8 @@ export default function AdminSettingsPage() {
   if (isLoading || !settings) {
     return (
       <div className="page">
-        <div className="page-header"><h1 className="page-title font-mono">Settings</h1></div>
-        <p style={{ color: "var(--g-text-muted)", fontSize: "0.875rem" }}>Loading…</p>
+        <div className="page-header"><h1 className="page-title font-mono">{tNav("settings")}</h1></div>
+        <p style={{ color: "var(--g-text-muted)", fontSize: "0.875rem" }}>{tCommon("loading")}</p>
       </div>
     );
   }
@@ -121,7 +125,7 @@ export default function AdminSettingsPage() {
   return (
     <div className="page">
       <div className="page-header">
-        <h1 className="page-title font-mono">Settings</h1>
+        <h1 className="page-title font-mono">{tNav("settings")}</h1>
       </div>
 
       <PlatformSection
