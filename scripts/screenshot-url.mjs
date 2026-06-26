@@ -5,13 +5,14 @@
 // page, for quick visual checks while iterating on UI changes.
 //
 // Usage:
-//   node scripts/screenshot-url.mjs <path-or-url> [output.png] [--theme=<id>]
+//   node scripts/screenshot-url.mjs <path-or-url> [output.png] [--theme=<id>] [--locale=<id>]
 //
 // Examples:
 //   node scripts/screenshot-url.mjs /challenges
 //   node scripts/screenshot-url.mjs http://localhost:3000/labs labs.png
 //   node scripts/screenshot-url.mjs /challenges --theme=synthwave
 //   node scripts/screenshot-url.mjs /admin/labs admin-labs-frost.png --theme=frost
+//   node scripts/screenshot-url.mjs /settings settings-fr.png --locale=fr
 //
 // Env vars (all optional):
 //   BASE_URL        default http://localhost:3000
@@ -50,7 +51,8 @@ const THEMES = [
 
 const rawArgs = process.argv.slice(2);
 const themeArg = rawArgs.find((a) => a.startsWith("--theme="));
-const positional = rawArgs.filter((a) => !a.startsWith("--theme="));
+const localeArg = rawArgs.find((a) => a.startsWith("--locale="));
+const positional = rawArgs.filter((a) => !a.startsWith("--theme=") && !a.startsWith("--locale="));
 
 const target = positional[0];
 if (!target) {
@@ -82,6 +84,14 @@ if (await page.locator('input[type="text"]').count() > 0) {
   await page.fill('input[type="password"]', ADMIN_PASSWORD);
   await page.click('button[type="submit"]');
   await page.waitForURL(`${BASE_URL}/`, { timeout: 15000 }).catch(() => {});
+}
+
+if (localeArg) {
+  const localeId = localeArg.slice("--locale=".length);
+  await page.evaluate(
+    (id) => localStorage.setItem("octorig_locale", JSON.stringify({ state: { value: id, _explicit: true }, version: 0 })),
+    localeId
+  );
 }
 
 if (theme) {
