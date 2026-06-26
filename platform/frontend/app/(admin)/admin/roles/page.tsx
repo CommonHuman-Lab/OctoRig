@@ -4,6 +4,7 @@
 import "./roles-admin.css";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
 import { useApiMutation } from "@/hooks/useApiMutation";
 import { Plus, Trash2 } from "lucide-react";
@@ -21,6 +22,9 @@ import { Button } from "@/components/ui/Button";
 
 export default function AdminRolesPage() {
   useAdminGuard();
+  const t = useTranslations("admin.roles");
+  const tCommon = useTranslations("common");
+  const tAdmin = useTranslations("admin");
   const { confirm } = useConfirmStore();
 
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -50,16 +54,16 @@ export default function AdminRolesPage() {
     mutationFn: (payload: any) =>
       selected ? updateRole(selected.slug, payload) : createRole(payload),
     invalidateKeys: [["admin-roles"]],
-    successMessage: () => (selected ? "Role updated." : "Role created."),
-    errorMessage: (err: any) => err?.response?.data?.detail ?? "Failed to save role.",
+    successMessage: () => (selected ? t("toastRoleUpdated") : t("toastRoleCreated")),
+    errorMessage: (err: any) => err?.response?.data?.detail ?? t("toastSaveRoleFailed"),
     onSuccess: closeSheet,
   });
 
   const deleteMutation = useApiMutation({
     mutationFn: (slug: string) => deleteRole(slug),
     invalidateKeys: [["admin-roles"]],
-    successMessage: "Role deleted.",
-    errorMessage: (err: any) => err?.response?.data?.detail ?? "Failed to delete role.",
+    successMessage: t("toastRoleDeleted"),
+    errorMessage: (err: any) => err?.response?.data?.detail ?? t("toastDeleteRoleFailed"),
     onSuccess: closeSheet,
   });
 
@@ -67,14 +71,14 @@ export default function AdminRolesPage() {
     mutationFn: ({ slug, is_default }: { slug: string; is_default: boolean }) =>
       updateRole(slug, { is_default }),
     invalidateKeys: [["admin-roles"]],
-    errorMessage: (err: any) => err?.response?.data?.detail ?? "Failed to update role.",
+    errorMessage: (err: any) => err?.response?.data?.detail ?? t("toastUpdateRoleFailed"),
   });
 
   function handleDelete(role: PlatformRole) {
     confirm({
-      title: "Delete role",
-      body: `Delete "${role.display_name}"? Users holding this role will lose its permissions.`,
-      confirmLabel: "Delete",
+      title: t("deleteRoleTitle"),
+      body: t("deleteRoleBody", { name: role.display_name }),
+      confirmLabel: tCommon("delete"),
       dangerous: true,
       onConfirm: () => deleteMutation.mutate(role.slug),
     });
@@ -84,27 +88,27 @@ export default function AdminRolesPage() {
     <div className="page">
       <div className="page-header">
         <div>
-          <h1 className="page-title font-mono">Roles</h1>
-          <p className="page-sub">{roles.length} roles configured</p>
+          <h1 className="page-title font-mono">{t("title")}</h1>
+          <p className="page-sub">{t("rolesConfigured", { count: roles.length })}</p>
         </div>
         <Button variant="primary" leftIcon={<Plus size={13} />} onClick={openCreate}>
-          New Role
+          {t("newRole")}
         </Button>
       </div>
 
       <div className="g-card" style={{ padding: 0, overflow: "hidden" }}>
         {isLoading ? (
-          <div className="loading-cell text-muted text-sm">Loading…</div>
+          <div className="loading-cell text-muted text-sm">{tCommon("loading")}</div>
         ) : (
           <table className="g-table">
             <thead>
               <tr>
-                <th>Slug</th>
-                <th>Name</th>
-                <th>Permissions</th>
-                <th>Type</th>
-                <th>Default</th>
-                <th>Actions</th>
+                <th>{t("colSlug")}</th>
+                <th>{t("colName")}</th>
+                <th>{t("colPermissions")}</th>
+                <th>{tAdmin("type")}</th>
+                <th>{t("colDefault")}</th>
+                <th>{tCommon("actions")}</th>
               </tr>
             </thead>
             <tbody>
@@ -121,13 +125,13 @@ export default function AdminRolesPage() {
                     <td className="text-11 text-muted">{role.permissions.length}</td>
                     <td>
                       <span className={`g-status-pill ${role.is_system ? "g-status-pill--on" : "g-status-pill--off"}`}>
-                        {role.is_system ? "System" : "Custom"}
+                        {role.is_system ? t("system") : t("custom")}
                       </span>
                     </td>
                     <td>
                       <label
                         className="toggle"
-                        title={isAdmin ? "The admin role cannot be edited" : "Assign automatically to new users"}
+                        title={isAdmin ? t("adminRoleLockedTooltip") : t("assignAutomatically")}
                         onClick={(e) => e.stopPropagation()}
                       >
                         <input
@@ -145,7 +149,7 @@ export default function AdminRolesPage() {
                       {!role.is_system && (
                         <Button
                           icon
-                          tooltip="Delete role"
+                          tooltip={t("deleteRoleTooltip")}
                           leftIcon={<Trash2 size={13} />}
                           onClick={(e) => { e.stopPropagation(); handleDelete(role); }}
                         />

@@ -4,6 +4,7 @@
 import "../admin.css";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
 import { ToggleLeft, ToggleRight, ExternalLink } from "lucide-react";
 import Link from "next/link";
@@ -20,11 +21,13 @@ import { FilterPills } from "@/components/ui/FilterPills";
 import { Button } from "@/components/ui/Button";
 
 function ChallengeRow({ ch }: { ch: ChallengeListItem }) {
+  const t = useTranslations("admin.challenges");
   const { mutate, isPending } = useApiMutation<{ slug: string; is_active: boolean }, void>({
     mutationFn: () => setChallengeActive(ch.slug, !ch.is_active),
     invalidateKeys: [["admin", "challenges"]],
-    successMessage: (res) => `${ch.title} ${res.is_active ? "enabled" : "disabled"}.`,
-    errorMessage: "Failed to update challenge.",
+    successMessage: (res) =>
+      res.is_active ? t("toastChallengeEnabled", { title: ch.title }) : t("toastChallengeDisabled", { title: ch.title }),
+    errorMessage: t("toastUpdateChallengeFailed"),
   });
 
   return (
@@ -78,14 +81,14 @@ function ChallengeRow({ ch }: { ch: ChallengeListItem }) {
           size="sm"
           disabled={isPending}
           onClick={() => mutate()}
-          tooltip={ch.is_active ? "Disable challenge" : "Enable challenge"}
+          tooltip={ch.is_active ? t("disableChallengeTooltip") : t("enableChallengeTooltip")}
           leftIcon={ch.is_active ? (
             <ToggleRight size={14} style={{ color: "var(--g-success)" }} />
           ) : (
             <ToggleLeft size={14} style={{ color: "var(--g-text-muted)" }} />
           )}
         >
-          {isPending ? "…" : ch.is_active ? "Enabled" : "Disabled"}
+          {isPending ? "…" : ch.is_active ? t("enabledLabel") : t("disabledLabel")}
         </Button>
       </td>
     </tr>
@@ -93,6 +96,18 @@ function ChallengeRow({ ch }: { ch: ChallengeListItem }) {
 }
 
 export default function AdminChallengesPage() {
+  const t = useTranslations("admin.challenges");
+  const tCommon = useTranslations("common");
+  const tUsers = useTranslations("admin.users");
+  const tCreator = useTranslations("creator");
+  const tLabsAdmin = useTranslations("admin.labs");
+
+  function filterLabel(v: string | undefined) {
+    if (v === "active") return tUsers("active");
+    if (v === "inactive") return tUsers("inactive");
+    return tCommon("all");
+  }
+
   const [filter, setFilter] = useState<"all" | "active" | "inactive">("all");
   const [search, setSearch] = useState("");
 
@@ -115,9 +130,9 @@ export default function AdminChallengesPage() {
   return (
     <div className="page">
       <div className="page-header">
-        <h1 className="page-title font-mono">Challenge Management</h1>
+        <h1 className="page-title font-mono">{t("title")}</h1>
         <div style={{ fontSize: "0.8125rem", color: "var(--g-text-muted)" }}>
-          {activeCount} active · {inactiveCount} disabled · {challenges.length} total
+          {t("summaryLine", { active: activeCount, inactive: inactiveCount, total: challenges.length })}
         </div>
       </div>
 
@@ -129,12 +144,13 @@ export default function AdminChallengesPage() {
               options: ["all", "active", "inactive"],
               value: filter,
               onChange: (v) => setFilter(v as "all" | "active" | "inactive"),
+              label: filterLabel,
             },
           ]}
         />
         <input
           className="g-input"
-          placeholder="Search title or category…"
+          placeholder={t("searchPlaceholder")}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           style={{ marginLeft: "auto", maxWidth: "240px" }}
@@ -144,19 +160,19 @@ export default function AdminChallengesPage() {
       <AsyncContent
         isLoading={isLoading}
         data={filtered}
-        empty={<div className="text-muted text-sm mt-4">No challenges found.</div>}
+        empty={<div className="text-muted text-sm mt-4">{t("noChallengesFound")}</div>}
       >
         {(filtered) => (
           <table className="g-table">
             <thead>
               <tr>
-                <th>Title</th>
-                <th>Category</th>
-                <th>Difficulty</th>
-                <th>Type</th>
-                <th style={{ textAlign: "right" }}>Points</th>
-                <th style={{ textAlign: "right" }}>Solves</th>
-                <th>Status</th>
+                <th>{tCreator("titleLabel")}</th>
+                <th>{tLabsAdmin("categoryLabel")}</th>
+                <th>{t("colDifficulty")}</th>
+                <th>{tCreator("typeLabel")}</th>
+                <th style={{ textAlign: "right" }}>{tCreator("pointsLabel")}</th>
+                <th style={{ textAlign: "right" }}>{t("colSolves")}</th>
+                <th>{tUsers("colStatus")}</th>
               </tr>
             </thead>
             <tbody>

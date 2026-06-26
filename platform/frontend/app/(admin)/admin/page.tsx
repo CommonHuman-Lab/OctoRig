@@ -11,6 +11,7 @@ import { getPlugins } from "@/lib/api/system";
 import { useUserStore } from "@/stores/user.store";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
 
 function StatCard({
@@ -38,6 +39,9 @@ function StatCard({
 }
 
 export default function AdminDashboard() {
+  const t = useTranslations("admin");
+  const tNav = useTranslations("nav");
+  const tCommon = useTranslations("common");
   const { user } = useUserStore();
   const router = useRouter();
 
@@ -60,49 +64,49 @@ export default function AdminDashboard() {
   return (
     <div className="page">
       <div className="page-header">
-        <h1 className="page-title font-mono">Admin</h1>
+        <h1 className="page-title font-mono">{tNav("adminSection")}</h1>
         {user?.platform_roles?.includes("admin") && (
-          <span className="superadmin-badge text-11">Super Admin</span>
+          <span className="superadmin-badge text-11">{t("superAdmin")}</span>
         )}
       </div>
 
       {isLoading ? (
-        <div className="text-muted text-sm">Loading…</div>
+        <div className="text-muted text-sm">{tCommon("loading")}</div>
       ) : (
         <div className="g-grid-auto stats-grid">
           <StatCard
             icon={<Users size={20} />}
-            label="Total Users"
+            label={t("totalUsers")}
             value={stats?.user_count}
             href="/admin/users"
           />
           <StatCard
             icon={<FolderGit2 size={20} />}
-            label="Total Teams"
+            label={t("totalTeams")}
             value={stats?.team_count}
             href="/admin/teams"
           />
           <StatCard
             icon={<Container size={20} />}
-            label="Active Deployments"
+            label={t("activeDeployments")}
             value={stats?.active_deployments}
             href="/admin/deployments"
           />
           <StatCard
             icon={<Activity size={20} />}
-            label="Total Deployments"
+            label={t("totalDeployments")}
             value={stats?.total_deployments}
             href="/admin/deployments"
           />
           <StatCard
             icon={<KeyRound size={20} />}
-            label="API Keys"
+            label={tNav("apiKeys")}
             value={stats?.api_key_count}
             href="/admin/users"
           />
           <StatCard
             icon={<ClipboardList size={20} />}
-            label="Assessments"
+            label={tNav("adminAssessments")}
             value={undefined}
             href="/admin/assessments"
           />
@@ -110,30 +114,30 @@ export default function AdminDashboard() {
       )}
 
       <div className="quick-links">
-        <h2 className="section-title text-11 text-muted">Quick Links</h2>
+        <h2 className="section-title text-11 text-muted">{t("quickLinks")}</h2>
         <div className="link-row">
-          <Button href="/admin/users" size="sm">Users</Button>
-          <Button href="/admin/teams" size="sm">Teams</Button>
-          <Button href="/admin/deployments" size="sm">Deployments</Button>
-          <Button href="/admin/audit" size="sm">Audit Log</Button>
-          <Button href="/admin/assessments" size="sm">Assessments</Button>
+          <Button href="/admin/users" size="sm">{tNav("adminUsers")}</Button>
+          <Button href="/admin/teams" size="sm">{tNav("teams")}</Button>
+          <Button href="/admin/deployments" size="sm">{tNav("deployments")}</Button>
+          <Button href="/admin/audit" size="sm">{tNav("adminAuditLog")}</Button>
+          <Button href="/admin/assessments" size="sm">{tNav("adminAssessments")}</Button>
         </div>
       </div>
 
       <div className="mt-6">
-        <h2 className="section-title text-11 text-muted">Plugins</h2>
+        <h2 className="section-title text-11 text-muted">{t("plugins")}</h2>
         {plugins.length === 0 ? (
           <p className="text-muted text-sm mt-2">
-            No plugins installed. Plugins registered via the <code>octorig.plugins</code> entry point group are auto-discovered at startup.
+            {t.rich("noPlugins", { code: (chunks) => <code>{chunks}</code> })}
           </p>
         ) : (
           <table className="g-table mt-2">
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Version</th>
-                <th>Type</th>
-                <th>Entry Point</th>
+                <th>{t("name")}</th>
+                <th>{t("version")}</th>
+                <th>{t("type")}</th>
+                <th>{t("entryPoint")}</th>
               </tr>
             </thead>
             <tbody>

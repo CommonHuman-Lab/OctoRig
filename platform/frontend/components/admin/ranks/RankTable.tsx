@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
+import { useTranslations } from "next-intl";
 import { Pencil, Trash2 } from "lucide-react";
 import type { Rank } from "@/lib/api/ranks";
 import { RankChip } from "@/components/ui/RankChip";
@@ -18,17 +19,21 @@ export function RankTable({
   onEdit: (rank: Rank) => void;
   onDelete: (rank: Rank) => void;
 }) {
+  const t = useTranslations("admin.ranks");
+  const tCommon = useTranslations("common");
+  const tUsers = useTranslations("admin.users");
+
   if (isLoading) {
-    return <div className="text-muted text-sm" style={{ padding: "1rem" }}>Loading…</div>;
+    return <div className="text-muted text-sm" style={{ padding: "1rem" }}>{tCommon("loading")}</div>;
   }
 
   return (
     <table className="rank-table">
       <thead>
         <tr>
-          <th>Rank</th>
-          <th>Min Points</th>
-          <th>Status</th>
+          <th>{t("colRank")}</th>
+          <th>{t("colMinPoints")}</th>
+          <th>{tUsers("colStatus")}</th>
           <th></th>
         </tr>
       </thead>
@@ -49,7 +54,7 @@ export function RankTable({
                 className="inactive-pill"
                 style={rank.is_active ? { background: "var(--g-accent-dim)", color: "var(--g-accent)" } : undefined}
               >
-                {rank.is_active ? "active" : "inactive"}
+                {rank.is_active ? tUsers("active") : tUsers("inactive")}
               </span>
             </td>
             <td>
@@ -57,13 +62,13 @@ export function RankTable({
                 <Button
                   style={{ padding: "0.2rem 0.4rem" }}
                   onClick={() => onEdit(rank)}
-                  tooltip="Edit"
+                  tooltip={tCommon("edit")}
                   leftIcon={<Pencil size={12} />}
                 />
                 <Button
                   style={{ padding: "0.2rem 0.4rem", color: "var(--g-danger)" }}
                   onClick={() => onDelete(rank)}
-                  tooltip="Delete"
+                  tooltip={tCommon("delete")}
                   leftIcon={<Trash2 size={12} />}
                 />
               </div>

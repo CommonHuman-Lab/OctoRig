@@ -4,6 +4,7 @@
 import "../admin.css";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
 import { useApiMutation } from "@/hooks/useApiMutation";
 import { Key, ShieldOff } from "lucide-react";
@@ -17,6 +18,10 @@ import { AsyncContent } from "@/components/ui/AsyncContent";
 import { Button } from "@/components/ui/Button";
 
 export default function AdminApiKeysPage() {
+  const t = useTranslations("admin.apiKeys");
+  const tApiKeys = useTranslations("apiKeys");
+  const tNav = useTranslations("nav");
+  const tTeams = useTranslations("teams");
   const { confirm } = useConfirmStore();
   const { user } = useUserStore();
 
@@ -33,15 +38,15 @@ export default function AdminApiKeysPage() {
   const revokeMutation = useApiMutation({
     mutationFn: revokeAdminApiKey,
     invalidateKeys: [["admin-api-keys"]],
-    successMessage: "API key revoked",
-    errorMessage: "Failed to revoke key",
+    successMessage: tApiKeys("revokedToast"),
+    errorMessage: tApiKeys("revokeFailed"),
   });
 
   function handleRevoke(id: number, name: string, username: string) {
     confirm({
-      title: "Revoke API key?",
-      body: `Revoke "${name}" owned by ${username}? Any integrations using this key will stop working immediately.`,
-      confirmLabel: "Revoke",
+      title: t("revokeTitle"),
+      body: t("revokeBody", { name, username }),
+      confirmLabel: t("revokeBtn"),
       dangerous: true,
       onConfirm: () => revokeMutation.mutate(id),
     });
@@ -52,7 +57,7 @@ export default function AdminApiKeysPage() {
       <div className="page-header">
         <h1 className="page-title font-mono">
           <Key size={16} style={{ display: "inline", marginRight: "0.5rem", verticalAlign: "middle" }} />
-          API Keys
+          {tNav("apiKeys")}
         </h1>
         <label style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "0.8125rem", color: "var(--g-text-muted)", cursor: "pointer" }}>
           <input
@@ -60,7 +65,7 @@ export default function AdminApiKeysPage() {
             checked={activeOnly}
             onChange={(e) => setActiveOnly(e.target.checked)}
           />
-          Active only
+          {t("activeOnlyLabel")}
         </label>
       </div>
 
@@ -69,7 +74,7 @@ export default function AdminApiKeysPage() {
         data={keys}
         empty={
           <div className="g-card" style={{ textAlign: "center", padding: "2rem", color: "var(--g-text-muted)" }}>
-            No API keys found.
+            {t("noKeysFound")}
           </div>
         }
       >
@@ -78,12 +83,12 @@ export default function AdminApiKeysPage() {
             <table className="g-table">
               <thead>
                 <tr>
-                  <th>Key</th>
-                  <th>Owner</th>
-                  <th>Created</th>
-                  <th>Last Used</th>
-                  <th>Expires</th>
-                  <th>Status</th>
+                  <th>{t("colKey")}</th>
+                  <th>{tTeams("roleOwner")}</th>
+                  <th>{tApiKeys("colCreated")}</th>
+                  <th>{tApiKeys("colLastUsed")}</th>
+                  <th>{tApiKeys("colExpires")}</th>
+                  <th>{tApiKeys("colStatus")}</th>
                   <th></th>
                 </tr>
               </thead>
@@ -99,10 +104,10 @@ export default function AdminApiKeysPage() {
                       {formatDateTime(k.created_at)}
                     </td>
                     <td style={{ fontSize: "0.75rem", color: "var(--g-text-muted)" }}>
-                      {k.last_used_at ? formatDateTime(k.last_used_at) : "Never"}
+                      {k.last_used_at ? formatDateTime(k.last_used_at) : tApiKeys("never")}
                     </td>
                     <td style={{ fontSize: "0.75rem", color: "var(--g-text-muted)" }}>
-                      {k.expires_at ? formatDateTime(k.expires_at) : "Never"}
+                      {k.expires_at ? formatDateTime(k.expires_at) : tApiKeys("never")}
                     </td>
                     <td>
                       <span style={{
@@ -110,7 +115,7 @@ export default function AdminApiKeysPage() {
                         textTransform: "uppercase",
                         color: k.is_active ? "var(--g-success)" : "var(--g-text-muted)",
                       }}>
-                        {k.is_active ? "active" : "revoked"}
+                        {k.is_active ? tApiKeys("active") : tApiKeys("revoked")}
                       </span>
                     </td>
                     <td>
@@ -122,7 +127,7 @@ export default function AdminApiKeysPage() {
                           disabled={revokeMutation.isPending}
                           onClick={() => handleRevoke(k.id, k.name, k.username)}
                         >
-                          Revoke
+                          {t("revokeBtn")}
                         </Button>
                       )}
                     </td>

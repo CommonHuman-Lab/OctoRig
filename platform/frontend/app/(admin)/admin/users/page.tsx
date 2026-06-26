@@ -4,6 +4,7 @@
 import "./users-admin.css";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
 import { useApiMutation } from "@/hooks/useApiMutation";
 import { Search, UserPlus } from "lucide-react";
@@ -25,6 +26,9 @@ import { SheetShell } from "@/components/ui/SheetShell";
 import { Button } from "@/components/ui/Button";
 
 export default function AdminUsersPage() {
+  const t = useTranslations("admin.users");
+  const tCommon = useTranslations("common");
+  const tSettings = useTranslations("settings");
   const { confirm } = useConfirmStore();
   const { user: currentUser } = useUserStore();
   const [showCreate, setShowCreate] = useState(false);
@@ -49,8 +53,8 @@ export default function AdminUsersPage() {
     mutationFn: (payload: { username: string; email: string; password: string; platform_roles: string[] }) =>
       createAdminUser(payload),
     invalidateKeys: [["admin-users"]],
-    successMessage: (data) => `User ${data.username} created`,
-    errorMessage: (err: any) => err?.response?.data?.detail ?? "Failed to create user",
+    successMessage: (data) => t("toastUserCreated", { username: data.username }),
+    errorMessage: (err: any) => err?.response?.data?.detail ?? t("toastCreateUserFailed"),
     onSuccess: () => setShowCreate(false),
   });
 
@@ -58,8 +62,8 @@ export default function AdminUsersPage() {
     mutationFn: ({ id, patch }: { id: number; patch: Parameters<typeof updateAdminUser>[1] }) =>
       updateAdminUser(id, patch),
     invalidateKeys: [["admin-users"]],
-    successMessage: "User updated",
-    errorMessage: "Failed to update user",
+    successMessage: t("toastUserUpdated"),
+    errorMessage: t("toastUpdateUserFailed"),
     onSuccess: (updated) => setSelected(updated),
   });
 
@@ -67,8 +71,8 @@ export default function AdminUsersPage() {
     mutationFn: ({ id, password }: { id: number; password: string }) =>
       resetUserPassword(id, password),
     invalidateKeys: [],
-    successMessage: "Password reset",
-    errorMessage: "Failed to reset password",
+    successMessage: t("toastPasswordReset"),
+    errorMessage: t("toastResetPasswordFailed"),
     onSuccess: () => {
       setShowReset(false);
       setNewPw("");
@@ -78,8 +82,8 @@ export default function AdminUsersPage() {
   const resetPointsMutation = useApiMutation({
     mutationFn: (id: number) => resetUserPoints(id),
     invalidateKeys: [["admin-users"]],
-    successMessage: "Points reset — all submissions and scores cleared",
-    errorMessage: "Failed to reset points",
+    successMessage: t("toastPointsReset"),
+    errorMessage: t("toastResetPointsFailed"),
   });
 
   useEscapeKey(() => setShowReset(false), showReset);
@@ -88,13 +92,13 @@ export default function AdminUsersPage() {
   return (
     <div className="page">
       <div className="page-header">
-        <h1 className="page-title font-mono">Users</h1>
+        <h1 className="page-title font-mono">{t("title")}</h1>
         <div className="header-actions">
           <div className="g-input-icon">
             <Search size={13} className="icon-left" />
             <input
               className="g-input g-input-sm"
-              placeholder="Search users…"
+              placeholder={t("searchPlaceholder")}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -105,7 +109,7 @@ export default function AdminUsersPage() {
             leftIcon={<UserPlus size={13} />}
             onClick={() => setShowCreate(true)}
           >
-            New User
+            {t("newUser")}
           </Button>
         </div>
       </div>
@@ -129,9 +133,9 @@ export default function AdminUsersPage() {
               return;
             }
             confirm({
-              title: `Deactivate ${u.username}?`,
-              body: "They will be immediately signed out and unable to log back in until reactivated.",
-              confirmLabel: "Deactivate",
+              title: t("deactivateTitle", { username: u.username }),
+              body: t("deactivateBody"),
+              confirmLabel: t("deactivateConfirm"),
               dangerous: true,
               onConfirm: () => updateMutation.mutate({ id: u.id, patch: { is_active: false } }),
             });
@@ -140,9 +144,9 @@ export default function AdminUsersPage() {
           onResetPassword={(u) => { setSelected(u); setShowReset(true); }}
           onUnlock={(u) => updateMutation.mutate({ id: u.id, patch: { unlock: true } })}
           onResetPoints={(u) => confirm({
-            title: `Reset points for ${u.username}?`,
-            body: "This will delete all their challenge submissions, scores, and hint unlocks. This cannot be undone.",
-            confirmLabel: "Reset Points",
+            title: t("resetPointsTitle", { username: u.username }),
+            body: t("resetPointsBody"),
+            confirmLabel: t("resetPointsConfirm"),
             dangerous: true,
             onConfirm: () => resetPointsMutation.mutate(u.id),
           })}
@@ -153,23 +157,23 @@ export default function AdminUsersPage() {
 
       {showReset && selected && (
         <SheetShell
-          title={<>Reset Password — {selected.username}</>}
+          title={t("resetPasswordTitle", { username: selected.username })}
           onClose={() => setShowReset(false)}
           footer={
             <>
-              <Button onClick={() => setShowReset(false)}>Cancel</Button>
+              <Button onClick={() => setShowReset(false)}>{tCommon("cancel")}</Button>
               <Button
                 variant="primary"
                 disabled={!newPw || resetMutation.isPending}
                 onClick={() => resetMutation.mutate({ id: selected.id, password: newPw })}
               >
-                {resetMutation.isPending ? "Resetting…" : "Reset Password"}
+                {resetMutation.isPending ? t("resetting") : t("resetPasswordBtn")}
               </Button>
             </>
           }
         >
           <label className="ev-field">
-            <span className="ev-label">New Password</span>
+            <span className="ev-label">{tSettings("newPasswordLabel")}</span>
             <input
               className="g-input"
               type="password"
@@ -183,11 +187,11 @@ export default function AdminUsersPage() {
 
       {showRoles && selected && (
         <SheetShell
-          title={<>Manage Roles — {selected.username}</>}
+          title={t("manageRolesTitle", { username: selected.username })}
           onClose={() => setShowRoles(false)}
           footer={
             <>
-              <Button onClick={() => setShowRoles(false)}>Cancel</Button>
+              <Button onClick={() => setShowRoles(false)}>{tCommon("cancel")}</Button>
               <Button
                 variant="primary"
                 disabled={updateMutation.isPending}
@@ -196,7 +200,7 @@ export default function AdminUsersPage() {
                   setShowRoles(false);
                 }}
               >
-                {updateMutation.isPending ? "Saving…" : "Save Roles"}
+                {updateMutation.isPending ? tCommon("saving") : t("saveRoles")}
               </Button>
             </>
           }

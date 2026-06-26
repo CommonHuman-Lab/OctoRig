@@ -4,6 +4,7 @@
 import "./audit.css";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
 import { Search, Filter } from "lucide-react";
 import { getAdminAuditLogs, type AdminAuditLog } from "@/lib/api/admin";
@@ -12,15 +13,21 @@ import { formatDateTime } from "@/lib/utils/date";
 import { AsyncContent } from "@/components/ui/AsyncContent";
 import { Button } from "@/components/ui/Button";
 
-const ACTION_GROUPS = [
-  { label: "All", value: "" },
-  { label: "Auth", value: "auth." },
-  { label: "Teams", value: "team." },
-  { label: "Labs", value: "lab." },
-  { label: "Keys", value: "api_key." },
-  { label: "Admin", value: "admin." },
-  { label: "Schedule", value: "schedule." },
-];
+function useActionGroups() {
+  const t = useTranslations("admin.audit");
+  const tCommon = useTranslations("common");
+  const tNav = useTranslations("nav");
+
+  return [
+    { label: tCommon("all"), value: "" },
+    { label: t("actionGroupAuth"), value: "auth." },
+    { label: tNav("teams"), value: "team." },
+    { label: tNav("labs"), value: "lab." },
+    { label: t("actionGroupKeys"), value: "api_key." },
+    { label: tNav("admin"), value: "admin." },
+    { label: t("actionGroupSchedule"), value: "schedule." },
+  ];
+}
 
 function ActionBadge({ action }: { action: string }) {
   const prefix = action.split(".")[0];
@@ -38,6 +45,11 @@ function ActionBadge({ action }: { action: string }) {
 }
 
 export default function AdminAuditPage() {
+  const t = useTranslations("admin.audit");
+  const tNav = useTranslations("nav");
+  const tCommon = useTranslations("common");
+  const tDeployments = useTranslations("deployments");
+  const ACTION_GROUPS = useActionGroups();
   const [actionFilter, setActionFilter] = useState("");
   const [userFilter, setUserFilter] = useState("");
   const [fromDate, setFromDate] = useState("");
@@ -61,13 +73,13 @@ export default function AdminAuditPage() {
   return (
     <div className="page">
       <div className="page-header">
-        <h1 className="page-title font-mono">Audit Log</h1>
+        <h1 className="page-title font-mono">{tNav("adminAuditLog")}</h1>
       </div>
 
       {/* Filter bar */}
       <div className="audit-filter-bar g-panel">
         <div className="audit-filter-group">
-          <label className="text-11 text-muted">Action</label>
+          <label className="text-11 text-muted">{t("actionLabel")}</label>
           <div className="action-pills">
             {ACTION_GROUPS.map((g) => (
               <button
@@ -82,7 +94,7 @@ export default function AdminAuditPage() {
         </div>
         <div className="filter-row">
           <div className="filter-field">
-            <label className="text-11 text-muted">From</label>
+            <label className="text-11 text-muted">{t("fromLabel")}</label>
             <input
               type="date"
               className="g-input g-input-sm"
@@ -91,7 +103,7 @@ export default function AdminAuditPage() {
             />
           </div>
           <div className="filter-field">
-            <label className="text-11 text-muted">To</label>
+            <label className="text-11 text-muted">{t("toLabel")}</label>
             <input
               type="date"
               className="g-input g-input-sm"
@@ -105,7 +117,7 @@ export default function AdminAuditPage() {
               style={{ alignSelf: "flex-end" }}
               onClick={() => { setActionFilter(""); setFromDate(""); setToDate(""); setOffset(0); }}
             >
-              Clear
+              {tCommon("clear")}
             </Button>
           )}
         </div>
@@ -116,19 +128,19 @@ export default function AdminAuditPage() {
         <AsyncContent
           isLoading={isLoading}
           data={data}
-          empty={<EmptyCell label="No entries match your filters." />}
+          empty={<EmptyCell label={t("noEntriesMatch")} />}
         >
           {(data) => (
             <>
               <table className="g-table">
                 <thead>
                   <tr>
-                    <th>Time</th>
-                    <th>Action</th>
-                    <th>User</th>
-                    <th>Team</th>
-                    <th>Detail</th>
-                    <th>IP</th>
+                    <th>{t("colTime")}</th>
+                    <th>{t("actionLabel")}</th>
+                    <th>{t("colUser")}</th>
+                    <th>{tDeployments("teamLabel")}</th>
+                    <th>{t("colDetail")}</th>
+                    <th>{t("colIp")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -162,17 +174,17 @@ export default function AdminAuditPage() {
                   disabled={offset === 0}
                   onClick={() => setOffset(Math.max(0, offset - LIMIT))}
                 >
-                  ← Prev
+                  {t("prevBtn")}
                 </Button>
                 <span className="text-muted text-11">
-                  Showing {offset + 1}–{offset + data.length}
+                  {t("showingRange", { from: offset + 1, to: offset + data.length })}
                 </span>
                 <Button
                   size="sm"
                   disabled={data.length < LIMIT}
                   onClick={() => setOffset(offset + LIMIT)}
                 >
-                  Next →
+                  {t("nextBtn")}
                 </Button>
               </div>
             </>

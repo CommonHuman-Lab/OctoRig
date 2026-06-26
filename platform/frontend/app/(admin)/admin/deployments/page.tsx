@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
 import { useApiMutation } from "@/hooks/useApiMutation";
 import { useRouter } from "next/navigation";
@@ -25,6 +26,13 @@ const VISIBILITY_BADGE: Record<string, string> = {
 };
 
 export default function AdminDeploymentsPage() {
+  const t = useTranslations("admin.deployments");
+  const tDeployments = useTranslations("deployments");
+  const VISIBILITY_LABEL: Record<string, string> = {
+    private: tDeployments("visPrivate"),
+    team: tDeployments("visTeam"),
+    public: tDeployments("visPublic"),
+  };
   const [search, setSearch] = useState("");
   const { confirm } = useConfirmStore();
   const router = useRouter();
@@ -37,22 +45,22 @@ export default function AdminDeploymentsPage() {
   const destroyMutation = useApiMutation({
     mutationFn: stopDeployment,
     invalidateKeys: [["admin-deployments"]],
-    successMessage: "Deployment stopped",
-    errorMessage: "Failed to stop deployment",
+    successMessage: t("toastDeploymentStopped"),
+    errorMessage: t("toastStopFailed"),
   });
 
   const resetMutation = useApiMutation({
     mutationFn: resetDeployment,
     invalidateKeys: [["admin-deployments"]],
-    successMessage: "Deployment reset",
-    errorMessage: "Failed to reset deployment",
+    successMessage: t("toastDeploymentReset"),
+    errorMessage: t("toastResetFailed"),
   });
 
   function handleDestroy(d: AdminDeployment) {
     confirm({
-      title: "Destroy deployment?",
-      body: `Stop and destroy the "${d.lab_name}" lab for ${d.started_by_username}? The container will be removed.`,
-      confirmLabel: "Destroy",
+      title: t("destroyTitle"),
+      body: t("destroyBody", { lab: d.lab_name, username: d.started_by_username }),
+      confirmLabel: t("destroyConfirm"),
       dangerous: true,
       onConfirm: () => destroyMutation.mutate(d.id),
     });
@@ -60,9 +68,9 @@ export default function AdminDeploymentsPage() {
 
   function handleReset(d: AdminDeployment) {
     confirm({
-      title: "Reset deployment?",
-      body: `Reset the "${d.lab_name}" lab for ${d.started_by_username}? The container will restart with a fresh state.`,
-      confirmLabel: "Reset",
+      title: t("resetTitle"),
+      body: t("resetBody", { lab: d.lab_name, username: d.started_by_username }),
+      confirmLabel: tDeployments("reset"),
       onConfirm: () => resetMutation.mutate(d.id),
     });
   }
@@ -70,22 +78,22 @@ export default function AdminDeploymentsPage() {
   const startMutation = useApiMutation({
     mutationFn: restartDeployment,
     invalidateKeys: [["admin-deployments"]],
-    successMessage: "Deployment start requested",
-    errorMessage: "Failed to start deployment",
+    successMessage: t("toastStartRequested"),
+    errorMessage: t("toastStartFailed"),
   });
 
   const removeMutation = useApiMutation({
     mutationFn: removeDeployment,
     invalidateKeys: [["admin-deployments"]],
-    successMessage: "Deployment removed",
-    errorMessage: "Failed to remove deployment",
+    successMessage: tDeployments("removedToast"),
+    errorMessage: tDeployments("removeFailed"),
   });
 
   function handleRemove(d: AdminDeployment) {
     confirm({
-      title: "Remove deployment?",
-      body: `Permanently remove the "${d.lab_name}" deployment record for ${d.started_by_username}? This cannot be undone.`,
-      confirmLabel: "Remove",
+      title: tDeployments("removeConfirmTitle"),
+      body: t("removeBody", { lab: d.lab_name, username: d.started_by_username }),
+      confirmLabel: tDeployments("removeLabel"),
       dangerous: true,
       onConfirm: () => removeMutation.mutate(d.id),
     });
@@ -94,16 +102,16 @@ export default function AdminDeploymentsPage() {
   const stopAllMutation = useApiMutation<void, void>({
     mutationFn: stopAllDeployments,
     invalidateKeys: [["admin-deployments"]],
-    successMessage: "All labs are being stopped",
-    errorMessage: "Failed to stop all deployments",
+    successMessage: t("toastStopAllRequested"),
+    errorMessage: t("toastStopAllFailed"),
   });
 
   function handleStopAll() {
     const activeCount = deployments.filter((d) => ACTIVE_STATUSES.has(d.status)).length;
     confirm({
-      title: "Stop all labs?",
-      body: `This will stop all ${activeCount} running or starting deployment${activeCount !== 1 ? "s" : ""} across every user. This cannot be undone.`,
-      confirmLabel: "Stop All",
+      title: t("stopAllTitle"),
+      body: t("stopAllBody", { count: activeCount }),
+      confirmLabel: t("stopAllBtn"),
       dangerous: true,
       onConfirm: () => stopAllMutation.mutate(),
     });
@@ -112,8 +120,8 @@ export default function AdminDeploymentsPage() {
   return (
     <div className="page">
       <div className="page-header">
-        <h1 className="page-title font-mono">All Deployments</h1>
-        <SearchBar value={search} onChange={setSearch} placeholder="Filter by user or lab…" />
+        <h1 className="page-title font-mono">{t("title")}</h1>
+        <SearchBar value={search} onChange={setSearch} placeholder={t("filterPlaceholder")} />
         {deployments.some((d) => ACTIVE_STATUSES.has(d.status)) && (
           <Button
             variant="danger"
@@ -122,7 +130,7 @@ export default function AdminDeploymentsPage() {
             disabled={stopAllMutation.isPending}
             onClick={handleStopAll}
           >
-            {stopAllMutation.isPending ? "Stopping…" : "Stop All"}
+            {stopAllMutation.isPending ? t("stoppingBtn") : t("stopAllBtn")}
           </Button>
         )}
       </div>
@@ -131,19 +139,19 @@ export default function AdminDeploymentsPage() {
         <AsyncContent
           isLoading={isLoading}
           data={deployments}
-          empty={<EmptyCell label="No deployments." />}
+          empty={<EmptyCell label={t("noDeploymentsFound")} />}
         >
           {(deployments) => (
             <table className="g-table">
               <thead>
                 <tr>
-                  <th>Lab</th>
-                  <th>User</th>
-                  <th>Team</th>
-                  <th>Visibility</th>
-                  <th>Status</th>
-                  <th>Started</th>
-                  <th>Stopped</th>
+                  <th>{tDeployments("colLab")}</th>
+                  <th>{t("colUser")}</th>
+                  <th>{tDeployments("teamLabel")}</th>
+                  <th>{t("colVisibility")}</th>
+                  <th>{tDeployments("colStatus")}</th>
+                  <th>{tDeployments("startedLabel")}</th>
+                  <th>{tDeployments("stoppedLabel")}</th>
                   <th></th>
                 </tr>
               </thead>
@@ -162,7 +170,7 @@ export default function AdminDeploymentsPage() {
                       <td className="text-11 text-muted">{d.team_name ?? "—"}</td>
                       <td>
                         <span className={`g-badge ${VISIBILITY_BADGE[d.visibility ?? "private"]}`}>
-                          {d.visibility ?? "private"}
+                          {VISIBILITY_LABEL[d.visibility ?? "private"]}
                         </span>
                       </td>
                       <td>
@@ -180,7 +188,7 @@ export default function AdminDeploymentsPage() {
                             <>
                               <Button
                                 size="sm"
-                                tooltip="Reset"
+                                tooltip={tDeployments("reset")}
                                 leftIcon={<RefreshCw size={12} />}
                                 disabled={resetMutation.isPending}
                                 onClick={() => handleReset(d)}
@@ -188,7 +196,7 @@ export default function AdminDeploymentsPage() {
                               <Button
                                 variant="danger"
                                 size="sm"
-                                tooltip="Destroy"
+                                tooltip={t("destroyTooltip")}
                                 leftIcon={<Trash2 size={12} />}
                                 disabled={destroyMutation.isPending}
                                 onClick={() => handleDestroy(d)}
@@ -200,7 +208,7 @@ export default function AdminDeploymentsPage() {
                               <Button
                                 variant="primary"
                                 size="sm"
-                                tooltip="Start"
+                                tooltip={tDeployments("start")}
                                 leftIcon={<Play size={12} />}
                                 disabled={startMutation.isPending}
                                 onClick={() => startMutation.mutate(d.id)}
@@ -208,7 +216,7 @@ export default function AdminDeploymentsPage() {
                               <Button
                                 variant="danger"
                                 size="sm"
-                                tooltip="Remove"
+                                tooltip={tDeployments("removeLabel")}
                                 leftIcon={<X size={12} />}
                                 disabled={removeMutation.isPending}
                                 onClick={() => handleRemove(d)}

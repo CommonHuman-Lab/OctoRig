@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Save } from "lucide-react";
 import { type AdminTeam } from "@/lib/api/admin";
 import { useEscapeKey } from "@/hooks/useEscapeKey";
@@ -16,6 +17,9 @@ interface TeamEditSheetProps {
 }
 
 export function TeamEditSheet({ open, team, saveMutation, onClose }: TeamEditSheetProps) {
+  const t = useTranslations("admin.teams");
+  const tRoles = useTranslations("admin.roles");
+  const tCommon = useTranslations("common");
   const [name, setName] = useState("");
 
   useEffect(() => {
@@ -28,24 +32,24 @@ export function TeamEditSheet({ open, team, saveMutation, onClose }: TeamEditShe
 
   return (
     <SheetShell
-      title={<>Edit Team — {team.slug}</>}
+      title={t("editTeamTitle", { slug: team.slug })}
       onClose={onClose}
       footer={
         <>
-          <Button onClick={onClose}>Cancel</Button>
+          <Button onClick={onClose}>{tCommon("cancel")}</Button>
           <Button
             variant="primary"
             disabled={!name || saveMutation.isPending}
             onClick={() => saveMutation.mutate({ name })}
             leftIcon={<Save size={13} />}
           >
-            {saveMutation.isPending ? "Saving…" : "Save Changes"}
+            {saveMutation.isPending ? tCommon("saving") : tRoles("saveChanges")}
           </Button>
         </>
       }
     >
       <label className="ev-field">
-        <span className="ev-label">Name</span>
+        <span className="ev-label">{t("nameLabel")}</span>
         <input
           className="g-input"
           value={name}

@@ -1,6 +1,7 @@
 "use client";
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
+import { useTranslations } from "next-intl";
 import { X } from "lucide-react";
 import type { CtfEvent } from "@/lib/api/events";
 import { Button } from "@/components/ui/Button";
@@ -33,26 +34,33 @@ export function ChallengeMappingPanel({
   mapEvent, eventChallenges, filteredAll, challSearch, onChallSearch,
   onClose, addChallMutation, removeChallMutation,
 }: ChallengeMappingPanelProps) {
+  const t = useTranslations("admin.events");
+  const tLabs = useTranslations("labs");
+  const tLabsAdmin = useTranslations("admin.labs");
+  const tCreator = useTranslations("creator");
+  const tDeployments = useTranslations("deployments");
+  const tChallenges = useTranslations("challenges");
+
   return (
     <div className="g-card" style={{ marginTop: "1rem" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
         <h3 style={{ margin: 0, fontSize: "0.875rem", fontWeight: 600 }}>
-          Challenges in <em>{mapEvent.title}</em>
+          {t.rich("challengesInTitle", { title: mapEvent.title, em: (chunks) => <em>{chunks}</em> })}
         </h3>
         <Button size="sm" onClick={onClose} leftIcon={<X size={12} />}>
-          Close
+          {tLabs("close")}
         </Button>
       </div>
 
       {eventChallenges.length === 0 ? (
-        <p style={{ color: "var(--g-text-muted)", fontSize: "0.8125rem" }}>No challenges mapped yet.</p>
+        <p style={{ color: "var(--g-text-muted)", fontSize: "0.8125rem" }}>{t("noChallengesMapped")}</p>
       ) : (
         <table className="g-table" style={{ marginBottom: "1rem" }}>
           <thead>
             <tr>
-              <th>Challenge</th>
-              <th>Category</th>
-              <th>Points</th>
+              <th>{t("colChallenge")}</th>
+              <th>{tLabsAdmin("categoryLabel")}</th>
+              <th>{tCreator("pointsLabel")}</th>
               <th></th>
             </tr>
           </thead>
@@ -69,7 +77,7 @@ export function ChallengeMappingPanel({
                     disabled={removeChallMutation.isPending}
                     onClick={() => removeChallMutation.mutate(c.id)}
                   >
-                    Remove
+                    {tDeployments("removeLabel")}
                   </Button>
                 </td>
               </tr>
@@ -79,10 +87,10 @@ export function ChallengeMappingPanel({
       )}
 
       <div style={{ borderTop: "1px solid var(--g-border)", paddingTop: "1rem" }}>
-        <p style={{ fontSize: "0.75rem", color: "var(--g-text-muted)", marginBottom: "0.5rem" }}>Add challenge:</p>
+        <p style={{ fontSize: "0.75rem", color: "var(--g-text-muted)", marginBottom: "0.5rem" }}>{t("addChallengeLabel")}</p>
         <input
           className="g-input"
-          placeholder="Search challenges…"
+          placeholder={tChallenges("searchPlaceholder")}
           value={challSearch}
           onChange={(e) => onChallSearch(e.target.value)}
           style={{ marginBottom: "0.5rem", width: 280 }}
@@ -99,12 +107,12 @@ export function ChallengeMappingPanel({
                 disabled={addChallMutation.isPending}
                 onClick={() => addChallMutation.mutate(c.id)}
               >
-                + Add
+                {t("addBtn")}
               </Button>
             </div>
           ))}
           {filteredAll.length === 0 && (
-            <p style={{ color: "var(--g-text-muted)", fontSize: "0.75rem" }}>All challenges added.</p>
+            <p style={{ color: "var(--g-text-muted)", fontSize: "0.75rem" }}>{t("allChallengesAdded")}</p>
           )}
         </div>
       </div>

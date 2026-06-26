@@ -2,50 +2,56 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Save } from "lucide-react";
 import { type PlatformRole, type PlatformRoleCreate, type PlatformRoleUpdate } from "@/lib/api/admin";
 import { useEscapeKey } from "@/hooks/useEscapeKey";
 import { SheetShell } from "@/components/ui/SheetShell";
 import { Button } from "@/components/ui/Button";
 
-const PERMISSION_GROUPS = [
-  {
-    label: "Platform Pages",
-    perms: [
-      { key: "platform.dashboard", label: "Dashboard" },
-      { key: "platform.challenges", label: "Challenges" },
-      { key: "platform.events", label: "Events" },
-      { key: "platform.scoreboard", label: "Scoreboard" },
-      { key: "platform.badges", label: "Badges" },
-      { key: "platform.labs", label: "Labs" },
-      { key: "platform.deployments", label: "Deployments" },
-      { key: "platform.teams", label: "Teams" },
-    ],
-  },
-  {
-    label: "Admin Section",
-    perms: [
-      { key: "admin.panel", label: "Admin Panel Access" },
-      { key: "admin.users.view", label: "View Users" },
-      { key: "admin.users.manage", label: "Manage Users" },
-      { key: "admin.teams.view", label: "View Teams" },
-      { key: "admin.deployments.view", label: "View Deployments" },
-      { key: "admin.deployments.manage", label: "Manage Deployments" },
-      { key: "admin.audit.view", label: "View Audit Log" },
-      { key: "admin.challenges.manage", label: "Manage Challenges" },
-      { key: "admin.events.manage", label: "Manage Events" },
-      { key: "admin.api_keys.view", label: "View API Keys" },
-      { key: "admin.ranks.manage", label: "Manage Ranks" },
-      { key: "admin.assessments.manage", label: "Manage Assessments" },
-      { key: "admin.content.manage", label: "Content Moderation" },
-      { key: "admin.settings.manage", label: "Platform Settings" },
-    ],
-  },
-  {
-    label: "Creator",
-    perms: [{ key: "creator.access", label: "Creator Access" }],
-  },
-];
+function usePermissionGroups() {
+  const t = useTranslations("admin.roles");
+  const tNav = useTranslations("nav");
+
+  return [
+    {
+      label: t("permGroupPlatformPages"),
+      perms: [
+        { key: "platform.dashboard", label: tNav("dashboard") },
+        { key: "platform.challenges", label: tNav("challenges") },
+        { key: "platform.events", label: tNav("events") },
+        { key: "platform.scoreboard", label: tNav("scoreboard") },
+        { key: "platform.badges", label: tNav("badges") },
+        { key: "platform.labs", label: tNav("labs") },
+        { key: "platform.deployments", label: tNav("deployments") },
+        { key: "platform.teams", label: tNav("teams") },
+      ],
+    },
+    {
+      label: t("permGroupAdminSection"),
+      perms: [
+        { key: "admin.panel", label: t("permAdminPanelAccess") },
+        { key: "admin.users.view", label: t("permViewUsers") },
+        { key: "admin.users.manage", label: t("permManageUsers") },
+        { key: "admin.teams.view", label: t("permViewTeams") },
+        { key: "admin.deployments.view", label: t("permViewDeployments") },
+        { key: "admin.deployments.manage", label: t("permManageDeployments") },
+        { key: "admin.audit.view", label: t("permViewAuditLog") },
+        { key: "admin.challenges.manage", label: t("permManageChallenges") },
+        { key: "admin.events.manage", label: t("permManageEvents") },
+        { key: "admin.api_keys.view", label: t("permViewApiKeys") },
+        { key: "admin.ranks.manage", label: t("permManageRanks") },
+        { key: "admin.assessments.manage", label: t("permManageAssessments") },
+        { key: "admin.content.manage", label: t("permContentModeration") },
+        { key: "admin.settings.manage", label: t("permPlatformSettings") },
+      ],
+    },
+    {
+      label: tNav("creator"),
+      perms: [{ key: "creator.access", label: t("permCreatorAccess") }],
+    },
+  ];
+}
 
 const BLANK_FORM = {
   slug: "",
@@ -73,6 +79,9 @@ interface RoleFormSheetProps {
 }
 
 export function RoleFormSheet({ open, initialValues, saveMutation, onClose }: RoleFormSheetProps) {
+  const t = useTranslations("admin.roles");
+  const tCommon = useTranslations("common");
+  const PERMISSION_GROUPS = usePermissionGroups();
   const [form, setForm] = useState(BLANK_FORM);
   const isEdit = !!initialValues;
 
@@ -115,12 +124,12 @@ export function RoleFormSheet({ open, initialValues, saveMutation, onClose }: Ro
 
   return (
     <SheetShell
-      title={isEdit ? `Edit — ${initialValues!.slug}` : "New Role"}
+      title={isEdit ? t("editTitle", { slug: initialValues!.slug }) : t("newRole")}
       onClose={onClose}
       footer={
         <>
           <Button onClick={onClose}>
-            Cancel
+            {tCommon("cancel")}
           </Button>
           <Button
             variant="primary"
@@ -128,41 +137,41 @@ export function RoleFormSheet({ open, initialValues, saveMutation, onClose }: Ro
             onClick={handleSubmit}
             leftIcon={<Save size={13} />}
           >
-            {saveMutation.isPending ? "Saving…" : isEdit ? "Save Changes" : "Create Role"}
+            {saveMutation.isPending ? tCommon("saving") : isEdit ? t("saveChanges") : t("createRoleBtn")}
           </Button>
         </>
       }
     >
           {!isEdit && (
             <label className="ev-field">
-              <span className="ev-label">Slug</span>
+              <span className="ev-label">{t("slugLabel")}</span>
               <input
                 className="g-input"
                 style={{ fontFamily: "var(--font-mono, monospace)" }}
                 value={form.slug}
                 onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
-                placeholder="custom-role"
+                placeholder={t("slugPlaceholder")}
               />
             </label>
           )}
 
           <label className="ev-field">
-            <span className="ev-label">Display Name</span>
+            <span className="ev-label">{t("displayNameLabel")}</span>
             <input
               className="g-input"
               value={form.display_name}
               onChange={(e) => setForm((f) => ({ ...f, display_name: e.target.value }))}
-              placeholder="Custom Role"
+              placeholder={t("displayNamePlaceholder")}
             />
           </label>
 
           <label className="ev-field">
-            <span className="ev-label">Description</span>
+            <span className="ev-label">{t("descriptionLabel")}</span>
             <input
               className="g-input"
               value={form.description}
               onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
-              placeholder="What this role grants"
+              placeholder={t("descriptionPlaceholder")}
             />
           </label>
 
@@ -173,7 +182,7 @@ export function RoleFormSheet({ open, initialValues, saveMutation, onClose }: Ro
                 checked={form.is_default}
                 onChange={(e) => setForm((f) => ({ ...f, is_default: e.target.checked }))}
               />
-              <span className="text-sm">Assign automatically to new users</span>
+              <span className="text-sm">{t("assignAutomatically")}</span>
             </label>
           </div>
 

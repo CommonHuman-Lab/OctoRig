@@ -1,6 +1,7 @@
 "use client";
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
+import { useTranslations } from "next-intl";
 import { ChevronRight, Globe, Link2, Lock } from "lucide-react";
 import {
   type CtfEvent, type EventStatus, type EventVisibility,
@@ -43,13 +44,36 @@ interface EventsTableProps {
 export function EventsTable({
   events, isLoading, mapSlug, onToggleMap, onEdit, transitionMutation, confirm,
 }: EventsTableProps) {
+  const t = useTranslations("admin.events");
+  const tNav = useTranslations("nav");
+  const tEvents = useTranslations("events");
+  const tUsers = useTranslations("admin.users");
+  const tDeployments = useTranslations("admin.deployments");
+
+  const STATUS_LABEL: Record<EventStatus, string> = {
+    draft: tEvents("statusDraft"),
+    published: t("statusPublished"),
+    running: t("statusRunning"),
+    ended: tEvents("ended"),
+    archived: t("statusArchived"),
+  };
+  const VIS_LABEL: Record<EventVisibility, string> = {
+    private: tEvents("visibilityPrivate"),
+    unlisted: tEvents("visibilityUnlisted"),
+    public: tEvents("visibilityPublic"),
+  };
+  const SCORING_LABEL: Record<string, string> = {
+    static: tEvents("scoringStatic"),
+    dynamic: tEvents("scoringDynamic"),
+  };
+
   return (
     <AsyncContent
       isLoading={isLoading}
       data={events}
       empty={
         <div className="g-card" style={{ textAlign: "center", padding: "2rem", color: "var(--g-text-muted)" }}>
-          No events yet. Create one to get started.
+          {t("noEventsYet")}
         </div>
       }
     >
@@ -58,12 +82,12 @@ export function EventsTable({
           <table className="g-table">
             <thead>
               <tr>
-                <th>Event</th>
-                <th>Status</th>
-                <th>Visibility</th>
-                <th>Scoring</th>
-                <th>Start / End</th>
-                <th>Challenges</th>
+                <th>{t("colEvent")}</th>
+                <th>{tUsers("colStatus")}</th>
+                <th>{tDeployments("colVisibility")}</th>
+                <th>{t("colScoring")}</th>
+                <th>{t("colStartEnd")}</th>
+                <th>{tNav("challenges")}</th>
                 <th></th>
               </tr>
             </thead>
@@ -81,16 +105,16 @@ export function EventsTable({
                         fontSize: "0.6875rem", fontWeight: 700, fontFamily: "monospace",
                         textTransform: "uppercase", color: EVENT_STATUS_COLORS[ev.status],
                       }}>
-                        {ev.status}
+                        {STATUS_LABEL[ev.status]}
                       </span>
                     </td>
                     <td>
                       <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: "0.75rem", color: "var(--g-text-muted)" }}>
                         {visIcon(ev.visibility)}
-                        {ev.visibility}
+                        {VIS_LABEL[ev.visibility]}
                       </span>
                     </td>
-                    <td style={{ fontSize: "0.75rem", color: "var(--g-text-muted)" }}>{ev.scoring_mode}</td>
+                    <td style={{ fontSize: "0.75rem", color: "var(--g-text-muted)" }}>{SCORING_LABEL[ev.scoring_mode] ?? ev.scoring_mode}</td>
                     <td style={{ fontSize: "0.6875rem", color: "var(--g-text-muted)" }}>
                       {formatDateTime(ev.start_at)}
                       {" / "}
@@ -110,7 +134,7 @@ export function EventsTable({
                           />
                         }
                       >
-                        Challenges
+                        {tNav("challenges")}
                       </Button>
                     </td>
                     <td>
@@ -120,17 +144,17 @@ export function EventsTable({
                             size="sm"
                             disabled={transitionMutation.isPending}
                             onClick={() => confirm({
-                              title: `Set status to "${next}"?`,
-                              body: `This will move "${ev.title}" from ${ev.status} to ${next}.`,
-                              confirmLabel: "Confirm",
+                              title: t("setStatusTitle", { status: STATUS_LABEL[next] }),
+                              body: t("setStatusBody", { title: ev.title, from: STATUS_LABEL[ev.status], to: STATUS_LABEL[next] }),
+                              confirmLabel: t("confirmBtn"),
                               onConfirm: () => transitionMutation.mutate({ slug: ev.slug, status: next }),
                             })}
                           >
-                            → {next}
+                            → {STATUS_LABEL[next]}
                           </Button>
                         )}
                         <Button size="sm" onClick={() => onEdit(ev)}>
-                          Edit
+                          {t("editBtn")}
                         </Button>
                       </div>
                     </td>

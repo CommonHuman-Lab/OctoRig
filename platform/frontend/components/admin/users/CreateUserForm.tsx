@@ -3,6 +3,7 @@
 // Copyright (c) 2026 CommonHuman-Lab
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
 import { Save } from "lucide-react";
 import { listRoles } from "@/lib/api/admin";
@@ -21,6 +22,9 @@ export function CreateUserForm({
   onClose: () => void;
   isPending: boolean;
 }) {
+  const t = useTranslations("admin.users");
+  const tCommon = useTranslations("common");
+  const tSettings = useTranslations("settings");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -49,56 +53,56 @@ export function CreateUserForm({
 
   return (
     <SheetShell
-      title="New User"
+      title={t("newUserTitle")}
       onClose={onClose}
       footer={
         <>
-          <Button onClick={onClose}>Cancel</Button>
+          <Button onClick={onClose}>{tCommon("cancel")}</Button>
           <Button
             variant="primary"
             onClick={handleSubmit}
             disabled={!username || !email || !password || isPending}
             leftIcon={<Save size={13} />}
           >
-            {isPending ? "Creating…" : "Create User"}
+            {isPending ? t("creating") : t("createUserBtn")}
           </Button>
         </>
       }
     >
           <label className="ev-field">
-            <span className="ev-label">Username</span>
+            <span className="ev-label">{tSettings("usernameLabel")}</span>
             <input
               className="g-input"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="username"
+              placeholder={t("usernamePlaceholder")}
             />
           </label>
 
           <label className="ev-field">
-            <span className="ev-label">Email</span>
+            <span className="ev-label">{tSettings("emailLabel")}</span>
             <input
               className="g-input"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="user@example.com"
+              placeholder={t("emailPlaceholder")}
             />
           </label>
 
           <label className="ev-field">
-            <span className="ev-label">Password</span>
+            <span className="ev-label">{t("passwordLabel")}</span>
             <input
               className="g-input"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Initial password"
+              placeholder={t("passwordPlaceholder")}
             />
           </label>
 
           <div className="ev-field">
-            <span className="ev-label">Roles</span>
+            <span className="ev-label">{t("rolesLabel")}</span>
             {availableRoles.map((role) => (
               <label key={role.slug} className="checkbox-label">
                 <input

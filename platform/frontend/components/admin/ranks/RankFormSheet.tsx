@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (c) 2026 CommonHuman-Lab
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Save } from "lucide-react";
 import type { Rank } from "@/lib/api/ranks";
 import { RankChip } from "@/components/ui/RankChip";
@@ -29,6 +30,11 @@ interface RankFormSheetProps {
 }
 
 export function RankFormSheet({ open, initialValues, saveMutation, onToggleActive, onClose }: RankFormSheetProps) {
+  const t = useTranslations("admin.ranks");
+  const tCommon = useTranslations("common");
+  const tTeams = useTranslations("admin.teams");
+  const tRoles = useTranslations("admin.roles");
+  const tUsers = useTranslations("admin.users");
   const [form, setForm] = useState<RankFormState>(BLANK_FORM);
   const isEdit = !!initialValues;
 
@@ -56,18 +62,18 @@ export function RankFormSheet({ open, initialValues, saveMutation, onToggleActiv
 
   return (
     <SheetShell
-      title={isEdit ? `Edit — ${initialValues!.name}` : "New Rank"}
+      title={isEdit ? t("editTitle", { name: initialValues!.name }) : t("newRank")}
       onClose={onClose}
       footer={
         <>
-          <Button onClick={onClose}>Cancel</Button>
+          <Button onClick={onClose}>{tCommon("cancel")}</Button>
           <Button
             variant="primary"
             disabled={!form.name || saveMutation.isPending}
             onClick={handleSubmit}
             leftIcon={<Save size={13} />}
           >
-            {saveMutation.isPending ? "Saving…" : isEdit ? "Save Changes" : "Create Rank"}
+            {saveMutation.isPending ? tCommon("saving") : isEdit ? tRoles("saveChanges") : t("createRankBtn")}
           </Button>
         </>
       }
@@ -75,18 +81,18 @@ export function RankFormSheet({ open, initialValues, saveMutation, onToggleActiv
           <RankChip rank={previewRank} />
 
           <label className="ev-field">
-            <span className="ev-label">Name</span>
+            <span className="ev-label">{tTeams("nameLabel")}</span>
             <input
               className="g-input"
               value={form.name}
               onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-              placeholder="e.g. Hacker"
+              placeholder={t("namePlaceholder")}
               autoComplete="off"
             />
           </label>
 
           <label className="ev-field">
-            <span className="ev-label">Min Points</span>
+            <span className="ev-label">{t("colMinPoints")}</span>
             <input
               className="g-input"
               type="number"
@@ -97,7 +103,7 @@ export function RankFormSheet({ open, initialValues, saveMutation, onToggleActiv
           </label>
 
           <label className="ev-field">
-            <span className="ev-label">Icon</span>
+            <span className="ev-label">{t("iconLabel")}</span>
             <EmojiPicker
               value={form.icon}
               onChange={(v) => setForm((f) => ({ ...f, icon: v }))}
@@ -105,7 +111,7 @@ export function RankFormSheet({ open, initialValues, saveMutation, onToggleActiv
           </label>
 
           <label className="ev-field">
-            <span className="ev-label">Color</span>
+            <span className="ev-label">{t("colorLabel")}</span>
             <div className="color-row">
               <input
                 type="color"
@@ -125,7 +131,7 @@ export function RankFormSheet({ open, initialValues, saveMutation, onToggleActiv
 
           {isEdit && (
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <span className="text-sm">Active</span>
+              <span className="text-sm">{tUsers("active")}</span>
               <label className="toggle">
                 <input
                   type="checkbox"

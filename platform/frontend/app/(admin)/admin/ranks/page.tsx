@@ -4,6 +4,7 @@
 import "./ranks-admin.css";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 import {
@@ -20,6 +21,8 @@ import { useApiMutation } from "@/hooks/useApiMutation";
 import { Button } from "@/components/ui/Button";
 
 export default function AdminRanksPage() {
+  const t = useTranslations("admin.ranks");
+  const tCommon = useTranslations("common");
   const { confirm } = useConfirmStore();
 
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -49,30 +52,30 @@ export default function AdminRanksPage() {
     mutationFn: (payload: { name: string; min_points: number; icon?: string; color?: string }) =>
       selected ? updateAdminRank(selected.id, payload) : createAdminRank(payload),
     invalidateKeys: [["admin-ranks"], ["ranks"]],
-    successMessage: () => (selected ? "Rank updated." : "Rank created."),
-    errorMessage: "Failed to save rank.",
+    successMessage: () => (selected ? t("toastRankUpdated") : t("toastRankCreated")),
+    errorMessage: t("toastSaveRankFailed"),
     onSuccess: closeSheet,
   });
 
   const toggleMutation = useApiMutation({
     mutationFn: (rank: Rank) => updateAdminRank(rank.id, { is_active: !rank.is_active }),
     invalidateKeys: [["admin-ranks"], ["ranks"]],
-    errorMessage: "Failed to update rank.",
+    errorMessage: t("toastUpdateRankFailed"),
   });
 
   const deleteMutation = useApiMutation({
     mutationFn: (id: number) => deleteAdminRank(id),
     invalidateKeys: [["admin-ranks"], ["ranks"]],
-    successMessage: "Rank deleted.",
-    errorMessage: "Failed to delete rank.",
+    successMessage: t("toastRankDeleted"),
+    errorMessage: t("toastDeleteRankFailed"),
     onSuccess: closeSheet,
   });
 
   function handleDelete(rank: Rank) {
     confirm({
-      title: "Delete rank",
-      body: `Delete "${rank.name}"? Users currently at this rank will drop to the one below.`,
-      confirmLabel: "Delete",
+      title: t("deleteRankTitle"),
+      body: t("deleteRankBody", { name: rank.name }),
+      confirmLabel: tCommon("delete"),
       dangerous: true,
       onConfirm: () => deleteMutation.mutate(rank.id),
     });
@@ -82,11 +85,11 @@ export default function AdminRanksPage() {
     <div className="page">
       <div className="page-header">
         <div>
-          <h1 className="page-title font-mono">Ranks</h1>
-          <p className="page-sub">{ranks.length} ranks configured</p>
+          <h1 className="page-title font-mono">{t("title")}</h1>
+          <p className="page-sub">{t("ranksConfigured", { count: ranks.length })}</p>
         </div>
         <Button variant="primary" leftIcon={<Plus size={13} />} onClick={openCreate}>
-          New Rank
+          {t("newRank")}
         </Button>
       </div>
 

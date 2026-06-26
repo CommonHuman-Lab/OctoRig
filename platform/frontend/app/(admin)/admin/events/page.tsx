@@ -4,6 +4,7 @@
 import "../admin.css";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
 import { useApiMutation } from "@/hooks/useApiMutation";
 import { Plus } from "lucide-react";
@@ -27,6 +28,9 @@ import { Button } from "@/components/ui/Button";
 import { STALE_TIME } from "@/lib/config";
 
 export default function AdminEventsPage() {
+  const t = useTranslations("admin.events");
+  const tNav = useTranslations("nav");
+  const tEvents = useTranslations("events");
   const { confirm } = useConfirmStore();
   const { user } = useUserStore();
 
@@ -96,8 +100,8 @@ export default function AdminEventsPage() {
       }
     },
     invalidateKeys: [["admin-events"]],
-    successMessage: () => (sheet.editing ? "Event updated" : "Event created"),
-    errorMessage: "Failed to save event",
+    successMessage: () => (sheet.editing ? t("toastEventUpdated") : t("toastEventCreated")),
+    errorMessage: t("toastSaveEventFailed"),
     onSuccess: () => setSheet({ open: false, editing: null }),
   });
 
@@ -105,20 +109,20 @@ export default function AdminEventsPage() {
     mutationFn: ({ slug, status }: { slug: string; status: EventStatus }) =>
       transitionEvent(slug, status),
     invalidateKeys: [["admin-events"]],
-    successMessage: "Status updated",
-    errorMessage: "Failed to update status",
+    successMessage: t("toastStatusUpdated"),
+    errorMessage: t("toastUpdateStatusFailed"),
   });
 
   const addChallMutation = useApiMutation({
     mutationFn: (challengeId: number) => addEventChallenge(mapSlug!, challengeId),
     invalidateKeys: [["event-challenges", mapSlug]],
-    errorMessage: "Failed to add challenge",
+    errorMessage: t("toastAddChallengeFailed"),
   });
 
   const removeChallMutation = useApiMutation({
     mutationFn: (challengeId: number) => removeEventChallenge(mapSlug!, challengeId),
     invalidateKeys: [["event-challenges", mapSlug]],
-    errorMessage: "Failed to remove challenge",
+    errorMessage: t("toastRemoveChallengeFailed"),
   });
 
   const mappedIds = new Set(eventChallenges.map((c) => c.id));
@@ -130,9 +134,9 @@ export default function AdminEventsPage() {
   return (
     <div className="page">
       <div className="page-header">
-        <h1 className="page-title font-mono">Events</h1>
+        <h1 className="page-title font-mono">{tNav("events")}</h1>
         <Button variant="primary" size="sm" leftIcon={<Plus size={13} />} onClick={openCreate}>
-          New Event
+          {tEvents("newEvent")}
         </Button>
       </div>
 
