@@ -8,9 +8,8 @@ import { useRef, useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import {
-  LayoutDashboard, FlaskConical, Rocket, Settings, LogOut, Users,
-  KeyRound, ShieldCheck, Swords, Flag, Award, ChevronUp, Zap, PenTool,
-  User, Trophy, PanelLeftClose, PanelLeftOpen, NotebookPen,
+  Settings, LogOut, ShieldCheck, ChevronUp, Zap, PenTool,
+  User, PanelLeftClose, PanelLeftOpen,
 } from "lucide-react";
 import { getMyRank } from "@/lib/api/ranks";
 import { clsx } from "clsx";
@@ -21,19 +20,7 @@ import { useSidebarStore } from "@/stores/sidebar.store";
 import { logout } from "@/lib/api/auth";
 import { getMyProfile } from "@/lib/api/profiles";
 import { STALE_TIME } from "@/lib/config";
-
-const NAV_MAIN = [
-  { href: "/",             icon: LayoutDashboard, key: "dashboard" },
-  { href: "/challenges",   icon: Swords,          key: "challenges" },
-  { href: "/events",       icon: Flag,            key: "events" },
-  { href: "/scoreboard",   icon: Trophy,          key: "scoreboard" },
-  { href: "/badges",       icon: Award,           key: "badges" },
-  { href: "/labs",         icon: FlaskConical,    key: "labs" },
-  { href: "/notes",        icon: NotebookPen,     key: "notes" },
-  { href: "/deployments",  icon: Rocket,          key: "deployments" },
-  { href: "/teams",        icon: Users,           key: "teams" },
-  { href: "/api-keys",     icon: KeyRound,        key: "apiKeys" },
-] as const;
+import { NAV_ITEMS } from "@/lib/nav/items";
 
 export function Sidebar() {
   const t = useTranslations("nav");
@@ -41,8 +28,12 @@ export function Sidebar() {
   const { user, clearSession } = useUserStore();
   const { resetExplicit } = useThemeStore();
   const { resetExplicit: resetLocaleExplicit } = useLocaleStore();
-  const { collapsed, toggleCollapsed } = useSidebarStore();
+  const { collapsed, toggleCollapsed, order, hidden } = useSidebarStore();
   const isPrivileged = user?.permissions?.includes("admin.panel") ?? false;
+  const visibleNavItems = order
+    .filter((key) => !hidden.includes(key))
+    .map((key) => NAV_ITEMS.find((i) => i.key === key))
+    .filter((i): i is (typeof NAV_ITEMS)[number] => Boolean(i));
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -110,7 +101,7 @@ export function Sidebar() {
 
       {/* Main nav */}
       <nav className="flex-1 p-2 space-y-0.5 overflow-y-auto">
-        {NAV_MAIN.map(({ href, icon: Icon, key }) => {
+        {visibleNavItems.map(({ href, icon: Icon, key }) => {
           const active = isActive(href);
           const label = t(key);
           return (

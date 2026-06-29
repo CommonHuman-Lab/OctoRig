@@ -7,7 +7,8 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useApiMutation } from "@/hooks/useApiMutation";
-import { Palette, User, Shield, FlaskConical, Settings as SettingsIcon } from "lucide-react";
+import { Palette, User, Shield, FlaskConical, Settings as SettingsIcon, LayoutList } from "lucide-react";
+import { NavigationSection } from "@/components/settings/NavigationSection";
 import { changePassword, getMe } from "@/lib/api/auth";
 import { updateMyProfile } from "@/lib/api/profiles";
 import { useThemeStore } from "@/stores/theme.store";
@@ -27,7 +28,7 @@ export default function SettingsPage() {
   const { user } = useUserStore();
   const { push } = useNotificationsStore();
   const { isDemoMode, toggle: toggleDemo } = useDemoStore();
-  const [section, setSection] = useState<"appearance" | "account" | "demo">("appearance");
+  const [section, setSection] = useState<"appearance" | "navigation" | "account" | "demo">("appearance");
 
   const { data: me } = useQuery({ queryKey: ["me"], queryFn: getMe });
 
@@ -54,6 +55,7 @@ export default function SettingsPage() {
         <nav className="settings-nav g-panel">
           {([
             { id: "appearance", label: t("navAppearance"), icon: <Palette size={15} /> },
+            { id: "navigation", label: t("navNavigation"), icon: <LayoutList size={15} /> },
             { id: "account",    label: t("navAccount"),    icon: <User size={15} /> },
             { id: "demo",       label: t("navDemo"),       icon: <FlaskConical size={15} /> },
           ] as const).map((item) => (
@@ -111,6 +113,8 @@ export default function SettingsPage() {
               </div>
             </div>
           )}
+
+          {section === "navigation" && <NavigationSection />}
 
           {section === "demo" && (
             <div className="settings-section">

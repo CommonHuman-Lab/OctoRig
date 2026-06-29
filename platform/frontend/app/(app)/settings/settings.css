@@ -63,3 +63,26 @@
   flex-direction: column;
   gap: 0;
 }
+
+/* Navigation customization */
+.nav-customize-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.nav-customize-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.625rem;
+  border: 1px solid var(--g-border);
+  border-radius: 6px;
+  background: var(--g-raised);
+  cursor: grab;
+  transition: opacity 0.15s, transform 0.15s, outline 0.1s;
+}
+
+.nav-customize-item-hidden {
+  opacity: 0.55;
+}
