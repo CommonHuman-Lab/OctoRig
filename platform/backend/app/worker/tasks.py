@@ -204,6 +204,43 @@ def auto_destroy_dynamic_labs() -> None:
         db.close()
 
 
+@celery_app.task(name="app.worker.tasks.sync_running_lab_health")
+def sync_running_lab_health() -> None:
+    """Detect containers that crashed while DB status is still RUNNING and flip them to ERROR."""
+    from app.database import SessionLocal
+    from app.models.deployment import Deployment, DeploymentStatus
+    from app.services.docker_runtime import docker_service
+    from app.ws.manager import emit as ws_emit
+
+    db = SessionLocal()
+    try:
+        running = (
+            db.query(Deployment)
+            .filter(Deployment.status == DeploymentStatus.RUNNING)
+            .all()
+        )
+        for deployment in running:
+            if all(
+                docker_service.get_container_status(n) == "running"
+                for n in deployment.container_names
+            ):
+                continue
+            deployment.status = DeploymentStatus.ERROR
+            deployment.error_message = "Container exited unexpectedly"
+            db.commit()
+            ws_emit(
+                "deployment.update",
+                {
+                    "id": deployment.id,
+                    "lab_template_id": deployment.lab_template_id,
+                    "status": "error",
+                    "error_message": deployment.error_message,
+                },
+            )
+    finally:
+        db.close()
+
+
 @celery_app.task(name="app.worker.tasks.cleanup_stale_deployments")
 def cleanup_stale_deployments() -> None:
     """Mark deployments stuck in STARTING > 15 minutes as ERROR.

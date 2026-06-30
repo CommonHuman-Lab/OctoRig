@@ -435,6 +435,7 @@ VAULTSYNC_LAB: LabDefinition = {
             "skills": ["IDOR enumeration", "credential reuse", "lateral movement across labs"],
             "points": 300,
             "estimated_minutes": 30,
+            "requires_labs": ["humanbank"],
             "flags": [
                 {
                     "value": "FLAG{vs_credential_reuse_pivot}",

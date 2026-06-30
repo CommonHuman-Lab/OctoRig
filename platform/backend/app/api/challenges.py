@@ -73,6 +73,11 @@ class HintResponse(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class RequiredLabSummary(BaseModel):
+    slug: str
+    name: str
+
+
 class ChallengeListItem(BaseModel):
     id: int
     slug: str
@@ -89,6 +94,7 @@ class ChallengeListItem(BaseModel):
     lab_slug: str | None = None
     lab_name: str | None = None
     lab_category: str | None = None
+    required_labs: list[RequiredLabSummary] = []
 
     model_config = {"from_attributes": True}
 
@@ -119,6 +125,7 @@ class ChallengeDetail(BaseModel):
     lab_slug: str | None = None
     lab_name: str | None = None
     lab_category: str | None = None
+    required_labs: list[RequiredLabSummary] = []
 
     model_config = {"from_attributes": True}
 
@@ -143,6 +150,16 @@ class HintUnlockResponse(BaseModel):
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
+
+
+def _resolve_required_labs(db: Session, slugs: list[str]) -> list[RequiredLabSummary]:
+    if not slugs:
+        return []
+    from app.models.lab_template import LabTemplate
+
+    rows = db.query(LabTemplate).filter(LabTemplate.slug.in_(slugs)).all()
+    by_slug = {r.slug: r.name for r in rows}
+    return [RequiredLabSummary(slug=s, name=by_slug.get(s, s)) for s in slugs]
 
 
 def _serialize_hint(
@@ -213,6 +230,7 @@ def list_challenges_endpoint(
                 lab_slug=lab.slug if lab else None,
                 lab_name=lab.name if lab else None,
                 lab_category=lab.category if lab else None,
+                required_labs=_resolve_required_labs(db, ch.required_lab_slugs or []),
             )
         )
     return items
@@ -269,6 +287,7 @@ def get_challenge_endpoint(
         lab_slug=lab.slug if lab else None,
         lab_name=lab.name if lab else None,
         lab_category=lab.category if lab else None,
+        required_labs=_resolve_required_labs(db, ch.required_lab_slugs or []),
     )
 
 

@@ -16,6 +16,11 @@ export interface HintSummary {
   unlocked: boolean;
 }
 
+export interface RequiredLabSummary {
+  slug: string;
+  name: string;
+}
+
 export interface ChallengeListItem {
   id: number;
   slug: string;
@@ -32,6 +37,7 @@ export interface ChallengeListItem {
   lab_slug: string | null;
   lab_name: string | null;
   lab_category: string | null;
+  required_labs: RequiredLabSummary[];
 }
 
 export interface ChallengeDetail extends ChallengeListItem {
@@ -45,6 +51,7 @@ export interface ChallengeDetail extends ChallengeListItem {
   lab_slug: string | null;
   lab_name: string | null;
   lab_category: string | null;
+  required_labs: RequiredLabSummary[];
 }
 
 export interface FlagSubmitResult {

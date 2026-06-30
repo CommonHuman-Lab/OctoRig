@@ -594,6 +594,7 @@ MEDIACRATE_LAB: LabDefinition = {
             "skills": ["IDOR enumeration", "credential reuse", "cross-application pivoting"],
             "points": 300,
             "estimated_minutes": 30,
+            "requires_labs": ["limelight"],
             "flags": [
                 {
                     "value": "FLAG{mc_credential_reuse_pivot}",

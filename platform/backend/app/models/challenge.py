@@ -78,6 +78,7 @@ class Challenge(Base):
     lab_template_id: Mapped[int | None] = mapped_column(
         ForeignKey("lab_templates.id"), nullable=True, index=True
     )
+    required_lab_slugs: Mapped[list[Any]] = mapped_column(JSON, nullable=False, default=list)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 

@@ -15,6 +15,8 @@
     "labIsRunningTooltip": "Le labo est en cours d'exécution",
     "labIsOfflineTooltip": "Le labo est hors ligne",
     "openLabTitle": "Ouvrir {name}",
+    "alsoRequiresLab": "Ce défi nécessite également que {name} soit en cours d'exécution.",
+    "startLabLink": "Démarrer le labo",
     "solvedBadge": "Résolu",
     "firstBloodTooltip": "Premier sang : {name}",
     "codeHeading": "Code",

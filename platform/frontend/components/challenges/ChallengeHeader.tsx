@@ -28,7 +28,7 @@ export function ChallengeHeader({
       <div className="ch-meta-row">
         {challenge.lab_name && (
           <span className="ch-lab-status-group">
-            <Link href="/labs" className="ch-lab-badge">
+            <Link href={challenge.lab_slug ? `/labs/${challenge.lab_slug}` : "/labs"} className="ch-lab-badge">
               <FlaskConical size={10} />
               {challenge.lab_name}
             </Link>

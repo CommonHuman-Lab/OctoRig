@@ -28,6 +28,7 @@ class ChallengeDef(TypedDict):
     flags: list[FlagDef]
     hints: NotRequired[list[HintDef]]
     content: NotRequired[dict]  # type-specific extra data (code_snippet, language, etc.)
+    requires_labs: NotRequired[list[str]]  # slugs of additional labs that must be running
 
 
 class ResourceLimits(TypedDict, total=False):

@@ -8,7 +8,7 @@ import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useApiMutation } from "@/hooks/useApiMutation";
-import { CheckCircle2, Container } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Container } from "lucide-react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import {
@@ -78,7 +78,7 @@ export default function ChallengeDetailPage() {
     queryKey: ["labs"],
     queryFn: () => getLabs(),
     staleTime: STALE_TIME.SHORT,
-    enabled: !!ch?.lab_slug,
+    enabled: !!ch?.lab_slug || (ch?.required_labs?.length ?? 0) > 0,
   });
 
   const { data: publicSettings } = useQuery({
@@ -94,6 +94,12 @@ export default function ChallengeDetailPage() {
   const labIsLive =
     labTemplate?.current_deployment?.status === "running" ||
     labTemplate?.current_deployment?.status === "starting";
+
+  const offlineRequiredLabs = (ch?.required_labs ?? []).filter((req) => {
+    const tpl = labs.find((l) => l.slug === req.slug);
+    const s = tpl?.current_deployment?.status;
+    return s !== "running" && s !== "starting";
+  });
 
   const { data: instance = null } = useQuery({
     queryKey: ["challenge-instance", ch?.id],
@@ -199,6 +205,26 @@ export default function ChallengeDetailPage() {
         labIsLive={labTemplate ? labIsLive : undefined}
         labUrl={labUrl}
       />
+
+      {offlineRequiredLabs.map((req) => (
+        <div
+          key={req.slug}
+          style={{
+            display: "flex", alignItems: "center", gap: "0.5rem",
+            padding: "0.625rem 0.875rem",
+            background: "color-mix(in srgb, var(--g-warning) 12%, transparent)",
+            border: "1px solid color-mix(in srgb, var(--g-warning) 35%, transparent)",
+            borderRadius: "6px", marginBottom: "0.75rem",
+            fontSize: "0.8125rem", color: "var(--g-text)",
+          }}
+        >
+          <AlertTriangle size={14} style={{ color: "var(--g-warning)", flexShrink: 0 }} />
+          <span>{t("alsoRequiresLab", { name: req.name })}</span>
+          <Link href="/labs" style={{ marginLeft: "auto", color: "var(--g-accent)", fontSize: "0.75rem" }}>
+            {t("startLabLink")}
+          </Link>
+        </div>
+      ))}
 
       <div className={showEditor ? "ch-split" : "ch-body"}>
         <div className={showEditor ? "ch-content" : "ch-body"}>

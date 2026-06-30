@@ -89,6 +89,7 @@ def sync_registry(db: Session) -> None:
                     is_active=True,
                     is_archived=False,
                     lab_template_id=lab_def["id"],
+                    required_lab_slugs=ch_def.get("requires_labs", []),
                 )
                 db.add(ch)
                 db.flush()
@@ -122,6 +123,7 @@ def sync_registry(db: Session) -> None:
                 ch.tags = [lab_name_tag] + raw_tags
                 ch.skills = ch_def.get("skills", ch.skills)
                 ch.lab_template_id = lab_def["id"]
+                ch.required_lab_slugs = ch_def.get("requires_labs", ch.required_lab_slugs)
 
     # Standalone challenges — no lab association
     for ch_def in STANDALONE_CHALLENGES:

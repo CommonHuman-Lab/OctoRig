@@ -31,6 +31,7 @@ celery_app.conf.update(
         "app.worker.tasks.execute_destroy": {"queue": "lab_ops"},
         "app.worker.tasks.auto_destroy_dynamic_labs": {"queue": "lab_ops"},
         "app.worker.tasks.cleanup_stale_deployments": {"queue": "lab_ops"},
+        "app.worker.tasks.sync_running_lab_health": {"queue": "lab_ops"},
         "app.worker.tasks.dispatch_due_actions": {"queue": "scheduler"},
     },
     beat_schedule={
@@ -47,6 +48,11 @@ celery_app.conf.update(
         "cleanup-stale-deployments": {
             "task": "app.worker.tasks.cleanup_stale_deployments",
             "schedule": 300.0,  # every 5 minutes
+            "options": {"queue": "lab_ops"},
+        },
+        "sync-running-lab-health": {
+            "task": "app.worker.tasks.sync_running_lab_health",
+            "schedule": 30.0,
             "options": {"queue": "lab_ops"},
         },
     },

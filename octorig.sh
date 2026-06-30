@@ -477,12 +477,14 @@ case "${1:-menu}" in
     else dispatch stop "${2:-}"; dispatch start "${2:-}"; fi ;;
   platform)
     platform_action "${2:-help}" "${3:-}" ;;
+  new-lab)
+    python3 "$(dirname "${BASH_SOURCE[0]}")/labs/scaffold_lab.py" "${@:2}" ;;
   help|-h|--help)
     list_labs
-    echo "Usage: $0 [menu|list|status|start <id|name|all|world>|stop <id|name|all>|restart <id|name|all>|platform <cmd>]"
+    echo "Usage: $0 [menu|list|status|start <id|name|all|world>|stop <id|name|all>|restart <id|name|all>|platform <cmd>|new-lab]"
     echo "" ;;
   *)
     bad "Unknown command: ${1}"
-    echo "Usage: $0 [menu|list|status|start <id|name|all|world>|stop <id|name|all>|restart <id|name|all>|platform <cmd>]"
+    echo "Usage: $0 [menu|list|status|start <id|name|all|world>|stop <id|name|all>|restart <id|name|all>|platform <cmd>|new-lab]"
     exit 1 ;;
 esac
