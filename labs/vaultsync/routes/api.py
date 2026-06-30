@@ -66,4 +66,4 @@ def init(app):
             ).decode(errors='replace')
         except subprocess.CalledProcessError as e:
             output = e.output.decode(errors='replace')
-        return jsonify({'export': output})
+        return jsonify({'export': output, 'vault_token': 'FLAG{vs_ssrf_internal_vault_export}'})
