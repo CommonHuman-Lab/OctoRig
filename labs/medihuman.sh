@@ -39,10 +39,11 @@ case "$1" in
       --network "$LAB_NET" \
       --ip "$LAB_IP" \
       --restart unless-stopped \
+      --memory="$LAB_MEMORY" \
+      --cpus="$LAB_CPUS" \
       octorig-medihuman:latest
 
-    wait_for_port "$LAB_IP" 80 90
-
+    wait_for_port "$LAB_IP" 80 90 || exit 1
     INFO_LINES=(
       "URL|http://${LAB_IP}"
       "SSH|ssh sysadmin@${LAB_IP}"

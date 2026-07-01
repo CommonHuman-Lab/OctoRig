@@ -43,4 +43,6 @@ RUN mkdir -p /data && \
     chmod 644 /srv/ftp/pub/subscribers.csv /srv/ftp/pub/network_config.txt
 
 EXPOSE 80 21 22 23 30000-30009
+HEALTHCHECK --interval=30s --timeout=3s --start-period=20s --retries=3 \
+  CMD bash -c '</dev/tcp/127.0.0.1/80' || exit 1
 CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/supervisord.conf"]

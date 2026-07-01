@@ -59,6 +59,8 @@ case "$1" in
       -e MYSQL_PASSWORD=firerange \
       -v "${FIRERANGE_DIR}/init.sql:/docker-entrypoint-initdb.d/init.sql:ro" \
       --restart unless-stopped \
+      --memory="$LAB_MEMORY" \
+      --cpus="$LAB_CPUS" \
       mysql:8.0 \
       --default-authentication-plugin=mysql_native_password &>/dev/null
 
@@ -74,6 +76,8 @@ case "$1" in
       -e POSTGRES_PASSWORD=firerange \
       -v "${FIRERANGE_DIR}/init_pg.sql:/docker-entrypoint-initdb.d/init_pg.sql:ro" \
       --restart unless-stopped \
+      --memory="$LAB_MEMORY" \
+      --cpus="$LAB_CPUS" \
       postgres:16-alpine &>/dev/null
 
     good "PostgreSQL container started"
@@ -105,6 +109,8 @@ case "$1" in
       -e PG_PASSWORD=firerange \
       -e PG_DATABASE=firerange \
       --restart unless-stopped \
+      --memory="$LAB_MEMORY" \
+      --cpus="$LAB_CPUS" \
       octorig-breachsql:latest &>/dev/null
 
     good "App container started"

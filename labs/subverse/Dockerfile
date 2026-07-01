@@ -44,4 +44,6 @@ RUN chown ftp:ftp /srv/ftp/pub/db_backup_2024.sql /srv/ftp/pub/deploy_notes.txt 
     chmod 644 /srv/ftp/pub/db_backup_2024.sql /srv/ftp/pub/deploy_notes.txt /srv/ftp/pub/users_export.csv
 
 EXPOSE 80 21 22 30010-30019
+HEALTHCHECK --interval=30s --timeout=3s --start-period=20s --retries=3 \
+  CMD bash -c '</dev/tcp/127.0.0.1/80' || exit 1
 CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/supervisord.conf"]

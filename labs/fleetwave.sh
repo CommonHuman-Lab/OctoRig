@@ -44,10 +44,11 @@ case "$1" in
       --network "$LAB_NET" \
       --ip "$LAB_IP" \
       --restart unless-stopped \
+      --memory="$LAB_MEMORY" \
+      --cpus="$LAB_CPUS" \
       octorig-fleetwave:latest
 
-    wait_for_port "$LAB_IP" 80 60
-
+    wait_for_port "$LAB_IP" 80 60 || exit 1
     INFO_LINES=(
       "URL|http://${LAB_IP}"
       "SSH|ssh fw-ops@${LAB_IP}"

@@ -67,6 +67,8 @@ case "$1" in
       --ip "$LAB_IP" \
       -v "${SCORES_VOLUME}:/data" \
       --restart unless-stopped \
+      --memory="$LAB_MEMORY" \
+      --cpus="$LAB_CPUS" \
       octorig-stingxss:latest &>/dev/null
 
     good "App container started"

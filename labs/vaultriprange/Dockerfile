@@ -180,4 +180,6 @@ RUN chmod +x /entrypoint.sh
 
 EXPOSE 22
 
+HEALTHCHECK --interval=30s --timeout=3s --start-period=20s --retries=3 \
+  CMD bash -c '</dev/tcp/127.0.0.1/22' || exit 1
 ENTRYPOINT ["/entrypoint.sh"]

@@ -67,10 +67,11 @@ case "$1" in
       --network "$LAB_NET" \
       --ip "$LAB_IP" \
       --restart unless-stopped \
+      --memory="$LAB_MEMORY" \
+      --cpus="$LAB_CPUS" \
       octorig-vaultriprange:latest &>/dev/null
 
-    wait_for_port "$LAB_IP" 22 30
-
+    wait_for_port "$LAB_IP" 22 30 || exit 1
     INFO_LINES=(
       "SSH host|${LAB_IP}"
       "User A|labuser / LabUser123!"

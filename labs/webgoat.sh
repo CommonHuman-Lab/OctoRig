@@ -33,10 +33,11 @@ case "$1" in
       -e SERVER_ADDRESS=0.0.0.0 \
       -e TZ=UTC \
       --restart unless-stopped \
+      --memory="$LAB_MEMORY" \
+      --cpus="$LAB_CPUS" \
       webgoat/webgoat:latest &>/dev/null
 
-    wait_for_port "$LAB_IP" 8080 90
-
+    wait_for_port "$LAB_IP" 8080 90 || exit 1
     INFO_LINES=(
       "WebGoat URL|http://${LAB_IP}:8080/WebGoat"
       "WebWolf URL|http://${LAB_IP}:9090/WebWolf"

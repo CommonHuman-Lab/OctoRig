@@ -140,4 +140,6 @@ RUN chmod +x /entrypoint.sh
 # Kerberos, LDAP, LDAPS, SMB, Global Catalog
 EXPOSE 88 389 636 445 3268
 
+HEALTHCHECK --interval=30s --timeout=3s --start-period=20s --retries=3 \
+  CMD bash -c '</dev/tcp/127.0.0.1/389' || exit 1
 ENTRYPOINT ["/entrypoint.sh"]

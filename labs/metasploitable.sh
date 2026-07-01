@@ -30,11 +30,12 @@ case "$1" in
       --network "$LAB_NET" \
       --ip "$LAB_IP" \
       --restart unless-stopped \
+      --memory="$LAB_MEMORY" \
+      --cpus="$LAB_CPUS" \
       tleemcjr/metasploitable2:latest \
       sh -c "/bin/services.sh && sleep infinity" &>/dev/null
 
-    wait_for_port "$LAB_IP" 80 90
-
+    wait_for_port "$LAB_IP" 80 90 || exit 1
     INFO_LINES=(
       "HTTP|http://${LAB_IP}"
       "SSH|ssh msfadmin@${LAB_IP} -oHostKeyAlgorithms=+ssh-rsa"

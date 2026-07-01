@@ -228,23 +228,34 @@ all_action() {
       good "Stopped: $(IFS=', '; echo "${stopped[*]}")"
     fi
   else
+    local failed=()
     for entry in "${LABS[@]}"; do
       IFS='|' read -r id name lscript _desc <<< "$entry"
       header "${action^}: $name"
-      bash "${LABS_DIR}/${lscript}" "$action" || warn "Failed to $action $name (continuing)"
+      if ! bash "${LABS_DIR}/${lscript}" "$action"; then
+        warn "Failed to $action $name — rolling back"
+        bash "${LABS_DIR}/${lscript}" stop &>/dev/null || true
+        failed+=("$name")
+      fi
     done
+    if [[ ${#failed[@]} -gt 0 ]]; then
+      bad "Failed to $action: $(IFS=', '; echo "${failed[*]}")"
+      return 1
+    fi
   fi
 }
 
 # ---------------- start real-world labs in parallel ---------------------------
 start_world() {
-  header "Starting all real-world labs in parallel..."
+  local parallel_limit="${OCTORIG_PARALLEL_LIMIT:-4}"
+  header "Starting all real-world labs (up to ${parallel_limit} at a time)..."
   echo ""
 
   local tmpdir
   tmpdir=$(mktemp -d)
-  local pids=() names=() lids=()
+  local pids=() names=() lids=() lscripts=()
 
+  local queued=()
   for entry in "${LABS[@]}"; do
     IFS='|' read -r lid lname lscript _desc <<< "$entry"
     local is_world=false
@@ -253,30 +264,46 @@ start_world() {
     done
     [[ "$is_world" == false ]] && continue
     [[ ! -f "${LABS_DIR}/${lscript}" ]] && continue
-
-    info "Queuing: $lname"
-    bash "${LABS_DIR}/${lscript}" start > "${tmpdir}/${lid}.log" 2>&1 &
-    pids+=($!)
-    names+=("$lname")
-    lids+=("$lid")
+    queued+=("$entry")
   done
 
-  echo ""
-  info "${#pids[@]} labs launching in parallel — waiting for them to come up..."
-  echo ""
-
   local all_ok=true
-  local i
-  for i in "${!pids[@]}"; do
-    local pid="${pids[$i]}" name="${names[$i]}" lid="${lids[$i]}"
-    if wait "$pid"; then
-      good "$name is up"
-    else
-      bad "$name failed to start"
-      all_ok=false
-    fi
-    cat "${tmpdir}/${lid}.log"
+  local batch_start=0
+  while (( batch_start < ${#queued[@]} )); do
+    pids=(); names=(); lids=(); lscripts=()
+    local batch_end=$(( batch_start + parallel_limit ))
+    (( batch_end > ${#queued[@]} )) && batch_end=${#queued[@]}
+
+    local j
+    for (( j = batch_start; j < batch_end; j++ )); do
+      IFS='|' read -r lid lname lscript _desc <<< "${queued[$j]}"
+      info "Queuing: $lname"
+      bash "${LABS_DIR}/${lscript}" start > "${tmpdir}/${lid}.log" 2>&1 &
+      pids+=($!)
+      names+=("$lname")
+      lids+=("$lid")
+      lscripts+=("$lscript")
+    done
+
     echo ""
+    info "${#pids[@]} labs launching in this batch — waiting for them to come up..."
+    echo ""
+
+    local i
+    for i in "${!pids[@]}"; do
+      local pid="${pids[$i]}" name="${names[$i]}" lid="${lids[$i]}" lscript="${lscripts[$i]}"
+      if wait "$pid"; then
+        good "$name is up"
+      else
+        bad "$name failed to start — rolling back"
+        bash "${LABS_DIR}/${lscript}" stop &>/dev/null || true
+        all_ok=false
+      fi
+      cat "${tmpdir}/${lid}.log"
+      echo ""
+    done
+
+    batch_start=$batch_end
   done
 
   rm -rf "$tmpdir"
@@ -284,7 +311,8 @@ start_world() {
   if [[ "$all_ok" == true ]]; then
     good "All real-world labs are running."
   else
-    warn "Some labs failed to start — check output above."
+    bad "Some labs failed to start — rolled back and check output above."
+    return 1
   fi
 }
 

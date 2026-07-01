@@ -47,10 +47,11 @@ case "$1" in
         -p "${HTTP_PORT}:80" \
         -p "${SMB_PORT}:445" \
         --restart unless-stopped \
+        --memory="$LAB_MEMORY" \
+        --cpus="$LAB_CPUS" \
         j3ssie/kioptrix1:latest &>/dev/null
 
-      wait_for_port 127.0.0.1 "$HTTP_PORT" 60
-
+      wait_for_port 127.0.0.1 "$HTTP_PORT" 60 || exit 1
       INFO_LINES=(
         "HTTP|http://127.0.0.1:${HTTP_PORT}"
         "SMB|smbclient -L //127.0.0.1 -p ${SMB_PORT} -N"

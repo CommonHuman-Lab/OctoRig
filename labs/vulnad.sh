@@ -133,10 +133,11 @@ case "$1" in
       -e REALM="$REALM" \
       -e ADMIN_PASS="$ADMIN_PASS" \
       --restart unless-stopped \
+      --memory="$LAB_MEMORY" \
+      --cpus="$LAB_CPUS" \
       "$SAMBA_IMAGE" &>/dev/null
 
-    wait_for_port "$LAB_IP" 389 120
-
+    wait_for_port "$LAB_IP" 389 120 || exit 1
     _populate_ad
 
     INFO_LINES=(

@@ -14,6 +14,11 @@ GRAY='\033[0;37m'
 BOLD='\033[1m'
 RESET='\033[0m'
 
+# Per-container resource limits, applied by every lab's docker run invocation.
+# Override on the host if needed, e.g. OCTORIG_LAB_MEM=1g OCTORIG_LAB_CPUS=2 ./octorig.sh start world
+LAB_MEMORY="${OCTORIG_LAB_MEM:-512m}"
+LAB_CPUS="${OCTORIG_LAB_CPUS:-1}"
+
 good()  { echo -e "  ${GREEN}[+]${RESET} $*"; }
 bad()   { echo -e "  ${RED}[-]${RESET} $*"; }
 info()  { echo -e "  ${GRAY}[*]${RESET} $*"; }

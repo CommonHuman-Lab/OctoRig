@@ -28,10 +28,11 @@ case "$1" in
       --network "$LAB_NET" \
       --ip "$LAB_IP" \
       --restart unless-stopped \
+      --memory="$LAB_MEMORY" \
+      --cpus="$LAB_CPUS" \
       bkimminich/juice-shop:latest &>/dev/null
 
-    wait_for_port "$LAB_IP" 3000 60
-
+    wait_for_port "$LAB_IP" 3000 60 || exit 1
     INFO_LINES=(
       "URL|http://${LAB_IP}:3000"
       "Credentials|none (register on first visit)"
