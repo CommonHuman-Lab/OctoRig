@@ -1,5 +1,5 @@
 from datetime import date
-from flask import request, render_template, session, redirect, url_for, abort
+from flask import request, render_template, make_response, session, redirect, url_for, abort
 from db import get_db
 from helpers import current_user
 
@@ -67,7 +67,10 @@ def init(app):
             f"WHERE title LIKE '%{q}%' OR creator LIKE '%{q}%' OR genre LIKE '%{q}%' "
             f"ORDER BY title"
         ).fetchall() if q else []
-        return render_template('search.html', results=results, q=q)
+        resp = make_response(render_template('search.html', results=results, q=q))
+        # Non-HttpOnly cookie — readable via document.cookie (XSS challenge target)
+        resp.set_cookie('xss_challenge', 'FLAG{rw_reflected_xss_fired}', httponly=False)
+        return resp
 
     # ── Product detail + reviews — stored XSS via review text ────────────────
 

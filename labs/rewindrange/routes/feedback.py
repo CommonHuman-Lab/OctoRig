@@ -3,6 +3,10 @@ from flask import request, render_template, abort
 from db import get_db
 from helpers import current_user
 
+# Stored XSS / session-forgery proof — shown to whichever admin session reads this page.
+STORED_XSS_FLAG = "FLAG{rw_stored_xss_admin_pwned}"
+SESSION_FORGE_FLAG = "FLAG{rw_session_forged_as_admin}"
+
 
 def init(app):
 
@@ -33,4 +37,11 @@ def init(app):
         items = get_db().execute(
             "SELECT * FROM feedback ORDER BY submitted_at DESC"
         ).fetchall()
-        return render_template('admin_feedback.html', items=items)
+        base = render_template('admin_feedback.html', items=items)
+        banner = (
+            f'<div style="background:#0d1117;color:#3fb950;font-family:monospace;'
+            f'padding:.5rem 1rem;border-bottom:1px solid #21262d;">'
+            f'Proof you reached this page: <code>{STORED_XSS_FLAG}</code><br>'
+            f'Session forgery proof: <code>{SESSION_FORGE_FLAG}</code></div>'
+        )
+        return banner + base

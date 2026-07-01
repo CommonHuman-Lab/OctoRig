@@ -1,5 +1,5 @@
 from flask import Flask, Response, abort, render_template_string, session
-from db import get_db, init_db, close_db
+from db import init_db, close_db
 from helpers import current_user, cart_count, product_rating
 import routes.auth, routes.shop, routes.account, routes.feedback, routes.api, routes.admin, routes.board, routes.inbox, routes.expanded
 
@@ -58,40 +58,6 @@ h1{color:#f0f6fc}code{background:#161b22;padding:.2rem .4rem;border-radius:3px;c
 should require strong authentication and should not be hinted at in <code>robots.txt</code>.</small></p>
 <p><a href="/" style="color:#58a6ff">&#8592; Back to store</a></p>
 </body></html>''', username=u['username'])
-
-
-@app.route('/admin/feedback')
-def admin_feedback_flag():
-    """Admin feedback page — stored XSS lands here, flag visible to admin."""
-    u = current_user()
-    if not u or not u['is_admin']:
-        abort(403)
-    items = get_db().execute(
-        "SELECT * FROM feedback ORDER BY submitted_at DESC"
-    ).fetchall()
-    return render_template_string('''<!DOCTYPE html><html lang="en">
-<head><meta charset="UTF-8"><title>Admin Feedback — Rewind Range</title>
-<style>body{background:#0d1117;color:#c9d1d9;font-family:monospace;padding:2rem}
-h1{color:#f0f6fc}table{width:100%;border-collapse:collapse}
-th,td{padding:.5rem;border-bottom:1px solid #21262d;text-align:left}
-.flag{color:#3fb950}</style></head>
-<body>
-<h1>&#x1F4CB; Feedback — Admin View</h1>
-<p class="flag">Proof you reached this page: <code>FLAG{rw_stored_xss_admin_pwned}</code></p>
-<p class="flag">Session forgery proof: <code>FLAG{rw_session_forged_as_admin}</code></p>
-<table>
-<tr><th>Name</th><th>Email</th><th>Message</th><th>Date</th></tr>
-{% for item in items %}
-<tr>
-  <td>{{ item["name"] | safe }}</td>
-  <td>{{ item["email"] | safe }}</td>
-  <td>{{ item["message"] | safe }}</td>
-  <td>{{ item["submitted_at"] }}</td>
-</tr>
-{% endfor %}
-</table>
-<p><a href="/" style="color:#58a6ff">&#8592; Back</a></p>
-</body></html>''', items=items)
 
 
 @app.route('/commonhuman')

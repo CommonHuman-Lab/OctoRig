@@ -187,7 +187,7 @@ INSERT OR IGNORE INTO orders VALUES
   (2,2,'2026-05-10','shipped',19.99,'42 Oak Street, Portland OR'),
   (3,3,'2026-05-05','pending',37.97,'7 Elm Ave, Seattle WA'),
   (4,4,'2026-05-15','processing',22.99,'99 Pine Road, Austin TX'),
-  (5,1,'2026-05-18','delivered',47.98,'1 Static Lane, Hollywood CA'),
+  (5,1,'2026-05-18','delivered',47.98,'1 Static Lane, Hollywood CA · FLAG{rw_api_idor_rentals}'),
   (6,5,'2026-04-30','delivered',32.98,'18 Maple Drive, Denver CO'),
   (7,6,'2026-05-02','delivered',35.97,'5 Cedar Close, Nashville TN'),
   (8,7,'2026-05-06','shipped',34.98,'301 Birch Road, Chicago IL'),
@@ -306,7 +306,7 @@ INSERT OR IGNORE INTO messages VALUES
 
 INSERT OR IGNORE INTO _flags VALUES
   (1,'sqli-union',       'FLAG{rw_union_select_from_flags}'),
-  (2,'rental-idor',      'FLAG{rw_api_idor_rentals}');
+  (3,'python-sqli',      'FLAG{rw_python_sqli_automated}');
 """
 
 

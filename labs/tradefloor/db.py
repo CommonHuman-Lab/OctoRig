@@ -197,6 +197,9 @@ INSERT OR IGNORE INTO _flags VALUES
   (2, 'sqli-api',      'FLAG{tf_api_token_injected}'),
   (3, 'sqli-creds',    'FLAG{tf_users_table_dumped}');
 
+INSERT OR IGNORE INTO portfolio_holdings VALUES
+  (24, 8,'CMNH', 10, 1300.00);
+
 INSERT OR IGNORE INTO alerts VALUES
   (1, 2,'ACME above $45',    'ACME','above',45.00,1,'2000-01-05'),
   (2, 2,'ZTRX drop warning', 'ZTRX','below',90.00,1,'2000-01-06'),
@@ -240,6 +243,14 @@ def init_db():
         conn.execute("ALTER TABLE orders ADD COLUMN memo TEXT DEFAULT ''")
     except sqlite3.OperationalError:
         pass
+    try:
+        conn.execute("ALTER TABLE portfolio_holdings ADD COLUMN notes TEXT DEFAULT ''")
+    except sqlite3.OperationalError:
+        pass
+    conn.execute(
+        "UPDATE portfolio_holdings SET notes = ? WHERE id = 24 AND (notes IS NULL OR notes = '')",
+        ('FLAG{tf_python_idor_swept}',)
+    )
     # Seed 60 price-history points (one per 10 s, going back 10 minutes) for each symbol
     stocks = conn.execute("SELECT symbol, price FROM market_data").fetchall()
     now = datetime.now(timezone.utc)
