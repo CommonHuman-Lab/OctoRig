@@ -13,12 +13,12 @@
 
 ---
 
-OctoRig pairs 21 realistic, layered-vulnerability lab environments with a built-in training platform — CTF events, badges, scoreboards, and a plugin API for your own DAST tools. No artificial puzzle boxes: labs feel like real apps and infrastructure, mistakes and all.
+OctoRig pairs 21+ realistic, layered-vulnerability lab environments with a built-in training platform — CTF events, badges, scoreboards, and a plugin API for your own DAST tools. No artificial puzzle boxes: labs feel like real apps and infrastructure, mistakes and all.
 
 ## Features
 
 - One-command deploy, fully isolated in Docker
-- 21 labs — world scenarios, scanner fire-ranges, and classics (Juice Shop, DVWA, AD, more)
+- 21+ labs — world scenarios, scanner fire-ranges, and classics (Juice Shop, DVWA, AD, more)
 - Built-in CTF platform — events, badges, scoreboards, team play
 - Assessment Mode for proctored skills testing
 - Plugin API to wire in your own DAST scanners
@@ -51,7 +51,7 @@ Drive labs directly from the CLI instead:
 
 OctoRig ships with multiple labs across three categories:
 
-- **Real-world scenarios** — full-stack web apps (e-commerce, banking, healthcare, trading, ISP portal, casino, cinema, community forum) with layered, realistic vulnerability chains
+- **Real-world scenarios** — full-stack web apps (e-commerce, banking, healthcare, trading, ISP portal, casino, cinema, community forum and more) with layered, realistic vulnerability chains
 - **Scanner fire-ranges** — purpose-built SQLi, XSS, and IDOR challenge sets for tool benchmarking and focused practice
 - **Third-party classics** — Juice Shop, DVWA, Metasploitable2, WebGoat, and a Vulnerable Active Directory environment
 

@@ -13,6 +13,7 @@ from .smartgridops import SMARTGRIDOPS_LAB
 from .subverse import SUBVERSE_LAB
 from .tradefloor import TRADEFLOOR_LAB
 from .vaultsync import VAULTSYNC_LAB
+from .waveform import WAVEFORM_LAB
 
 WORLD_LABS: list[LabDefinition] = [  # type: ignore[assignment]
     REWINDRANGE_LAB,
@@ -27,4 +28,5 @@ WORLD_LABS: list[LabDefinition] = [  # type: ignore[assignment]
     VAULTSYNC_LAB,
     MEDIACRATE_LAB,
     FLEETWAVE_LAB,
+    WAVEFORM_LAB,
 ]

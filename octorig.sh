@@ -74,10 +74,11 @@ LABS=(
   "19|VaultSync|vaultsync.sh|Vulnerable password manager SaaS — SQLi, IDOR, XSS, BAC, mass assignment, SSRF chained to command injection, SSH/FTP weak creds"
   "20|MediaCrate|mediacrate.sh|Vulnerable streaming/content-creator platform — SQLi, IDOR, XSS, BAC, mass assignment, SSRF chained to command injection, SSH/FTP weak creds"
   "21|FleetWave|fleetwave.sh|Vulnerable logistics/delivery fleet SaaS — SQLi, IDOR, BAC, stored XSS, mass assignment, business logic, SSRF chained to command injection, SSH/FTP weak creds"
+  "22|Waveform|waveform.sh|Vulnerable indie music-streaming SPA — SQLi, DOM/stored XSS, IDOR, broken access control, session forgery, SSH/FTP weak creds"
 )
 
 # IDs of real-world scenario labs (for "start world")
-WORLD_LAB_IDS=(1 2 3 4 5 6 7 8 18 19 20 21)
+WORLD_LAB_IDS=(1 2 3 4 5 6 7 8 18 19 20 21 22)
 
 # ---------------- dependency checks ------------------------------------------
 install_docker() {
